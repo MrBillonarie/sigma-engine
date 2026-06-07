@@ -1,7 +1,23 @@
 {
-  "timestamp": "2026-06-07T12:00:01.575069",
+  "timestamp": "2026-06-07T19:00:01.780604",
   "models": {
     "1h": [
+      {
+        "file": "xauusd_regime_adaptive.json",
+        "strategy": "regime_adaptive",
+        "cagr_oos": 205.1,
+        "wr_oos": 70.0,
+        "dd_oos": -6.7,
+        "trades_oos": 20
+      },
+      {
+        "file": "xau_regime_adaptive.json",
+        "strategy": "regime_adaptive",
+        "cagr_oos": 167.4,
+        "wr_oos": 71.4,
+        "dd_oos": -6.5,
+        "trades_oos": 21
+      },
       {
         "file": "ltc_williams_r.json",
         "strategy": "williams_r",

@@ -56,8 +56,8 @@
     "mc_cagr_p50": 459.1,
     "mc_cagr_p95": 4220.4,
     "mc_dd_p50": -63.2,
-    "mc_dd_p95": -43.8,
-    "mc_confidence": 90.9,
+    "mc_dd_p95": -40.3,
+    "mc_confidence": 90.6,
     "mc_sims": 1000
   },
   "wft": {

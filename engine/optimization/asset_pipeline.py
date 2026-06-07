@@ -53,8 +53,8 @@ except Exception:
 
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 OUTPUT_DIR = Path(__file__).parent.parent.parent
-COMMISSION  = 0.0004   # 0.04% taker fee Binance Futures
-SLIPPAGE    = 0.0002   # 0.02% slippage estimado (market orders)
+COMMISSION  = 0.0005   # 0.05% taker fee Binance Futures (rate real)
+SLIPPAGE    = 0.0003   # 0.03% slippage estimado (market orders cripto)
 CAPITAL     = 1000.0
 
 STRATEGIES        = ['breakout', 'pullback', 'tma_bands', 'momentum', 'mean_rev', 'lower_lows', 'pin_bar', 'break_of_structure', 'volume_exhaustion', 'consecutive_wick', 'hull_cross', 'aroon_cross', 'psar_flip', 'dmi_trend', 'mfi_reversal', 'tema_cross', 'ichimoku', 'pivot_bounce', 'trend_strength', 'elder_impulse', 'squeeze_pro', 'obv_divergence', 'chaikin_mf', 'htf_divergence', 'vwap_deviation', 'volatility_breakout', 'cci_reversal', 'williams_r', 'stoch_rsi', 'engulfing', 'rsi_divergence']  # 2026-05-14 noche: exploracion +5 longs (cci_reversal/williams_r/stoch_rsi/engulfing/rsi_divergence) — mirrors short ya en STRATEGIES_SHORT. Balance pendiente: 31L vs 26S.
@@ -1748,7 +1748,7 @@ def metrics(df_t, eq_s, days, min_t=15):
             'dd':round(dd,1),'pf':round(pf,2),'trades_year':round(tpa,1)}
 
 
-def score(m, min_t=10):
+def score(m, min_t=15):
     if m is None: return -9999
     t    = m.get('trades', 0)
     wr   = m.get('wr', m.get('winrate', 0))
@@ -2042,6 +2042,55 @@ def build_search_space(trial, strategy):
             'rsi_w_bull':    trial.suggest_int('rsi_w_bull',      50, 65),
             'rsi_w_bear':    trial.suggest_int('rsi_w_bear',      30, 50),
         }
+    elif strategy in [
+
+            'liquidation_reversal_long', 'liquidation_reversal_short',
+
+    ]:
+
+        base.update({'spike_mult': trial.suggest_float('spike_mult', 1.2, 3.0),
+
+                     'confirm_pct': trial.suggest_float('confirm_pct', 0.2, 0.6)})
+
+    elif strategy in ['session_momentum_long', 'session_momentum_short']:
+
+        base.update({'vol_mult': trial.suggest_float('vol_mult', 1.0, 2.5)})
+
+    elif strategy in ['multi_tf_bull', 'multi_tf_bear']:
+
+        base.update({'mom_threshold': trial.suggest_float('mom_threshold', 0.001, 0.015),
+
+                     'short_lb': trial.suggest_int('short_lb', 2, 8),
+
+                     'mid_lb': trial.suggest_int('mid_lb', 8, 24),
+
+                     'long_lb': trial.suggest_int('long_lb', 24, 96),
+
+                     'vol_mult': trial.suggest_float('vol_mult', 1.0, 2.0)})
+
+    elif strategy in ['funding_extreme_long', 'funding_extreme_short']:
+
+        base.update({'threshold': trial.suggest_float('threshold', 0.7, 0.95),
+
+                     'min_dur': trial.suggest_int('min_dur', 1, 6)})
+
+    elif strategy in ['squeeze_expand_long', 'squeeze_expand_short']:
+
+        base.update({'bb_period': trial.suggest_int('bb_period', 14, 30),
+
+                     'bb_k': trial.suggest_float('bb_k', 1.5, 2.5),
+
+                     'squeeze_bars': trial.suggest_int('squeeze_bars', 3, 12),
+
+                     'vol_mult': trial.suggest_float('vol_mult', 1.0, 2.5)})
+
+    elif strategy in ['bos_long', 'bos_short']:
+
+        base.update({'lookback': trial.suggest_int('lookback', 10, 40),
+
+                     'vol_mult': trial.suggest_float('vol_mult', 1.0, 2.5)})
+
+
     return base
 
 
@@ -2550,12 +2599,12 @@ def run_pipeline(symbol, tf, n_trials=350, loop=False, max_cycles=99, csv_path=N
             try:
                 sig_oos, sl_oos, tp_oos = sig_map[strategy](df_oos, bp)
                 dt_oos, eq_oos = backtest(df_oos, sig_oos, sl_oos, tp_oos, rp)
-                m_oos = metrics(dt_oos, eq_oos, days_oos, min_t=5)
+                m_oos = metrics(dt_oos, eq_oos, days_oos, min_t=10)
             except:
                 m_oos = None
 
             if not m_oos:
-                log(symbol, tf, f'  {strategy}: OOS sin trades (<5), probando siguiente...')
+                log(symbol, tf, f'  {strategy}: OOS sin trades (<10), probando siguiente...')
                 log_event(asset, tf, strategy, 'SIN_TRADES', note='OOS < 5 trades, params muy selectivos')
                 continue
 
@@ -2567,10 +2616,10 @@ def run_pipeline(symbol, tf, n_trials=350, loop=False, max_cycles=99, csv_path=N
             # Anti-overfitting: si IS >> OOS por más de 2.5x, el modelo memorizó el IS
             if m_is and m_oos and m_is.get('cagr', 0) > 0 and cagr_oos > 0:
                 overfit_ratio = m_is['cagr'] / cagr_oos
-                if overfit_ratio > 2.5:
+                if overfit_ratio > 2.0:
                     log(symbol, tf,
                         f'  {strategy}: OVERFIT detectado — IS {m_is["cagr"]:+.1f}% vs OOS {cagr_oos:+.1f}% '
-                        f'(ratio {overfit_ratio:.1f}x > 2.5) — descartando')
+                        f'(ratio {overfit_ratio:.1f}x > 2.0) — descartando')
                     log_event(asset, tf, strategy, 'OVERFIT',
                               cagr_oos=cagr_oos, wr=m_oos['wr'],
                               note=f'IS/OOS ratio {overfit_ratio:.1f}x')
@@ -2581,13 +2630,30 @@ def run_pipeline(symbol, tf, n_trials=350, loop=False, max_cycles=99, csv_path=N
                 # Reemplazos de un champion ya existente siguen rigiendose por score.
                 trades_oos_n = m_oos.get('trades', 0) if isinstance(m_oos, dict) else 0
                 is_first_champion = best_oos_score <= -900
-                if is_first_champion and trades_oos_n < 20:
-                    log(symbol, tf, f'  {strategy}: CAGR+ pero N OOS insuficiente ({trades_oos_n} < 20), no admito primer champion')
+                min_n_required = 20 if is_first_champion else 12
+                if trades_oos_n < min_n_required:
+                    log(symbol, tf, f'  {strategy}: CAGR+ pero N OOS insuficiente ({trades_oos_n} < {min_n_required}), descartando')
                     log_event(asset, tf, strategy, 'LOW_N_OOS',
                               cagr_oos=cagr_oos, wr=m_oos.get('wr'),
-                              note=f'CAGR+ pero N OOS insuficiente ({trades_oos_n} < 20)',
+                              note=f'N OOS insuficiente ({trades_oos_n} < {min_n_required})',
                               trades_oos=trades_oos_n)
                     continue
+                # Gate: CAGR extremo requiere validacion MC robusta
+                if cagr_oos > 150:
+                    mc_data = champ_mc.get((asset, tf, strategy), {})
+                    mc_p = mc_data.get('p_pos', 100) if mc_data else 100
+                    try:
+                        from engine.analysis.auto_validator import quick_mc
+                        mc_p = quick_mc(dt_oos['pnl'].tolist())
+                    except Exception:
+                        pass
+                    if mc_p < 70:
+                        log(symbol, tf,
+                            f'  {strategy}: CAGR irreal ({cagr_oos:+.1f}%) con MC p_pos={mc_p:.0f}% < 70%, descartando')
+                        log_event(asset, tf, strategy, 'CAGR_TOO_HIGH_MC',
+                                  cagr_oos=cagr_oos, wr=m_oos['wr'],
+                                  note=f'CAGR {cagr_oos:.0f}% pero MC p_pos {mc_p:.0f}%')
+                        continue
                 new_score = score(m_oos)
                 if new_score > best_oos_score:
                     prev = best_oos_score
@@ -2749,6 +2815,46 @@ for _fn_name in _xau_strats_mod.XAU_STRATEGIES:
             SIG_FN_SHORT[_fn_name] = _fn
 STRATEGIES.extend(_xau_longs)
 STRATEGIES_SHORT.extend(_xau_shorts)
+
+
+
+# alpha_2026_06_07 — 12 nuevas estrategias (6L + 6S)
+
+try:
+
+    import alpha_2026_06_07 as _alpha_mod
+
+    _alpha_mod._bind(sys.modules[__name__])
+
+    for _fn_name in _alpha_mod.ALPHA_LONGS:
+
+        _fn = getattr(_alpha_mod, f'sig_{_fn_name}', None)
+
+        if _fn is not None:
+
+            globals()[f'sig_{_fn_name}'] = _fn
+
+            SIG_FN[_fn_name] = _fn
+
+    STRATEGIES.extend(_alpha_mod.ALPHA_LONGS)
+
+    for _fn_name in _alpha_mod.ALPHA_SHORTS:
+
+        _fn = getattr(_alpha_mod, f'sig_{_fn_name}', None)
+
+        if _fn is not None:
+
+            globals()[f'sig_{_fn_name}'] = _fn
+
+            SIG_FN_SHORT[_fn_name] = _fn
+
+    STRATEGIES_SHORT.extend(_alpha_mod.ALPHA_SHORTS)
+
+    print(f'[alpha_2026_06_07] loaded {len(_alpha_mod.ALPHA_STRATEGIES)} strategies')
+
+except Exception as _e_a:
+
+    print(f'[alpha_2026_06_07] load error: {_e_a}')
 
 
 # ============================================================================

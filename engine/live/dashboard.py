@@ -18,9 +18,9 @@ from datetime import datetime, date, timezone
 
 OUTPUT_DIR = Path(__file__).parent.parent.parent
 
-ASSETS = ['BTC','ETH','LTC','SOL','BNB']
-ASSET_EMOJI = {'BTC':'&#8383;','ETH':'&#926;','LTC':'&#321;','SOL':'&#9678;','BNB':'&#11042;'}
-ASSET_COLOR = {'BTC':'#f7931a','ETH':'#627eea','LTC':'#345d9d','SOL':'#9945ff','BNB':'#f3ba2f'}
+ASSETS = ['BTC','ETH','LTC','SOL','BNB','XAU']
+ASSET_EMOJI = {'BTC':'&#8383;','ETH':'&#926;','LTC':'&#321;','SOL':'&#9678;','BNB':'&#11042;','XAU':'Au'}
+ASSET_COLOR = {'BTC':'#f7931a','ETH':'#627eea','LTC':'#345d9d','SOL':'#9945ff','BNB':'#f3ba2f','XAU':'#FFD700'}
 TIMEFRAMES  = ['4h','1h','15m','5m']
 TF_LABEL    = {'4h':'4H','1h':'1H','15m':'15m','5m':'5m'}
 TF_COLORS_H = {'4h':'#2ecc71','1h':'#58a6ff','15m':'#f1c40f','5m':'#e67e22'}
@@ -287,6 +287,9 @@ def load_model(asset, tf, direction='long'):
                 'best_bull_breakout.json', 'best_bull_tma_bands.json',
                 'best_bull_pullback.json', 'best_validated.json',
             ]
+        if asset == 'XAU':
+            # Optuna puede generar con prefijo xauusd_ en lugar de xau_
+            candidates += [f'xauusd_{s}.json' for s in long_strats]
 
     best_dict = None
     best_cagr = 0.0  # solo guardamos modelos con CAGR > 0

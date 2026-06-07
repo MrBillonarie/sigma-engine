@@ -392,7 +392,7 @@ def _model_vs_backtest():
 
             if oos.get('cagr', 0) > 0:
 
-                k = f"{d.get('symbol','').replace('/USDT','')}_{jf.parent.name}_{d.get('strategy','')}"
+                k = f"{d.get('symbol','').replace('/USDT','').replace('/USD','').replace('/','-')}_{jf.parent.name}_{d.get('strategy','')}"
 
                 bts[k] = {
 
@@ -814,9 +814,43 @@ def _compute_regime():
 
             try:
 
-                # Get last 200 weekly closes for RSI_W (XAU solo en futures)
+                if asset == 'XAU':
 
-                ex_src = ex_futures if asset == 'XAU' else ex
+                    import yfinance as _yf_r
+
+                    _tk_r = _yf_r.Ticker('GC=F')
+
+                    _hw = _tk_r.history(period='2y', interval='1wk')
+
+                    _hd = _tk_r.history(period='1y', interval='1d')
+
+                    if len(_hw) < 15 or len(_hd) < 50:
+
+                        result[asset] = {'regime': 'UNKNOWN', 'rsi_w': 50, 'price': 0, 'ema200': 0}
+
+                        continue
+
+                    _c = _hw['Close']
+
+                    _d2 = _c.diff()
+
+                    _g = _d2.clip(lower=0).ewm(alpha=1/14, adjust=False).mean()
+
+                    _ll = (-_d2.clip(upper=0)).ewm(alpha=1/14, adjust=False).mean()
+
+                    _rsi_w = float((100 - 100/(1 + _g/(_ll+1e-9))).iloc[-1])
+
+                    _price = float(_hd['Close'].iloc[-1])
+
+                    _ema200 = float(_hd['Close'].ewm(span=200, adjust=False).mean().iloc[-1])
+
+                    _regime = 'BULL' if (_rsi_w > 55 and _price > _ema200) else ('BEAR' if (_rsi_w < 40 or _price < _ema200 * 0.97) else 'RANGE')
+
+                    result[asset] = {'regime': _regime, 'rsi_w': round(_rsi_w, 1), 'price': round(_price, 4), 'ema200': round(_ema200, 4), 'pct_vs_ema': round((_price/_ema200-1)*100, 1)}
+
+                    continue
+
+                ex_src = ex
 
                 ohlcv = ex_src.fetch_ohlcv(sym, '1w', limit=30)
 
@@ -3383,9 +3417,17 @@ def _compute_signals():
 
             try:
 
-                _url2 = f'https://fapi.binance.com/fapi/v1/ticker/price?symbol={_sym2}USDT'
+                if _sym2 == 'XAU':
 
-                _cp2  = float(_jw2.loads(_ur2.urlopen(_url2, timeout=4).read())['price'])
+                    import yfinance as _yf_c
+
+                    _cp2 = float(_yf_c.Ticker('GC=F').fast_info.last_price)
+
+                else:
+
+                    _url2 = f'https://fapi.binance.com/fapi/v1/ticker/price?symbol={_sym2}USDT'
+
+                    _cp2  = float(_jw2.loads(_ur2.urlopen(_url2, timeout=4).read())['price'])
 
                 _current_prices[_sym2] = _cp2
 
@@ -3461,7 +3503,7 @@ def _compute_signals():
 
 
 
-                sym = symbol.replace('/USDT','')
+                sym = symbol.replace('/USDT','').replace('/USD','')
 
                 is_short = strategy in _SIGMA_SHORTS
 
@@ -3529,17 +3571,37 @@ def _compute_signals():
 
                         tf_ccxt = tf_alias.get(tf, tf)
 
-                        raw = ex.fetch_ohlcv(symbol, tf_ccxt, limit=500)
+                        if sym == 'XAU':
 
-                        if raw:
+                            try:
 
-                            df = pd.DataFrame(raw, columns=['ts','open','high','low','close','volume'])
+                                import pandas as _pd_x
 
-                            df['ts'] = pd.to_datetime(df['ts'], unit='ms')
+                                _csv_x = f'/opt/sigma/models/data_XAU_{tf}_max.csv'
 
-                            df.set_index('ts', inplace=True)
+                                _dfx = _pd_x.read_csv(_csv_x, index_col=0, parse_dates=True)
 
-                            data_cache[key] = _feats(df)
+                                _dfx.columns = [c.lower() for c in _dfx.columns]
+
+                                data_cache[key] = _feats(_dfx.tail(500))
+
+                            except:
+
+                                pass
+
+                        else:
+
+                            raw = ex.fetch_ohlcv(symbol, tf_ccxt, limit=500)
+
+                            if raw:
+
+                                df = pd.DataFrame(raw, columns=['ts','open','high','low','close','volume'])
+
+                                df['ts'] = pd.to_datetime(df['ts'], unit='ms')
+
+                                df.set_index('ts', inplace=True)
+
+                                data_cache[key] = _feats(df)
 
                     df = data_cache.get(key)
 
@@ -3553,15 +3615,23 @@ def _compute_signals():
 
                         if has_signal:
 
-                            # Firing: usar precio LIVE de Binance Futures
+                            # Firing: usar precio LIVE
 
                             try:
 
-                                import urllib.request as _ur_e, json as _j_e
+                                if sym == 'XAU':
 
-                                _url_e = f'https://fapi.binance.com/fapi/v1/ticker/price?symbol={sym}USDT'
+                                    import yfinance as _yf_p
 
-                                price  = round(float(_j_e.loads(_ur_e.urlopen(_url_e, timeout=3).read())['price']), 4)
+                                    price = round(float(_yf_p.Ticker('GC=F').fast_info.last_price), 4)
+
+                                else:
+
+                                    import urllib.request as _ur_e, json as _j_e
+
+                                    _url_e = f'https://fapi.binance.com/fapi/v1/ticker/price?symbol={sym}USDT'
+
+                                    price  = round(float(_j_e.loads(_ur_e.urlopen(_url_e, timeout=3).read())['price']), 4)
 
                             except:
 
@@ -8099,9 +8169,17 @@ def _watch_open_trades():
 
                 try:
 
-                    url = f'https://fapi.binance.com/fapi/v1/ticker/price?symbol={sym}USDT'
+                    if sym == 'XAU':
 
-                    cp  = float(_jw.loads(_ur.urlopen(url, timeout=5).read())['price'])
+                        import yfinance as _yf_w
+
+                        cp = float(_yf_w.Ticker('GC=F').fast_info.last_price)
+
+                    else:
+
+                        url = f'https://fapi.binance.com/fapi/v1/ticker/price?symbol={sym}USDT'
+
+                        cp  = float(_jw.loads(_ur.urlopen(url, timeout=5).read())['price'])
 
                     result = check_auto_close(sym, tf, cp)
 

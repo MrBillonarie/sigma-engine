@@ -292,7 +292,18 @@
   "BNB_1h_break_of_structure": {
     "equity": 9849.66,
     "initial": 10000,
-    "open": null,
+    "open": {
+      "sym": "BNB",
+      "tf": "1h",
+      "strategy": "break_of_structure",
+      "direction": "long",
+      "entry": 603.38,
+      "sl": 584.3331,
+      "tp": 626.4671,
+      "sl_dist_pct_at_open": 3.1567,
+      "kelly_pct": 2.27,
+      "opened_at": "2026-06-07 19:00:41"
+    },
     "history": [
       {
         "sym": "BNB",
@@ -321,7 +332,18 @@
   "BNB_1h_ichimoku": {
     "equity": 10362.14,
     "initial": 10000,
-    "open": null,
+    "open": {
+      "sym": "BNB",
+      "tf": "1h",
+      "strategy": "ichimoku",
+      "direction": "long",
+      "entry": 595.51,
+      "sl": 579.42,
+      "tp": 611.6,
+      "sl_dist_pct_at_open": 2.7019,
+      "kelly_pct": 1.48,
+      "opened_at": "2026-06-07 15:00:34"
+    },
     "history": [
       {
         "sym": "BNB",
@@ -416,7 +438,18 @@
   "BNB_1h_dmi_trend": {
     "equity": 10018.62,
     "initial": 10000,
-    "open": null,
+    "open": {
+      "sym": "BNB",
+      "tf": "1h",
+      "strategy": "dmi_trend",
+      "direction": "long",
+      "entry": 594.08,
+      "sl": 576.2669,
+      "tp": 614.4379,
+      "sl_dist_pct_at_open": 2.9984,
+      "kelly_pct": 0.8,
+      "opened_at": "2026-06-07 17:00:46"
+    },
     "history": [
       {
         "sym": "BNB",
@@ -683,6 +716,24 @@
     "open": null,
     "history": [],
     "created_at": "2026-06-05 16:16:53",
+    "pre_initialized": true,
+    "recommendation_at_init": "NO_ACTIVAR"
+  },
+  "XAU/USD_1h_regime_adaptive": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-06-07 13:21:55",
+    "pre_initialized": true,
+    "recommendation_at_init": "ACTIVAR"
+  },
+  "XAU_1h_regime_adaptive": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-06-07 18:39:40",
     "pre_initialized": true,
     "recommendation_at_init": "NO_ACTIVAR"
   }

@@ -45,12 +45,12 @@
     "date": "2026-06-07 02:16"
   },
   "mc": {
-    "mc_cagr_p05": -64.8,
+    "mc_cagr_p05": -54.7,
     "mc_cagr_p50": 105.5,
     "mc_cagr_p95": 1098.9,
-    "mc_dd_p50": -54.9,
-    "mc_dd_p95": -36.1,
-    "mc_confidence": 73.8,
+    "mc_dd_p50": -54.1,
+    "mc_dd_p95": -33.6,
+    "mc_confidence": 76.5,
     "mc_sims": 1000
   }
 }

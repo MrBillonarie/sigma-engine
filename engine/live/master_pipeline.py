@@ -44,12 +44,12 @@ CSV_PATHS = {
     'XAU': '/opt/sigma/models/data_XAU_{tf}_max.csv',
 }
 
-TRIALS_BY_TF = {'4h': 120, '1h': 130, '15m': 150, '5m': 55, '1m': 35}  # reducidos para prevenir OOM
+TRIALS_BY_TF = {'4h': 250, '1h': 300, '15m': 300, '5m': 150, '1m': 35}  # 2026-06-07: upgrade 8 cores, maximizar calidad
 # 5m y 1m tienen 600K+ candles — cada trial es 10x mas lento que 1H
 # Con 60 trials Optuna TPE igual encuentra buenas soluciones
 
 # 4 slots paralelos — sigma-trainer pausado, tenemos 3.5+ cores libres
-MAX_PARALLEL = 1  # 2026-06-07: 4 cores, 1 master + 3 gap = 4 total
+MAX_PARALLEL = 2  # 2026-06-07: 8 cores upgrade — 2 master + 6 gap = 8 total
 MIN_RAM_GB  = 2.5   # No lanzar si RAM libre < 2.5GB
 
 running_procs = {}
@@ -60,8 +60,6 @@ def log(msg, level='INFO'):
     ts   = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     line = f'[{ts}][{level}] {msg}'
     print(line, flush=True)
-    with open(log_path, 'a', encoding='utf-8') as f:
-        f.write(line + '\n')
 
 
 def get_model_info(asset, tf):
@@ -158,7 +156,16 @@ def priority_score(asset, tf):
 
     # GAP DIRECCIONAL: una direccion falta -> alta prioridad (abajo del gap total)
     if not (long_ok and short_ok):
-        return 80 + tf_bonus
+        # Bonus si la direccion faltante coincide con el regime actual
+        try:
+            import json as _json_pr
+            _sc = _json_pr.load(open('/opt/sigma/results/signals_cache.json'))
+            _reg = _sc.get('regime', 'UNKNOWN')
+            _missing = 'short' if long_ok else 'long'
+            _regime_bonus = 15 if ((_reg=='BEAR' and _missing=='short') or (_reg=='BULL' and _missing=='long')) else 0
+        except:
+            _regime_bonus = 0
+        return 80 + tf_bonus + _regime_bonus
 
     # Ambas direcciones cubiertas: prioridad por edad/cagr (logica historica)
     cagr, age = get_model_info(asset, tf)

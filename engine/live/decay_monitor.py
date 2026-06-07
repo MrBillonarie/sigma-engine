@@ -16,7 +16,7 @@ import numpy as np
 
 BASE = Path(__file__).parent.parent.parent
 
-COMMISSION = 0.0004
+COMMISSION = 0.0005
 CAPITAL    = 1000.0
 
 GRADES = [(0.70,'A+'),(0.55,'A'),(0.40,'B'),(0.25,'C'),(0,'D')]

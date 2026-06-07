@@ -17,12 +17,13 @@
     "ETH|1h": "breakout|long",
     "BNB|1h": "mfi_reversal|long",
     "LTC|1h": "williams_r|long",
-    "SOL|1h": "breakdown|short"
+    "SOL|1h": "breakdown|short",
+    "XAU/USD|1h": "regime_adaptive|long"
   },
-  "last_notified_at": "2026-05-31T18:58:46.589738",
+  "last_notified_at": "2026-06-07T13:21:52.158207",
   "changes_summary": {
     "fresh_discoveries": 0,
     "discoveries": 0,
-    "rotations": 1
+    "rotations": 0
   }
 }
