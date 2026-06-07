@@ -1,0 +1,45 @@
+{
+  "symbol": "SOL/USDT",
+  "tf": "15m",
+  "strategy": "mean_rev",
+  "params": {
+    "sl_mult": 3.2,
+    "tp_mult": 2.7,
+    "cooldown": 14,
+    "rsi_w_thr": 50,
+    "rsi_os": 42
+  },
+  "risk_pct": 2.7,
+  "metrics_is": {
+    "trades": 340,
+    "wr": 56.5,
+    "cagr": 202.6,
+    "dd": -50.5,
+    "pf": 2.2,
+    "trades_year": 155.4
+  },
+  "metrics_oos": {
+    "trades": 68,
+    "wr": 54.4,
+    "cagr": -7.7,
+    "dd": -12.7,
+    "pf": 0.74,
+    "trades_year": 59.3
+  },
+  "saved_at": "2026-05-08 21:32:23.544797",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 75.8,
+      "median": 180.5,
+      "ic95_lo": -56.7,
+      "ic95_hi": 501.6,
+      "n_trades": 75,
+      "n_sims": 2000,
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "validated_at": "2026-05-08 23:27:52.878848"
+  },
+  "reeval_date": "2026-05-09 18:10",
+  "reeval_note": "funding+slippage aplicados"
+}

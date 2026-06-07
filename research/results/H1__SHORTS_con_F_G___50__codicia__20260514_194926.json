@@ -1,0 +1,85 @@
+{
+  "name": "H1: SHORTS con F&G > 50 (codicia)",
+  "ts": "2026-05-14T23:49:26.110793+00:00",
+  "days_history": 365,
+  "oos_frac": 0.3,
+  "strategies": [
+    "momentum_short"
+  ],
+  "symbols": [
+    "BTC/USDT"
+  ],
+  "tfs": [
+    "1h"
+  ],
+  "rows": [
+    {
+      "symbol": "BTC/USDT",
+      "tf": "1h",
+      "strategy": "momentum_short",
+      "full": {
+        "no_filter": {
+          "trades": 60,
+          "wr": 31.7,
+          "cagr": -20.0,
+          "dd": -20.0,
+          "pf": 0.5,
+          "trades_year": 60.0,
+          "pnl_pct": -19.96,
+          "avg_pnl_usd": -3.3616
+        },
+        "yes_filter": {
+          "trades": 0,
+          "wr": null,
+          "cagr": null,
+          "dd": null,
+          "pf": null,
+          "pnl_pct": 0.0
+        },
+        "days": 365
+      },
+      "is": {
+        "no_filter": {
+          "trades": 17,
+          "wr": 11.8,
+          "cagr": -15.2,
+          "dd": -12.5,
+          "pf": 0.27,
+          "trades_year": 24.3,
+          "pnl_pct": -10.9,
+          "avg_pnl_usd": -6.5072
+        },
+        "yes_filter": {
+          "trades": 0,
+          "wr": null,
+          "cagr": null,
+          "dd": null,
+          "pf": null,
+          "pnl_pct": 0.0
+        },
+        "days": 255
+      },
+      "oos": {
+        "no_filter": {
+          "trades": 43,
+          "wr": 39.5,
+          "cagr": -30.2,
+          "dd": -14.9,
+          "pf": 0.63,
+          "trades_year": 144.1,
+          "pnl_pct": -10.16,
+          "avg_pnl_usd": -2.3771
+        },
+        "yes_filter": {
+          "trades": 0,
+          "wr": null,
+          "cagr": null,
+          "dd": null,
+          "pf": null,
+          "pnl_pct": 0.0
+        },
+        "days": 109
+      }
+    }
+  ]
+}

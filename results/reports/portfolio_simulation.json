@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-05-08 19:40:52.898112",
+  "metrics_1h_solo": {
+    "trades": 70,
+    "wr": 58.6,
+    "cagr": 19.9,
+    "dd": -29.9,
+    "pf": 1.37
+  },
+  "metrics_4h_solo": {
+    "trades": 22,
+    "wr": 40.9,
+    "cagr": -3.1,
+    "dd": -18.9,
+    "pf": 0.88
+  },
+  "metrics_portfolio": {
+    "trades": 92,
+    "wr": 54.3,
+    "cagr": 14.0,
+    "dd": -32.7,
+    "pf": 1.17
+  },
+  "overlap_pct": 3.3,
+  "risk_1h": 3.3000000000000003,
+  "risk_4h": 3.3
+}

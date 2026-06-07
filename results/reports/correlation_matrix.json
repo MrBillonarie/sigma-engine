@@ -1,0 +1,99 @@
+{
+  "timestamp": "2026-05-08 23:31:33.514246",
+  "n_days": 399,
+  "matrix": {
+    "BTC": {
+      "BTC": 1.0,
+      "ETH": 0.844,
+      "LTC": 0.726,
+      "SOL": 0.831,
+      "BNB": 0.756
+    },
+    "ETH": {
+      "BTC": 0.844,
+      "ETH": 1.0,
+      "LTC": 0.74,
+      "SOL": 0.868,
+      "BNB": 0.765
+    },
+    "LTC": {
+      "BTC": 0.726,
+      "ETH": 0.74,
+      "LTC": 1.0,
+      "SOL": 0.766,
+      "BNB": 0.703
+    },
+    "SOL": {
+      "BTC": 0.831,
+      "ETH": 0.868,
+      "LTC": 0.766,
+      "SOL": 1.0,
+      "BNB": 0.779
+    },
+    "BNB": {
+      "BTC": 0.756,
+      "ETH": 0.765,
+      "LTC": 0.703,
+      "SOL": 0.779,
+      "BNB": 1.0
+    }
+  },
+  "pairs": {
+    "BTC_ETH": {
+      "corr": 0.844,
+      "level": "ALTA",
+      "safe": false
+    },
+    "BTC_LTC": {
+      "corr": 0.726,
+      "level": "ALTA",
+      "safe": false
+    },
+    "BTC_SOL": {
+      "corr": 0.831,
+      "level": "ALTA",
+      "safe": false
+    },
+    "BTC_BNB": {
+      "corr": 0.756,
+      "level": "ALTA",
+      "safe": false
+    },
+    "ETH_LTC": {
+      "corr": 0.74,
+      "level": "ALTA",
+      "safe": false
+    },
+    "ETH_SOL": {
+      "corr": 0.868,
+      "level": "ALTA",
+      "safe": false
+    },
+    "ETH_BNB": {
+      "corr": 0.765,
+      "level": "ALTA",
+      "safe": false
+    },
+    "LTC_SOL": {
+      "corr": 0.766,
+      "level": "ALTA",
+      "safe": false
+    },
+    "LTC_BNB": {
+      "corr": 0.703,
+      "level": "ALTA",
+      "safe": false
+    },
+    "SOL_BNB": {
+      "corr": 0.779,
+      "level": "ALTA",
+      "safe": false
+    }
+  },
+  "best_combinations": [
+    "LTC_BNB",
+    "BTC_LTC",
+    "ETH_LTC"
+  ],
+  "conclusion": "Todos los pares crypto tienen correlacion ALTA (>0.70). La diversificacion real viene de TIMING (TFs distintos) no de precio."
+}

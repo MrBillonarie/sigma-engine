@@ -1,0 +1,46 @@
+{
+  "symbol": "XRP/USDT",
+  "tf": "4h",
+  "strategy": "tma_bands",
+  "params": {
+    "sl_mult": 3.3,
+    "tp_mult": 1.7,
+    "cooldown": 12,
+    "rsi_w_thr": 55,
+    "tma_period": 10,
+    "atr_mult": 2.3
+  },
+  "risk_pct": 4.800000000000001,
+  "metrics_is": {
+    "trades": 52,
+    "wr": 78.8,
+    "cagr": 8.4,
+    "dd": -11.6,
+    "pf": 1.76,
+    "trades_year": 8.1
+  },
+  "metrics_oos": {
+    "trades": 20,
+    "wr": 70.0,
+    "cagr": 1.5,
+    "dd": -2.7,
+    "pf": 1.4,
+    "trades_year": 12.5
+  },
+  "saved_at": "2026-05-08 21:41:02.678779",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 73.8,
+      "median": 42.4,
+      "ic95_lo": -58.9,
+      "ic95_hi": 197.4,
+      "n_trades": 20,
+      "n_sims": 2000,
+      "passed": true
+    },
+    "confidence": "MEDIA",
+    "validated_at": "2026-05-08 23:37:47.286614"
+  },
+  "reeval_date": "2026-05-09 18:20",
+  "reeval_note": "funding+slippage aplicados"
+}

@@ -1,0 +1,63 @@
+{
+  "symbol": "BTC/USDT",
+  "tf": "5m",
+  "strategy": "momentum_short",
+  "params": {
+    "sl_mult": 2.9000000000000004,
+    "tp_mult": 3.9000000000000004,
+    "cooldown": 11,
+    "rsi_w_thr": 60,
+    "vol_mult": 2.3,
+    "rsi_min": 45
+  },
+  "risk_pct": 3.0,
+  "metrics_is": {
+    "trades": 47,
+    "wr": 55.3,
+    "cagr": 1.1,
+    "dd": -21.7,
+    "pf": 1.09,
+    "trades_year": 6.7
+  },
+  "metrics_oos": {
+    "trades": 21,
+    "wr": 66.7,
+    "cagr": 6.6,
+    "dd": -19.9,
+    "pf": 1.37,
+    "trades_year": 12.0
+  },
+  "oos_days": 639,
+  "saved_at": "2026-05-23 12:59:06.693591",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 73.9,
+      "median": 27.5,
+      "ic95_lo": -44.1,
+      "ic95_hi": 123.2,
+      "ic80_lo": -23.6,
+      "ic80_hi": 85.5,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 7,
+      "positive": 4,
+      "pct_positive": 57.1,
+      "avg_cagr": 32.2,
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "passed_steps": 2,
+    "max_steps": 2,
+    "validated_at": "2026-05-23 12:59:11.671407"
+  },
+  "mc": {
+    "mc_cagr_p05": 12.5,
+    "mc_cagr_p50": 68.4,
+    "mc_cagr_p95": 152.0,
+    "mc_dd_p50": -22.4,
+    "mc_dd_p95": -8.7,
+    "mc_confidence": 98.6,
+    "mc_sims": 1000
+  }
+}

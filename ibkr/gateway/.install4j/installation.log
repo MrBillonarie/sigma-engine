@@ -1,0 +1,597 @@
+[INFO] Logger started at 2026-05-21 21:20:48
+[INFO] Executable name: /tmp/ibg_installer.sh
+[INFO] install4j version: 10.0.8 (build 10152)
+[INFO] Properties: 
+-- listing properties --
+java.specification.version=17
+install4j.launcherId=6775
+sun.jnu.encoding=UTF-8
+java.class.path=i4jruntime.jar:launcher0.jar
+java.vm.vendor=Azul Systems, Inc.
+sun.arch.data.model=64
+install4j.exeDir=/tmp/
+java.vendor.url=http://www.azul.com/
+user.timezone=Etc/UTC
+java.vm.specification.version=17
+os.name=Linux
+sun.java.launcher=SUN_STANDARD
+user.country=US
+sun.boot.library.path=/tmp/ibg_installer.sh.1417765.dir/jre...
+sun.java.command=install4j.Installer1256852828 -q -dir...
+jdk.debug=release
+sun.cpu.endian=little
+user.home=/root
+user.language=en
+jdk.http.auth.tunneling.disabledSchemes=
+java.specification.vendor=Oracle Corporation
+java.version.date=2025-10-21
+java.home=/tmp/ibg_installer.sh.1417765.dir/jre
+file.separator=/
+java.vm.compressedOopsMode=32-bit
+line.separator=
+
+java.vm.specification.vendor=Oracle Corporation
+java.specification.name=Java Platform API Specification
+jdk.lang.Process.allowAmbiguousCommands=false
+exe4j.moduleName=/tmp/ibg_installer.sh
+sun.management.compiler=HotSpot 64-Bit Tiered Compilers
+java.runtime.version=17.0.16.0.101+1-LTS
+user.name=root
+path.separator=:
+java.net.useSystemProxies=true
+os.version=6.8.0-107-generic
+java.runtime.name=OpenJDK Runtime Environment
+file.encoding=UTF-8
+java.vm.name=OpenJDK 64-Bit Server VM
+java.vendor.version=Zulu17.61+12-SA
+install4j.jvmDir=/tmp/ibg_installer.sh.1417765.dir/jre
+install4j.cwd=/root
+install4j.appDir=/tmp/
+java.vendor.url.bug=http://www.azul.com/support/
+java.io.tmpdir=/tmp
+java.version=17.0.16.0.101
+user.dir=/tmp/ibg_installer.sh.1417765.dir
+os.arch=amd64
+java.vm.specification.name=Java Virtual Machine Specification
+exe4j.totalDataLength=335617133
+native.encoding=UTF-8
+java.library.path=/tmp/ibg_installer.sh.1417765.dir/use...
+java.vm.info=mixed mode
+java.vendor=Azul Systems, Inc.
+java.vm.version=17.0.16.0.101+1-LTS
+java.specification.maintenance.version=1
+sun.io.unicode.encoding=UnicodeLittle
+java.class.version=61.0
+install4j.swt=false
+[INFO] System language 'en'
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 3121]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_1
+       Property variableName: installerType
+       Property failIfNull: true
+       Property onlyIfUndefined: false
+       Property responseFileVariable: true
+       Property rollbackSupported: false
+       Variable changed: installerType=standalone[class java.lang.String]
+       Execute action successful after 3 ms
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 1892]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_4
+       Property variableName: exeName
+       Property failIfNull: true
+       Property onlyIfUndefined: false
+       Property responseFileVariable: true
+       Property rollbackSupported: false
+       Variable changed: exeName=ibgateway[class java.lang.String]
+       Execute action successful after 0 ms
+[INFO] com.install4j.runtime.beans.screens.StartupScreen [ID 1]: command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.FormScreen [ID 2738]: Show screen
+[INFO] com.install4j.runtime.beans.screens.FormScreen [ID 2738]: command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.InstallationDirectoryScreen [ID 3784]: Show screen
+       checking writable with maximum
+       The installation directory has been set to /opt/sigma/ibkr/gateway.
+       checking writable with maximum
+[INFO] com.install4j.runtime.beans.screens.InstallationDirectoryScreen [ID 3784]: command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.InstallationScreen [ID 8]: Show screen
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 3778]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_6
+       Property variableName: jtsConfigDir
+       Property failIfNull: true
+       Property onlyIfUndefined: false
+       Property responseFileVariable: true
+       Property rollbackSupported: false
+       Variable changed: jtsConfigDir=/root/Jts[class java.lang.String]
+       Execute action successful after 0 ms
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 3779]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_7
+       Property variableName: cmdLineArgs
+       Property failIfNull: true
+       Property onlyIfUndefined: false
+       Property responseFileVariable: true
+       Property rollbackSupported: false
+       Variable changed: cmdLineArgs=[/root/Jts, ndc1.ibllc.com:4000, language=https://download2.interactivebrokers.com/installers/shared/i18n/ib][class [Ljava.lang.String;]
+       Execute action successful after 1 ms
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 3780]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_8
+       Property variableName: iconArgs
+       Property failIfNull: false
+       Property onlyIfUndefined: false
+       Property responseFileVariable: false
+       Property rollbackSupported: false
+       Variable changed: iconArgs=-J-DjtsConfigDir="/root/Jts"[class java.lang.String]
+       Execute action successful after 3 ms
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 3781]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_11
+       Property variableName: vmOptionsPath
+       Property failIfNull: true
+       Property onlyIfUndefined: false
+       Property responseFileVariable: false
+       Property rollbackSupported: false
+       Variable changed: vmOptionsPath=/opt/sigma/ibkr/gateway/ibgateway.vmoptions[class java.lang.String]
+       Execute action successful after 0 ms
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 3782]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_12
+       Property variableName: savedVmOptions
+       Property failIfNull: true
+       Property onlyIfUndefined: false
+       Property responseFileVariable: false
+       Property rollbackSupported: false
+       VM options file not found: /opt/sigma/ibkr/gateway/ibgateway.vmoptions
+       Variable changed: savedVmOptions={content=}[class java.util.HashMap]
+       Execute action successful after 1 ms
+[INFO] com.install4j.runtime.beans.actions.control.SetVariableAction [ID 3783]: Execute action
+       Property script: com.install4j.script.I4jScript_Internal_13
+       Property variableName: mergedVmOptions
+       Property failIfNull: true
+       Property onlyIfUndefined: false
+       Property responseFileVariable: false
+       Property rollbackSupported: false
+       Variable changed: mergedVmOptions=#
+# This file contains VM parameters for IB Gateway 10.45.
+# Each parameter should be defined in a separate line and the
+# last line must be followed by a line feed. No leading or
+# trailing whitespaces are allowed in the same line, where a
+# parameter is defined.
+#
+# Lines starting with a '#' character are treated as comments
+# and ignored. Additionally, if a line contains a
+# '### keep on update' string, all parameters defined below will
+# be preserved on update.
+#
+
+# maximum Java heap size
+-Xmx768m
+
+# GC settings
+-XX:+UseG1GC
+-XX:MaxGCPauseMillis=200
+-XX:ParallelGCThreads=20
+-XX:ConcGCThreads=5
+-XX:InitiatingHeapOccupancyPercent=70
+
+-Dinstaller.uuid=b8f725ed-c212-4e17-a0bc-515a94c8c7bc
+-DvmOptionsPath=/opt/sigma/ibkr/gateway/ibgateway.vmoptions
+-Dsun.awt.nopixfmt=true
+-Dsun.java2d.noddraw=true
+-Dswing.boldMetal=false
+-Dsun.locale.formatasdefault=true
+
+### keep on update
+[class java.lang.String]
+       Execute action successful after 1 ms
+[INFO] com.install4j.runtime.beans.actions.control.RunScriptAction [ID 3419]: Execute action
+       Property rollbackScript: null
+       Property script: com.install4j.script.I4jScript_Internal_15
+       Property rollbackSupported: false
+       Execute action successful after 3 ms
+[INFO] com.install4j.runtime.beans.actions.InstallFilesAction [ID 9]: Execute action
+       Property directoryResolverScript: null
+       Property fileFilterScript: null
+       Property sizeCalculatorScript: null
+       Property acceptAllCertificates: false
+       Property checkFreeSpace: true
+       Property delay: false
+       Property installRuntime: true
+       Property rollbackSupported: true
+       Property saveDownloadedFiles: false
+       Property showFileNames: true
+       Property triggerReboot: true
+       Property validateApplicationId: false
+       checking writable with maximum
+       (+1)
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/bin/java; size: 13152 bytes; exists: false
+       File options set to: [fileTime: Wed Oct 29 15:53:37 UTC 2025, mode: 755, overwriteMode: Always ask except for update, shared: false, uninstallMode: Never, delayIfNecessary: false]
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/bin/jfr; size: 13168 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/bin/jrunscript; size: 13208 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/bin/keytool; size: 13176 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/bin/rmiregistry; size: 13176 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/conf/logging.properties; size: 2732 bytes; exists: false
+       File options set to: [fileTime: Wed Oct 29 15:53:37 UTC 2025, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: Never, delayIfNecessary: false]
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/conf/management/jmxremote.access; size: 3997 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/conf/management/jmxremote.password.template; size: 5690 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/conf/management/management.properties; size: 14410 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/conf/net.properties; size: 7441 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/conf/sdp/sdp.conf.template; size: 1455 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/conf/security/java.policy; size: 2293 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/conf/security/java.security; size: 58219 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/conf/security/policy/README.txt; size: 2390 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/conf/security/policy/limited/default_US_export.policy; size: 146 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/conf/security/policy/limited/default_local.policy; size: 647 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/conf/security/policy/limited/exempt_local.policy; size: 566 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/conf/security/policy/unlimited/default_US_export.policy; size: 146 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/conf/security/policy/unlimited/default_local.policy; size: 193 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/conf/sound.properties; size: 1210 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/include/classfile_constants.h; size: 22155 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/include/jawt.h; size: 12458 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/include/jdwpTransport.h; size: 8151 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/include/jni.h; size: 75678 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/include/jvmti.h; size: 81725 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/include/jvmticmlr.h; size: 4771 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/include/linux/jawt_md.h; size: 1965 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/include/linux/jni_md.h; size: 2208 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.base/ADDITIONAL_LICENSE_INFO; size: 2114 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.base/ASSEMBLY_EXCEPTION; size: 1522 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.base/CLASSPATH_EXCEPTION_NOTE; size: 551 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.base/LICENSE; size: 19274 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.base/aes.md; size: 1444 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.base/asm.md; size: 1584 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.base/c-libutl.md; size: 1556 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.base/cldr.md; size: 9130 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.base/icu.md; size: 11086 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.base/public_suffix.md; size: 17785 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.base/siphash.md; size: 8256 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.base/unicode.md; size: 2384 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.desktop/colorimaging.md; size: 741 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.desktop/freetype.md; size: 30422 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.desktop/giflib.md; size: 1646 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.desktop/harfbuzz.md; size: 3629 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.desktop/jpeg.md; size: 3475 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.desktop/lcms.md; size: 2641 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.desktop/libpng.md; size: 7212 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.desktop/mesa3d.md; size: 5732 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.desktop/pipewire.md; size: 1479 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.desktop/xwd.md; size: 1348 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.smartcardio/pcsclite.md; size: 2155 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.xml.crypto/santuario.md; size: 11499 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.xml/bcel.md; size: 11195 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.xml/dom.md; size: 3761 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.xml/jcup.md; size: 1448 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.xml/xalan.md; size: 13494 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/java.xml/xerces.md; size: 11852 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/javafx.graphics/jpeg_fx.md; size: 1990 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/javafx.media/directshow.md; size: 1165 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/javafx.media/glib.md; size: 33174 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/javafx.media/gstreamer.md; size: 37746 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/javafx.media/libffi.md; size: 2647 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/javafx.web/icu_web.md; size: 22477 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/javafx.web/libxml2.md; size: 3444 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/javafx.web/libxslt.md; size: 6090 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/javafx.web/sqlite.md; size: 3913 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/javafx.web/webkit.md; size: 343892 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/jdk.crypto.cryptoki/pkcs11cryptotoken.md; size: 4095 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/jdk.crypto.cryptoki/pkcs11wrapper.md; size: 2131 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/jdk.dynalink/dynalink.md; size: 1502 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/jdk.internal.le/jline.md; size: 1579 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/legal/jdk.localedata/thaidict.md; size: 1346 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/classlist; size: 71548 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/javafx-swt.jar; size: 36882 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/javafx.properties; size: 93 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/jexec; size: 13232 bytes; exists: false
+       File options set to: [fileTime: Wed Oct 29 15:53:37 UTC 2025, mode: 755, overwriteMode: Always ask except for update, shared: false, uninstallMode: Never, delayIfNecessary: false]
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/jfr/default.jfc; size: 35912 bytes; exists: false
+       File options set to: [fileTime: Wed Oct 29 15:53:37 UTC 2025, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: Never, delayIfNecessary: false]
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/jfr/profile.jfc; size: 35871 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/jrt-fs.jar; size: 110521 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/jspawnhelper; size: 18480 bytes; exists: false
+       File options set to: [fileTime: Wed Oct 29 15:53:37 UTC 2025, mode: 755, overwriteMode: Always ask except for update, shared: false, uninstallMode: Never, delayIfNecessary: false]
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/jvm.cfg; size: 29 bytes; exists: false
+       File options set to: [fileTime: Wed Oct 29 15:53:37 UTC 2025, mode: 644, overwriteMode: Always ask except for update, shared: false, uninstallMode: Never, delayIfNecessary: false]
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libattach.so; size: 13568 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libavplugin-54.so; size: 56928 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libavplugin-56.so; size: 57112 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libavplugin-57.so; size: 57112 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libavplugin-ffmpeg-56.so; size: 57248 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libavplugin-ffmpeg-57.so; size: 57112 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libavplugin-ffmpeg-58.so; size: 57112 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libavplugin-ffmpeg-59.so; size: 56968 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libavplugin-ffmpeg-60.so; size: 56968 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libavplugin-ffmpeg-61.so; size: 56968 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libawt.so; size: 892528 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libawt_headless.so; size: 43384 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libawt_xawt.so; size: 573480 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libdecora_sse.so; size: 78088 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libdt_socket.so; size: 28440 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libextnet.so; size: 13624 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libfontmanager.so; size: 1955448 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libfreetype.so; size: 780000 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libfxplugins.so; size: 56288 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libglass.so; size: 16000 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libglassgtk3.so; size: 341848 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libgstreamer-lite.so; size: 2190440 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libinstrument.so; size: 51152 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libj2gss.so; size: 47824 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libj2pcsc.so; size: 18344 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libj2pkcs11.so; size: 93248 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libjaas.so; size: 8472 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libjava.so; size: 191056 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libjavafx_font.so; size: 20216 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libjavafx_font_freetype.so; size: 30456 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libjavafx_font_pango.so; size: 33040 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libjavafx_iio.so; size: 149128 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libjavajpeg.so; size: 245128 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libjawt.so; size: 8472 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libjdwp.so; size: 299520 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libjfxmedia.so; size: 538280 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libjfxwebkit.so; size: 117711072 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libjimage.so; size: 141784 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libjli.so; size: 78232 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libjsig.so; size: 13640 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libjsound.so; size: 81208 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/liblcms.so; size: 624224 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libmanagement.so; size: 26304 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libmanagement_agent.so; size: 8512 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libmanagement_ext.so; size: 33856 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libmlib_image.so; size: 574936 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libnet.so; size: 105312 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libnio.so; size: 100960 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libprefs.so; size: 12712 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libprism_common.so; size: 15488 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libprism_es2.so; size: 67072 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libprism_sw.so; size: 73568 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/librmi.so; size: 8216 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libsctp.so; size: 28776 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libsplashscreen.so; size: 353224 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libverify.so; size: 64896 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/libzip.so; size: 42112 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/modules; size: 118377019 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/psfont.properties.ja; size: 3793 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/psfontj2d.properties; size: 11390 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/security/blocked.certs; size: 2488 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/security/cacerts; size: 122913 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/security/default.policy; size: 12368 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/security/public_suffix_list.dat; size: 228507 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/server/libjsig.so; size: 13640 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/server/libjvm.so; size: 23097896 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib/tzdb.dat; size: 102492 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/man/man1/java.1; size: 189086 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/man/man1/jfr.1; size: 9032 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/man/man1/jrunscript.1; size: 5281 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/man/man1/keytool.1; size: 111869 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/man/man1/rmiregistry.1; size: 3258 bytes; exists: false
+       Install file: /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/release; size: 854 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/ibgateway.png; size: 2427 bytes; exists: false
+       File options set to: [fileTime: Mon Mar 28 15:46:52 UTC 2022, mode: 644, overwriteMode: Always, shared: false, uninstallMode: Always, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/.install4j/restarter; size: 15237 bytes; exists: false
+       File options set to: [fileTime: Sat May 16 03:14:40 UTC 2026, mode: 755, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/.install4j/s_clyey9.png; size: 209065 bytes; exists: false
+       File options set to: [fileTime: Mon Mar 28 15:46:52 UTC 2022, mode: 644, overwriteMode: Always, shared: false, uninstallMode: Always, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/.install4j/uninstall.png; size: 6648 bytes; exists: false
+       File options set to: [fileTime: Mon May 27 10:19:32 UTC 2024, mode: 644, overwriteMode: Always, shared: false, uninstallMode: Always, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/data/audit.xsl; size: 52128 bytes; exists: false
+       File options set to: [fileTime: Tue Feb 13 22:39:34 UTC 2024, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/data/auditsummary.xsl; size: 47751 bytes; exists: false
+       File options set to: [fileTime: Tue Feb 13 22:38:34 UTC 2024, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/ibgateway; size: 21892 bytes; exists: false
+       File options set to: [fileTime: Sat May 16 03:14:40 UTC 2026, mode: 755, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/Java-WebSocket-1.6.0.jar; size: 140686 bytes; exists: false
+       File options set to: [fileTime: Wed Jul 30 17:09:46 UTC 2025, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/batik-all-1.16.jar; size: 4289313 bytes; exists: false
+       File options set to: [fileTime: Mon May 22 14:00:48 UTC 2023, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/commons-io-2.11.0.jar; size: 327135 bytes; exists: false
+       File options set to: [fileTime: Wed Feb 09 15:10:18 UTC 2022, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/core-3.5.3.jar; size: 607650 bytes; exists: false
+       File options set to: [fileTime: Tue Jul 15 15:54:02 UTC 2025, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/fop-2.8.jar; size: 4453484 bytes; exists: false
+       File options set to: [fileTime: Mon May 22 13:52:34 UTC 2023, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/jackson-annotations-2.12.3.jar; size: 75703 bytes; exists: false
+       File options set to: [fileTime: Thu Nov 16 15:54:56 UTC 2023, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/jackson-core-2.12.3.jar; size: 365220 bytes; exists: false
+       File options set to: [fileTime: Mon Dec 05 23:58:58 UTC 2022, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/jackson-databind-2.12.3.jar; size: 1515756 bytes; exists: false
+       File options set to: [fileTime: Thu Nov 16 15:55:50 UTC 2023, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/jlayer-1.0.3.jar; size: 144448 bytes; exists: false
+       File options set to: [fileTime: Fri Nov 28 15:46:00 UTC 2025, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/jna-5.16.0.jar; size: 2003058 bytes; exists: false
+       File options set to: [fileTime: Tue Mar 04 15:19:14 UTC 2025, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/jna-platform-5.16.0.jar; size: 1375665 bytes; exists: false
+       File options set to: [fileTime: Tue Mar 04 15:19:42 UTC 2025, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/jts4launch-1045.jar; size: 82799037 bytes; exists: false
+       File options set to: [fileTime: Fri May 15 02:29:24 UTC 2026, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/jxbrowser-8.9.4.jar; size: 14164591 bytes; exists: false
+       File options set to: [fileTime: Wed Sep 24 20:21:22 UTC 2025, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/jxbrowser-linux64-8.9.4.jar; size: 116840328 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/jars/jxbrowser-swing-8.9.4.jar; size: 195231 bytes; exists: false
+       File options set to: [fileTime: Wed Sep 24 20:21:24 UTC 2025, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/locales.jar; size: 151902 bytes; exists: false
+       File options set to: [fileTime: Thu Jul 31 20:11:52 UTC 2025, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/log4j-api-2.25.3.jar; size: 350610 bytes; exists: false
+       File options set to: [fileTime: Thu Jan 29 19:09:08 UTC 2026, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/log4j-core-2.25.3.jar; size: 2018402 bytes; exists: false
+       File options set to: [fileTime: Thu Jan 29 19:09:38 UTC 2026, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/log4j-slf4j2-impl-2.25.3.jar; size: 30213 bytes; exists: false
+       File options set to: [fileTime: Thu Jan 29 19:10:44 UTC 2026, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/oshi-core-6.7.0.jar; size: 995488 bytes; exists: false
+       File options set to: [fileTime: Tue Mar 04 15:17:36 UTC 2025, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/protobuf-java-3.25.6.jar; size: 1876053 bytes; exists: false
+       File options set to: [fileTime: Thu Feb 27 19:30:36 UTC 2025, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/slf4j-api-2.0.17.jar; size: 69908 bytes; exists: false
+       File options set to: [fileTime: Mon Apr 28 16:04:32 UTC 2025, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/total-2024.jar; size: 5708986 bytes; exists: false
+       File options set to: [fileTime: Thu Sep 26 14:45:34 UTC 2024, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/twslaunch-1045.jar; size: 4567325 bytes; exists: false
+       File options set to: [fileTime: Fri May 15 02:29:24 UTC 2026, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/twslaunch-install4j-1.12.jar; size: 14786 bytes; exists: false
+       File options set to: [fileTime: Wed Aug 31 19:50:52 UTC 2022, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/jars/xmlgraphics-commons-2.8.jar; size: 676840 bytes; exists: false
+       File options set to: [fileTime: Mon May 22 14:06:46 UTC 2023, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/uninstall; size: 15192 bytes; exists: false
+       File options set to: [fileTime: Sat May 16 03:14:40 UTC 2026, mode: 700, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/.install4j/inst_jre.cfg; size: 38 bytes; exists: false
+       File options set to: [fileTime: Thu May 21 21:21:11 UTC 2026, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/.install4j/pref_jre.cfg; size: 54 bytes; exists: false
+       File options set to: [fileTime: Thu May 21 21:21:11 UTC 2026, mode: 644, overwriteMode: Always, shared: false, uninstallMode: If created, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4jruntime.jar; size: 2085034 bytes; exists: false
+       File options set to: [fileTime: Thu May 21 21:21:11 UTC 2026, mode: 644, overwriteMode: Always, shared: false, uninstallMode: Always, delayIfNecessary: false]
+       Install file: /opt/sigma/ibkr/gateway/.install4j/MessagesDefault; size: 34826 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4jparams.conf; size: 101052 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/stats.properties; size: 477 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4jempty.ttf; size: 1004 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/user.jar; size: 30274 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/launcher2bfa42ba.jar; size: 766 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/launcher3257f6f9.jar; size: 774 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/launcher0.jar; size: 724 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/launcherd958696.jar; size: 952 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/user/flatlaf.jar; size: 758100 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_44_ksapuk_18gg8kx@2x.png; size: 15419 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_42_ksapuk_czgnkz.ico; size: 146982 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_39_ksapuk.properties; size: 930 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_13_ksapuk.properties; size: 872 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_16_ksapuk.properties; size: 987 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_26_ksapuk.utf8; size: 38580 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_34_ksapuk.properties; size: 1075 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_22_ksapuk.utf8; size: 37297 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_44_ksapuk_18gg8kx.png; size: 9202 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_29_ksapuk.utf8; size: 32419 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_14_ksapuk.utf8; size: 32800 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_37_ksapuk.properties; size: 3187 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_21_ksapuk.properties; size: 1462 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_8_ksapuk.properties; size: 1202 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_3_ksapuk.properties; size: 1034 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_31_ksapuk.utf8; size: 37661 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_40_ksapuk.utf8; size: 31918 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_35_ksapuk.utf8; size: 37427 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_41_ksapuk.utf8; size: 37556 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_30_ksapuk.utf8; size: 34760 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_12_ksapuk.utf8; size: 31894 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_9_ksapuk.utf8; size: 32127 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_6_ksapuk.utf8; size: 34273 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_17_ksapuk.utf8; size: 37408 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_23_ksapuk.properties; size: 935 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_24_ksapuk.utf8; size: 44212 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_28_ksapuk.properties; size: 926 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_32_ksapuk.properties; size: 1075 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_20_ksapuk.utf8; size: 36823 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_33_ksapuk.utf8; size: 35446 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_19_ksapuk.utf8; size: 48914 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_44_ksapuk_18gg8kx_dark.png; size: 8891 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_15_ksapuk.utf8; size: 38929 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/libi4jinst2.dylib; size: 67472 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_38_ksapuk.utf8; size: 36311 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_18_ksapuk.properties; size: 1021 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_5_ksapuk.properties; size: 1034 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_4_ksapuk.utf8; size: 27669 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_36_ksapuk.utf8; size: 53111 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_25_ksapuk.properties; size: 2138 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_2_ksapuk.utf8; size: 28359 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_43_ksapuk_d36cl.png; size: 955 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_1_ksapuk.properties; size: 2416 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_10_ksapuk.utf8; size: 33865 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_11_ksapuk.properties; size: 791 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_44_ksapuk_18gg8kx@2x_dark.png; size: 15837 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_27_ksapuk.utf8; size: 34140 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_0_ksapuk.utf8; size: 34826 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/i4j_extf_7_ksapuk.utf8; size: 33738 bytes; exists: false
+       Install file: /opt/sigma/ibkr/gateway/.install4j/libi4jinst.dylib; size: 184384 bytes; exists: false
+       Execute action successful after 22883 ms
+[INFO] com.install4j.runtime.beans.actions.control.RunScriptAction [ID 2076]: Execute action
+       Property rollbackScript: null
+       Property script: com.install4j.script.I4jScript_Internal_18
+       Property rollbackSupported: false
+       Creating '/root/Jts' directory...
+       Execute action successful after 3 ms
+[INFO] com.install4j.runtime.beans.actions.text.WriteTextFileAction [ID 2307]: Execute action
+       Property encoding: 
+       Property file: /opt/sigma/ibkr/gateway/ibgateway.vmoptions
+       Property text: #
+# This file contains VM parameters for IB Gateway 10.45.
+# Each parameter should be defined in a separate line and the
+# last line must be followed by a line feed. No leading or
+# trailing whitespaces are allowed in the same line, where a
+# parameter is defined.
+#
+# Lines starting with a '#' character are treated as comments
+# and ignored. Additionally, if a line contains a
+# '### keep on update' string, all parameters defined below will
+# be preserved on update.
+#
+
+# maximum Java heap size
+-Xmx768m
+
+# GC settings
+-XX:+UseG1GC
+-XX:MaxGCPauseMillis=200
+-XX:ParallelGCThreads=20
+-XX:ConcGCThreads=5
+-XX:InitiatingHeapOccupancyPercent=70
+
+-Dinstaller.uuid=b8f725ed-c212-4e17-a0bc-515a94c8c7bc
+-DvmOptionsPath=/opt/sigma/ibkr/gateway/ibgateway.vmoptions
+-Dsun.awt.nopixfmt=true
+-Dsun.java2d.noddraw=true
+-Dswing.boldMetal=false
+-Dsun.locale.formatasdefault=true
+
+### keep on update
+
+       Property append: false
+       Property escaped: false
+       Property logText: true
+       Property rollbackSupported: true
+       Execute action successful after 0 ms
+[INFO] com.install4j.runtime.beans.actions.desktop.CreateProgramGroupAction [ID 10]: Execute action
+       Property categories: Application
+       Property linkDirectory: /usr/local/bin
+       Property programGroupEntryConfigs: []
+       Property programGroupName: IB Gateway 10.45
+       Property uninstallerMenuName: IB Gateway 10.45 Uninstaller
+       Property addDefaultLauncherLinks: true
+       Property addUninstaller: true
+       Property allUsers: true
+       Property failForSymlinksNotCreated: false
+       Property rollbackSupported: true
+       Property unixMenuEntries: true
+       Property unixSymlinks: true
+       Variable changed: sys.programGroupName=IB Gateway 10.45[class java.lang.String]
+       Variable changed: sys.symlinkDir=/usr/local/bin[class java.lang.String]
+       Install file: /opt/sigma/ibkr/gateway/.install4j/install4j_xskeoq-ibgateway.desktop; size: 245 bytes; exists: false
+       File options set to: [fileTime: Thu May 21 21:21:11 UTC 2026, mode: 755, overwriteMode: Always, shared: false, uninstallMode: Always, delayIfNecessary: false]
+[ERROR] com.install4j.runtime.installer.helper.launching.LaunchHelper: Cannot run program "xdg-desktop-menu" (in directory "/opt/sigma/ibkr/gateway/.install4j"): error=2, No such file or directory
+[ERROR] com.install4j.runtime.beans.actions.desktop.CreateProgramGroupAction [ID 10]: xdg-desktop-menu returned null
+[INFO] com.install4j.runtime.beans.actions.desktop.CreateProgramGroupAction [ID 10]: Execute action successful after 12 ms
+[INFO] com.install4j.runtime.beans.actions.desktop.RegisterAddRemoveAction [ID 11]: Execute action
+       Property icon: i4j_extf_42_ksapuk_czgnkz.ico
+       Property iconSource: Custom icon
+       Property itemName: IB Gateway 10.45
+       Property persistentProperties: {}
+       Property rollbackSupported: true
+       Execute action successful after 1 ms
+[INFO] com.install4j.runtime.beans.actions.desktop.CreateDesktopLinkAction [ID 54]: Execute action
+       Property additionalDesktopFileEntries: 
+       Property arguments: -J-DjtsConfigDir="/root/Jts"
+       Property description: IB Gateway 10.45
+       Property file: ibgateway
+       Property name: IB Gateway 10.45
+       Property startIn: null
+       Property unixIconFile: null
+       Property winIconFile: null
+       Property allUsers: true
+       Property macSingleBundleTarget: false
+       Property rollbackSupported: true
+       Property runAsAdministrator: false
+[ERROR] com.install4j.runtime.beans.actions.desktop.CreateDesktopLinkAction [ID 54]: Desktop directory /root/Desktop does not exist
+        Execute action not successful after 0 ms
+[INFO] com.install4j.runtime.beans.actions.text.WriteTextFileAction [ID 2244]: Execute action
+       Property encoding: 
+       Property file: /opt/sigma/ibkr/gateway/.install4j/.installSuccess
+       Property text: .
+       Property append: false
+       Property escaped: true
+       Property logText: true
+       Property rollbackSupported: true
+       Execute action successful after 1 ms
+[INFO] com.install4j.runtime.beans.screens.InstallationScreen [ID 8]: Rollback barrier reached
+       command: move 1 screens, executing actions, checking condition
+[INFO] com.install4j.runtime.beans.screens.FormScreen [ID 2790]: Show screen
+       Variable changed: executeLauncherAction=false[class java.lang.Boolean]
+[INFO] com.install4j.runtime.beans.screens.FormScreen [ID 2790]: command: finish
+       cleaning up
+       Finished at 2026-05-21 21:21:12

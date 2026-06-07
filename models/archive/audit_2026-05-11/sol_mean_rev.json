@@ -1,0 +1,63 @@
+{
+  "symbol": "SOL/USDT",
+  "tf": "5m",
+  "strategy": "mean_rev",
+  "params": {
+    "sl_mult": 3.5,
+    "tp_mult": 3.1,
+    "cooldown": 8,
+    "rsi_w_thr": 44,
+    "rsi_os": 27
+  },
+  "risk_pct": 4.0,
+  "metrics_is": {
+    "trades": 58,
+    "wr": 62.1,
+    "cagr": 5.8,
+    "dd": -13.9,
+    "pf": 1.21,
+    "trades_year": 12.6
+  },
+  "metrics_oos": {
+    "trades": 17,
+    "wr": 82.4,
+    "cagr": 4.8,
+    "dd": -1.5,
+    "pf": 2.48,
+    "trades_year": 14.8
+  },
+  "saved_at": "2026-05-09 02:41:02.747678",
+  "reeval_date": "2026-05-09 18:33",
+  "reeval_note": "funding+slippage aplicados",
+  "mc": {
+    "mc_cagr_p05": 63.3,
+    "mc_cagr_p50": 178.9,
+    "mc_cagr_p95": 316.7,
+    "mc_dd_p50": -26.0,
+    "mc_dd_p95": -14.0,
+    "mc_confidence": 100.0,
+    "mc_sims": 1000
+  },
+  "wft": {
+    "oos_win_rate": 66.7,
+    "n_windows": 6,
+    "positive_windows": 4,
+    "avg_cagr_oos": 13.25,
+    "avg_cagr_pos": 40.52,
+    "verdict": "PASS",
+    "date": "2026-05-10 02:14"
+  },
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 88.8,
+      "median": 96.9,
+      "ic95_lo": -42.1,
+      "ic95_hi": 320.2,
+      "n_trades": 17,
+      "n_sims": 2000,
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "validated_at": "2026-06-01 02:12:25.595067"
+  }
+}

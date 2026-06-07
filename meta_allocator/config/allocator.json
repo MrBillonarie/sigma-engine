@@ -1,0 +1,21 @@
+{
+  "method": "equal_weight_fallback",
+  "candidate_methods": ["equal_weight", "sharpe_weighted", "inverse_vol", "tactical_momentum"],
+  "rebalance_frequency": "daily",
+  "min_motor_alloc_pct": 5,
+  "max_motor_alloc_pct": 40,
+  "cash_reserve_pct": 10,
+  "lookback_days_perf": 30,
+  "lookback_days_vol": 60,
+  "exclude_if": {
+    "max_dd_below": -20,
+    "sharpe_below": -1.5,
+    "n_trades_below": 5
+  },
+  "notes": [
+    "El motor crypto sigue como ACTIVE (unico operando)",
+    "Otros motores arrancan en SKELETON, no entran en allocation",
+    "Cuando un motor se valide, su motor.json pasa de SKELETON -> PAPER -> ACTIVE",
+    "Solo ACTIVE entran en la rotacion de capital"
+  ]
+}

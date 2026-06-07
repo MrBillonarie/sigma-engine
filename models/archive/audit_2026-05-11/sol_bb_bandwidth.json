@@ -1,0 +1,62 @@
+{
+  "symbol": "SOL/USDT",
+  "tf": "2h",
+  "strategy": "bb_bandwidth",
+  "params": {
+    "sl_mult": 3.4000000000000004,
+    "tp_mult": 3.6,
+    "cooldown": 10,
+    "rsi_w_thr": 57,
+    "bb_period": 30,
+    "bb_std": 2.0,
+    "trail_factor": 0.8,
+    "tp1_pct": 0.0,
+    "tp1_close": 0.3
+  },
+  "risk_pct": 5.0,
+  "metrics_is": {
+    "trades": 134,
+    "wr": 61.2,
+    "cagr": 11.0,
+    "dd": -18.6,
+    "pf": 1.37,
+    "trades_year": 29.2
+  },
+  "metrics_oos": {
+    "trades": 25,
+    "wr": 72.0,
+    "cagr": 12.4,
+    "dd": -5.8,
+    "pf": 2.33,
+    "trades_year": 21.8
+  },
+  "oos_days": 419,
+  "saved_at": "2026-05-11 06:53:58.933564",
+  "wft": {
+    "quick_pass_rate": 0.75,
+    "quick_cov": 0.797,
+    "consistency": 0.601
+  },
+  "mc": {
+    "mc_cagr_p05": 110.4,
+    "mc_cagr_p50": 325.2,
+    "mc_cagr_p95": 924.8,
+    "mc_dd_p50": -42.8,
+    "mc_dd_p95": -20.4,
+    "mc_confidence": 99.9,
+    "mc_sims": 1000
+  },
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 37.1,
+      "median": -16.5,
+      "ic95_lo": -76.8,
+      "ic95_hi": 118.0,
+      "n_trades": 10,
+      "n_sims": 2000,
+      "passed": false
+    },
+    "confidence": "BAJA",
+    "validated_at": "2026-06-01 02:05:54.937284"
+  }
+}

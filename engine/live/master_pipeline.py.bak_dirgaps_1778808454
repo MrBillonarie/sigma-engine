@@ -1,0 +1,252 @@
+"""
+SIGMA MASTER PIPELINE
+Orquestador autonomo: rota los 5 pares x 4 TFs, prueba 5 estrategias
+en cada slot, guarda si mejora el OOS actual. Nunca se detiene.
+
+Logica de prioridad:
+  1. Slots sin ningun modelo OOS → maxima prioridad
+  2. Slots con modelo >7 dias de antigüedad → re-testear
+  3. Slots con CAGR OOS < 10% → intentar mejorar
+  4. El resto → ciclo normal
+
+Sistema completo: 5 activos x 4 TFs = 20 slots
+  Cada slot prueba: breakout, pullback, tma_bands, momentum, mean_rev
+  Si mejora → sobreescribe el modelo guardado
+  Si no mejora → sigue al siguiente slot
+
+Se registra como servicio systemd: sigma-pipeline
+"""
+import sys, os, time, json, subprocess, signal
+import psutil
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from pathlib import Path
+from datetime import datetime, timedelta
+
+OUTPUT_DIR = Path(__file__).parent.parent.parent
+
+ASSETS = ['BTC', 'ETH', 'LTC', 'SOL', 'BNB']
+SYMBOLS = {
+    'BTC': 'BTC/USDT',
+    'ETH': 'ETH/USDT',
+    'LTC': 'LTC/USDT',   # reemplaza XRP — patrones mas limpios, halving propio
+    'SOL': 'SOL/USDT',
+    'BNB': 'BNB/USDT',
+}
+# Prioridad de TF: 1H y 4H primero (probados y valiosos), luego 15m, 5m y 1m al final
+TIMEFRAMES = ['1h', '4h', '15m']  # 5m/1m deshabilitados 2026-05-11: sin edge consistente
+
+# Trials reducidos — Optuna TPE encuentra soluciones buenas antes de trial 120
+TRIALS_BY_TF = {'4h': 120, '1h': 130, '15m': 150, '5m': 55, '1m': 35}  # reducidos para prevenir OOM
+# 5m y 1m tienen 600K+ candles — cada trial es 10x mas lento que 1H
+# Con 60 trials Optuna TPE igual encuentra buenas soluciones
+
+# 4 slots paralelos — sigma-trainer pausado, tenemos 3.5+ cores libres
+MAX_PARALLEL = 2  # 2026-05-14: RSS real medido 1.68GB max, 4.4GB era estimación conservadora
+MIN_RAM_GB  = 2.5   # No lanzar si RAM libre < 2.5GB
+
+running_procs = {}
+log_path = OUTPUT_DIR / 'results' / 'reports' / 'master_pipeline.log'
+
+
+def log(msg, level='INFO'):
+    ts   = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    line = f'[{ts}][{level}] {msg}'
+    print(line, flush=True)
+    with open(log_path, 'a', encoding='utf-8') as f:
+        f.write(line + '\n')
+
+
+def get_model_info(asset, tf):
+    """Devuelve (cagr_oos, age_days) del mejor modelo guardado para asset+tf."""
+    sym = asset.lower()
+    d   = OUTPUT_DIR / 'models' / tf
+    if not d.exists():
+        return None, 9999
+
+    best_cagr = None
+    best_age  = 9999
+
+    # Buscar todos los JSON del asset en este TF (cualquier estrategia)
+    for p in d.glob(sym + '_*.json'):
+        try:
+            data = json.loads(p.read_text())
+            oos  = data.get('metrics_oos') or {}
+            cagr = oos.get('cagr')
+            if cagr and cagr > 0:
+                age = (datetime.now() - datetime.fromtimestamp(p.stat().st_mtime)).days
+                if best_cagr is None or cagr > best_cagr:
+                    best_cagr = cagr
+                    best_age  = age
+        except:
+            continue
+
+    return best_cagr, best_age
+
+TF_PRIORITY = {'1h': 60, '4h': 55, '2h': 52, '15m': 25, '5m': 10, '1m': 5}
+# 1H y 4H tienen la mayor prioridad — estadisticamente mas confiables
+# 5m y 1m son exploratorios, van al final de cada ciclo
+
+def priority_score(asset, tf):
+    """Cuanto mas alto, mayor prioridad. 1H y 4H primero, luego TFs menores."""
+    cagr, age = get_model_info(asset, tf)
+    tf_bonus = TF_PRIORITY.get(tf, 0)
+
+    if cagr is None:
+        return 100 + tf_bonus   # Sin modelo: maxima prioridad, 1H>4H>15m>5m>1m
+
+    score = tf_bonus // 3       # Modelos existentes tienen menos prioridad
+    if age > 7:   score += 40
+    if age > 3:   score += 20
+    if cagr < 5:  score += 30
+    if cagr < 10: score += 15
+    return score
+
+
+def build_queue():
+    """Construye la cola de (asset, tf) ordenada por prioridad."""
+    slots = []
+    for asset in ASSETS:
+        for tf in TIMEFRAMES:
+            p = priority_score(asset, tf)
+            slots.append((p, asset, tf))
+    slots.sort(reverse=True)
+    return [(a, tf) for _, a, tf in slots]
+
+
+def is_running(asset, tf):
+    key = f'{asset}_{tf}'
+    if key not in running_procs:
+        return False
+    proc = running_procs[key]
+    if proc.poll() is None:
+        return True
+    del running_procs[key]
+    return False
+
+
+def launch_slot(asset, tf):
+    key    = f'{asset}_{tf}'
+    symbol = SYMBOLS[asset]
+    trials = TRIALS_BY_TF.get(tf, 300)
+    log_f  = OUTPUT_DIR / 'results' / 'reports' / f'{asset.lower()}_{tf}_pipeline.log'
+    python = '/opt/sigma_env/bin/python'
+    script = str(OUTPUT_DIR / 'engine' / 'optimization' / 'asset_pipeline.py')
+
+    cmd = [
+        python, '-u', script,
+        '--symbol', symbol,
+        '--tf', tf,
+        '--trials', str(trials),
+        # No --loop: el master controla los ciclos
+    ]
+
+    cagr, age = get_model_info(asset, tf)
+    status = f'sin modelo' if cagr is None else f'actual OOS {cagr:+.1f}% ({age}d)'
+    log(f'Lanzando {asset} {tf.upper()} — {status}')
+
+    # Limitar RAM del subprocess a 2.5GB para evitar OOM kills del sistema
+    cmd = ['prlimit', '--as=2684354560', '--'] + cmd  # 2.5GB virtual mem cap
+    with open(log_f, 'a') as lf:
+        proc = subprocess.Popen(
+            cmd,
+            stdout=lf, stderr=lf,
+            cwd=str(OUTPUT_DIR),
+        )
+    running_procs[key] = proc
+    return proc
+
+
+def run():
+    log('=' * 60)
+    log('SIGMA MASTER PIPELINE — Iniciando')
+    log(f'  5 activos x 4 TFs = 20 slots | {MAX_PARALLEL} paralelos max')
+    log('=' * 60)
+
+    cycle = 0
+
+    while True:
+        cycle += 1
+        queue = build_queue()
+        log(f'--- Ciclo {cycle} | Queue: {len(queue)} slots ---')
+
+        # Show current state
+        for asset, tf in queue[:6]:
+            cagr, age = get_model_info(asset, tf)
+            p = priority_score(asset, tf)
+            status = f'sin modelo' if cagr is None else f'OOS {cagr:+.1f}% ({age}d)'
+            log(f'  [{p:3d}] {asset} {tf.upper():4s} — {status}')
+        if len(queue) > 6:
+            log(f'  ... y {len(queue)-6} slots mas')
+
+        # Process queue
+        idx = 0
+        while idx < len(queue):
+            # Fill up to MAX_PARALLEL slots
+            launched_this_round = []
+            while len([k for k,p in running_procs.items() if p.poll() is None]) < MAX_PARALLEL and idx < len(queue):
+                ram_avail = psutil.virtual_memory().available / 1073741824
+                if ram_avail < MIN_RAM_GB:
+                    log('  RAM baja (' + str(round(ram_avail, 1)) + 'GB libre) - pausa 60s')
+                    time.sleep(60)
+                    break
+                asset, tf = queue[idx]
+                idx += 1
+                if not is_running(asset, tf):
+                    launch_slot(asset, tf)
+                    launched_this_round.append(f'{asset} {tf}')
+
+            if launched_this_round:
+                log(f'  Activos: {", ".join(launched_this_round)}')
+
+            # Wait for at least one to finish
+            while True:
+                active = {k: p for k, p in running_procs.items() if p.poll() is None}
+                if len(active) < MAX_PARALLEL:
+                    break
+                time.sleep(30)
+
+        # Wait for all running to finish before next cycle
+        log('Esperando que terminen los slots activos...')
+        while any(p.poll() is None for p in running_procs.values()):
+            time.sleep(30)
+        running_procs.clear()
+
+        # Summary after full cycle
+        log(f'Ciclo {cycle} completado. Estado actual:')
+        found = 0
+        for asset in ASSETS:
+            parts = []
+            for tf in TIMEFRAMES:
+                cagr, _ = get_model_info(asset, tf)
+                if cagr:
+                    parts.append(f'{tf}:{cagr:+.1f}%')
+                    found += 1
+                else:
+                    parts.append(f'{tf}:---')
+            log(f'  {asset}: {" | ".join(parts)}')
+
+        log(f'Total modelos OOS positivos: {found}/20')
+
+        # Pause between cycles
+        wait = 300 if found < 10 else 600  # 5min si pocos modelos, 10min si muchos
+        log(f'Pausa {wait//60}min antes del siguiente ciclo...')
+        time.sleep(wait)
+
+
+def handle_signal(sig, frame):
+    log('Signal recibido, cerrando procesos hijos...')
+    for proc in running_procs.values():
+        try: proc.terminate()
+        except: pass
+    sys.exit(0)
+
+
+if __name__ == '__main__':
+    signal.signal(signal.SIGTERM, handle_signal)
+    signal.signal(signal.SIGINT,  handle_signal)
+
+    # Crear directorio de logs si no existe
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+
+    run()

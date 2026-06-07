@@ -1,0 +1,124 @@
+"""Bayesian Edge Tracker - corre cada N min via cron.
+Para cada strategy con >=3 trades cerrados, calcula edge confidence.
+Output: /opt/sigma/results/reports/bayesian_edges.json
+"""
+import sys, json, os
+from collections import defaultdict
+from datetime import datetime
+sys.path.insert(0, "/opt/sigma")
+from utils.quant import bayesian_edge, sharpe_from_trades
+
+OUT = "/opt/sigma/results/reports/bayesian_edges.json"
+
+def main():
+    try:
+        ts = json.load(open("/opt/sigma/results/trade_state.json"))
+    except Exception as e:
+        print("ERR load trade_state: " + str(e))
+        return
+
+    hist = ts.get("history", [])
+    closed = [t for t in hist if t.get("status") in ("SL_HIT", "TP_HIT", "CLOSED", "MANUAL_CLOSE")
+              or (t.get("closed_at") and t.get("pnl_pct") is not None)]
+
+    by_strat = defaultdict(list)
+    for t in closed:
+        strat = t.get("strategy", "?")
+        by_strat[strat].append(t)
+
+    results = {}
+    for strat, trades in by_strat.items():
+        if len(trades) < 3:
+            continue
+        wins = sum(1 for t in trades if (t.get("pnl_pct", 0) or 0) > 0)
+        losses = len(trades) - wins
+
+        bayes = bayesian_edge(wins, losses, target_wr=0.55)
+        sharpe = sharpe_from_trades(trades)
+
+        results[strat] = {
+            "n_trades": len(trades),
+            "wins": wins,
+            "losses": losses,
+            "posterior_mean_wr": bayes["posterior_mean"],
+            "credible_lower_95": bayes["credible_lower_95"],
+            "credible_upper_95": bayes["credible_upper_95"],
+            "prob_above_55": bayes["prob_above_target"],
+            "edge_confirmed": bayes["edge_confirmed"],
+            "live_sharpe": sharpe.get("sharpe"),
+            "sharpe_lower_ci": sharpe.get("lower_ci"),
+            "last_trade": (trades[-1].get("closed_at") or trades[-1].get("opened_at", ""))[:16],
+        }
+
+    output = {
+        "computed_at": datetime.now().isoformat(),
+        "strategies": results,
+        "total_strategies_tracked": len(results),
+        "edge_confirmed_count": sum(1 for r in results.values() if r["edge_confirmed"]),
+    }
+
+    os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    with open(OUT, "w") as f:
+        json.dump(output, f, indent=2)
+
+    print("Bayesian tracker - " + str(len(results)) + " strategies con N>=3 trades")
+    print("-" * 90)
+    head = "Strategy".ljust(32) + " N    W    L  posterior  P(WR>55)  edge?"
+    print(head)
+    print("-" * 90)
+    for strat, r in sorted(results.items(), key=lambda x: -x[1]["n_trades"]):
+        edge_mark = "YES" if r["edge_confirmed"] else "no"
+        line = strat[:30].ljust(32)
+        line += "{:>4d} {:>4d} {:>4d}  {:>9.4f}  {:>8.3f}  {:>5s}".format(
+            r["n_trades"], r["wins"], r["losses"],
+            r["posterior_mean_wr"], r["prob_above_55"], edge_mark
+        )
+        print(line)
+
+    print("")
+    print("Output: " + OUT)
+    print("Edge confirmed: " + str(output["edge_confirmed_count"]) + "/" + str(len(results)))
+
+
+
+
+# --- SIGMA VITRINA bayesian hook ---
+def _vitrina_emit_bayesian_transitions(new_strategies):
+    """Diffea bayesian_edges.json viejo vs nuevo y emite log_decision."""
+    try:
+        import json as _vj
+        from pathlib import Path as _VP
+        edges_path = _VP('/opt/sigma/results/reports/bayesian_edges.json')
+        if not edges_path.exists():
+            return
+        try:
+            old = _vj.loads(edges_path.read_text(encoding='utf-8')).get('strategies', {})
+        except Exception:
+            old = {}
+        try:
+            from utils.decisions import log_decision as _vld
+        except Exception:
+            return
+        for strat_name, new_data in (new_strategies or {}).items():
+            old_data = old.get(strat_name, {})
+            old_conf = bool(old_data.get('edge_confirmed'))
+            new_conf = bool(new_data.get('edge_confirmed'))
+            if old_conf != new_conf:
+                _vld(
+                    kind='bayesian_transition',
+                    payload={
+                        'strategy': strat_name,
+                        'from_state': 'confirmed' if old_conf else 'watching',
+                        'to_state': 'confirmed' if new_conf else 'watching',
+                        'n_trades': new_data.get('n_trades'),
+                        'prob_above_55': new_data.get('prob_above_55'),
+                        'posterior_mean_wr': new_data.get('posterior_mean_wr'),
+                    },
+                    meta={'source': 'bayesian_tracker'},
+                )
+    except Exception as _e:
+        print(f'[vitrina bay hook] {type(_e).__name__}: {_e}', flush=True)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,9 @@
+# install4j response file for IB Gateway 10.45 (.1f) 20260514 22:18:02
+cmdLineArgs$StringArray="/root/Jts","ndc1.ibllc.com\:4000","language\=https\://download2.interactivebrokers.com/installers/shared/i18n/ib"
+exeName=ibgateway
+executeLauncherAction$Boolean=false
+installerType=standalone
+jtsConfigDir=/root/Jts
+sys.adminRights$Boolean=true
+sys.installationDir=/opt/sigma/ibkr/gateway
+sys.languageId=en

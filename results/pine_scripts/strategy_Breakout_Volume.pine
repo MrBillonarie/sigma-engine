@@ -1,0 +1,42 @@
+//@version=5
+strategy("Breakout Volume — BTC/USDT 15m", overlay=true,
+         default_qty_type=strategy.percent_of_equity, default_qty_value=100,
+         commission_type=strategy.commission.percent, commission_value=0.04,
+         initial_capital=10000)
+
+// ── Inputs ──────────────────────────────────────────────────────────────────
+lookback   = input.int(20,   "Lookback Velas")
+volMult    = input.float(1.5,"Volumen Multiplicador")
+slMult     = input.float(2.0,"SL ATR Mult")
+tpMult     = input.float(3.0,"TP ATR Mult")
+atrLen     = input.int(14,   "ATR Periodo")
+
+// ── Indicadores ─────────────────────────────────────────────────────────────
+hh     = ta.highest(high[1], lookback)
+ll     = ta.lowest(low[1],   lookback)
+volSma = ta.sma(volume, lookback)
+atr    = ta.atr(atrLen)
+highVol = volume > volSma * volMult
+
+// ── Señales ─────────────────────────────────────────────────────────────────
+longCond  = close > hh and highVol
+shortCond = close < ll and highVol
+
+// ── Entradas y salidas ──────────────────────────────────────────────────────
+if longCond
+    sl = close - atr * slMult
+    tp = close + atr * tpMult
+    strategy.entry("Long",  strategy.long)
+    strategy.exit("Long TP/SL", "Long",  stop=sl, limit=tp)
+
+if shortCond
+    sl = close + atr * slMult
+    tp = close - atr * tpMult
+    strategy.entry("Short", strategy.short)
+    strategy.exit("Short TP/SL", "Short", stop=sl, limit=tp)
+
+// ── Plots ────────────────────────────────────────────────────────────────────
+plot(hh, "Maximo 20", color=color.red,   style=plot.style_stepline)
+plot(ll, "Minimo 20", color=color.green, style=plot.style_stepline)
+bgcolor(longCond  ? color.new(color.green, 90) : na)
+bgcolor(shortCond ? color.new(color.red,   90) : na)

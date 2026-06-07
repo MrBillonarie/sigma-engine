@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-05-08 19:11:05.029774",
+  "params_from": "models/1h/best_bull_breakout.json",
+  "results": {
+    "BTC": {
+      "cagr": 16.2,
+      "note": "params optimizados aqui"
+    },
+    "ETH/USDT": {
+      "trades": 26,
+      "wr": 76.9,
+      "cagr": 34.9,
+      "dd": -11.3,
+      "pf": 2.55,
+      "days": 359,
+      "asset": "ETH/USDT"
+    },
+    "BNB/USDT": {
+      "trades": 30,
+      "wr": 53.3,
+      "cagr": -9.2,
+      "dd": -18.4,
+      "pf": 0.79,
+      "days": 359,
+      "asset": "BNB/USDT"
+    },
+    "SOL/USDT": {
+      "trades": 8,
+      "wr": 75.0,
+      "cagr": 6.6,
+      "dd": -3.5,
+      "pf": 1.92,
+      "days": 359,
+      "asset": "SOL/USDT"
+    }
+  },
+  "positive_assets": [
+    "BTC",
+    "ETH/USDT",
+    "SOL/USDT"
+  ],
+  "confidence": "ALTA \u2014 edge real, no especifico de BTC",
+  "prob_luck_pct": 31.2
+}

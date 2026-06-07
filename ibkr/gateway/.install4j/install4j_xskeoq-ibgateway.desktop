@@ -1,0 +1,8 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Name=IB Gateway 10.45
+Exec="/opt/sigma/ibkr/gateway/ibgateway" %U
+Icon=/opt/sigma/ibkr/gateway/.install4j/ibgateway.png
+Categories=Application;
+StartupWMClass=install4j-ibgateway-GWClient

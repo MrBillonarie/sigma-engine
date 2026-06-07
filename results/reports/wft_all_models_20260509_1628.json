@@ -1,0 +1,44 @@
+{
+  "date": "2026-05-09 16:28",
+  "tf_filter": "4h",
+  "sym_filter": "SOL",
+  "pass_thr": 60.0,
+  "results": [
+    {
+      "file": "sol_breakout.json",
+      "tf": "4h",
+      "symbol": "SOL/USDT",
+      "strategy": "breakout",
+      "verdict": "PASS",
+      "oos_win_rate": 60.0,
+      "n_windows": 5,
+      "positive_windows": 3,
+      "avg_cagr_oos": 53.26,
+      "avg_cagr_pos": 108.83
+    },
+    {
+      "file": "sol_pullback.json",
+      "tf": "4h",
+      "symbol": "SOL/USDT",
+      "strategy": "pullback",
+      "verdict": "PASS",
+      "oos_win_rate": 80.0,
+      "n_windows": 5,
+      "positive_windows": 4,
+      "avg_cagr_oos": 74.1,
+      "avg_cagr_pos": 94.6
+    },
+    {
+      "file": "sol_tma_bands.json",
+      "tf": "4h",
+      "symbol": "SOL/USDT",
+      "strategy": "tma_bands",
+      "verdict": "PASS",
+      "oos_win_rate": 70.0,
+      "n_windows": 10,
+      "positive_windows": 7,
+      "avg_cagr_oos": 34.96,
+      "avg_cagr_pos": 68.54
+    }
+  ]
+}

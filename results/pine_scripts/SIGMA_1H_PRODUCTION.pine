@@ -1,0 +1,316 @@
+//@version=6
+// ╔══════════════════════════════════════════════════════════════════════════════╗
+// ║  SIGMA K1 1H — ELITE+EXEC+TREND  [PRODUCCION]
+// ║  Backtest: 33T | WR 54.5% | CAGR +40.6%/año | PF 1.80 | DD -13.4%
+// ║  Generado: 2026-05-09 23:10
+// ║  Conectar: TradingView → Alert → Make.com → Excel SIGMA K1
+// ╚══════════════════════════════════════════════════════════════════════════════╝
+strategy("SIGMA K1 1H — ELITE+EXEC+TREND", overlay=true,
+         default_qty_type=strategy.percent_of_equity, default_qty_value=100,
+         commission_type=strategy.commission.percent, commission_value=0.04,
+         slippage=2, initial_capital=1000, pyramiding=0,
+         process_orders_on_close=false, calc_on_every_tick=false)
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INPUTS
+// ═══════════════════════════════════════════════════════════════════════════════
+// SL/TP
+elite_sl   = input.float(2.4,  "ELITE SL x ATR",  group="SL/TP")
+elite_tp   = input.float(2.0,  "ELITE TP x ATR",  group="SL/TP")
+exec_sl    = input.float(1.9,   "EXEC SL x ATR",   group="SL/TP")
+exec_tp    = input.float(3.5,   "EXEC TP x ATR",   group="SL/TP")
+qty_tp1    = input.float(0.65,   "% cerrar en TP1", group="SL/TP", minval=0.1, maxval=0.9)
+use_be     = input.bool(false,  "BE tras TP1",     group="SL/TP")
+
+// Risk
+risk_pct   = input.float(1.5,  "Riesgo % / trade", group="Risk", minval=0.1, maxval=5.0)
+capital    = input.float(1000, "Capital ($)", group="Risk")
+
+// Filtros
+adx_min    = input.int(20,    "ADX minimo",       group="Filtros")
+ofi_thr    = input.float(0.75,  "OFI umbral",       group="Filtros")
+temp_min   = input.int(11,   "Temp minima",      group="Filtros")
+temp_max   = input.int(75,   "Temp maxima",      group="Filtros")
+use_rsiw   = input.bool(true, "Filtro RSI-W activo",          group="Filtros")
+rsiw_max   = input.int(65,   "RSI-W bloquea LONG si >=",      group="Filtros", minval=50, maxval=80)
+
+// Make.com webhook
+webhook_url = input.string("", "Make.com Webhook URL", group="Conexion")
+send_alerts = input.bool(true, "Enviar alertas CSV", group="Conexion")
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INDICADORES BASE
+// ═══════════════════════════════════════════════════════════════════════════════
+atr     = ta.atr(14)
+ema20   = ta.ema(close, 20)
+ema50   = ta.ema(close, 50)
+ema200  = ta.ema(close, 200)
+[ml, sl2, hist] = ta.macd(close, 12, 26, 9)
+rsi     = ta.rsi(close, 14)
+[dp, dm, adxV] = ta.dmi(14, 14)
+bull    = ema50 > ema200
+bear    = ema50 < ema200
+
+// HTF
+ema50_h1  = request.security(syminfo.tickerid, "240", ta.ema(close, 50),  lookahead=barmerge.lookahead_off)
+ema200_h1 = request.security(syminfo.tickerid, "240", ta.ema(close, 200), lookahead=barmerge.lookahead_off)
+ema50_h2  = request.security(syminfo.tickerid, "D", ta.ema(close, 50),  lookahead=barmerge.lookahead_off)
+ema200_h2 = request.security(syminfo.tickerid, "D", ta.ema(close, 200), lookahead=barmerge.lookahead_off)
+htf1_long  = ema50_h1 > ema200_h1
+htf1_short = ema50_h1 < ema200_h1
+htf2_long  = ema50_h2 > ema200_h2
+// RSI Semanal (proxy Fear & Greed)
+rsi_w     = request.security(syminfo.tickerid, "W", ta.rsi(close, 14), lookahead=barmerge.lookahead_off)
+rsiw_ok_l = not use_rsiw or rsi_w < rsiw_max
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// REGIMEN & CONDICIONES BASE
+// ═══════════════════════════════════════════════════════════════════════════════
+// Hurst proxy
+rn    = ta.highest(close,50) - ta.lowest(close,50)
+rn2   = ta.highest(close,25) - ta.lowest(close,25)
+hurst = rn2 > 0 ? math.log(rn / math.max(rn2,0.001)) / math.log(2.0) : 0.5
+
+// Fake move / Gap / Spike
+liq_up   = high > ta.highest(high,20)[1]
+liq_dn   = low  < ta.lowest(low, 20)[1]
+fake_move = (liq_up and close < open) or (liq_dn and close > open)
+is_spike  = (high - low) > atr * 2.0
+var int bsg = 9999
+is_gap    = math.abs(open - close[1]) > atr * 2.0
+bsg      := is_gap ? 0 : bsg + 1
+gap_ok    = bsg >= 2
+
+// OFI
+body_r   = math.abs(close-open) / math.max(high-low, 0.0001)
+buy_v    = volume * (close > open ? body_r : 0.0)
+sell_v   = volume * (close < open ? body_r : 0.0)
+tot_v    = math.sum(buy_v,20) + math.sum(sell_v,20)
+ofi      = ta.ema(tot_v > 0 ? (math.sum(buy_v,20)-math.sum(sell_v,20))/tot_v : 0.0, 3)
+ofi_bull = ofi >  ofi_thr
+ofi_bear = ofi < -ofi_thr
+
+// Market Temperature
+atr_ratio   = atr / math.max(ta.sma(atr,50), 0.0001)
+rsi_heat    = math.abs(rsi-50) * 2
+price_chg   = math.abs(close-close[3]) / math.max(atr*3, 0.0001) * 100
+vol_pct_raw = ta.percentrank(atr, 100)
+mkt_temp    = math.min(100, price_chg*0.4 + vol_pct_raw*0.3 + math.min(atr_ratio*50,100)*0.1 + rsi_heat*0.2)
+mkt_dead    = mkt_temp < 15
+temp_ok     = mkt_temp >= temp_min and mkt_temp <= temp_max
+
+// Sesion & Dia
+h_utc  = hour(time, "UTC")
+dow_v  = dayofweek(time, "UTC")
+in_sess = (h_utc>=8 and h_utc<12) or
+    (h_utc>=13 and h_utc<20) or (h_utc>=1 and h_utc<6)
+dow_ok  = dow_v >= dayofweek.tuesday and dow_v <= dayofweek.thursday
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ORDER BLOCKS & FVG (ICT)
+// ═══════════════════════════════════════════════════════════════════════════════
+ob_imp_up  = close[9]>open[9] and (close[9]-open[9])>atr[9]*0.8
+in_bull_ob = close[10]<open[10] and ob_imp_up and close<=open[10] and close>=close[10] and bull
+ob_imp_dn  = close[9]<open[9] and (open[9]-close[9])>atr[9]*0.8
+in_bear_ob = close[10]>open[10] and ob_imp_dn and close>=open[10] and close<=close[10] and bear
+fvg_bull   = low > high[2] and (low-high[2])/close*100 >= 0.05
+fvg_bear   = high < low[2] and (low[2]-high)/close*100 >= 0.05
+fill_b_fvg = close<=low[1] and close>=high[3] and bull
+fill_s_fvg = close>=high[1] and close<=low[3] and bear
+
+// AVWAP semanal
+var float avn = na
+var float avdn = na
+wk_start    = ta.change(time("W")) != 0
+avn        := (wk_start or na(avn))  ? (high+low+close)/3.0*volume : avn+(high+low+close)/3.0*volume
+avdn       := (wk_start or na(avdn)) ? volume : avdn+volume
+avwap       = avdn > 0 ? avn/avdn : close
+above_avwap = close > avwap
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SEÑALES
+// ═══════════════════════════════════════════════════════════════════════════════
+adx_ok     = adxV > adx_min
+htf_ok_l   = htf1_long  and htf2_long
+htf_ok_s   = htf1_short and not htf2_long
+base_ok    = not fake_move and not is_spike and gap_ok and dow_ok and in_sess and temp_ok
+
+// Smart / Elite
+trend_gate   = math.abs(ema50-ema200) > atr*0.5
+smart_long   = bull and trend_gate and ml>sl2 and htf1_long  and not is_spike
+smart_short  = bear and trend_gate and ml<sl2 and htf1_short and not is_spike
+tf3_bull     = bull and htf1_long  and htf2_long
+tf3_bear     = bear and htf1_short and not htf2_long
+elite_long   = smart_long  and tf3_bull and not fake_move and rsi < 70
+elite_short  = smart_short and tf3_bear and not fake_move and rsi > 30
+eit_long     = elite_long  and (in_bull_ob or fill_b_fvg or above_avwap)
+eit_short    = elite_short and (in_bear_ob or fill_s_fvg or not above_avwap)
+
+// Execute
+exec_long  = smart_long  and not elite_long  and adx_ok and htf_ok_l and not fake_move
+exec_short = smart_short and not elite_short and adx_ok and htf_ok_s and not fake_move
+
+// Dual Trend
+is_tu = hurst>0.57 and adxV>28 and bull and close>ema50
+is_td = hurst>0.57 and adxV>28 and bear and close<ema50
+trend_long  = is_tu and low<=ema20*1.005 and close>ema20 and close>open and ml>sl2 and htf_ok_l and not fake_move
+trend_short = is_td and high>=ema20*0.995 and close<ema20 and close<open and ml<sl2 and htf_ok_s and not fake_move
+
+// Dual Range
+is_wr = false
+
+range_long  = false
+range_short = false
+
+// Entrada final
+entry_long  = base_ok and rsiw_ok_l and (eit_long  or (elite_long  and htf_ok_l) or exec_long  or trend_long  or range_long)
+entry_short = base_ok and (eit_short or (elite_short and htf_ok_s) or exec_short or trend_short or range_short)
+
+// Calidad para SL/TP
+is_elite = eit_long or eit_short or elite_long or elite_short
+sl_m = is_elite ? elite_sl : exec_sl
+tp_m = is_elite ? elite_tp : exec_tp
+quality_str = eit_long or eit_short ? "ELITE_ICT" : elite_long or elite_short ? "ELITE" : "EXECUTE"
+
+// Regimen
+regime_str = bull and close>ema50 ? "TREND_BULL" : bear and close<ema50 ? "TREND_BEAR" :
+     hurst < 0.5 and adxV < 20 ? "RANGE" : "TRANSITION"
+session_str = h_utc>=8 and h_utc<12 ? "LONDON" : h_utc>=13 and h_utc<20 ? "NY_AM" :
+     h_utc>=1 and h_utc<6 ? "ASIA" : "OFF"
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GESTION DE POSICION
+// ═══════════════════════════════════════════════════════════════════════════════
+var float entry_ref  = na
+var float sl_ref     = na
+var float tp1_ref    = na
+var float tp2_ref    = na
+var bool  be_done    = false
+var string side_str  = ""
+var float  rr_plan   = 0.0
+
+if entry_long and strategy.position_size == 0
+    entry_ref := close
+    sl_ref    := close - atr * sl_m
+    tp1_ref   := close + atr * tp_m
+    tp2_ref   := close + atr * tp_m * 1.5
+    be_done   := false
+    side_str  := "LONG"
+    rr_plan   := tp_m / sl_m
+    strategy.entry("Long", strategy.long)
+
+if entry_short and strategy.position_size == 0
+    entry_ref := close
+    sl_ref    := close + atr * sl_m
+    tp1_ref   := close - atr * tp_m
+    tp2_ref   := close - atr * tp_m * 1.5
+    be_done   := false
+    side_str  := "SHORT"
+    rr_plan   := tp_m / sl_m
+    strategy.entry("Short", strategy.short)
+
+// BE tras TP1
+if strategy.position_size > 0 and high >= tp1_ref and not be_done and use_be
+    sl_ref  := entry_ref
+    be_done := true
+if strategy.position_size < 0 and low <= tp1_ref and not be_done and use_be
+    sl_ref  := entry_ref
+    be_done := true
+
+// Exits
+if strategy.position_size > 0
+    strategy.exit("Long_TP1", "Long", qty_percent=qty_tp1*100, stop=sl_ref, limit=tp1_ref, comment="TP1")
+    strategy.exit("Long_TP2", "Long",                           stop=sl_ref, limit=tp2_ref, comment="TP2")
+if strategy.position_size < 0
+    strategy.exit("Short_TP1","Short",qty_percent=qty_tp1*100, stop=sl_ref, limit=tp1_ref, comment="TP1")
+    strategy.exit("Short_TP2","Short",                          stop=sl_ref, limit=tp2_ref, comment="TP2")
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ALERTAS → MAKE.COM → EXCEL SIGMA K1
+// CSV Schema: timestamp,symbol,dir,score,condition,regime,session,entry,sl,tp1,tp2,exit,rr_plan,rr_real,risk_pct,pnl_usd,pnl_pct,status,duration,mae_pct,notes
+// ═══════════════════════════════════════════════════════════════════════════════
+var float rr_real = 0.0
+if strategy.position_size != 0 and not na(entry_ref)
+    rr_real := (close - entry_ref) / math.max(math.abs(entry_ref - sl_ref), 0.0001) * (strategy.position_size > 0 ? 1 : -1)
+else
+    rr_real := 0.0
+
+// Alerta de ENTRADA
+alert_entry = entry_long or entry_short
+if alert_entry and send_alerts
+    _dir     = entry_long ? "LONG" : "SHORT"
+    _qual    = quality_str
+    _sl      = entry_long ? close - atr*sl_m : close + atr*sl_m
+    _tp1     = entry_long ? close + atr*tp_m : close - atr*tp_m
+    _tp2     = entry_long ? close + atr*tp_m*1.5 : close - atr*tp_m*1.5
+    _csv     = str.tostring(time) + "," +
+               syminfo.ticker + "," +
+               _dir + "," +
+               "0," +      // score HUD (conectar con HUD para score real)
+               _qual + "," +
+               regime_str + "," +
+               session_str + "," +
+               str.tostring(close,"#.##") + "," +
+               str.tostring(_sl,  "#.##") + "," +
+               str.tostring(_tp1, "#.##") + "," +
+               str.tostring(_tp2, "#.##") + "," +
+               "0," +      // exit (se completa al cerrar)
+               str.tostring(rr_plan, "#.##") + "," +
+               "0," +      // rr_real (se completa al cerrar)
+               str.tostring(risk_pct,"#.##") + "," +
+               "0," +      // pnl_usd (se completa al cerrar)
+               "0," +      // pnl_pct (se completa al cerrar)
+               "OPEN," +   // status
+               "0," +      // duration
+               "0," +      // mae_pct
+               "SIGMA_1H_" + _qual
+    alert(_csv, alert.freq_once_per_bar_close)
+
+// Alerta de CIERRE (para completar el CSV en Make.com)
+alert_close = strategy.position_size[1] != 0 and strategy.position_size == 0
+if alert_close and send_alerts
+    _result = strategy.netprofit > strategy.netprofit[1] ? "WIN" : "LOSS"
+    _pnl    = strategy.netprofit - strategy.netprofit[1]
+    _csv_close = "CLOSE," +
+                 syminfo.ticker + "," +
+                 side_str + "," +
+                 _result + "," +
+                 str.tostring(close,"#.##") + "," +
+                 str.tostring(_pnl,"#.##") + "," +
+                 str.tostring(rr_real,"#.##")
+    alert(_csv_close, alert.freq_once_per_bar_close)
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// VISUALIZACION
+// ═══════════════════════════════════════════════════════════════════════════════
+plot(ema50,  "EMA50",  color.new(color.yellow, 10), 1)
+plot(ema200, "EMA200", color.new(color.orange, 10), 2)
+plot(strategy.position_size != 0 ? sl_ref  : na, "SL",  color.new(color.red,  0), 2, plot.style_linebr)
+plot(strategy.position_size != 0 ? tp1_ref : na, "TP1", color.new(color.lime, 0), 2, plot.style_linebr)
+plot(strategy.position_size != 0 ? tp2_ref : na, "TP2", color.new(color.lime, 40),1, plot.style_linebr)
+
+plotshape(entry_long  and (eit_long  or elite_long),  "L ELITE", shape.triangleup,   location.belowbar, color.aqua, size=size.normal)
+plotshape(entry_long  and not elite_long,             "L EXEC",  shape.triangleup,   location.belowbar, color.lime, size=size.small)
+plotshape(entry_short and (eit_short or elite_short), "S ELITE", shape.triangledown, location.abovebar, color.aqua, size=size.normal)
+plotshape(entry_short and not elite_short,            "S EXEC",  shape.triangledown, location.abovebar, color.red,  size=size.small)
+
+bgcolor(entry_long  ? color.new(color.green, 88) : na)
+bgcolor(entry_short ? color.new(color.red,   88) : na)
+
+// Info table
+var table t = table.new(position.top_right, 2, 7, bgcolor=color.new(color.navy,60), border_width=1)
+if barstate.islast
+    table.cell(t, 0, 0, "SIGMA 1H", text_color=color.white,  bgcolor=color.navy, text_size=size.normal)
+    table.cell(t, 1, 0, "ELITE+EXEC+TREND",          text_color=color.yellow, bgcolor=color.navy, text_size=size.small)
+    table.cell(t, 0, 1, "Regimen",  text_color=color.gray,  text_size=size.tiny)
+    table.cell(t, 1, 1, regime_str,text_color=color.white,  text_size=size.tiny)
+    table.cell(t, 0, 2, "Sesion",   text_color=color.gray,  text_size=size.tiny)
+    table.cell(t, 1, 2, session_str,text_color=color.white, text_size=size.tiny)
+    table.cell(t, 0, 3, "Temp",     text_color=color.gray,  text_size=size.tiny)
+    table.cell(t, 1, 3, str.tostring(math.round(mkt_temp)) + "%", text_color=mkt_dead ? color.red : color.lime, text_size=size.tiny)
+    table.cell(t, 0, 4, "OFI",      text_color=color.gray,  text_size=size.tiny)
+    table.cell(t, 1, 4, ofi_bull ? "BULL" : ofi_bear ? "BEAR" : "NEUTRAL", text_color=ofi_bull ? color.lime : ofi_bear ? color.red : color.gray, text_size=size.tiny)
+    table.cell(t, 0, 5, "ADX",      text_color=color.gray,  text_size=size.tiny)
+    table.cell(t, 1, 5, str.tostring(math.round(adxV)),      text_color=adxV>adx_min ? color.lime : color.red, text_size=size.tiny)
+    table.cell(t, 0, 6, "RSI-W",    text_color=color.gray,  text_size=size.tiny)
+    table.cell(t, 1, 6, str.tostring(math.round(rsi_w)),     text_color=rsiw_ok_l ? color.lime : color.red, text_size=size.tiny)

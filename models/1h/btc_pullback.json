@@ -1,0 +1,56 @@
+{
+  "symbol": "BTC/USDT",
+  "tf": "1h",
+  "strategy": "pullback",
+  "params": {
+    "sl_mult": 2.2,
+    "tp_mult": 2.9000000000000004,
+    "cooldown": 9,
+    "rsi_w_thr": 48,
+    "ema_type": 34,
+    "rsi_entry": 47
+  },
+  "risk_pct": 5.0,
+  "metrics_is": {
+    "trades": 303,
+    "wr": 53.5,
+    "cagr": 32.8,
+    "dd": -42.6,
+    "pf": 1.23,
+    "trades_year": 46.2,
+    "avg_win": 231.8308,
+    "avg_loss": -216.9407,
+    "payoff": 1.07
+  },
+  "metrics_oos": {
+    "trades": 139,
+    "wr": 51.1,
+    "cagr": 32.9,
+    "dd": -46.9,
+    "pf": 1.15,
+    "trades_year": 63.8,
+    "avg_win": 111.9101,
+    "avg_loss": -101.4586,
+    "payoff": 1.1
+  },
+  "oos_days": 796,
+  "saved_at": "2026-05-11 20:22:35.685175",
+  "wft": {
+    "oos_win_rate": 55.6,
+    "n_windows": 9,
+    "positive_windows": 5,
+    "avg_cagr_oos": 50.99,
+    "avg_cagr_pos": 109.52,
+    "verdict": "FAIL",
+    "date": "2026-06-07 02:16"
+  },
+  "mc": {
+    "mc_cagr_p05": -64.8,
+    "mc_cagr_p50": 105.5,
+    "mc_cagr_p95": 1098.9,
+    "mc_dd_p50": -54.9,
+    "mc_dd_p95": -36.1,
+    "mc_confidence": 73.8,
+    "mc_sims": 1000
+  }
+}

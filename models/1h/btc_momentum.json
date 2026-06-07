@@ -1,0 +1,50 @@
+{
+  "symbol": "BTC/USDT",
+  "tf": "1h",
+  "strategy": "momentum",
+  "params": {
+    "sl_mult": 2.7,
+    "tp_mult": 2.9000000000000004,
+    "cooldown": 12,
+    "rsi_w_thr": 61,
+    "vol_mult": 1.2,
+    "rsi_max": 64
+  },
+  "risk_pct": 5.0,
+  "metrics_is": {
+    "trades": 187,
+    "wr": 62.0,
+    "cagr": 26.9,
+    "dd": -30.4,
+    "pf": 1.4,
+    "trades_year": 26.8
+  },
+  "metrics_oos": {
+    "trades": 50,
+    "wr": 58.0,
+    "cagr": 32.0,
+    "dd": -23.1,
+    "pf": 1.35,
+    "trades_year": 28.7
+  },
+  "oos_days": 636,
+  "saved_at": "2026-05-11 03:04:32.464581",
+  "wft": {
+    "oos_win_rate": 66.7,
+    "n_windows": 6,
+    "positive_windows": 4,
+    "avg_cagr_oos": 87.77,
+    "avg_cagr_pos": 146.68,
+    "verdict": "PASS",
+    "date": "2026-06-07 02:16"
+  },
+  "mc": {
+    "mc_cagr_p05": -29.3,
+    "mc_cagr_p50": 63.9,
+    "mc_cagr_p95": 280.1,
+    "mc_dd_p50": -53.8,
+    "mc_dd_p95": -35.3,
+    "mc_confidence": 82.9,
+    "mc_sims": 1000
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "motor_name": "SIGMA Stocks US",
+  "asset_class": "equity_etf_us",
+  "universe": ["SPY", "QQQ", "IWM", "GLD", "TLT"],
+  "data_source": "ibkr_delayed",
+  "exchange": "NYSEARCA",
+  "timeframes": ["15m", "1h", "1d"],
+  "regime_detector": "vix_yield_curve_spy_ema200",
+  "commission_pct": 0.005,
+  "min_capital_alloc_pct": 5,
+  "max_capital_alloc_pct": 40,
+  "status": "SKELETON",
+  "next_step": "implement universe.py + data_fetcher.py via IBKR delayed market data"
+}

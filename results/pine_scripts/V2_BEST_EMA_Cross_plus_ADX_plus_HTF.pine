@@ -1,0 +1,51 @@
+//@version=5
+strategy("EMA Cross ADX HTF v2 — BTC/USDT 15m", overlay=true,
+         default_qty_type=strategy.percent_of_equity, default_qty_value=100,
+         commission_type=strategy.commission.percent, commission_value=0.04,
+         initial_capital=10000)
+
+// ── Inputs ───────────────────────────────────────────────────────────────────
+emaFast   = input.int(12,   "EMA Rapida")
+emaSlow   = input.int(26,  "EMA Lenta")
+adxThresh = input.float(26, "ADX Minimo")
+slMult    = input.float(1.0,  "SL ATR Mult")
+trailMult = input.float(2.5,  "Trail ATR Mult")
+
+// ── Indicadores ──────────────────────────────────────────────────────────────
+fastEMA = ta.ema(close, emaFast)
+slowEMA = ta.ema(close, emaSlow)
+atr     = ta.atr(14)
+[diPlus, diMinus, adxVal] = ta.dmi(14, 14)
+
+// ── HTF 1h ───────────────────────────────────────────────────────────────────
+ema21_1h = request.security(syminfo.tickerid, "60", ta.ema(close, 21))
+ema50_1h = request.security(syminfo.tickerid, "60", ta.ema(close, 50))
+trend1h  = ema21_1h > ema50_1h ? 1 : ema21_1h < ema50_1h ? -1 : 0
+
+// ── Señales ──────────────────────────────────────────────────────────────────
+adxOk     = adxVal > adxThresh
+longCond  = ta.crossover(fastEMA, slowEMA)  and adxOk and trend1h == 1
+shortCond = ta.crossunder(fastEMA, slowEMA) and adxOk and trend1h == -1
+
+// ── Trailing Stop ────────────────────────────────────────────────────────────
+var float trailStop = na
+if longCond
+    trailStop := close - atr * slMult
+    strategy.entry("Long", strategy.long)
+if strategy.position_size > 0
+    trailStop := math.max(trailStop, close - atr * trailMult)
+    strategy.exit("Long X", "Long", stop=trailStop)
+
+if shortCond
+    trailStop := close + atr * slMult
+    strategy.entry("Short", strategy.short)
+if strategy.position_size < 0
+    trailStop := math.min(trailStop, close + atr * trailMult)
+    strategy.exit("Short X", "Short", stop=trailStop)
+
+// ── Plots ────────────────────────────────────────────────────────────────────
+plot(fastEMA,   "EMA Rapida", color=color.orange, linewidth=2)
+plot(slowEMA,   "EMA Lenta",  color=color.blue,   linewidth=2)
+plot(trailStop, "Trail Stop", color=color.yellow, style=plot.style_cross)
+bgcolor(longCond  ? color.new(color.green, 88) : na)
+bgcolor(shortCond ? color.new(color.red,   88) : na)

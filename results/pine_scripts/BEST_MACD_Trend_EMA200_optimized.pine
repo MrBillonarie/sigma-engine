@@ -1,0 +1,29 @@
+//@version=5
+strategy("MACD Trend EMA200 [OPT] — BTC/USDT 15m", overlay=true,
+         default_qty_type=strategy.percent_of_equity, default_qty_value=100,
+         commission_type=strategy.commission.percent, commission_value=0.04,
+         initial_capital=10000)
+
+macdFast  = input.int(8, "MACD Rapida")
+macdSlow  = input.int(21, "MACD Lenta")
+emaTrend  = input.int(100, "EMA Tendencia")
+slMult    = input.float(2.0, "SL ATR Mult")
+tpMult    = input.float(4.0, "TP ATR Mult")
+
+[macdLine, signalLine, hist] = ta.macd(close, macdFast, macdSlow, 9)
+ema200 = ta.ema(close, emaTrend)
+atr    = ta.atr(14)
+
+longCond  = ta.crossover(hist,  0) and close > ema200
+shortCond = ta.crossunder(hist, 0) and close < ema200
+
+if longCond
+    strategy.entry("Long",  strategy.long)
+    strategy.exit("Long X", "Long",  stop=close - atr*slMult, limit=close + atr*tpMult)
+if shortCond
+    strategy.entry("Short", strategy.short)
+    strategy.exit("Short X","Short", stop=close + atr*slMult, limit=close - atr*tpMult)
+
+plot(ema200, "EMA Trend", color=color.yellow, linewidth=2)
+bgcolor(longCond  ? color.new(color.green, 90) : na)
+bgcolor(shortCond ? color.new(color.red,   90) : na)

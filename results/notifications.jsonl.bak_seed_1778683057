@@ -1,0 +1,3 @@
+{"ts": 1778629344.6807055, "type": "open", "sym": "BTC", "tf": "1h", "strategy": "MOM_BO", "direction": "long", "entry": 95430.5, "sl": 94800.0, "tp": 96850.0, "kelly_pct": 5.0, "msg": "Per-Model: BTC 1h long abierto"}
+{"ts": 1778629524.6807067, "type": "open", "sym": "ETH", "tf": "4h", "strategy": "TREND", "direction": "short", "entry": 3210.0, "sl": 3290.0, "tp": 3050.0, "kelly_pct": 5.0, "msg": "Per-Model: ETH 4h short abierto"}
+{"ts": 1778629634.6807072, "type": "close", "sym": "SOL", "tf": "1h", "strategy": "BREAKOUT", "direction": "short", "pnl_pct": 3.45, "reason": "TP", "msg": "Per-Model: SOL 1h short cerrado en TP +3.45%"}

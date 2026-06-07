@@ -1,0 +1,120 @@
+{
+  "_comment": "SIGMA ENGINE — Configuracion central. Todo el sistema referencia este archivo.",
+
+  "identity": {
+    "name": "SIGMA ENGINE",
+    "version": "1.0.0",
+    "symbol": "BTC/USDT",
+    "exchange": "binance_futures",
+    "base_strategy": "SIGMA CAMPEON VAR U2"
+  },
+
+  "capital": {
+    "initial": 1000,
+    "currency": "USDT",
+    "phase": 0,
+    "phase_description": "Fase 0: recoleccion de muestra (0-30 trades)"
+  },
+
+  "risk": {
+    "risk_per_trade_pct": 0.5,
+    "max_dd_global_pct": 12.0,
+    "max_trades_per_day": 3,
+    "max_consec_losses": 3,
+    "stop_daily_usd": 39.6,
+    "stop_weekly_usd": 60.0,
+    "stop_monthly_usd": 120.0,
+    "kelly_fraction": 0.25,
+    "kelly_activate_after_trades": 30,
+    "min_cash_reserve_pct": 10.0,
+    "dd_losses_l1": 1,
+    "dd_losses_l2": 2,
+    "dd_losses_l3": 3
+  },
+
+  "execution": {
+    "commission_pct":   0.04,
+    "_commission_note": "Taker fee Binance Futuros: 0.04% por lado. Round trip: 0.08%",
+    "slippage_bps":     5.0,
+    "_slippage_note":   "5 bps por lado (0.05%). Estimacion conservadora para market orders BTC. Round trip: 0.10%",
+    "funding_rate_pct": 0.01,
+    "_funding_note":    "0.01% cada 8h (promedio historico Binance). Longs pagan, shorts reciben en mercado alcista",
+    "_total_cost_rt":   "Costo total round trip estimado: 0.08% (comision) + 0.10% (slippage) = 0.18% minimo",
+    "_bnb_discount":    "Con BNB activo: comision baja a 0.036% por lado (10% descuento)",
+    "use_be_management":true,
+    "qty_tp1_pct":      50.0,
+    "qty_tp2_pct":      50.0,
+    "use_trail":        true,
+    "trail_atr_mult":   1.5,
+    "max_bars_in_trade":0
+  },
+
+  "sl_tp_by_quality": {
+    "ELITE_ICT": { "sl_atr_mult": 1.3, "tp_atr_mult": 2.5 },
+    "ELITE":     { "sl_atr_mult": 1.3, "tp_atr_mult": 2.5 },
+    "EXECUTE":   { "sl_atr_mult": 1.5, "tp_atr_mult": 2.0 },
+    "WATCH":     { "sl_atr_mult": 1.8, "tp_atr_mult": 1.4 },
+    "DUAL_TREND":{ "sl_atr_mult": 1.5, "tp_atr_mult": 2.5 },
+    "DUAL_RANGE":{ "sl_atr_mult": 1.2, "tp_atr_mult": 2.0 }
+  },
+
+  "timeframes": {
+    "1m":  { "days_history": 30,   "min_trades_valid": 200, "htf1": "5m",  "htf2": "15m" },
+    "5m":  { "days_history": 90,   "min_trades_valid": 80,  "htf1": "15m", "htf2": "1h"  },
+    "15m": { "days_history": 180,  "min_trades_valid": 40,  "htf1": "1h",  "htf2": "4h"  },
+    "1h":  { "days_history": 365,  "min_trades_valid": 20,  "htf1": "4h",  "htf2": "1d"  },
+    "4h":  { "days_history": 730,  "min_trades_valid": 15,  "htf1": "1d",  "htf2": "1w"  },
+    "1d":  { "days_history": 1095, "min_trades_valid": 10,  "htf1": "1w",  "htf2": "1M"  }
+  },
+
+  "sessions_utc": {
+    "london":   { "start": 8,  "end": 12 },
+    "new_york": { "start": 13, "end": 20 },
+    "asia":     { "start": 1,  "end": 6  }
+  },
+
+  "blocked_days": ["Saturday"],
+  "optimal_days":  ["Tuesday", "Wednesday", "Thursday", "Friday"],
+
+  "signals": {
+    "ofi_threshold": 0.6,
+    "ofi_lookback": 20,
+    "min_ev": 0.05,
+    "meta_ctx_min": 2,
+    "meta_conf_min": 60,
+    "signal_cooldown_bars": 8,
+    "gap_protect_bars": 2
+  },
+
+  "optimization": {
+    "random_search_samples": 5000,
+    "walk_forward_is_months": 3,
+    "walk_forward_oos_months": 1,
+    "monte_carlo_simulations": 10000,
+    "fdr_alpha": 0.05,
+    "top_n_oos_validation": 5
+  },
+
+  "validation_thresholds": {
+    "min_wr_operable": 50.0,
+    "min_pf_operable": 1.2,
+    "min_sharpe_operable": 0.5,
+    "max_dd_operable": -20.0,
+    "min_trades_statistical": 100,
+    "oos_efficiency_good": 0.5,
+    "oos_win_rate_good": 0.6
+  },
+
+  "pipeline": {
+    "webhook_format": "CSV",
+    "csv_schema": "timestamp,symbol,dir,score,condition,regime,session,entry,sl,tp1,tp2,exit,rr_plan,rr_real,risk_pct,pnl_usd,pnl_pct,status,duration,mae_pct,notes",
+    "make_automation": true
+  },
+
+  "calibration_schedule": {
+    "phase_0_trades": "0-30",   "phase_0_action": "NO calibrar. Solo recolectar.",
+    "phase_1_trades": "30-50",  "phase_1_action": "Primera revision de parametros.",
+    "phase_2_trades": "50-100", "phase_2_action": "Kelly dinamico. Ajuste de sizing.",
+    "phase_3_trades": "100+",   "phase_3_action": "Optimizacion completa. A/B testing."
+  }
+}

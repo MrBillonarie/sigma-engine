@@ -1,0 +1,36 @@
+{
+  "tf": "1h",
+  "strategy": "BREAKOUT",
+  "params": {
+    "lookback": 60,
+    "vol_mult": 2.9000000000000004,
+    "sl_mult": 2.3,
+    "tp_mult": 2.0
+  },
+  "cooldown": 11,
+  "risk_pct": 3.3000000000000003,
+  "bull_filter": "RSI-W > 55",
+  "metrics_is": {
+    "trades": 232.0,
+    "wr": 59.5,
+    "cagr": 19.6,
+    "dd": -26.3,
+    "pf": 1.39,
+    "sharpe": 0.12,
+    "calmar": 0.75,
+    "trades_month": 2.7,
+    "rr": 0.95
+  },
+  "metrics_oos": {
+    "trades": 95.0,
+    "wr": 55.8,
+    "cagr": 16.2,
+    "dd": -30.6,
+    "pf": 1.18,
+    "sharpe": 0.1,
+    "calmar": 0.53,
+    "trades_month": 4.7,
+    "rr": 0.94
+  },
+  "score": 0.27712857142857145
+}

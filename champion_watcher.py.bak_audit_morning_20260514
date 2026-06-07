@@ -1,0 +1,240 @@
+"""champion_watcher.py — Detecta cambios de campeón en la matriz de modelos y manda UN mensaje
+por cambio detectado (sin duplicados).
+
+Flujo:
+  - Lee port_snapshot.json (matriz de campeones actuales)
+  - Compara con champion_notified.json (último estado notificado)
+  - Si hay cambios → 1 mensaje consolidado a Telegram
+  - Actualiza champion_notified.json para no repetir
+
+Corre via cron cada 30 min. Si entre runs hay varios cambios, los junta en 1 mensaje.
+"""
+import json
+import sys
+import urllib.request
+import urllib.parse
+from pathlib import Path
+from datetime import datetime
+
+BASE = Path('/opt/sigma')
+SNAPSHOT_PATH = BASE / 'results' / 'reports' / 'port_snapshot.json'
+NOTIFIED_PATH = BASE / 'results' / 'reports' / 'champion_notified.json'
+LOG_PATH     = BASE / 'results' / 'reports' / 'champion_watcher.log'
+NOTIFIER_PATH = BASE / 'engine' / 'live' / 'telegram_notifier.py'
+
+ORIGINAL_9 = {'breakout', 'pullback', 'tma_bands', 'momentum', 'mean_rev',
+              'breakdown', 'pullback_short', 'momentum_short', 'regime_adaptive'}
+
+
+def log(msg):
+    line = f'[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] {msg}'
+    print(line, flush=True)
+    try:
+        with open(LOG_PATH, 'a') as f:
+            print(line, file=f)
+    except Exception:
+        pass
+
+
+def get_telegram_config():
+    try:
+        text = NOTIFIER_PATH.read_text(encoding='utf-8')
+        import re
+        m_token = re.search(r"TOKEN\s*=\s*['\"]([^'\"]+)['\"]", text)
+        m_chat  = re.search(r"CHAT_ID\s*=\s*['\"]?(-?\d+)['\"]?", text)
+        if m_token and m_chat:
+            return m_token.group(1), m_chat.group(1)
+    except Exception as e:
+        log(f'config error: {e}')
+    return None, None
+
+
+def send_telegram(text):
+    token, chat_id = get_telegram_config()
+    if not token or not chat_id:
+        log('No telegram config')
+        return False
+    try:
+        url = f'https://api.telegram.org/bot{token}/sendMessage'
+        data = urllib.parse.urlencode({
+            'chat_id': chat_id,
+            'text': text,
+            'parse_mode': 'HTML',
+            'disable_web_page_preview': 'true',
+        }).encode()
+        req = urllib.request.Request(url, data=data)
+        urllib.request.urlopen(req, timeout=10)
+        return True
+    except Exception as e:
+        log(f'send error: {e}')
+        return False
+
+
+
+SHORT_STRATEGIES = {'breakdown', 'pullback_short', 'momentum_short'}
+
+
+def _regen_snapshot():
+    """Regenera port_snapshot.json desde los JSONs frescos en /opt/sigma/models.
+    Replica el formato escrito por dashboard.py:_write_snapshot pero usando
+    SOLO los champions actuales en disco. Si dashboard escribe despues, sobreescribe.
+    """
+    models_dir = BASE / 'models'
+    if not models_dir.exists():
+        return False
+    champions = {}
+    cagrs, wrs, dds, pfs, trades = [], [], [], [], 0
+    n_grade_a = 0
+    # Por slot (asset|tf) elegir el de mayor CAGR OOS y derivar direction del strategy name
+    by_slot = {}
+    for tf_dir in models_dir.iterdir():
+        if not tf_dir.is_dir() or tf_dir.name == 'archive':
+            continue
+        tf = tf_dir.name
+        for jf in tf_dir.glob('*.json'):
+            try:
+                d = json.loads(jf.read_text())
+            except Exception:
+                continue
+            sym = (d.get('symbol') or '').replace('/USDT', '').upper()
+            strat = d.get('strategy') or jf.stem.split('_', 1)[-1]
+            m = d.get('metrics_oos') or {}
+            cagr = float(m.get('cagr', 0) or 0)
+            key = f'{sym}|{tf}'
+            prev = by_slot.get(key)
+            if prev is None or cagr > prev[0]:
+                direction = 'short' if strat in SHORT_STRATEGIES else 'long'
+                by_slot[key] = (cagr, strat, direction, m)
+    for key, (cagr, strat, direction, m) in by_slot.items():
+        champions[key] = f'{strat}|{direction}'
+        cagrs.append(cagr)
+        wrs.append(float(m.get('wr', 0) or 0))
+        dds.append(float(m.get('dd', 0) or 0))
+        pfs.append(float(m.get('pf', 0) or 0))
+        trades += int(m.get('trades', 0) or 0)
+        # grado A: CAGR/|DD| >= 0.55 aprox (heuristica simple para mantener n_grade_a)
+        if cagr >= 25:
+            n_grade_a += 1
+    if not champions:
+        return False
+    n = len(cagrs)
+    port_cagr = sum(cagrs) / n
+    port_wr = sum(wrs) / n
+    port_dd = sum(dds) / n
+    port_pf = sum(pfs) / n
+    port_calmar = (port_cagr / abs(port_dd)) if port_dd < 0 else 0
+    snap = {
+        'port_cagr': port_cagr,
+        'port_wr': port_wr,
+        'port_dd': port_dd,
+        'port_pf': round(port_pf, 2),
+        'port_calmar': round(port_calmar, 2),
+        'total_trades': trades,
+        'n_grade_a': n_grade_a,
+        'snapshot_at': datetime.utcnow().isoformat() + 'Z',
+        'trigger': 'champion_watcher refresh',
+        'champions': champions,
+    }
+    try:
+        SNAPSHOT_PATH.parent.mkdir(parents=True, exist_ok=True)
+        SNAPSHOT_PATH.write_text(json.dumps(snap, indent=2))
+        return True
+    except Exception as e:
+        log(f'_regen_snapshot write error: {e}')
+        return False
+
+
+def main():
+    # Regenerar snapshot desde JSONs frescos antes de comparar (dashboard.py es on-demand)
+    try:
+        if _regen_snapshot():
+            log('snapshot regenerated from disk')
+    except Exception as e:
+        log(f'regen error: {e}')
+    if not SNAPSHOT_PATH.exists():
+        log('No snapshot yet — skip')
+        return
+
+    try:
+        snap = json.loads(SNAPSHOT_PATH.read_text())
+    except Exception as e:
+        log(f'snap read error: {e}')
+        return
+
+    current = snap.get('champions', {})
+    if not current:
+        log('Empty champions in snapshot')
+        return
+
+    # Leer último estado notificado
+    first_run = not NOTIFIED_PATH.exists()
+    last = {}
+    if not first_run:
+        try:
+            last = json.loads(NOTIFIED_PATH.read_text()).get('champions', {})
+        except Exception:
+            pass
+
+    # FIRST RUN: solo guardar baseline, no mandar nada
+    if first_run:
+        NOTIFIED_PATH.write_text(json.dumps({
+            'champions': current,
+            'baseline_set_at': datetime.now().isoformat(),
+        }, indent=2))
+        log(f'Baseline inicial guardado: {len(current)} slots. No se manda nada.')
+        return
+
+    # Detectar cambios
+    discoveries = []   # estrategia NUEVA (no de las 9 originales)
+    rotations = []     # estrategia clásica reemplaza a otra clásica
+    for slot, strat_dir in current.items():
+        old = last.get(slot)
+        if old == strat_dir:
+            continue  # sin cambio
+        strat_new = str(strat_dir).split('|')[0] if '|' in str(strat_dir) else strat_dir
+        strat_old = str(old).split('|')[0] if old and '|' in str(old) else (old or 'nuevo')
+        if strat_new not in ORIGINAL_9:
+            discoveries.append((slot, strat_old, strat_new))
+        elif old is not None:
+            rotations.append((slot, strat_old, strat_new))
+
+    # Si NO hay cambios, no mandar nada (importante para evitar spam)
+    if not discoveries and not rotations:
+        log(f'Sin cambios ({len(current)} slots tracked) — no message')
+        return
+
+    # UN solo mensaje consolidado
+    lines = []
+    if discoveries:
+        lines.append('🎉 <b>NUEVOS CAMPEONES — del universo expandido</b>')
+        lines.append('')
+        for slot, old, new in discoveries:
+            lines.append(f'  • <b>{slot}</b>: {old} → <b>{new}</b>')
+    if rotations:
+        if lines:
+            lines.append('')
+        lines.append('🔄 <b>Rotación de estrategias clásicas</b>')
+        lines.append('')
+        for slot, old, new in rotations:
+            lines.append(f'  • <b>{slot}</b>: {old} → <b>{new}</b>')
+    lines.append('')
+    msg = '\n'.join(lines)
+
+    if send_telegram(msg):
+        log(f'Notified: {len(discoveries)} discoveries + {len(rotations)} rotations en 1 mensaje')
+        # Solo guardar el nuevo baseline SI el send fue exitoso
+        # (si falla, próximo run reintenta el mismo mensaje)
+        NOTIFIED_PATH.write_text(json.dumps({
+            'champions': current,
+            'last_notified_at': datetime.now().isoformat(),
+            'changes_summary': {
+                'discoveries': len(discoveries),
+                'rotations': len(rotations),
+            },
+        }, indent=2))
+    else:
+        log('Send falló — no actualizo NOTIFIED_PATH (reintento próximo run)')
+
+
+if __name__ == '__main__':
+    main()

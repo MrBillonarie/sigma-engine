@@ -1,0 +1,126 @@
+//@version=6
+// ╔══════════════════════════════════════════════════════════════════════════════╗
+// ║  SIGMA K1 15M — MOMENTUM BURST                                             ║
+// ║  OOS (146d): 112T | WR 45.5% | CAGR +35.7%/año | Calmar 3.96             ║
+// ║  ATENCION: Validez media — monitorear primeras 4 semanas en papel          ║
+// ╚══════════════════════════════════════════════════════════════════════════════╝
+strategy("SIGMA K1 15M — Momentum Burst", overlay=true,
+         default_qty_type=strategy.percent_of_equity, default_qty_value=100,
+         commission_type=strategy.commission.percent, commission_value=0.04,
+         slippage=2, initial_capital=1000, pyramiding=0,
+         process_orders_on_close=false, calc_on_every_tick=false)
+
+// ── INPUTS ────────────────────────────────────────────────────────────────────
+i_n        = input.int(3,     "Barras momentum",      group="Señal")
+i_thresh   = input.float(1.2, "Umbral % aceleracion", group="Señal", minval=0.1, maxval=5.0)
+i_fast     = input.int(12,    "EMA rapida",            group="Señal")
+i_slow     = input.int(21,    "EMA lenta",             group="Señal")
+i_cooldown = input.int(5,     "Cooldown (barras)",     group="Señal")
+i_sl_m     = input.float(2.5, "SL x ATR",             group="SL/TP")
+i_tp_m     = input.float(4.0, "TP x ATR",             group="SL/TP")
+i_risk     = input.float(1.0, "Riesgo % / trade",     group="Risk", minval=0.1, maxval=3.0)
+i_alerts   = input.bool(true, "Enviar alertas",        group="Conexion")
+
+// ── INDICADORES ───────────────────────────────────────────────────────────────
+atr_v    = ta.atr(14)
+ema_f    = ta.ema(close, i_fast)
+ema_s    = ta.ema(close, i_slow)
+bull_v   = ema_f > ema_s
+bear_v   = ema_f < ema_s
+vol_avg  = ta.sma(volume, 20)
+
+// HTF 1H para filtro de tendencia
+ema50_1h  = request.security(syminfo.tickerid, "60", ta.ema(close, 50),  lookahead=barmerge.lookahead_off)
+ema200_1h = request.security(syminfo.tickerid, "60", ta.ema(close, 200), lookahead=barmerge.lookahead_off)
+htf_bull  = ema50_1h > ema200_1h
+htf_bear  = ema50_1h < ema200_1h
+
+// ── MOMENTUM BURST ────────────────────────────────────────────────────────────
+// Precio acelera i_n barras en la direccion de la tendencia con volumen alto
+ret_n   = (close - close[i_n]) / close[i_n] * 100
+vol_ok  = volume > vol_avg
+
+signal_long  = ret_n > i_thresh and bull_v and htf_bull and vol_ok
+signal_short = ret_n < -i_thresh and bear_v and htf_bear and vol_ok
+
+// Cooldown entre señales
+var int bars_cd = 0
+bars_cd := bars_cd > 0 ? bars_cd - 1 : 0
+
+entry_long  = signal_long  and bars_cd == 0 and strategy.position_size == 0
+entry_short = signal_short and bars_cd == 0 and strategy.position_size == 0
+
+if entry_long or entry_short
+    bars_cd := i_cooldown
+
+// ── POSICION ─────────────────────────────────────────────────────────────────
+var float ref_sl   = na
+var float ref_tp   = na
+var string side_v  = ""
+var float rr_plan  = i_tp_m / i_sl_m
+
+if entry_long
+    ref_sl  := close - atr_v * i_sl_m
+    ref_tp  := close + atr_v * i_tp_m
+    side_v  := "LONG"
+    strategy.entry("Long", strategy.long)
+
+if entry_short
+    ref_sl  := close + atr_v * i_sl_m
+    ref_tp  := close - atr_v * i_tp_m
+    side_v  := "SHORT"
+    strategy.entry("Short", strategy.short)
+
+if strategy.position_size > 0
+    strategy.exit("L_Exit", "Long",  stop=ref_sl, limit=ref_tp, comment="EXIT")
+if strategy.position_size < 0
+    strategy.exit("S_Exit", "Short", stop=ref_sl, limit=ref_tp, comment="EXIT")
+
+// ── ALERTAS ───────────────────────────────────────────────────────────────────
+var float rr_real_v = 0.0
+if strategy.position_size != 0 and not na(ref_sl)
+    rr_real_v := (close - strategy.position_avg_price) / math.max(math.abs(strategy.position_avg_price - ref_sl), 0.0001) * (strategy.position_size > 0 ? 1.0 : -1.0)
+else
+    rr_real_v := 0.0
+
+sess_str  = hour(time,"UTC") >= 8  and hour(time,"UTC") < 12 ? "LONDON" : hour(time,"UTC") >= 13 and hour(time,"UTC") < 20 ? "NY_AM" : "ASIA"
+trend_str = bull_v and htf_bull ? "TREND_BULL" : bear_v and htf_bear ? "TREND_BEAR" : "MIXED"
+
+if (entry_long or entry_short) and i_alerts
+    dir_s = entry_long ? "LONG" : "SHORT"
+    sl_a  = entry_long ? close - atr_v * i_sl_m : close + atr_v * i_sl_m
+    tp_a  = entry_long ? close + atr_v * i_tp_m : close - atr_v * i_tp_m
+    msg   = str.tostring(time) + "," + syminfo.ticker + "," + dir_s + ",0,MOMENTUM," + trend_str + "," + sess_str + "," + str.tostring(close,"#.##") + "," + str.tostring(sl_a,"#.##") + "," + str.tostring(tp_a,"#.##") + "," + str.tostring(tp_a,"#.##") + ",0," + str.tostring(rr_plan,"#.##") + ",0," + str.tostring(i_risk,"#.##") + ",0,0,OPEN,0,0,SIGMA_15M_MOMENTUM"
+    alert(msg, alert.freq_once_per_bar_close)
+
+if strategy.position_size[1] != 0 and strategy.position_size == 0 and i_alerts
+    win_s = strategy.netprofit > strategy.netprofit[1] ? "WIN" : "LOSS"
+    pnl_v = strategy.netprofit - strategy.netprofit[1]
+    msg_c = "CLOSE," + syminfo.ticker + "," + side_v + "," + win_s + "," + str.tostring(close,"#.##") + "," + str.tostring(pnl_v,"#.##") + "," + str.tostring(rr_real_v,"#.##")
+    alert(msg_c, alert.freq_once_per_bar_close)
+
+// ── VISUALIZACION ─────────────────────────────────────────────────────────────
+plot(ema_f, "EMA Fast", color.new(color.yellow, 20), 1)
+plot(ema_s, "EMA Slow", color.new(color.orange, 20), 2)
+plot(strategy.position_size != 0 ? ref_sl : na, "SL", color.new(color.red,  0), 2, plot.style_linebr)
+plot(strategy.position_size != 0 ? ref_tp : na, "TP", color.new(color.lime, 0), 2, plot.style_linebr)
+
+plotshape(entry_long,  "LONG",  shape.triangleup,   location.belowbar, color.lime, size=size.small)
+plotshape(entry_short, "SHORT", shape.triangledown, location.abovebar, color.red,  size=size.small)
+
+bgcolor(entry_long  ? color.new(color.green, 88) : na)
+bgcolor(entry_short ? color.new(color.red,   88) : na)
+
+// Tabla info
+var table tb = table.new(position.top_right, 2, 5, bgcolor=color.new(color.navy,60), border_width=1)
+if barstate.islast
+    table.cell(tb,0,0,"SIGMA 15M",      text_color=color.white,  bgcolor=color.navy, text_size=size.normal)
+    table.cell(tb,1,0,"MOMENTUM BURST", text_color=color.yellow, bgcolor=color.navy, text_size=size.small)
+    table.cell(tb,0,1,"Tendencia",text_color=color.gray, text_size=size.tiny)
+    table.cell(tb,1,1,trend_str,  text_color=bull_v and htf_bull ? color.lime : bear_v and htf_bear ? color.red : color.gray, text_size=size.tiny)
+    table.cell(tb,0,2,"Sesion",   text_color=color.gray, text_size=size.tiny)
+    table.cell(tb,1,2,sess_str,   text_color=color.white, text_size=size.tiny)
+    table.cell(tb,0,3,"Momentum", text_color=color.gray, text_size=size.tiny)
+    table.cell(tb,1,3,str.tostring(math.round(ret_n,2))+"%", text_color=math.abs(ret_n)>i_thresh?color.lime:color.gray, text_size=size.tiny)
+    table.cell(tb,0,4,"Cooldown", text_color=color.gray, text_size=size.tiny)
+    table.cell(tb,1,4,str.tostring(bars_cd)+" bars", text_color=bars_cd>0?color.red:color.lime, text_size=size.tiny)

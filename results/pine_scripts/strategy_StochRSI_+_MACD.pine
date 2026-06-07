@@ -1,0 +1,45 @@
+//@version=5
+strategy("StochRSI + MACD — BTC/USDT 15m", overlay=true,
+         default_qty_type=strategy.percent_of_equity, default_qty_value=100,
+         commission_type=strategy.commission.percent, commission_value=0.04,
+         initial_capital=10000)
+
+// ── Inputs ──────────────────────────────────────────────────────────────────
+rsiLen    = input.int(14, "RSI Periodo")
+stochLen  = input.int(14, "Stoch Periodo")
+kSmooth   = input.int(3,  "K Suavizado")
+dSmooth   = input.int(3,  "D Suavizado")
+macdFast  = input.int(12, "MACD Rapida")
+macdSlow  = input.int(26, "MACD Lenta")
+macdSig   = input.int(9,  "MACD Señal")
+slMult    = input.float(1.5, "SL ATR Mult")
+tpMult    = input.float(2.5, "TP ATR Mult")
+atrLen    = input.int(14,   "ATR Periodo")
+
+// ── Indicadores ─────────────────────────────────────────────────────────────
+rsi               = ta.rsi(close, rsiLen)
+stochK            = ta.sma(ta.stoch(rsi, rsi, rsi, stochLen), kSmooth)
+stochD            = ta.sma(stochK, dSmooth)
+[macdLine, sig, hist] = ta.macd(close, macdFast, macdSlow, macdSig)
+atr               = ta.atr(atrLen)
+
+// ── Señales ─────────────────────────────────────────────────────────────────
+longCond  = ta.crossover(stochK,  stochD) and stochK < 50 and hist > 0
+shortCond = ta.crossunder(stochK, stochD) and stochK > 50 and hist < 0
+
+// ── Entradas y salidas ──────────────────────────────────────────────────────
+if longCond
+    sl = close - atr * slMult
+    tp = close + atr * tpMult
+    strategy.entry("Long",  strategy.long)
+    strategy.exit("Long TP/SL", "Long",  stop=sl, limit=tp)
+
+if shortCond
+    sl = close + atr * slMult
+    tp = close - atr * tpMult
+    strategy.entry("Short", strategy.short)
+    strategy.exit("Short TP/SL", "Short", stop=sl, limit=tp)
+
+// ── Plots ────────────────────────────────────────────────────────────────────
+bgcolor(longCond  ? color.new(color.green, 90) : na)
+bgcolor(shortCond ? color.new(color.red,   90) : na)

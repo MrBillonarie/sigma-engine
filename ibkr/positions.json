@@ -1,0 +1,35 @@
+{
+  "as_of": "2026-05-21T22:00:21.390116+00:00",
+  "positions": [
+    {
+      "symbol": "TSLA",
+      "direction": "long",
+      "pct_portfolio": 15.59,
+      "pnl_pct": 25.01,
+      "has_price": true
+    },
+    {
+      "symbol": "IBKR",
+      "direction": "long",
+      "pct_portfolio": 1.48,
+      "pnl_pct": 63.49,
+      "has_price": true
+    },
+    {
+      "symbol": "SPOT",
+      "direction": "long",
+      "pct_portfolio": 48.82,
+      "pnl_pct": -2.86,
+      "has_price": true
+    },
+    {
+      "symbol": "IGV",
+      "direction": "long",
+      "pct_portfolio": 13.9,
+      "pnl_pct": -14.59,
+      "has_price": true
+    }
+  ],
+  "n_positions": 4,
+  "_privacy_note": "Only ratios and percentages exposed. Absolute USD values intentionally redacted."
+}

@@ -1,0 +1,46 @@
+{
+  "symbol": "BNB/USDT",
+  "tf": "1h",
+  "strategy": "tma_bands",
+  "params": {
+    "sl_mult": 2.2,
+    "tp_mult": 2.2,
+    "cooldown": 9,
+    "rsi_w_thr": 46,
+    "tma_period": 25,
+    "atr_mult": 1.1
+  },
+  "risk_pct": 5.0,
+  "metrics_is": {
+    "trades": 401,
+    "wr": 58.1,
+    "cagr": 62.4,
+    "dd": -48.4,
+    "pf": 1.17,
+    "trades_year": 80.3
+  },
+  "metrics_oos": {
+    "trades": 143,
+    "wr": 60.1,
+    "cagr": 3.8,
+    "dd": -11.6,
+    "pf": 1.1,
+    "trades_year": 84.2
+  },
+  "saved_at": "2026-05-08 21:08:18.024182",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 64.5,
+      "median": 7.8,
+      "ic95_lo": -77.5,
+      "ic95_hi": 40.3,
+      "n_trades": 153,
+      "n_sims": 2000,
+      "passed": false
+    },
+    "confidence": "MEDIA",
+    "validated_at": "2026-05-08 23:19:26.554495"
+  },
+  "reeval_date": "2026-05-09 18:14",
+  "reeval_note": "funding+slippage aplicados"
+}

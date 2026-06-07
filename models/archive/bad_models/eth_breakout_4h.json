@@ -1,0 +1,45 @@
+{
+  "symbol": "ETH/USDT",
+  "tf": "4h",
+  "strategy": "breakout",
+  "params": {
+    "lookback": 29,
+    "vol_mult": 1.4,
+    "sl_mult": 3.5,
+    "tp_mult": 1.9,
+    "cooldown": 5,
+    "rsi_w_thr": 59
+  },
+  "risk_pct": 3.8,
+  "metrics_is": {
+    "trades": 95,
+    "wr": 81.1,
+    "cagr": 19.2,
+    "dd": -15.3,
+    "pf": 2.13,
+    "trades_year": 18.4
+  },
+  "metrics_oos": {
+    "trades": 10,
+    "wr": 60.0,
+    "cagr": 1.0,
+    "dd": -1.5,
+    "pf": 1.62,
+    "trades_year": 7.8
+  },
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 82.2,
+      "median": 67.8,
+      "ic95_lo": -41.4,
+      "ic95_hi": 276.3,
+      "n_trades": 7,
+      "n_sims": 2000,
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "validated_at": "2026-05-08 23:47:58.338053"
+  },
+  "reeval_date": "2026-05-09 18:19",
+  "reeval_note": "funding+slippage aplicados"
+}

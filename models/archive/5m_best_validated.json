@@ -1,0 +1,24 @@
+{
+  "tf": "5m",
+  "strategy": "Cascade 1H->5m",
+  "params": {
+    "window": 20,
+    "sl_mult": 1.0,
+    "tp_mult": 12.0,
+    "use_1h_tp": true,
+    "min_rr": 5.0,
+    "cooldown": 36
+  },
+  "risk_pct": 0.5,
+  "metrics_oos": {
+    "trades": 8.0,
+    "wr": 50.0,
+    "cagr": 0.6477,
+    "dd": -2.3624,
+    "pf": 1.2727,
+    "rr": 1.2727,
+    "trades_month": 0.3992
+  },
+  "trading_ready": false,
+  "note": "8 trades OOS - insuficiente para produccion"
+}

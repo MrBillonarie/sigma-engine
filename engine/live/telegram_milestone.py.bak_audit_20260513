@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+"""
+Monitor de milestones del grupo CODIGO SIGMA.
+Cada vez que el numero de miembros cruza un multiplo de 10, manda un CTA al grupo
+pidiendo que compartan el invite link. No menciona ninguna URL del VPS.
+
+Estado persistido en /opt/sigma/results/reports/tg_milestone.txt
+(ultimo milestone enviado, p.ej. 30, 40, 50...).
+
+Cron/timer cada 5-10 minutos.
+"""
+import urllib.request, urllib.parse, json, sys, os
+from pathlib import Path
+from datetime import datetime
+
+TOKEN      = '8708341743:AAF62P6YowiZVt17kBR_4S_pFbwwJ_AM-ms'
+CHAT_ID    = '-1003787411069'
+INVITE_URL = 'https://t.me/+nHIxMsXbvlQ0ZGQx'
+STATE_FILE = Path('/opt/sigma/results/reports/tg_milestone.txt')
+LOG_FILE   = Path('/opt/sigma/results/reports/tg_milestone.log')
+
+
+def log(msg):
+    ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    line = f'[{ts}] {msg}\n'
+    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with open(LOG_FILE, 'a', encoding='utf-8') as f:
+        f.write(line)
+
+
+def get_member_count():
+    url = f'https://api.telegram.org/bot{TOKEN}/getChatMemberCount?chat_id={CHAT_ID}'
+    with urllib.request.urlopen(url, timeout=15) as r:
+        data = json.loads(r.read())
+    if not data.get('ok'):
+        raise RuntimeError(f'Telegram API error: {data}')
+    return int(data['result'])
+
+
+def send_message(text):
+    url = f'https://api.telegram.org/bot{TOKEN}/sendMessage'
+    payload = urllib.parse.urlencode({
+        'chat_id': CHAT_ID,
+        'text': text,
+        'parse_mode': 'HTML',
+        'disable_web_page_preview': 'false',
+    }).encode('utf-8')
+    req = urllib.request.Request(url, data=payload)
+    with urllib.request.urlopen(req, timeout=15) as r:
+        return json.loads(r.read())
+
+
+def read_last_milestone():
+    if not STATE_FILE.exists():
+        return 0
+    try:
+        return int(STATE_FILE.read_text().strip())
+    except:
+        return 0
+
+
+def write_last_milestone(n):
+    STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
+    STATE_FILE.write_text(str(n))
+
+
+def build_message(milestone):
+    """Construye un CTA variado segun el milestone."""
+    base = f"""<b>SOMOS {milestone} EN CODIGO SIGMA</b>
+
+El sistema corre 24/7, optimiza modelos con miles de simulaciones y publica los mejores en este canal — todo gratis para los que esten aca desde temprano.
+
+<b>Para llegar a {milestone + 10}:</b>
+Compartan el grupo con quien quiera operar con senales sistematicas y backtesteadas. Cuantos mas seamos, mas valor genera para todos.
+
+{INVITE_URL}
+
+Reenvien este mensaje, manden el link, suman a un amigo. Vamos por mas."""
+    return base
+
+
+def main():
+    try:
+        count = get_member_count()
+    except Exception as e:
+        log(f'ERROR get_member_count: {e}')
+        sys.exit(1)
+
+    last = read_last_milestone()
+    # Milestone actual = mayor multiplo de 10 <= count
+    current_milestone = (count // 10) * 10
+
+    log(f'Miembros={count} ultimo_milestone_enviado={last} milestone_actual={current_milestone}')
+
+    if current_milestone > last and current_milestone >= 10:
+        msg = build_message(current_milestone)
+        try:
+            resp = send_message(msg)
+            if resp.get('ok'):
+                write_last_milestone(current_milestone)
+                log(f'OK: milestone {current_milestone} enviado')
+            else:
+                log(f'ERROR sendMessage: {resp}')
+        except Exception as e:
+            log(f'ERROR send: {e}')
+    else:
+        log('Sin cambio')
+
+
+if __name__ == '__main__':
+    main()

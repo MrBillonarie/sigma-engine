@@ -1,0 +1,259 @@
+//@version=6
+// SIGMA ENGINE STRATEGY v1.0 — Backtest + Paper Trading + Alertas
+// Auto-detecta par+TF y aplica modelo validado del VPS
+strategy("SIGMA ENGINE STR v1.0", shorttitle="SIG ENG STR",
+    overlay                 = true,
+    initial_capital         = 1000,
+    default_qty_type        = strategy.fixed,
+    default_qty_value       = 1,
+    commission_type         = strategy.commission.percent,
+    commission_value        = 0.04,
+    slippage                = 1,
+    pyramiding              = 0,
+    process_orders_on_close = true,
+    calc_on_every_tick      = false,
+    max_bars_back           = 500)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INPUTS
+// ─────────────────────────────────────────────────────────────────────────────
+capital      = input.float(1000.0, "Capital ($)",     group="Risk")
+risk_pct_in  = input.float(3.0,    "Risk % base",     group="Risk", step=0.1)
+qty_tp1      = input.float(0.5,    "% cerrar en TP1", group="Risk", minval=0.1, maxval=0.9, step=0.1)
+data_export  = input.bool(true,    "Alert Make.com",  group="Alertas")
+show_hud     = input.bool(true,    "Mostrar HUD",     group="Display")
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FUNCIONES
+// ─────────────────────────────────────────────────────────────────────────────
+f_cell(tbl, col, row, txt, fg) =>
+    table.cell(tbl, col, row, txt,
+        text_color=fg, bgcolor=color.rgb(14,18,36),
+        text_size=size.tiny, text_font_family=font.family_monospace)
+
+// Lookup table: par+TF → parametros del modelo VPS
+f_params() =>
+    _tk = syminfo.ticker
+    _tf = timeframe.period
+    // Modelos VALIDADOS estadisticamente (suficientes trades OOS)
+    _s15_ra = str.contains(_tk,"SOL") and _tf=="15"   // +93.3% WR 57%  173t  regime_adaptive
+    _e1_bk  = str.contains(_tk,"ETH") and _tf=="60"   // +65.3% WR 64%   14t  breakout
+    _s4_tb  = str.contains(_tk,"SOL") and _tf=="240"  // +36.9% WR 75%  —     tma_bands
+    _s5_mr  = str.contains(_tk,"SOL") and _tf=="5"    // +26.0% WR 83%  —     mean_rev
+    _b4_bk  = str.contains(_tk,"BNB") and _tf=="240"  // +23.8% WR 69%  —     breakout
+    _e15_tb = str.contains(_tk,"ETH") and _tf=="15"   // +20.4% WR 72%  —     tma_bands
+    _s1_tb  = str.contains(_tk,"SOL") and _tf=="60"   // +18.0% WR 67%  —     tma_bands
+    _e4_tb  = str.contains(_tk,"ETH") and _tf=="240"  // +12.1% WR 81%  —     tma_bands
+    _b1_tb  = str.contains(_tk,"BNB") and _tf=="60"   // +71.6% WR 60%  —     tma_bands (banda ajustada)
+    // BTC 4H removido: 18 trades OOS, RR=0.53, requiere WR>65% — no confiable
+    _e_st = _s15_ra?"regime_adaptive":_e1_bk?"breakout_long":_s4_tb?"tma_bands":_s5_mr?"mean_rev_long":_b4_bk?"breakout_long":_e15_tb?"tma_bands":_s1_tb?"tma_bands":_e4_tb?"tma_bands":_b1_tb?"tma_bands":"breakout_long"
+    // Lookback / TMA period segun modelo
+    _lb = _s15_ra?37:_e1_bk?31:_s4_tb?12:_s5_mr?50:_b4_bk?65:_e15_tb?13:_s1_tb?22:_e4_tb?16:_b1_tb?25:50
+    // Vol mult
+    _vm = _s15_ra?2.8:_e1_bk?3.4:_s4_tb?2.0:_s5_mr?2.0:_b4_bk?1.2:_e15_tb?2.0:_s1_tb?2.0:_e4_tb?2.0:_b1_tb?2.0:2.0
+    // ATR mult para bandas TMA
+    _am = _b1_tb?1.1:_s4_tb?1.5:_e15_tb?2.4:_s1_tb?2.1:_e4_tb?2.3:1.5
+    _sl = _s15_ra?3.0:_e1_bk?1.7:_s4_tb?2.9:_s5_mr?3.5:_b4_bk?2.2:_e15_tb?3.2:_s1_tb?3.5:_e4_tb?3.5:_b1_tb?2.2:2.0
+    _tp = _s15_ra?2.7:_e1_bk?2.4:_s4_tb?1.6:_s5_mr?3.1:_b4_bk?3.7:_e15_tb?1.6:_s1_tb?2.2:_e4_tb?1.6:_b1_tb?2.2:2.5
+    _cd = _s15_ra?12:_e1_bk?8:_s4_tb?9:_s5_mr?8:_b4_bk?9:_e15_tb?11:_s1_tb?13:_e4_tb?13:_b1_tb?9:8
+    _rw = _s15_ra?45:_e1_bk?62:_s4_tb?54:_s5_mr?44:_b4_bk?59:_e15_tb?50:_s1_tb?48:_e4_tb?60:_b1_tb?46:55
+    _ro = _s5_mr?35:_s15_ra?35:35
+    _cg = _s15_ra?93.3:_e1_bk?65.3:_s4_tb?36.9:_s5_mr?26.0:_b4_bk?23.8:_e15_tb?20.4:_s1_tb?18.0:_e4_tb?12.1:_b1_tb?71.6:0.0
+    _wr = _s15_ra?57.2:_e1_bk?64.3:_s4_tb?75.0:_s5_mr?83.3:_b4_bk?69.2:_e15_tb?72.3:_s1_tb?66.7:_e4_tb?81.0:_b1_tb?60.0:0.0
+    _cf = _s15_ra?"ALTA":_e1_bk?"ALTA":_s4_tb?"ALTA":_s5_mr?"ALTA":_b4_bk?"MEDIA":_e15_tb?"ALTA":_s1_tb?"ALTA":_e4_tb?"ALTA":_b1_tb?"ALTA":"PENDIENTE"
+    _rk = _s5_mr?2.0:_s15_ra?3.3:_e1_bk?4.5:_s4_tb?3.5:_b4_bk?4.5:_e15_tb?3.5:_s1_tb?3.5:_e4_tb?3.5:_b1_tb?4.0:risk_pct_in
+    // Adaptive asymmetric params (solo para regime_adaptive)
+    _slml = _s15_ra?2.7:_sl   // sl_mult_long  adaptive
+    _tpml = _s15_ra?4.7:_tp   // tp_mult_long  adaptive (TP amplio en bull)
+    _slms = _s15_ra?2.4:_sl   // sl_mult_short adaptive (mas ajustado)
+    _tpms = _s15_ra?2.0:_tp   // tp_mult_short adaptive (bear rapido)
+    _rwb  = _s15_ra?64:_rw    // rsi_w_bull threshold para long
+    _rwbr = _s15_ra?47:_rw    // rsi_w_bear threshold para short (< umbral)
+    [_st,_lb,_vm,_am,_sl,_tp,_cd,_rw,_ro,_cg,_wr,_cf,_rk,_slml,_tpml,_slms,_tpms,_rwb,_rwbr]
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CALCULOS BASE
+// ─────────────────────────────────────────────────────────────────────────────
+_tf_m    = timeframe.in_seconds(timeframe.period) / 60
+tf_label = _tf_m<=1?"1M":_tf_m<=5?"5M":_tf_m<=15?"15M":_tf_m<=30?"30M":_tf_m<=60?"1H":_tf_m<=240?"4H":_tf_m<=1440?"D":"W"
+
+[e_st,e_lb,e_vm,e_am,e_sl,e_tp,e_cd,e_rw,e_ro,e_cg,e_wr,e_cf,e_rk,e_slml,e_tpml,e_slms,e_tpms,e_rwb,e_rwbr] = f_params()
+
+atr    = ta.atr(14)
+ema200 = ta.ema(close, 200)
+// vol_ma adaptativo por TF igual que VPS (tf_vol_ma_len = 300/tf_mins)
+_tfm   = math.max(timeframe.in_seconds(timeframe.period)/60, 1)
+_vml   = math.max(5, math.min(300, math.round(300.0/_tfm)))
+vol_ma = ta.sma(volume, _vml)
+rsi14  = ta.rsi(close, 14)
+
+rsi_w_raw = request.security(syminfo.tickerid, "W", ta.rsi(close,14), lookahead=barmerge.lookahead_off)
+rsi_w     = ta.valuewhen(not na(rsi_w_raw), rsi_w_raw, 0)
+
+// Regimen ENGINE (RSI-W + EMA200)
+reg_bull  = rsi_w > e_rw and close > ema200
+reg_bear  = rsi_w < 40   or  close < ema200 * 0.97
+reg_range = not reg_bull and not reg_bear
+
+// Niveles de referencia para la estrategia
+prev_high = ta.highest(high, e_lb)[1]
+prev_low  = ta.lowest(low,   e_lb)[1]
+vol_ok    = volume > vol_ma * e_vm
+
+// Cooldown — inicializado negativo para que la primera barra pueda operar
+var int last_sig = -500
+bar_dist = bar_index - last_sig
+
+// Regime gate — igual que VPS:
+// tradeable_long  = bull OR range (con filtro rsi14 < 50 en range)
+// tradeable_short = bear OR range (con filtro rsi14 > 52 en range)
+vps_bull  = rsi_w > 55 and close > ema200
+vps_range = rsi_w >= 40 and rsi_w <= 55
+vps_bear  = rsi_w < 40  or  close < ema200 * 0.97
+t_long  = (vps_bull or vps_range) and (not vps_range or rsi14 < 50)
+t_short = (vps_bear or vps_range) and (not vps_range or rsi14 > 52)
+
+// bull_ok de cada estrategia (usa rsi_w_thr del modelo)
+bull_ok = rsi_w > e_rw
+
+// TMA (Triple Moving Average) — doble suavizado del SMA, igual al VPS
+tma_sma   = ta.sma(close, e_lb)
+tma_line  = ta.sma(tma_sma, e_lb)
+tma_lower = tma_line - atr * e_am
+tma_upper = tma_line + atr * e_am
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SEÑALES — logica exacta del VPS para cada estrategia
+// ─────────────────────────────────────────────────────────────────────────────
+// breakout: close > highest(high, lb)[1] + vol + above_200 + bull_ok + regime gate
+sig_bkl = e_st=="breakout_long"   and close>prev_high and vol_ok and close>ema200 and bull_ok and t_long  and bar_dist>=e_cd
+
+// breakdown: close < lowest(low, lb)[1] + vol + below_200 + regime gate short
+sig_bds = e_st=="breakdown_short" and close<prev_low  and vol_ok and close<ema200             and t_short and bar_dist>=e_cd
+
+// mean_rev: rsi14 oversold + above_200 + bull_ok + regime gate long (bull OR range)
+sig_mrl = e_st=="mean_rev_long"   and rsi14<e_ro      and close>ema200            and bull_ok and t_long  and bar_dist>=e_cd
+
+// tma_bands LONG: rebote desde banda inferior
+sig_tma_l = e_st=="tma_bands"     and close<=tma_lower and close>ema200 and bull_ok and t_long  and bar_dist>=e_cd
+// tma_bands SHORT: rechazo desde banda superior (incluido en VPS)
+sig_tma_s = e_st=="tma_bands"     and close>=tma_upper and close<ema200 and not bull_ok        and t_short and bar_dist>=e_cd
+
+// regime_adaptive: umbrales asimetricos del modelo (rsi_w_bull / rsi_w_bear)
+sig_abl   = e_st=="regime_adaptive" and close>prev_high and vol_ok and close>ema200 and rsi_w>e_rwb  and t_long  and bar_dist>=e_cd
+sig_abs   = e_st=="regime_adaptive" and close<prev_low  and vol_ok and close<ema200 and rsi_w<e_rwbr and t_short and bar_dist>=e_cd
+// range: rsi14 < 35 long / rsi14 > 68 short (hardcoded en VPS)
+sig_amrl  = e_st=="regime_adaptive" and vps_range and rsi14<35 and close>ema200 and bar_dist>=e_cd
+sig_amrs  = e_st=="regime_adaptive" and vps_range and rsi14>68 and close<ema200 and bar_dist>=e_cd
+
+eng_long  = sig_bkl or sig_mrl or sig_tma_l or sig_abl or sig_amrl
+eng_short = sig_bds or sig_tma_s or sig_abs or sig_amrs
+
+if eng_long or eng_short
+    last_sig := bar_index
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SL / TP — adaptive tiene params asimetricos, resto usa mismos para ambos lados
+// ─────────────────────────────────────────────────────────────────────────────
+_is_adap = e_st == "regime_adaptive"
+_slm_l   = _is_adap ? e_slml : e_sl
+_tpm_l   = _is_adap ? e_tpml : e_tp
+_slm_s   = _is_adap ? e_slms : e_sl
+_tpm_s   = _is_adap ? e_tpms : e_tp
+
+sl_long  = close - atr * _slm_l
+sl_short = close + atr * _slm_s
+tp1_long = close + atr * _tpm_l
+tp2_long = close + atr * _tpm_l * 1.5
+tp1_short= close - atr * _tpm_s
+tp2_short= close - atr * _tpm_s * 1.5
+
+sl_p  = eng_long  ? sl_long  : eng_short ? sl_short : float(na)
+tp1_p = eng_long  ? tp1_long : eng_short ? tp1_short: float(na)
+tp2_p = eng_long  ? tp2_long : eng_short ? tp2_short: float(na)
+rr    = e_tp / e_sl
+
+// Position sizing por riesgo (usa SL del lado correspondiente)
+sl_dist_l = atr * _slm_l
+sl_dist_s = atr * _slm_s
+risk_usd  = capital * e_rk / 100
+qty_long  = sl_dist_l > 0 and close > 0 ? risk_usd / sl_dist_l : 0.0
+qty_short = sl_dist_s > 0 and close > 0 ? risk_usd / sl_dist_s : 0.0
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EJECUCION
+// ─────────────────────────────────────────────────────────────────────────────
+if eng_long and strategy.position_size == 0
+    strategy.entry("LONG", strategy.long, qty=qty_long)
+    strategy.exit("L_TP1", "LONG", qty_percent=qty_tp1*100, stop=sl_long,  limit=tp1_long)
+    strategy.exit("L_TP2", "LONG",                           stop=sl_long,  limit=tp2_long)
+
+if eng_short and strategy.position_size == 0
+    strategy.entry("SHORT", strategy.short, qty=qty_short)
+    strategy.exit("S_TP1", "SHORT", qty_percent=qty_tp1*100, stop=sl_short, limit=tp1_short)
+    strategy.exit("S_TP2", "SHORT",                           stop=sl_short, limit=tp2_short)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ALERTA MAKE.COM cuando la strategy ejecuta
+// ─────────────────────────────────────────────────────────────────────────────
+if data_export and (eng_long or eng_short) and barstate.isconfirmed and strategy.position_size == 0
+    _d = eng_long ? "LONG" : "SHORT"
+    _s = eng_long ? sl_long  : sl_short
+    _t = eng_long ? tp1_long : tp1_short
+    alert('{"v":"ENGINE_1.0","src":"SIGMA_ENGINE_STR","sym":"' + syminfo.ticker + '","tf":"' + timeframe.period + '","dir":"' + _d + '","strategy":"' + e_st + '","price":' + str.tostring(close,format.mintick) + ',"sl":' + str.tostring(_s,format.mintick) + ',"tp1":' + str.tostring(_t,format.mintick) + ',"model_cagr":' + str.tostring(e_cg,"#.#") + ',"model_conf":"' + e_cf + '"}', alert.freq_once_per_bar_close)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// VISUALES
+// ─────────────────────────────────────────────────────────────────────────────
+bgcolor(reg_bull  ? color.new(color.green,  97) : na)
+bgcolor(reg_bear  ? color.new(color.red,    97) : na)
+bgcolor(reg_range ? color.new(color.yellow, 98) : na)
+
+plot(ema200, "EMA200", color.new(color.orange,30), 1)
+
+plotshape(eng_long,  title="LONG",  style=shape.triangleup,   location=location.belowbar, color=color.yellow, text="E", textcolor=color.black, size=size.large)
+plotshape(eng_short, title="SHORT", style=shape.triangledown, location=location.abovebar, color=color.orange, text="E", textcolor=color.black, size=size.large)
+
+// Lineas SL/TP de la posicion activa
+_avg = strategy.position_avg_price
+_pos = strategy.position_size
+plot(_pos > 0 ? _avg - atr*_slm_l     : _pos < 0 ? _avg + atr*_slm_s     : na, "SL",  color.new(color.red, 20),  2, plot.style_linebr)
+plot(_pos > 0 ? _avg + atr*_tpm_l     : _pos < 0 ? _avg - atr*_tpm_s     : na, "TP1", color.new(color.lime,20),  2, plot.style_linebr)
+plot(_pos > 0 ? _avg + atr*_tpm_l*1.5 : _pos < 0 ? _avg - atr*_tpm_s*1.5 : na, "TP2", color.new(color.lime,50), 1, plot.style_linebr)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HUD
+// ─────────────────────────────────────────────────────────────────────────────
+if show_hud and barstate.islast
+    _in = strategy.position_size != 0
+    _fc = _pos > 0 ? color.lime : _pos < 0 ? color.red : color.new(color.aqua,50)
+
+    t = table.new(position.bottom_right, 2, 5,
+        border_width=0, frame_width=1, frame_color=color.new(_fc,40))
+
+    table.cell(t,0,0,"SIGMA ENGINE",
+        text_color=color.rgb(255,200,0), bgcolor=color.rgb(5,8,20),
+        text_size=size.small, text_font_family=font.family_monospace)
+    table.cell(t,1,0,syminfo.ticker + " - " + tf_label,
+        text_color=color.rgb(100,140,200), bgcolor=color.rgb(5,8,20),
+        text_size=size.small, text_font_family=font.family_monospace)
+
+    _est = _pos > 0 ? "LONG" : _pos < 0 ? "SHORT" : eng_long ? "LONG" : eng_short ? "SHORT" : "ESPERAR"
+    _ec  = _pos > 0 ? color.lime : _pos < 0 ? color.red : eng_long ? color.lime : eng_short ? color.red : color.silver
+    table.cell(t,0,1,"ESTADO", text_color=color.rgb(200,200,200), bgcolor=color.rgb(10,14,30), text_size=size.small, text_font_family=font.family_monospace)
+    table.cell(t,1,1,_est,     text_color=_ec, bgcolor=color.new(_ec, _in?70:88),              text_size=size.small, text_font_family=font.family_monospace)
+
+    // SL/TP correctos segun direccion (long o short)
+    _sl_v = _pos > 0 ? _avg - atr*_slm_l     : _pos < 0 ? _avg + atr*_slm_s     : sl_p
+    _tp_v = _pos > 0 ? _avg + atr*_tpm_l     : _pos < 0 ? _avg - atr*_tpm_s     : tp1_p
+    _t2_v = _pos > 0 ? _avg + atr*_tpm_l*1.5 : _pos < 0 ? _avg - atr*_tpm_s*1.5 : tp2_p
+    _show = _in or eng_long or eng_short
+
+    f_cell(t,0,2,"SL",  color.rgb(140,155,190))
+    f_cell(t,1,2,_show and not na(_sl_v) ? str.tostring(_sl_v,format.mintick) : "---", _show ? color.red  : color.new(color.gray,50))
+
+    f_cell(t,0,3,"TP1", color.rgb(140,155,190))
+    f_cell(t,1,3,_show and not na(_tp_v) ? str.tostring(_tp_v,format.mintick) : "---", _show ? color.lime : color.new(color.gray,50))
+
+    f_cell(t,0,4,"TP2", color.rgb(140,155,190))
+    f_cell(t,1,4,_show and not na(_t2_v) ? str.tostring(_t2_v,format.mintick) : "---", _show ? color.new(color.lime,40) : color.new(color.gray,50))

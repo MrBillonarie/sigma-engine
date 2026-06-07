@@ -1,0 +1,148 @@
+//@version=6
+// ╔══════════════════════════════════════════════════════════════════════════════╗
+// ║  SIGMA K1 4H — WEEKLY PIVOT BREAKOUT                                       ║
+// ║  OOS (299d): 33T | WR 42.4% | CAGR +15.5%/año | RR 2:1                   ║
+// ║  IS  (1197d): 118T | WR 43.2% | CAGR +14.6%/año (muy consistente)        ║
+// ║  Edge: pivots semanales son niveles institucionales objetivos               ║
+// ╚══════════════════════════════════════════════════════════════════════════════╝
+strategy("SIGMA K1 4H — Weekly Pivot", overlay=true,
+         default_qty_type=strategy.percent_of_equity, default_qty_value=100,
+         commission_type=strategy.commission.percent, commission_value=0.04,
+         slippage=2, initial_capital=1000, pyramiding=0,
+         process_orders_on_close=false, calc_on_every_tick=false)
+
+// ── INPUTS ────────────────────────────────────────────────────────────────────
+i_vol_mult = input.float(1.5, "Vol mínimo (x media)",  group="Señal", minval=1.0, maxval=3.0)
+i_cooldown = input.int(6,    "Cooldown (barras 4H)",   group="Señal", minval=2,   maxval=20)
+i_sl_m     = input.float(2.0,"SL x ATR",               group="SL/TP", minval=1.0, maxval=5.0)
+i_tp_m     = input.float(4.0,"TP x ATR",               group="SL/TP", minval=2.0, maxval=10.0)
+i_risk     = input.float(1.5, "Riesgo % / trade",      group="Risk",  minval=0.3, maxval=3.0)
+i_alerts   = input.bool(true, "Enviar alertas",         group="Conexion")
+
+// ── INDICADORES ───────────────────────────────────────────────────────────────
+atr_v    = ta.atr(14)
+ema50_v  = ta.ema(close, 50)
+ema200_v = ta.ema(close, 200)
+vol_ma   = ta.sma(volume, 20)
+bull_v   = ema50_v > ema200_v
+bear_v   = ema50_v < ema200_v
+
+// ── PIVOTS SEMANALES ─────────────────────────────────────────────────────────
+// Pivot Point de la semana ANTERIOR (no lookahead)
+wk_high = request.security(syminfo.tickerid, "W", high[1],  lookahead=barmerge.lookahead_off)
+wk_low  = request.security(syminfo.tickerid, "W", low[1],   lookahead=barmerge.lookahead_off)
+wk_close= request.security(syminfo.tickerid, "W", close[1], lookahead=barmerge.lookahead_off)
+
+pp = (wk_high + wk_low + wk_close) / 3.0
+r1 = 2.0 * pp - wk_low
+s1 = 2.0 * pp - wk_high
+r2 = pp + (wk_high - wk_low)
+s2 = pp - (wk_high - wk_low)
+
+// ── SEÑALES ───────────────────────────────────────────────────────────────────
+vol_ok = volume > vol_ma * i_vol_mult
+
+// Breakout de R1 en uptrend (cierra arriba de R1 cuando antes estaba abajo)
+break_r1 = (close > r1) and (close[1] <= r1) and vol_ok and bull_v
+
+// Breakdown de S1 en downtrend
+break_s1 = (close < s1) and (close[1] >= s1) and vol_ok and bear_v
+
+// Bounce desde PP (retrocede a PP y rebota)
+bounce_pp_long  = (low <= pp * 1.002) and (close > pp) and (close > open) and bull_v
+bounce_pp_short = (high >= pp * 0.998) and (close < pp) and (close < open) and bear_v
+
+entry_long_raw  = break_r1 or bounce_pp_long
+entry_short_raw = break_s1 or bounce_pp_short
+
+// Cooldown entre señales
+var int bars_cd = 0
+bars_cd := bars_cd > 0 ? bars_cd - 1 : 0
+
+entry_long  = entry_long_raw  and bars_cd == 0 and strategy.position_size == 0
+entry_short = entry_short_raw and bars_cd == 0 and strategy.position_size == 0
+
+if entry_long or entry_short
+    bars_cd := i_cooldown
+
+// ── POSICION ─────────────────────────────────────────────────────────────────
+var float ref_sl   = na
+var float ref_tp   = na
+var string side_v  = ""
+var float rr_plan  = i_tp_m / i_sl_m
+
+if entry_long
+    ref_sl := close - atr_v * i_sl_m
+    ref_tp := close + atr_v * i_tp_m
+    side_v := "LONG"
+    strategy.entry("Long", strategy.long)
+
+if entry_short
+    ref_sl := close + atr_v * i_sl_m
+    ref_tp := close - atr_v * i_tp_m
+    side_v := "SHORT"
+    strategy.entry("Short", strategy.short)
+
+if strategy.position_size > 0
+    strategy.exit("L_Exit", "Long",  stop=ref_sl, limit=ref_tp, comment="EXIT")
+if strategy.position_size < 0
+    strategy.exit("S_Exit", "Short", stop=ref_sl, limit=ref_tp, comment="EXIT")
+
+// ── ALERTAS ───────────────────────────────────────────────────────────────────
+var float rr_real_v = 0.0
+if strategy.position_size != 0 and not na(ref_sl)
+    rr_real_v := (close - strategy.position_avg_price) / math.max(math.abs(strategy.position_avg_price - ref_sl), 0.0001) * (strategy.position_size > 0 ? 1.0 : -1.0)
+else
+    rr_real_v := 0.0
+
+trend_str = bull_v ? "TREND_BULL" : bear_v ? "TREND_BEAR" : "MIXED"
+sess_str  = hour(time,"UTC")>=8  and hour(time,"UTC")<12 ? "LONDON" : hour(time,"UTC")>=13 and hour(time,"UTC")<20 ? "NY_AM" : "ASIA"
+sig_type  = break_r1 ? "BREAK_R1" : bounce_pp_long ? "BOUNCE_PP" : break_s1 ? "BREAK_S1" : "BOUNCE_PP_S"
+
+if (entry_long or entry_short) and i_alerts
+    dir_s = entry_long ? "LONG" : "SHORT"
+    sl_a  = entry_long ? close - atr_v*i_sl_m : close + atr_v*i_sl_m
+    tp_a  = entry_long ? close + atr_v*i_tp_m : close - atr_v*i_tp_m
+    msg   = str.tostring(time)+","+syminfo.ticker+","+dir_s+",0,"+sig_type+","+trend_str+","+sess_str+","+str.tostring(close,"#.##")+","+str.tostring(sl_a,"#.##")+","+str.tostring(tp_a,"#.##")+","+str.tostring(tp_a,"#.##")+",0,"+str.tostring(rr_plan,"#.##")+",0,"+str.tostring(i_risk,"#.##")+",0,0,OPEN,0,0,SIGMA_4H_PIVOT_"+sig_type
+    alert(msg, alert.freq_once_per_bar_close)
+
+if strategy.position_size[1] != 0 and strategy.position_size == 0 and i_alerts
+    win_s = strategy.netprofit > strategy.netprofit[1] ? "WIN" : "LOSS"
+    pnl_v = strategy.netprofit - strategy.netprofit[1]
+    msg_c = "CLOSE,"+syminfo.ticker+","+side_v+","+win_s+","+str.tostring(close,"#.##")+","+str.tostring(pnl_v,"#.##")+","+str.tostring(rr_real_v,"#.##")
+    alert(msg_c, alert.freq_once_per_bar_close)
+
+// ── VISUALIZACION ─────────────────────────────────────────────────────────────
+// Líneas de pivots semanales
+plot(pp, "PP",  color.new(color.white,  30), 1, plot.style_circles)
+plot(r1, "R1",  color.new(color.lime,   20), 1, plot.style_circles)
+plot(s1, "S1",  color.new(color.red,    20), 1, plot.style_circles)
+plot(r2, "R2",  color.new(color.lime,   50), 1, plot.style_circles)
+plot(s2, "S2",  color.new(color.red,    50), 1, plot.style_circles)
+plot(ema50_v,  "EMA50",  color.new(color.yellow, 20), 1)
+plot(ema200_v, "EMA200", color.new(color.orange, 20), 2)
+
+plot(strategy.position_size != 0 ? ref_sl : na, "SL", color.new(color.red,  0), 2, plot.style_linebr)
+plot(strategy.position_size != 0 ? ref_tp : na, "TP", color.new(color.lime, 0), 2, plot.style_linebr)
+
+plotshape(entry_long,  "LONG",  shape.triangleup,   location.belowbar, color.lime, size=size.normal)
+plotshape(entry_short, "SHORT", shape.triangledown, location.abovebar, color.red,  size=size.normal)
+
+bgcolor(entry_long  ? color.new(color.green, 88) : na)
+bgcolor(entry_short ? color.new(color.red,   88) : na)
+
+// Tabla info
+var table tb = table.new(position.top_right, 2, 6, bgcolor=color.new(color.navy,60), border_width=1)
+if barstate.islast
+    table.cell(tb,0,0,"SIGMA 4H",          text_color=color.white,  bgcolor=color.navy, text_size=size.normal)
+    table.cell(tb,1,0,"WEEKLY PIVOT",       text_color=color.yellow, bgcolor=color.navy, text_size=size.small)
+    table.cell(tb,0,1,"Tendencia",  text_color=color.gray, text_size=size.tiny)
+    table.cell(tb,1,1,trend_str,    text_color=bull_v?color.lime:bear_v?color.red:color.gray, text_size=size.tiny)
+    table.cell(tb,0,2,"PP semanal", text_color=color.gray, text_size=size.tiny)
+    table.cell(tb,1,2,str.tostring(math.round(pp,0)), text_color=color.white, text_size=size.tiny)
+    table.cell(tb,0,3,"R1 / S1",   text_color=color.gray, text_size=size.tiny)
+    table.cell(tb,1,3,str.tostring(math.round(r1,0))+" / "+str.tostring(math.round(s1,0)), text_color=color.white, text_size=size.tiny)
+    table.cell(tb,0,4,"Sesion",    text_color=color.gray, text_size=size.tiny)
+    table.cell(tb,1,4,sess_str,    text_color=color.white, text_size=size.tiny)
+    table.cell(tb,0,5,"Cooldown",  text_color=color.gray, text_size=size.tiny)
+    table.cell(tb,1,5,str.tostring(bars_cd)+" bars", text_color=bars_cd>0?color.red:color.lime, text_size=size.tiny)

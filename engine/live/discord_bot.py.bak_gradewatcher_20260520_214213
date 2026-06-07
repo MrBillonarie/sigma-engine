@@ -1,0 +1,843 @@
+#!/usr/bin/env python3
+"""
+SIGMA Discord Bot — persistent service
+Slash commands + background notifications mirrored from Telegram.
+
+Channels:
+  estrategias-algo  ← champions nuevos
+  backtesting       ← milestones
+  data-feeds        ← regime/funding updates
+  sigma-broadcasts  ← high-priority anuncios
+  market-alerts     ← funding emergency / drawdown / watchdog
+  sigma-reports     ← morning/evening daily reports
+"""
+import asyncio, json, urllib.request, datetime, time
+from pathlib import Path
+
+import discord
+from discord import app_commands
+from discord.ext import tasks
+
+CONFIG = json.loads(Path("/opt/sigma/config/settings.json").read_text())
+TOKEN     = CONFIG["discord"]["bot_token"]
+GUILD_ID  = CONFIG["discord"]["guild_id"]
+CHANNELS  = CONFIG["discord"]["channel_ids"]
+
+SIGMA_GREEN  = 0x00E676
+SIGMA_BLUE   = 0x2196F3
+SIGMA_ORANGE = 0xFF9800
+SIGMA_RED    = 0xF85149
+SIGMA_PURPLE = 0xA78BFA
+SIGMA_GOLD   = 0xFFD700
+
+API_BASE = "http://localhost:8080"
+
+
+def fetch_json(path, timeout=10):
+    """Fetch json from local web_server API."""
+    try:
+        r = urllib.request.urlopen(f"{API_BASE}{path}", timeout=timeout)
+        return json.loads(r.read())
+    except Exception as e:
+        return None
+
+
+def chile_now():
+    return datetime.datetime.utcnow() - datetime.timedelta(hours=4)
+
+
+# ============================================================================
+# Bot setup
+# ============================================================================
+intents = discord.Intents.default()
+intents.message_content = True
+intents.members = True
+intents.presences = True
+
+class SigmaBot(discord.Client):
+    def __init__(self):
+        super().__init__(intents=intents)
+        self.tree = app_commands.CommandTree(self)
+        self.last_champion_seen = {}      # key: champion json path -> mtime
+        self.last_milestone_seen = 0
+        self.last_emergency_alert = 0
+        self.last_trade_state_mt = 0
+        self.seen_open_keys = set()
+        self.seen_closed_ids = set()
+        self.last_dd_tier = 0             # tracks DD tier already alerted (0 / -5 / -10 / -15)
+        self.daily_brief_sent = {}        # date -> set(slot) so morning/evening posts once
+
+    async def setup_hook(self):
+        # Sync commands to the guild (fast — instant vs global which takes 1h)
+        guild = discord.Object(id=GUILD_ID)
+        self.tree.copy_global_to(guild=guild)
+        await self.tree.sync(guild=guild)
+        print(f"[BOOT] Synced {len(self.tree.get_commands())} commands to guild {GUILD_ID}")
+
+bot = SigmaBot()
+
+
+# ============================================================================
+# Slash commands
+# ============================================================================
+
+@bot.tree.command(name="trades", description="Posiciones abiertas + cola de senales")
+async def cmd_trades(interaction: discord.Interaction):
+    await interaction.response.defer(thinking=True)
+    signals = fetch_json("/api/signals") or {}
+    trades  = fetch_json("/api/trades")  or {}
+
+    regime = signals.get("regime", "?")
+    models = signals.get("models", [])
+
+    # Posiciones abiertas
+    open_t = {}
+    raw = trades.get("open_trades", trades.get("open", {}))
+    if isinstance(raw, dict):
+        open_t = {k: v for k, v in raw.items() if v.get("status") == "open"}
+    elif isinstance(raw, list):
+        open_t = {f"{t['sym']}_{t['tf']}": t for t in raw if t.get("status") == "open"}
+
+    embed = discord.Embed(
+        title=f"📊 Trades · Regimen {regime}",
+        color=SIGMA_GREEN if regime == "BULL" else SIGMA_RED if regime == "BEAR" else SIGMA_ORANGE,
+    )
+
+    if open_t:
+        lines = []
+        for t in open_t.values():
+            isL = t.get("direction", "long") != "short"
+            arrow = "🟢 LONG" if isL else "🔴 SHORT"
+            lines.append(
+                f"{arrow} **{t.get('sym')} {t.get('tf','').upper()}** `{t.get('strategy','?')}` · "
+                f"Entry `{t.get('entry')}` SL `{t.get('sl')}` TP `{t.get('tp')}`"
+            )
+        embed.add_field(name=f"Posiciones abiertas ({len(open_t)})", value="\n".join(lines), inline=False)
+    else:
+        embed.add_field(name="Posiciones abiertas", value="_Sin posiciones abiertas_", inline=False)
+
+    # Cola
+    cola = []
+    for m in models:
+        if m.get("slot", 0) != 0:
+            continue
+        if not (m.get("signal") or m.get("recommendation") == "ACTIVAR"):
+            continue
+        if m.get("grade") not in ("A+", "A", "B"):
+            continue
+        cola.append(m)
+    cola.sort(key=lambda m: (1 if m.get("signal") else 0, m.get("score", 0)), reverse=True)
+    cola = cola[:8]
+    if cola:
+        lines = []
+        for m in cola:
+            isL = m.get("type") != "short"
+            arrow = "🟢 LONG" if isL else "🔴 SHORT"
+            badge = "⚡" if m.get("signal") else "⏳"
+            lines.append(
+                f"{badge} {arrow} **{m.get('sym')} {m.get('tf','').upper()}** `{m.get('strategy','?')}` · "
+                f"Grade {m.get('grade')} · CAGR {m.get('cagr',0):+.1f}%"
+            )
+        embed.add_field(name=f"En cola ({len(cola)})", value="\n".join(lines), inline=False)
+
+    # Armados por regimen
+    armed = [m for m in models
+             if m.get("recommendation") == "ESPERAR"
+             and "regimen" in (m.get("reason") or "").lower()
+             and m.get("grade") in ("A+", "A", "B")]
+    armed.sort(key=lambda m: m.get("cagr", 0) or 0, reverse=True)
+    armed = armed[:6]
+    if armed:
+        lines = []
+        for m in armed:
+            isL = m.get("type") != "short"
+            arrow = "🟢 LONG" if isL else "🔴 SHORT"
+            lines.append(
+                f"{arrow} **{m.get('sym')} {m.get('tf','').upper()}** `{m.get('strategy','?')}` · "
+                f"CAGR {m.get('cagr',0):+.1f}%"
+            )
+        embed.add_field(name=f"🎯 Armados por regimen ({len(armed)})", value="\n".join(lines), inline=False)
+
+    embed.set_footer(text=f"SIGMA ENGINE · {chile_now().strftime('%H:%M')} Chile")
+    await interaction.followup.send(embed=embed)
+
+
+@bot.tree.command(name="status", description="Estado del sistema SIGMA")
+async def cmd_status(interaction: discord.Interaction):
+    await interaction.response.defer(thinking=True)
+    signals = fetch_json("/api/signals") or {}
+    stats   = fetch_json("/api/stats")   or {}
+    trades  = fetch_json("/api/trades")  or {}
+
+    regime = signals.get("regime", "?")
+    n_models = len(signals.get("models", []))
+    n_open = 0
+    raw = trades.get("open_trades", trades.get("open", {}))
+    if isinstance(raw, dict):
+        n_open = sum(1 for v in raw.values() if v.get("status") == "open")
+
+    embed = discord.Embed(
+        title="🚀 SIGMA — Estado del sistema",
+        color=SIGMA_GREEN,
+    )
+    embed.add_field(name="Regimen global", value=f"**{regime}**", inline=True)
+    embed.add_field(name="Champions activos", value=f"`{n_models}` modelos", inline=True)
+    embed.add_field(name="Posiciones abiertas", value=f"`{n_open}` trades", inline=True)
+    embed.add_field(name="Backtest total", value=f"`{stats.get('total', '?'):,}` trades" if isinstance(stats.get('total'), int) else "`?`", inline=True)
+    embed.add_field(name="Tasa simulacion", value=f"`{stats.get('rate_hr', '?')}` trades/h", inline=True)
+    embed.add_field(name="Updated", value=signals.get("updated", "?"), inline=True)
+    embed.set_footer(text=f"SIGMA ENGINE · v1.0 · {chile_now().strftime('%H:%M')} Chile")
+    await interaction.followup.send(embed=embed)
+
+
+@bot.tree.command(name="portfolio", description="Vistas del CAGR del portafolio")
+async def cmd_portfolio(interaction: discord.Interaction):
+    await interaction.response.defer(thinking=True)
+    signals = fetch_json("/api/signals") or {}
+    ms = signals.get("models", [])
+    operables = [m for m in ms if m.get("grade") in ("A+", "A", "B") and m.get("slot", 0) == 0]
+
+    if operables:
+        sum_cagr = sum(m.get("cagr", 0) for m in operables)
+        sum_trades = sum(m.get("trades", 1) for m in operables)
+        weighted = sum(m.get("cagr", 0) * m.get("trades", 1) for m in operables) / max(sum_trades, 1)
+        top5 = sorted(operables, key=lambda m: m.get("cagr", 0) or 0, reverse=True)[:5]
+        top_avg = sum(m.get("cagr", 0) for m in top5) / max(len(top5), 1)
+        simple = sum_cagr / len(operables)
+    else:
+        weighted = top_avg = simple = 0
+
+    embed = discord.Embed(
+        title="💼 Portfolio — 3 Vistas del CAGR",
+        description="Tres formas de ver el mismo portafolio, ninguna escondida:",
+        color=SIGMA_BLUE,
+    )
+    embed.add_field(name="Real (weighted by trades)", value=f"**`{weighted:+.2f}%`**", inline=True)
+    embed.add_field(name="Top 5 promedio", value=f"`{top_avg:+.2f}%`", inline=True)
+    embed.add_field(name="Simple (avg todos)", value=f"`{simple:+.2f}%`", inline=True)
+    embed.set_footer(text=f"Basado en {len(operables)} champions operables · CAGR sin leverage")
+    await interaction.followup.send(embed=embed)
+
+
+@bot.tree.command(name="fire", description="FIRE tracker - progreso al objetivo de capital")
+async def cmd_fire(interaction: discord.Interaction):
+    await interaction.response.defer(thinking=True)
+    fire_cfg = {}
+    try:
+        fire_cfg = json.loads(Path("/opt/sigma/results/fire_config.json").read_text())
+    except Exception:
+        pass
+    trades = fetch_json("/api/trades") or {}
+    equity = trades.get("equity", 10000)
+    target = fire_cfg.get("target", 100000)
+    pct = (equity / target * 100) if target > 0 else 0
+    bar_len = 20
+    filled = int(pct / 100 * bar_len)
+    bar = "█" * filled + "░" * (bar_len - filled)
+
+    embed = discord.Embed(
+        title="🔥 FIRE Tracker",
+        description=f"Objetivo: `${target:,}` USD",
+        color=SIGMA_GOLD,
+    )
+    embed.add_field(name="Equity actual", value=f"`${equity:,.2f}`", inline=True)
+    embed.add_field(name="Progreso", value=f"`{pct:.1f}%`", inline=True)
+    embed.add_field(name="Falta", value=f"`${max(0, target-equity):,.2f}`", inline=True)
+    embed.add_field(name="Visual", value=f"`[{bar}]`", inline=False)
+    embed.set_footer(text="Use /fire para actualizar manualmente")
+    await interaction.followup.send(embed=embed)
+
+
+@bot.tree.command(name="performance", description="Rendimiento historico de trades")
+async def cmd_performance(interaction: discord.Interaction):
+    await interaction.response.defer(thinking=True)
+    trades = fetch_json("/api/trades") or {}
+    hist = trades.get("history", [])
+    if not hist:
+        await interaction.followup.send("Sin historial de trades aun.")
+        return
+    closed = [t for t in hist if t.get("status") in ("TP_HIT", "SL_HIT") or t.get("pnl_pct") is not None]
+    n = len(closed)
+    if n == 0:
+        await interaction.followup.send("Sin trades cerrados aun.")
+        return
+    wins = [t for t in closed if (t.get("pnl_pct") or 0) > 0]
+    wr = len(wins) / n * 100
+    total_pnl = sum(t.get("pnl_pct", 0) for t in closed)
+    embed = discord.Embed(title="📈 Performance Historica", color=SIGMA_PURPLE)
+    embed.add_field(name="Trades cerrados", value=f"`{n}`", inline=True)
+    embed.add_field(name="Win rate", value=f"`{wr:.1f}%`", inline=True)
+    embed.add_field(name="PnL acumulado", value=f"`{total_pnl:+.2f}%`", inline=True)
+    last5 = closed[-5:]
+    if last5:
+        lines = []
+        for t in last5:
+            sym = t.get("sym", "?")
+            tf = t.get("tf", "?")
+            pnl = t.get("pnl_pct", 0)
+            emoji = "✅" if pnl > 0 else "❌"
+            lines.append(f"{emoji} {sym} {tf.upper()} `{pnl:+.2f}%`")
+        embed.add_field(name="Ultimos 5", value="\n".join(lines), inline=False)
+    await interaction.followup.send(embed=embed)
+
+
+@bot.tree.command(name="modelos", description="Top champions activos ordenados por score")
+async def cmd_modelos(interaction: discord.Interaction):
+    await interaction.response.defer(thinking=True)
+    signals = fetch_json("/api/signals") or {}
+    ms = signals.get("models", [])
+    operables = [m for m in ms if m.get("grade") in ("A+", "A", "B")]
+    operables.sort(key=lambda m: m.get("score", 0) or 0, reverse=True)
+    top = operables[:10]
+    embed = discord.Embed(
+        title="🏆 Top 10 Champions Activos",
+        description=f"Ordenados por score canónico · {len(operables)} modelos operables · Régimen {signals.get('regime','?')}",
+        color=SIGMA_GOLD,
+    )
+    for i, m in enumerate(top, 1):
+        sym = m.get("sym", "?")
+        tf  = m.get("tf", "?")
+        strat = m.get("strategy", "?")
+        cagr = m.get("cagr", 0) or 0
+        wr = m.get("wr", 0) or 0
+        grade = m.get("grade", "?")
+        mtype = m.get("type", "?")
+        arrow = "🟢" if mtype == "long" else "🔴"
+        embed.add_field(
+            name=f"{i}. {arrow} {sym} {tf.upper()} · {strat}",
+            value=f"`{grade}` · CAGR {cagr:+.1f}% · WR {wr:.0f}%",
+            inline=False,
+        )
+    embed.set_footer(text="SIGMA ENGINE · Score canónico combina CAGR, WR, PF, DD")
+    await interaction.followup.send(embed=embed)
+
+
+@bot.tree.command(name="nuevas", description="Estrategias agregadas recientemente al motor")
+async def cmd_nuevas(interaction: discord.Interaction):
+    await interaction.response.defer(thinking=True)
+    # Show the 32 strategies added 2026-05-15 + 23 from 2026-05-14
+    try:
+        import sys
+        sys.path.insert(0, "/opt/sigma")
+        from utils.strategies import SHORT_STRATEGIES, NEW_2026_05_14
+        new_may14 = sorted(NEW_2026_05_14)
+        new_may15 = [
+            "aroon_cross_bear", "bb_bandwidth_short", "break_of_structure_down",
+            "chaikin_mf_short", "consecutive_wick_top", "elder_impulse_bear",
+            "ema_ribbon_bear", "ema_triple_bear", "htf_divergence_bear",
+            "ichimoku_bear", "linear_reg_break_down", "lower_lows_short",
+            "macd_divergence_bear", "mean_rev_short", "mfi_overbought_short",
+            "micro_momentum_short", "obv_divergence_bear", "open_close_cross_short",
+            "pin_bar_short", "pivot_rejection", "psar_flip_down",
+            "range_scalp_short", "session_open_short", "squeeze_pro_short",
+            "tema_cross_down", "tick_follow_short", "tma_bands_short",
+            "trend_strength_short", "volatility_breakdown", "volume_exhaustion_top",
+            "vwap_rejection", "wma_momentum_short",
+        ]
+        embed = discord.Embed(
+            title="🆕 Estrategias agregadas recientemente",
+            description="Catálogo expandido del motor SIGMA",
+            color=SIGMA_PURPLE,
+        )
+        embed.add_field(
+            name=f"📅 15-may-2026 · paridad L=S ({len(new_may15)} nuevas)",
+            value="`" + "` `".join(new_may15[:16]) + "`",
+            inline=False,
+        )
+        embed.add_field(
+            name="(continuación 15-may)",
+            value="`" + "` `".join(new_may15[16:]) + "`",
+            inline=False,
+        )
+        embed.add_field(
+            name=f"📅 14-may-2026 · expansion short ({len(new_may14)} nuevas)",
+            value="`" + "` `".join(new_may14[:13]) + "`",
+            inline=False,
+        )
+        embed.add_field(
+            name="(continuación 14-may)",
+            value="`" + "` `".join(new_may14[13:]) + "`",
+            inline=False,
+        )
+        embed.set_footer(text=f"Total libreria: 121 algos · 58L + 63S")
+        await interaction.followup.send(embed=embed)
+    except Exception as e:
+        await interaction.followup.send(f"Error: {e}")
+
+
+@bot.tree.command(name="ayuda", description="Lista de comandos disponibles")
+async def cmd_ayuda(interaction: discord.Interaction):
+    embed = discord.Embed(
+        title="🤖 SIGMA Bot — Ayuda",
+        description="Comandos disponibles para todos los miembros del server.",
+        color=SIGMA_BLUE,
+    )
+    cmds = [
+        ("/trades",      "Posiciones abiertas, cola, y modelos armados por régimen"),
+        ("/status",      "Estado general del sistema (regime, champions, posiciones)"),
+        ("/portfolio",   "3 vistas del CAGR (real weighted, top 5, simple)"),
+        ("/modelos",     "Top 10 champions ordenados por score"),
+        ("/nuevas",      "Estrategias agregadas recientemente al motor"),
+        ("/fire",        "Progreso hacia el objetivo de capital FIRE"),
+        ("/performance", "Rendimiento histórico de trades cerrados"),
+        ("/ayuda",       "Esta ayuda"),
+    ]
+    for name, desc in cmds:
+        embed.add_field(name=name, value=desc, inline=False)
+    embed.set_footer(text="SIGMA ENGINE · Sistema mirror con Telegram - mismos comandos, misma data")
+    await interaction.response.send_message(embed=embed)
+
+
+# ============================================================================
+# Background tasks: notify on new champions / milestones / emergencies
+# ============================================================================
+
+@tasks.loop(minutes=5)
+async def watch_champions():
+    """Detect newly-saved champion JSONs (file-based, not API churn)."""
+    import os, glob
+    models_dir = "/opt/sigma/models"
+    ch = bot.get_channel(CHANNELS["estrategias"])
+    if not ch:
+        return
+
+    # Iterate champion JSON files; track mtime to detect SAVE events
+    for jf in sorted(glob.glob(f"{models_dir}/*/*.json")):
+        if "/archive/" in jf:
+            continue
+        try:
+            mt = os.path.getmtime(jf)
+        except Exception:
+            continue
+        prev_mt = bot.last_champion_seen.get(jf, 0)
+        if prev_mt == 0:
+            # First time seeing this file — just seed, no announce
+            bot.last_champion_seen[jf] = mt
+            continue
+        if mt <= prev_mt:
+            continue
+        # NEW save detected — read and announce
+        try:
+            d = json.loads(Path(jf).read_text())
+            sym  = d.get("symbol", "?").replace("/USDT", "")
+            tf   = d.get("tf", "?")
+            strat = d.get("strategy", "?")
+            moos = d.get("metrics_oos", {})
+            cagr = moos.get("cagr", 0) or 0
+            wr   = moos.get("wr", 0) or 0
+            dd   = moos.get("dd", 0) or 0
+            pf   = moos.get("pf", 0) or 0
+            conf = d.get("validation", {}).get("confidence", "?")
+            grade = "A+" if cagr >= 40 else ("A" if cagr >= 25 else ("B" if cagr >= 15 else "C"))
+            embed = discord.Embed(
+                title=f"⭐ Nuevo Champion — {sym} {tf.upper()}",
+                description=f"Estrategia: **`{strat}`**",
+                color=SIGMA_GREEN if cagr >= 15 else SIGMA_ORANGE,
+            )
+            embed.add_field(name="Grade", value=f"`{grade}`", inline=True)
+            embed.add_field(name="CAGR OOS", value=f"`{cagr:+.1f}%`", inline=True)
+            embed.add_field(name="Win Rate", value=f"`{wr:.0f}%`", inline=True)
+            embed.add_field(name="Drawdown", value=f"`{dd:.1f}%`", inline=True)
+            embed.add_field(name="Profit Factor", value=f"`{pf:.2f}`", inline=True)
+            embed.add_field(name="Confianza", value=f"`{conf}`", inline=True)
+            embed.set_footer(text=f"Validacion: MC + walk-forward + cross-asset")
+            await ch.send(embed=embed)
+            print(f"[CHAMPION] {sym} {tf} {strat} (cagr {cagr})")
+        except Exception as e:
+            print(f"champion announce err for {jf}: {e}")
+        bot.last_champion_seen[jf] = mt
+
+
+@tasks.loop(seconds=45)
+async def watch_trades():
+    """Watch trade_state.json — announce new opens and closes."""
+    import os
+    state_path = "/opt/sigma/results/trade_state.json"
+    try:
+        mt = os.path.getmtime(state_path)
+    except Exception:
+        return
+    if mt <= bot.last_trade_state_mt:
+        return
+    bot.last_trade_state_mt = mt
+    try:
+        state = json.loads(Path(state_path).read_text())
+    except Exception as e:
+        print(f"trade state read err: {e}")
+        return
+
+    open_t = state.get("open", {}) or {}
+    history = state.get("history", []) or []
+
+    # ===== detect NEW OPENS =====
+    current_keys = set()
+    for key, t in open_t.items():
+        if t.get("status") != "open":
+            continue
+        current_keys.add(key)
+        if key in bot.seen_open_keys:
+            continue
+        # New open detected
+        ch = bot.get_channel(CHANNELS.get("resultados_pnl") or CHANNELS["general"])
+        if not ch:
+            continue
+        sym = t.get("sym", "?")
+        tf  = t.get("tf", "?")
+        strat = t.get("strategy", "?")
+        direction = t.get("direction", "long")
+        entry = t.get("entry", 0)
+        sl    = t.get("sl", 0)
+        tp    = t.get("tp", 0)
+        kelly = t.get("kelly_pct") or t.get("kelly_pct_used") or 5.0
+        grade = t.get("grade", "?")
+        is_long = direction != "short"
+        arrow = "🟢 LONG" if is_long else "🔴 SHORT"
+        color = SIGMA_GREEN if is_long else SIGMA_RED
+        rr = round(abs(tp - entry) / max(abs(entry - sl), 1e-6), 2) if sl and tp else 0
+        embed = discord.Embed(
+            title=f"📥 Trade ABIERTO — {sym} {tf.upper()}",
+            description=f"{arrow}  ·  `{strat}`  ·  Grade `{grade}`",
+            color=color,
+        )
+        embed.add_field(name="Entry", value=f"`{entry}`", inline=True)
+        embed.add_field(name="SL", value=f"`{sl}`", inline=True)
+        embed.add_field(name="TP", value=f"`{tp}`", inline=True)
+        embed.add_field(name="RR", value=f"`{rr:.2f}:1`", inline=True)
+        embed.add_field(name="Kelly", value=f"`{kelly}%`", inline=True)
+        embed.add_field(name="Opened", value=f"`{t.get('opened_at','?')[:19]}`", inline=True)
+        embed.set_footer(text="Paper trading · SIGMA ENGINE")
+        try:
+            await ch.send(embed=embed)
+            print(f"[TRADE OPEN] {key} {direction} {strat}")
+        except Exception as e:
+            print(f"trade open announce err: {e}")
+    bot.seen_open_keys = current_keys
+
+    # ===== detect NEW CLOSES (look at recent history) =====
+    ch_pnl = bot.get_channel(CHANNELS.get("resultados_pnl") or CHANNELS["general"])
+    if not ch_pnl:
+        return
+    for t in history[-10:]:
+        sig = f"{t.get('sym')}_{t.get('tf')}_{t.get('strategy')}_{t.get('opened_at','')}_{t.get('closed_at','')}"
+        if sig in bot.seen_closed_ids:
+            continue
+        # Must have closed_at to be considered "closed"
+        if not t.get("closed_at"):
+            continue
+        bot.seen_closed_ids.add(sig)
+        sym = t.get("sym", "?")
+        tf  = t.get("tf", "?")
+        strat = t.get("strategy", "?")
+        direction = t.get("direction", "long")
+        is_long = direction != "short"
+        arrow = "🟢 LONG" if is_long else "🔴 SHORT"
+        reason = t.get("reason") or t.get("status") or "CLOSED"
+        pnl_pct = t.get("pnl_pct", 0) or 0
+        pnl_usd = t.get("pnl_dollar", 0) or 0
+        equity_after = t.get("equity_after")
+        won = pnl_pct > 0
+        result_emoji = "✅" if won else "❌"
+        color = SIGMA_GREEN if won else SIGMA_RED
+        embed = discord.Embed(
+            title=f"{result_emoji} Trade CERRADO — {sym} {tf.upper()}",
+            description=f"{arrow}  ·  `{strat}`  ·  Reason: `{reason}`",
+            color=color,
+        )
+        embed.add_field(name="Entry", value=f"`{t.get('entry', '?')}`", inline=True)
+        embed.add_field(name="Exit", value=f"`{t.get('exit_price', '?')}`", inline=True)
+        embed.add_field(name="Reason", value=f"`{reason}`", inline=True)
+        embed.add_field(name="PnL %", value=f"`{pnl_pct:+.2f}%`", inline=True)
+        embed.add_field(name="PnL USD", value=f"`${pnl_usd:+.2f}`", inline=True)
+        if equity_after is not None:
+            embed.add_field(name="Equity", value=f"`${equity_after:,.2f}`", inline=True)
+        embed.set_footer(text=f"Paper trading · Opened {t.get('opened_at','?')[:16]}")
+        try:
+            await ch_pnl.send(embed=embed)
+            print(f"[TRADE CLOSE] {sym} {tf} {strat} {pnl_pct:+.2f}%")
+        except Exception as e:
+            print(f"trade close announce err: {e}")
+
+
+@tasks.loop(minutes=5)
+async def watch_milestones():
+    """Watch last_milestone.txt — mirror milestone announcements to #backtesting."""
+    path = "/opt/sigma/last_milestone.txt"
+    try:
+        import os
+        if not os.path.exists(path):
+            return
+        mt = os.path.getmtime(path)
+    except Exception:
+        return
+    if mt <= bot.last_milestone_seen:
+        return
+    bot.last_milestone_seen = mt
+    try:
+        content = Path(path).read_text().strip()
+        # Format: usually a number like "2100000" representing trades count
+        try:
+            milestone_n = int(content)
+            milestone_human = f"{milestone_n:,}"
+        except Exception:
+            milestone_human = content
+    except Exception as e:
+        print(f"milestone read err: {e}")
+        return
+    ch = bot.get_channel(CHANNELS.get("backtesting"))
+    if not ch:
+        return
+    embed = discord.Embed(
+        title=f"🎯 HITO de Backtest — {milestone_human} trades",
+        description="El motor SIGMA acaba de cruzar otro hito histórico de simulación.",
+        color=SIGMA_GOLD,
+    )
+    stats = fetch_json("/api/stats") or {}
+    embed.add_field(name="Trades totales", value=f"`{milestone_human}`", inline=True)
+    embed.add_field(name="Velocidad", value=f"`{stats.get('rate_hr','?')}` t/hr", inline=True)
+    embed.add_field(name="Próximo hito", value=f"`{(milestone_n+100000):,}`" if isinstance(milestone_n, int) else "n+100K", inline=True)
+    embed.set_footer(text="Cada 100K trades celebramos otro hito · Motor 24/7")
+    try:
+        await ch.send(embed=embed)
+        print(f"[MILESTONE] {milestone_human}")
+    except Exception as e:
+        print(f"milestone announce err: {e}")
+
+
+@tasks.loop(minutes=3)
+async def watch_drawdown():
+    """Alert when portfolio drawdown crosses a new tier (-5%, -10%, -15%)."""
+    trades = fetch_json("/api/trades") or {}
+    eq = trades.get("equity")
+    peak = trades.get("peak_equity")
+    if not eq or not peak or peak <= 0:
+        return
+    dd = (eq - peak) / peak * 100
+    # Tiers: 0 (no alert), -5, -10, -15
+    new_tier = 0
+    if dd <= -15:
+        new_tier = -15
+    elif dd <= -10:
+        new_tier = -10
+    elif dd <= -5:
+        new_tier = -5
+    # Only alert when crossing INTO a worse tier (not when recovering)
+    if new_tier == bot.last_dd_tier:
+        return
+    if new_tier == 0 and bot.last_dd_tier < 0:
+        # recovery — announce recovery
+        bot.last_dd_tier = 0
+        ch = bot.get_channel(CHANNELS.get("risk_management"))
+        if not ch:
+            return
+        embed = discord.Embed(
+            title="✅ DD recuperado",
+            description=f"El portafolio salió de zona drawdown. DD actual: `{dd:+.2f}%`",
+            color=SIGMA_GREEN,
+        )
+        embed.add_field(name="Equity", value=f"`${eq:,.2f}`", inline=True)
+        embed.add_field(name="Peak", value=f"`${peak:,.2f}`", inline=True)
+        try:
+            await ch.send(embed=embed)
+        except Exception:
+            pass
+        return
+    if new_tier >= bot.last_dd_tier:
+        return  # nothing worse than before
+    bot.last_dd_tier = new_tier
+    ch = bot.get_channel(CHANNELS.get("risk_management"))
+    if not ch:
+        return
+    severity_color = SIGMA_ORANGE if new_tier == -5 else (SIGMA_RED if new_tier <= -10 else SIGMA_RED)
+    embed = discord.Embed(
+        title=f"⚠️ DRAWDOWN tier {new_tier}%",
+        description=f"El portafolio cruzó {new_tier}% de drawdown desde el peak.",
+        color=severity_color,
+    )
+    embed.add_field(name="DD actual", value=f"`{dd:+.2f}%`", inline=True)
+    embed.add_field(name="Equity", value=f"`${eq:,.2f}`", inline=True)
+    embed.add_field(name="Peak", value=f"`${peak:,.2f}`", inline=True)
+    if new_tier == -5:
+        embed.add_field(name="Kelly mult", value="`×0.70` (auto)", inline=True)
+    elif new_tier == -10:
+        embed.add_field(name="Kelly mult", value="`×0.50` (auto)", inline=True)
+        embed.add_field(name="Regla anti-pánico", value="Solo bugfixes permitidos", inline=False)
+    elif new_tier == -15:
+        embed.add_field(name="Kelly mult", value="`×0.25` modo supervivencia", inline=True)
+        embed.add_field(name="Acción manual", value="Revisar regime + champions", inline=False)
+    embed.set_footer(text="SIGMA Risk Management · Reglas automáticas del Premortem")
+    try:
+        await ch.send(embed=embed)
+        print(f"[DRAWDOWN] tier {new_tier}% · dd {dd:+.2f}%")
+    except Exception as e:
+        print(f"dd announce err: {e}")
+
+
+@tasks.loop(minutes=1)
+async def watch_daily_brief():
+    """At 09:00 and 21:00 Chile, post a daily summary to #sigma-reports."""
+    now = chile_now()
+    today_str = now.strftime("%Y-%m-%d")
+    slot = None
+    if now.hour == 9:
+        slot = "morning"
+    elif now.hour == 21:
+        slot = "evening"
+    if slot is None:
+        return
+    key = (today_str, slot)
+    if key in bot.daily_brief_sent:
+        return
+    bot.daily_brief_sent[key] = True
+
+    ch = bot.get_channel(CHANNELS.get("sigma_reports"))
+    if not ch:
+        return
+    signals = fetch_json("/api/signals") or {}
+    trades  = fetch_json("/api/trades")  or {}
+    stats   = fetch_json("/api/stats")   or {}
+
+    regime = signals.get("regime", "?")
+    models = signals.get("models", [])
+    open_t = trades.get("open", {}) or {}
+    n_open = sum(1 for v in (open_t.values() if isinstance(open_t, dict) else open_t) if v.get("status") == "open")
+    eq = trades.get("equity", 10000)
+    peak = trades.get("peak_equity", eq)
+    dd = (eq - peak) / peak * 100 if peak > 0 else 0
+
+    history = trades.get("history", []) or []
+    # Trades in last 24h
+    import datetime as dt
+    cutoff = (now - dt.timedelta(hours=24)).strftime("%Y-%m-%d %H:%M:%S")
+    recent_closed = [t for t in history if (t.get("closed_at") or "") > cutoff]
+    pnl_24h = sum(t.get("pnl_pct", 0) for t in recent_closed)
+    wins_24h = sum(1 for t in recent_closed if (t.get("pnl_pct") or 0) > 0)
+
+    title = "☀️ Brief Matinal" if slot == "morning" else "🌙 Cierre del día"
+    embed = discord.Embed(
+        title=f"{title} — {now.strftime('%d-%b-%Y · %H:%M')} Chile",
+        description=f"Resumen automático del estado SIGMA · Régimen `{regime}`",
+        color=SIGMA_BLUE if slot == "morning" else SIGMA_PURPLE,
+    )
+    embed.add_field(name="Equity", value=f"`${eq:,.2f}`", inline=True)
+    embed.add_field(name="DD vs peak", value=f"`{dd:+.2f}%`", inline=True)
+    embed.add_field(name="Posiciones abiertas", value=f"`{n_open}`", inline=True)
+    embed.add_field(name="Champions activos", value=f"`{len(models)}`", inline=True)
+    embed.add_field(name="Trades 24h", value=f"`{len(recent_closed)}`", inline=True)
+    embed.add_field(name="Win rate 24h", value=f"`{(wins_24h/max(len(recent_closed),1)*100):.0f}%`", inline=True)
+    embed.add_field(name="PnL 24h", value=f"`{pnl_24h:+.2f}%`", inline=True)
+    embed.add_field(name="Backtest total", value=f"`{stats.get('total','?'):,}`" if isinstance(stats.get('total'), int) else "`?`", inline=True)
+    embed.add_field(name="Velocidad", value=f"`{stats.get('rate_hr','?')}` t/hr", inline=True)
+    embed.set_footer(text="SIGMA ENGINE · Brief diario automático · 09:00 y 21:00 Chile")
+    try:
+        await ch.send(embed=embed)
+        print(f"[BRIEF] {slot} {today_str}")
+    except Exception as e:
+        print(f"brief err: {e}")
+
+
+@tasks.loop(minutes=5)
+async def watch_funding_emergency():
+    """Check funding emergency flag and alert."""
+    flag = Path("/opt/sigma/state/funding_emergency.flag")
+    if not flag.exists():
+        return
+    mt = flag.stat().st_mtime
+    if mt <= bot.last_emergency_alert:
+        return
+    try:
+        sym, val, ts = flag.read_text().strip().split("|")
+        val_f = float(val)
+    except Exception:
+        return
+    ch = bot.get_channel(CHANNELS["market_alerts"])
+    if not ch:
+        return
+    embed = discord.Embed(
+        title="🚨 FUNDING EMERGENCY",
+        description=(
+            f"Activo: **{sym}**\n"
+            f"Funding: **{val_f:+.3f}%/8h**\n"
+            f"Umbral: 0.15%/8h\n\n"
+            "Sistema en PAUSE total (override del régimen).\n"
+            "Requiere intervención manual de Satoshi Nakamoto para reanudar."
+        ),
+        color=SIGMA_RED,
+    )
+    embed.set_footer(text="Premortem 2026-05-14 · kill-switch GAP 2")
+    try:
+        await ch.send(content="@everyone", embed=embed)
+        bot.last_emergency_alert = mt
+        print(f"[EMERGENCY] sent for {sym}")
+    except Exception as e:
+        print(f"emergency announce err: {e}")
+
+
+@bot.event
+async def on_ready():
+    print(f"[READY] {bot.user} connected to guild {GUILD_ID}")
+    # Start background tasks
+    if not watch_champions.is_running():
+        watch_champions.start()
+    if not watch_funding_emergency.is_running():
+        watch_funding_emergency.start()
+    if not watch_trades.is_running():
+        watch_trades.start()
+    if not watch_milestones.is_running():
+        watch_milestones.start()
+    if not watch_drawdown.is_running():
+        watch_drawdown.start()
+    if not watch_daily_brief.is_running():
+        watch_daily_brief.start()
+    # Set presence
+    await bot.change_presence(
+        activity=discord.Activity(
+            type=discord.ActivityType.watching,
+            name="121 estrategias · /ayuda"
+        ),
+        status=discord.Status.online,
+    )
+    # Seed last_champion_seen with current file mtimes so first poll is silent
+    import os, glob
+    for jf in glob.glob("/opt/sigma/models/*/*.json"):
+        if "/archive/" in jf:
+            continue
+        try:
+            bot.last_champion_seen[jf] = os.path.getmtime(jf)
+        except Exception:
+            pass
+    # Seed trade state to avoid replaying historical trades on first run
+    try:
+        state_path = "/opt/sigma/results/trade_state.json"
+        bot.last_trade_state_mt = os.path.getmtime(state_path)
+        st = json.loads(Path(state_path).read_text())
+        open_t = st.get("open", {}) or {}
+        bot.seen_open_keys = set(k for k, v in open_t.items() if v.get("status") == "open")
+        # Seed all existing history as already-seen so we only announce future closes
+        for t in (st.get("history", []) or []):
+            sig = f"{t.get('sym')}_{t.get('tf')}_{t.get('strategy')}_{t.get('opened_at','')}_{t.get('closed_at','')}"
+            bot.seen_closed_ids.add(sig)
+        print(f"[SEED] open_keys={len(bot.seen_open_keys)} closed_seen={len(bot.seen_closed_ids)}")
+    except Exception as e:
+        print(f"trade seed err: {e}")
+    # Seed milestone mtime
+    try:
+        bot.last_milestone_seen = os.path.getmtime("/opt/sigma/last_milestone.txt")
+    except Exception:
+        pass
+    # Seed dd tier
+    try:
+        tr = fetch_json("/api/trades") or {}
+        eq = tr.get("equity"); pk = tr.get("peak_equity")
+        if eq and pk and pk > 0:
+            dd0 = (eq - pk) / pk * 100
+            if dd0 <= -15: bot.last_dd_tier = -15
+            elif dd0 <= -10: bot.last_dd_tier = -10
+            elif dd0 <= -5: bot.last_dd_tier = -5
+            else: bot.last_dd_tier = 0
+            print(f"[SEED] dd_tier={bot.last_dd_tier} (actual {dd0:+.2f}%)")
+    except Exception as e:
+        print(f"dd seed err: {e}")
+
+
+if __name__ == "__main__":
+    bot.run(TOKEN, log_handler=None)

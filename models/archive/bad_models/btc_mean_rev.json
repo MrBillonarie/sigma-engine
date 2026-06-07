@@ -1,0 +1,33 @@
+{
+  "symbol": "BTC/USDT",
+  "tf": "5m",
+  "strategy": "mean_rev",
+  "params": {
+    "sl_mult": 3.5,
+    "tp_mult": 2.9000000000000004,
+    "cooldown": 9,
+    "rsi_w_thr": 61,
+    "rsi_os": 42
+  },
+  "risk_pct": 2.5,
+  "metrics_is": {
+    "trades": 456,
+    "wr": 64.3,
+    "cagr": 48.1,
+    "dd": -27.4,
+    "pf": 1.15,
+    "trades_year": 214.1
+  },
+  "metrics_oos": {
+    "trades": 365,
+    "wr": 51.8,
+    "cagr": -68.8,
+    "dd": -87.1,
+    "pf": 0.38,
+    "trades_year": 209.6
+  },
+  "oos_days": 193,
+  "saved_at": "2026-05-09 17:01:33.927139",
+  "reeval_date": "2026-05-09 18:28",
+  "reeval_note": "funding+slippage aplicados"
+}

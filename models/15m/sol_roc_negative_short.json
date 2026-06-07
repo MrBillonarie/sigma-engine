@@ -1,0 +1,54 @@
+{
+  "symbol": "SOL/USDT",
+  "tf": "15m",
+  "strategy": "roc_negative_short",
+  "params": {
+    "sl_mult": 3.2,
+    "tp_mult": 3.2,
+    "cooldown": 3,
+    "rsi_w_thr": 44,
+    "roc_period": 20,
+    "roc_thr_short": -3.5
+  },
+  "risk_pct": 2.6,
+  "metrics_is": {
+    "trades": 300,
+    "wr": 50.0,
+    "cagr": -11.2,
+    "dd": -58.7,
+    "pf": 0.84,
+    "trades_year": 64.4
+  },
+  "metrics_oos": {
+    "trades": 54,
+    "wr": 63.0,
+    "cagr": 35.7,
+    "dd": -17.8,
+    "pf": 1.65,
+    "trades_year": 46.4
+  },
+  "oos_days": 425,
+  "saved_at": "2026-06-07 09:00:48.841760",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 95.3,
+      "median": 46.8,
+      "ic95_lo": -7.3,
+      "ic95_hi": 100.5,
+      "ic80_lo": 10.4,
+      "ic80_hi": 82.5,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 13,
+      "positive": 6,
+      "pct_positive": 46.2,
+      "avg_cagr": 50.9,
+      "passed": false
+    },
+    "confidence": "MEDIA",
+    "passed_steps": 1,
+    "max_steps": 2,
+    "validated_at": "2026-06-07 09:00:49.867289"
+  }
+}

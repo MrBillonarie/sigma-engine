@@ -1,0 +1,13 @@
+{
+  "starting_equity": 10000.0,
+  "target_equity": 100000.0,
+  "target_deadline_days": 365,
+  "baseline_date": "2026-05-12",
+  "last_milestone_notified": 0,
+  "milestones": [
+    25,
+    50,
+    75,
+    100
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "symbol": "BTC/USDT",
+  "tf": "2h",
+  "strategy": "pullback_short",
+  "params": {
+    "sl_mult": 2.3,
+    "tp_mult": 2.5,
+    "cooldown": 6,
+    "rsi_w_thr": 46,
+    "ema_type": 21,
+    "rsi_entry": 55,
+    "trail_factor": 0.4,
+    "tp1_pct": 0.6,
+    "tp1_close": 0.4
+  },
+  "risk_pct": 4.6,
+  "metrics_is": {
+    "trades": 79,
+    "wr": 38.0,
+    "cagr": -2.7,
+    "dd": -21.1,
+    "pf": 0.54,
+    "trades_year": 11.3
+  },
+  "metrics_oos": {
+    "trades": 21,
+    "wr": 42.9,
+    "cagr": 0.2,
+    "dd": -5.5,
+    "pf": 1.05,
+    "trades_year": 12.1,
+    "cagr_bear_adj": 0.6,
+    "bear_days_oos": 180.0
+  },
+  "oos_days": 636,
+  "saved_at": "2026-05-10 22:08:14.890360",
+  "wft": {
+    "quick_pass_rate": 1.0,
+    "quick_cov": 0.365,
+    "consistency": 0.818
+  },
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 52.2,
+      "median": 0.7,
+      "ic95_lo": -24.3,
+      "ic95_hi": 33.0,
+      "ic80_lo": -16.2,
+      "ic80_hi": 20.9,
+      "passed": false
+    },
+    "confidence": "DESCARTADO",
+    "validated_at": "2026-05-10 22:08:15.151329"
+  },
+  "mc": {
+    "mc_cagr_p05": -49.3,
+    "mc_cagr_p50": -21.2,
+    "mc_cagr_p95": 22.5,
+    "mc_dd_p50": -50.2,
+    "mc_dd_p95": -28.5,
+    "mc_confidence": 17.7,
+    "mc_sims": 1000
+  }
+}

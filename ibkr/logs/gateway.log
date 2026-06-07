@@ -1,0 +1,56 @@
+WARNING: package sun.lwawt not in java.desktop
+WARNING: package sun.awt.windows not in java.desktop
+2026-05-21T21:42:06.538743258Z main INFO Starting configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@4ff4357f...
+2026-05-21T21:42:06.543022199Z main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@4ff4357f started.
+2026-05-21T21:42:06.544522633Z main INFO Stopping configuration org.apache.logging.log4j.core.config.DefaultConfiguration@68f4865...
+2026-05-21T21:42:06.544824184Z main INFO Configuration org.apache.logging.log4j.core.config.DefaultConfiguration@68f4865 stopped.
+2026-05-21T21:42:06.576918890Z JTS-Main INFO Starting configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@189aa67a...
+2026-05-21T21:42:06.577061861Z JTS-Main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@189aa67a started.
+2026-05-21T21:42:06.577240891Z JTS-Main INFO Stopping configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@4ff4357f...
+2026-05-21T21:42:06.577378991Z JTS-Main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@4ff4357f stopped.
+
+(java:1427379): dbind-WARNING **: 17:42:07.294: AT-SPI: Error retrieving accessibility bus address: org.freedesktop.DBus.Error.ServiceUnknown: The name org.a11y.Bus was not provided by any .service files
+LogModuleConfigurator-Init: Log4j Ver2.x found on classpath
+LogModuleConfigurator-Init: LogModuleConfigurator initialized with Log4j Veri.x
+remove Client 99
+remove Client 17
+remove Client 17
+remove Client 17
+2026-05-21T22:00:59.426099410Z JTS-DisconnectedS6-186 WARN found 2 argument placeholders, but provided 3 for pattern `Before clearing batch requets for:{} settings-state:{} settings:`
+remove Client 17
+remove Client 17
+remove Client 17
+2026-05-21T22:15:29.315092524Z JTS-DisconnectedS12-1967 WARN found 2 argument placeholders, but provided 3 for pattern `Before clearing batch requets for:{} settings-state:{} settings:`
+remove Client 17
+2026-05-21T22:21:41.466480775Z JTS-DisconnectedS13-2732 WARN found 2 argument placeholders, but provided 3 for pattern `Before clearing batch requets for:{} settings-state:{} settings:`
+remove Client 17
+remove Client 17
+remove Client 17
+2026-05-21T22:35:47.768931271Z JTS-DisconnectedS14-4460 WARN found 2 argument placeholders, but provided 3 for pattern `Before clearing batch requets for:{} settings-state:{} settings:`
+remove Client 17
+2026-05-21T22:42:45.117109381Z JTS-DisconnectedS15-5315 WARN found 2 argument placeholders, but provided 3 for pattern `Before clearing batch requets for:{} settings-state:{} settings:`
+remove Client 17
+remove Client 17
+remove Client 17
+2026-05-21T22:57:56.008326281Z JTS-DisconnectedS16-7170 WARN found 2 argument placeholders, but provided 3 for pattern `Before clearing batch requets for:{} settings-state:{} settings:`
+remove Client 17
+remove Client 17
+remove Client 17
+2026-05-21T23:14:42.678866121Z JTS-DisconnectedS17-9217 WARN found 2 argument placeholders, but provided 3 for pattern `Before clearing batch requets for:{} settings-state:{} settings:`
+remove Client 17
+remove Client 17
+remove Client 17
+2026-05-21T23:25:48.862204561Z JTS-DisconnectedS18-10585 WARN found 2 argument placeholders, but provided 3 for pattern `Before clearing batch requets for:{} settings-state:{} settings:`
+remove Client 17
+remove Client 17
+2026-05-21T23:38:22.901767297Z JTS-DisconnectedS19-12121 WARN found 2 argument placeholders, but provided 3 for pattern `Before clearing batch requets for:{} settings-state:{} settings:`
+remove Client 17
+2026-05-21T23:45:00.850804523Z JTS-DisconnectedS20-12936 WARN found 2 argument placeholders, but provided 3 for pattern `Before clearing batch requets for:{} settings-state:{} settings:`
+2026-05-21T23:45:01.801414978Z JTS-IA Stopper-12948 ERROR Attempted to append to non-started appender f
+2026-05-21T23:45:01.803423332Z JTS-IA Stopper-12948 ERROR Attempted to append to non-started appender f
+2026-05-21T23:45:01.804115654Z NIA-Input-Queue-2 ERROR Attempted to append to non-started appender f
+2026-05-21T23:45:01.808659863Z NIA-Input-Queue-2 ERROR Attempted to append to non-started appender f
+2026-05-21T23:45:02.326391354Z JTS-ShutdownTask-Clearing_batch_requests-12960 WARN found 2 argument placeholders, but provided 3 for pattern `Before clearing batch requets for:{} settings-state:{} settings:`
+2026-05-21T23:45:02.341025825Z pool-1-thread-1 ERROR Attempted to append to non-started appender h
+2026-05-21T23:45:02.341868177Z pool-1-thread-1 INFO Stopping configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@189aa67a...
+2026-05-21T23:45:02.341982417Z pool-1-thread-1 INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@189aa67a stopped.

@@ -1,0 +1,54 @@
+{
+  "symbol": "SOL/USDT",
+  "tf": "4h",
+  "strategy": "momentum_short",
+  "params": {
+    "sl_mult": 1.9,
+    "tp_mult": 2.5,
+    "cooldown": 3,
+    "rsi_w_thr": 55,
+    "vol_mult": 1.7,
+    "rsi_min": 28
+  },
+  "risk_pct": 5.0,
+  "metrics_is": {
+    "trades": 30,
+    "wr": 56.7,
+    "cagr": 5.8,
+    "dd": -25.9,
+    "pf": 1.35,
+    "trades_year": 6.5
+  },
+  "metrics_oos": {
+    "trades": 21,
+    "wr": 57.1,
+    "cagr": 24.5,
+    "dd": -13.5,
+    "pf": 1.58,
+    "trades_year": 18.3,
+    "cagr_bear_adj": 29.2,
+    "bear_days_oos": 357.0,
+    "funding_boost_pct": 10.8,
+    "cagr_with_funding": 40.2
+  },
+  "oos_days": 419,
+  "saved_at": "2026-05-10 09:58:25.399153",
+  "mc": {
+    "mc_cagr_p05": -15.2,
+    "mc_cagr_p50": 62.9,
+    "mc_cagr_p95": 180.7,
+    "mc_dd_p50": -32.9,
+    "mc_dd_p95": -18.1,
+    "mc_confidence": 91.6,
+    "mc_sims": 1000
+  },
+  "wft": {
+    "oos_win_rate": 0.0,
+    "n_windows": 3,
+    "positive_windows": 0,
+    "avg_cagr_oos": -31.7,
+    "avg_cagr_pos": 0.0,
+    "verdict": "FAIL",
+    "date": "2026-06-07 02:20"
+  }
+}

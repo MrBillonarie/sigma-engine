@@ -1,0 +1,54 @@
+{
+  "symbol": "ETH/USDT",
+  "tf": "4h",
+  "strategy": "momentum_short",
+  "params": {
+    "sl_mult": 3.3,
+    "tp_mult": 2.1,
+    "cooldown": 7,
+    "rsi_w_thr": 56,
+    "vol_mult": 1.2,
+    "rsi_min": 27
+  },
+  "risk_pct": 4.300000000000001,
+  "metrics_is": {
+    "trades": 44,
+    "wr": 72.7,
+    "cagr": 6.5,
+    "dd": -11.5,
+    "pf": 1.76,
+    "trades_year": 6.3
+  },
+  "metrics_oos": {
+    "trades": 22,
+    "wr": 72.7,
+    "cagr": 9.8,
+    "dd": -12.9,
+    "pf": 1.61,
+    "trades_year": 12.6,
+    "cagr_bear_adj": 12.2,
+    "bear_days_oos": 516.0,
+    "funding_boost_pct": 15.5,
+    "cagr_with_funding": 23.2
+  },
+  "oos_days": 636,
+  "saved_at": "2026-05-10 05:21:08.827168",
+  "mc": {
+    "mc_cagr_p05": -21.1,
+    "mc_cagr_p50": 27.4,
+    "mc_cagr_p95": 105.7,
+    "mc_dd_p50": -31.1,
+    "mc_dd_p95": -14.2,
+    "mc_confidence": 87.0,
+    "mc_sims": 1000
+  },
+  "wft": {
+    "oos_win_rate": 20.0,
+    "n_windows": 5,
+    "positive_windows": 1,
+    "avg_cagr_oos": -12.94,
+    "avg_cagr_pos": 15.7,
+    "verdict": "FAIL",
+    "date": "2026-06-07 02:19"
+  }
+}

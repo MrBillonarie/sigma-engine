@@ -1,0 +1,92 @@
+{
+  "symbol": "SOL/USDT",
+  "tf": "4h",
+  "strategy": "pullback_short",
+  "params": {
+    "sl_mult": 1.5,
+    "tp_mult": 4.0,
+    "cooldown": 6,
+    "rsi_w_thr": 49,
+    "ema_type": 50,
+    "rsi_entry": 55
+  },
+  "risk_pct": 5.0,
+  "metrics_is": {
+    "trades": 19,
+    "wr": 63.2,
+    "cagr": 17.8,
+    "dd": -12.5,
+    "pf": 2.43,
+    "trades_year": 4.1
+  },
+  "metrics_oos": {
+    "trades": 13,
+    "wr": 61.5,
+    "cagr": 48.3,
+    "dd": -10.4,
+    "pf": 2.8,
+    "trades_year": 11.2
+  },
+  "oos_days": 423,
+  "saved_at": "2026-05-28 19:14:57.001058",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 95.8,
+      "median": 150.4,
+      "ic95_lo": -11.3,
+      "ic95_hi": 379.2,
+      "ic80_lo": 30.6,
+      "ic80_hi": 291.5,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 11,
+      "positive": 9,
+      "pct_positive": 81.8,
+      "avg_cagr": 108.4,
+      "passed": true
+    },
+    "cross_asset": {
+      "tested": 2,
+      "positive": 0,
+      "positive_assets": [],
+      "results": [
+        {
+          "symbol": "ETH/USDT",
+          "cagr": -46.2,
+          "wr": 33.9,
+          "trades": 62
+        },
+        {
+          "symbol": "BNB/USDT",
+          "cagr": -36.5,
+          "wr": 26.1,
+          "trades": 46
+        }
+      ],
+      "passed": false
+    },
+    "confidence": "MEDIA",
+    "passed_steps": 2,
+    "max_steps": 3,
+    "validated_at": "2026-05-28 19:16:53.018848"
+  },
+  "mc": {
+    "mc_cagr_p05": 55.9,
+    "mc_cagr_p50": 162.3,
+    "mc_cagr_p95": 287.6,
+    "mc_dd_p50": -20.9,
+    "mc_dd_p95": -7.5,
+    "mc_confidence": 99.9,
+    "mc_sims": 1000
+  },
+  "wft": {
+    "oos_win_rate": 100.0,
+    "n_windows": 3,
+    "positive_windows": 3,
+    "avg_cagr_oos": 272.3,
+    "avg_cagr_pos": 272.3,
+    "verdict": "PASS",
+    "date": "2026-06-07 02:20"
+  }
+}

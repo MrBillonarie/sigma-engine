@@ -1,0 +1,344 @@
+"""champion_watcher.py — Detecta cambios de campeón en la matriz de modelos y manda UN mensaje
+por cambio detectado (sin duplicados).
+
+Flujo:
+  - Lee port_snapshot.json (matriz de campeones actuales)
+  - Compara con champion_notified.json (último estado notificado)
+  - Si hay cambios → 1 mensaje consolidado a Telegram
+  - Actualiza champion_notified.json para no repetir
+
+Corre via cron cada 30 min. Si entre runs hay varios cambios, los junta en 1 mensaje.
+"""
+import json
+import sys
+import urllib.request
+import urllib.parse
+from pathlib import Path
+from datetime import datetime, timezone
+
+# --- SIGMA secrets loader (audit 2026-05-14) ---
+import sys as _sigma_sys
+if "/opt/sigma" not in _sigma_sys.path:
+    _sigma_sys.path.insert(0, "/opt/sigma")
+try:
+    from utils.secrets import get_tg_token as _sigma_get_tg_token
+except Exception:
+    _sigma_get_tg_token = None
+# --- end SIGMA secrets loader ---
+
+# --- canonical score + CLI flags (audit 2026-05-14) ---
+import argparse as _argparse
+
+def _canonical_score(d):
+    """Score canonico alineado con pipeline/dashboard.
+    Recibe el dict completo del JSON del modelo (con metrics_oos y oos_days top-level).
+    """
+    try:
+        m = d.get('metrics_oos') or {}
+        cagr = float(m.get('cagr', 0) or 0)
+        dd = abs(float(m.get('dd', 0) or 0))
+        wr = float(m.get('wr', 0) or 0)
+        pf = float(m.get('pf', 0) or 0)
+        trades = float(m.get('trades', 0) or 0)
+        oos_days = float(d.get('oos_days', 365) or 365)
+        ty = trades * 365.0 / max(oos_days, 1)
+        s_cagr = min(cagr, 100) / 100 * 0.35
+        s_cal = (min(cagr / dd, 8) / 8 * 0.25) if dd > 0 else 0
+        s_freq = min(ty / 12, 1) * 0.20
+        s_wr = min(max(wr / 100 - 0.5, 0) / 0.35, 1) * 0.15
+        s_pf = min(pf, 3) / 3 * 0.05
+        return s_cagr + s_cal + s_freq + s_wr + s_pf
+    except Exception:
+        return 0.0
+
+
+_args = _argparse.ArgumentParser(add_help=False)
+_args.add_argument('--seed-only', action='store_true',
+                   help='Regenera snapshot y sincroniza notified sin enviar Telegram')
+_known, _ = _args.parse_known_args()
+SEED_ONLY = _known.seed_only
+# --- end canonical score / CLI ---
+
+BASE = Path('/opt/sigma')
+SNAPSHOT_PATH = BASE / 'results' / 'reports' / 'port_snapshot.json'
+NOTIFIED_PATH = BASE / 'results' / 'reports' / 'champion_notified.json'
+LOG_PATH     = BASE / 'results' / 'reports' / 'champion_watcher.log'
+NOTIFIER_PATH = BASE / 'engine' / 'live' / 'telegram_notifier.py'
+
+ORIGINAL_9 = {'breakout', 'pullback', 'tma_bands', 'momentum', 'mean_rev',
+              'breakdown', 'pullback_short', 'momentum_short', 'regime_adaptive'}
+
+# Estrategias agregadas el 2026-05-14 (sprint shorts expansion 3 -> 26)
+NEW_2026_05_14 = {
+    'rsi_overbought_short', 'death_cross_short', 'ema200_rejection_short',
+    'macd_bear_cross', 'lower_high_break_short',
+    'wedge_breakdown_short', 'supply_zone_rejection', 'bearish_rsi_divergence',
+    'volume_climax_top', 'range_break_down', 'macd_zero_cross_down',
+    'stoch_rsi_short', 'williams_r_short', 'cci_reversal_short',
+    'engulfing_short', 'three_candles_short', 'inside_bar_short',
+    'zscore_rich_short', 'heikin_ashi_short', 'roc_negative_short',
+    'dmi_bear', 'vwap_overpriced_short', 'keltner_breakdown_short',
+}
+
+
+def log(msg):
+    line = f'[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] {msg}'
+    print(line, flush=True)
+    try:
+        with open(LOG_PATH, 'a') as f:
+            print(line, file=f)
+    except Exception:
+        pass
+
+
+def get_telegram_config():
+    # 1) Preferir loader canonico de secrets (audit 2026-05-14)
+    token = None
+    chat_id = None
+    try:
+        if _sigma_get_tg_token is not None:
+            token = _sigma_get_tg_token()
+    except Exception as e:
+        log(f'secrets loader error: {e}')
+    # 2) CHAT_ID se sigue tomando del notifier (no esta en secrets)
+    try:
+        text = NOTIFIER_PATH.read_text(encoding='utf-8')
+        import re
+        if not token:
+            m_token = re.search(r"TOKEN\s*=\s*['\"]([^'\"]+)['\"]", text)
+            if m_token:
+                token = m_token.group(1)
+        m_chat  = re.search(r"CHAT_ID\s*=\s*['\"]?(-?\d+)['\"]?", text)
+        if m_chat:
+            chat_id = m_chat.group(1)
+    except Exception as e:
+        log(f'config error: {e}')
+    if token and chat_id:
+        return token, chat_id
+    return None, None
+
+
+def send_telegram(text):
+    token, chat_id = get_telegram_config()
+    if not token or not chat_id:
+        log('No telegram config')
+        return False
+    try:
+        url = f'https://api.telegram.org/bot{token}/sendMessage'
+        data = urllib.parse.urlencode({
+            'chat_id': chat_id,
+            'text': text,
+            'parse_mode': 'HTML',
+            'disable_web_page_preview': 'true',
+        }).encode()
+        req = urllib.request.Request(url, data=data)
+        urllib.request.urlopen(req, timeout=10)
+        return True
+    except Exception as e:
+        log(f'send error: {e}')
+        return False
+
+
+
+SHORT_STRATEGIES = {'breakdown', 'pullback_short', 'momentum_short',
+                    # Agregadas 2026-05-14
+                    'rsi_overbought_short', 'death_cross_short', 'ema200_rejection_short', 'macd_bear_cross', 'lower_high_break_short', 'wedge_breakdown_short',
+                    'supply_zone_rejection', 'bearish_rsi_divergence', 'volume_climax_top', 'range_break_down', 'macd_zero_cross_down', 'stoch_rsi_short',
+                    'williams_r_short', 'cci_reversal_short', 'engulfing_short', 'three_candles_short', 'inside_bar_short', 'zscore_rich_short',
+                    'heikin_ashi_short', 'roc_negative_short', 'dmi_bear', 'vwap_overpriced_short', 'keltner_breakdown_short'}
+
+
+def _regen_snapshot():
+    """Regenera port_snapshot.json desde los JSONs frescos en /opt/sigma/models.
+    Replica el formato escrito por dashboard.py:_write_snapshot pero usando
+    SOLO los champions actuales en disco. Si dashboard escribe despues, sobreescribe.
+    """
+    models_dir = BASE / 'models'
+    if not models_dir.exists():
+        return False
+    champions = {}
+    cagrs, wrs, dds, pfs, trades = [], [], [], [], 0
+    n_grade_a = 0
+    # Por slot (asset|tf) elegir el de mayor CAGR OOS y derivar direction del strategy name
+    by_slot = {}
+    for tf_dir in models_dir.iterdir():
+        if not tf_dir.is_dir() or tf_dir.name == 'archive':
+            continue
+        tf = tf_dir.name
+        for jf in tf_dir.glob('*.json'):
+            try:
+                d = json.loads(jf.read_text())
+            except Exception:
+                continue
+            sym = (d.get('symbol') or '').replace('/USDT', '').upper()
+            strat = d.get('strategy') or jf.stem.split('_', 1)[-1]
+            m = d.get('metrics_oos') or {}
+            cagr = float(m.get('cagr', 0) or 0)
+            score = _canonical_score(d)
+            key = f'{sym}|{tf}'
+            prev = by_slot.get(key)
+            if prev is None or score > prev[0]:
+                direction = 'short' if strat in SHORT_STRATEGIES else 'long'
+                by_slot[key] = (score, cagr, strat, direction, m)
+    for key, (_score, cagr, strat, direction, m) in by_slot.items():
+        champions[key] = f'{strat}|{direction}'
+        cagrs.append(cagr)
+        wrs.append(float(m.get('wr', 0) or 0))
+        dds.append(float(m.get('dd', 0) or 0))
+        pfs.append(float(m.get('pf', 0) or 0))
+        trades += int(m.get('trades', 0) or 0)
+        # grado A: CAGR/|DD| >= 0.55 aprox (heuristica simple para mantener n_grade_a)
+        if cagr >= 25:
+            n_grade_a += 1
+    if not champions:
+        return False
+    n = len(cagrs)
+    port_cagr = sum(cagrs) / n
+    port_wr = sum(wrs) / n
+    port_dd = sum(dds) / n
+    port_pf = sum(pfs) / n
+    port_calmar = (port_cagr / abs(port_dd)) if port_dd < 0 else 0
+    snap = {
+        'port_cagr': port_cagr,
+        'port_wr': port_wr,
+        'port_dd': port_dd,
+        'port_pf': round(port_pf, 2),
+        'port_calmar': round(port_calmar, 2),
+        'total_trades': trades,
+        'n_grade_a': n_grade_a,
+        'snapshot_at': datetime.now(timezone.utc).replace(tzinfo=None).isoformat() + 'Z',
+        'trigger': 'champion_watcher refresh',
+        'champions': champions,
+    }
+    try:
+        SNAPSHOT_PATH.parent.mkdir(parents=True, exist_ok=True)
+        SNAPSHOT_PATH.write_text(json.dumps(snap, indent=2))
+        return True
+    except Exception as e:
+        log(f'_regen_snapshot write error: {e}')
+        return False
+
+
+def main():
+    # Regenerar snapshot desde JSONs frescos antes de comparar (dashboard.py es on-demand)
+    try:
+        if _regen_snapshot():
+            log('snapshot regenerated from disk')
+    except Exception as e:
+        log(f'regen error: {e}')
+    if not SNAPSHOT_PATH.exists():
+        log('No snapshot yet — skip')
+        return
+
+    try:
+        snap = json.loads(SNAPSHOT_PATH.read_text())
+    except Exception as e:
+        log(f'snap read error: {e}')
+        return
+
+    current = snap.get('champions', {})
+    if not current:
+        log('Empty champions in snapshot')
+        return
+
+    # Leer último estado notificado
+    first_run = not NOTIFIED_PATH.exists()
+    last = {}
+    if not first_run:
+        try:
+            last = json.loads(NOTIFIED_PATH.read_text()).get('champions', {})
+        except Exception:
+            pass
+
+    # FIRST RUN: solo guardar baseline, no mandar nada
+    if first_run:
+        NOTIFIED_PATH.write_text(json.dumps({
+            'champions': current,
+            'baseline_set_at': datetime.now().isoformat(),
+        }, indent=2))
+        log(f'Baseline inicial guardado: {len(current)} slots. No se manda nada.')
+        return
+
+    # Detectar cambios
+    fresh_discoveries = []  # estrategia del UNIVERSO NUEVO (agregadas 2026-05-14)
+    discoveries = []        # estrategia avanzada (no en ORIGINAL_9 ni en NEW_2026_05_14)
+    rotations = []          # estrategia clásica reemplaza a otra clásica
+    for slot, strat_dir in current.items():
+        old = last.get(slot)
+        if old == strat_dir:
+            continue  # sin cambio
+        strat_new = str(strat_dir).split('|')[0] if '|' in str(strat_dir) else strat_dir
+        strat_old = str(old).split('|')[0] if old and '|' in str(old) else (old or 'nuevo')
+        if strat_new in NEW_2026_05_14:
+            fresh_discoveries.append((slot, strat_old, strat_new))
+        elif strat_new not in ORIGINAL_9:
+            discoveries.append((slot, strat_old, strat_new))
+        elif old is not None:
+            rotations.append((slot, strat_old, strat_new))
+
+    # Si NO hay cambios, no mandar nada (importante para evitar spam)
+    if not fresh_discoveries and not discoveries and not rotations:
+        log(f'Sin cambios ({len(current)} slots tracked) — no message')
+        return
+
+    # UN solo mensaje consolidado
+    lines = []
+    if fresh_discoveries:
+        lines.append('🆕 <b>CAMPEONES DEL NUEVO UNIVERSO (14-05)</b>')
+        lines.append('<i>Una de las 23 estrategias agregadas hoy se posicionó como champion.</i>')
+        lines.append('')
+        for slot, old, new in fresh_discoveries:
+            lines.append(f'  🔥 <b>{slot}</b>: {old} → <b>{new}</b>')
+    if discoveries:
+        if lines:
+            lines.append('')
+        lines.append('🎉 <b>NUEVOS CAMPEONES — universo expandido (legacy)</b>')
+        lines.append('')
+        for slot, old, new in discoveries:
+            lines.append(f'  • <b>{slot}</b>: {old} → <b>{new}</b>')
+    if rotations:
+        if lines:
+            lines.append('')
+        lines.append('🔄 <b>Rotación de estrategias clásicas</b>')
+        lines.append('')
+        for slot, old, new in rotations:
+            lines.append(f'  • <b>{slot}</b>: {old} → <b>{new}</b>')
+    lines.append('')
+    msg = '\n'.join(lines)
+
+    if SEED_ONLY:
+        # Modo seed: NO mandar Telegram, solo sincronizar notified contra snapshot regenerado
+        log(f'[seed-only] Skipping Telegram. {len(discoveries)} discoveries + {len(rotations)} rotations detected.')
+        for slot, old, new in discoveries:
+            log(f'[seed-only] discovery {slot}: {old} -> {new}')
+        for slot, old, new in rotations:
+            log(f'[seed-only] rotation {slot}: {old} -> {new}')
+        NOTIFIED_PATH.write_text(json.dumps({
+            'champions': current,
+            'seeded_at': datetime.now().isoformat(),
+            'seed_changes_summary': {
+                'discoveries': len(discoveries),
+                'rotations': len(rotations),
+            },
+        }, indent=2))
+        log('[seed-only] champion_notified.json sincronizado con snapshot actual.')
+        return
+
+    if send_telegram(msg):
+        log(f'Notified: {len(fresh_discoveries)} fresh + {len(discoveries)} discoveries + {len(rotations)} rotations en 1 mensaje')
+        # Solo guardar el nuevo baseline SI el send fue exitoso
+        NOTIFIED_PATH.write_text(json.dumps({
+            'champions': current,
+            'last_notified_at': datetime.now().isoformat(),
+            'changes_summary': {
+                'fresh_discoveries': len(fresh_discoveries),
+                'discoveries': len(discoveries),
+                'rotations': len(rotations),
+            },
+        }, indent=2))
+    else:
+        log('Send falló — no actualizo NOTIFIED_PATH (reintento próximo run)')
+
+
+if __name__ == '__main__':
+    main()

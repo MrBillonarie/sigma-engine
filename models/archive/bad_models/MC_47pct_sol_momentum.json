@@ -1,0 +1,64 @@
+{
+  "symbol": "SOL/USDT",
+  "tf": "1h",
+  "strategy": "momentum",
+  "params": {
+    "sl_mult": 2.5,
+    "tp_mult": 3.7,
+    "cooldown": 8,
+    "rsi_w_thr": 46,
+    "vol_mult": 1.5,
+    "rsi_max": 62
+  },
+  "risk_pct": 4.6,
+  "metrics_is": {
+    "trades": 156,
+    "wr": 51.9,
+    "cagr": 34.7,
+    "dd": -30.2,
+    "pf": 1.36,
+    "trades_year": 34.5
+  },
+  "metrics_oos": {
+    "trades": 14,
+    "wr": 42.9,
+    "cagr": 9.2,
+    "dd": -3.3,
+    "pf": 2.14,
+    "trades_year": 12.2
+  },
+  "saved_at": "2026-05-08 21:08:47.731161",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 67.4,
+      "median": 140.4,
+      "ic95_lo": -98.3,
+      "ic95_hi": 2546.8,
+      "n_trades": 16,
+      "n_sims": 2000,
+      "passed": true
+    },
+    "confidence": "MEDIA",
+    "validated_at": "2026-05-08 23:24:32.878651"
+  },
+  "reeval_date": "2026-05-09 18:17",
+  "reeval_note": "funding+slippage aplicados",
+  "mc": {
+    "mc_cagr_p05": -46.6,
+    "mc_cagr_p50": -6.7,
+    "mc_cagr_p95": 63.1,
+    "mc_dd_p50": -48.5,
+    "mc_dd_p95": -28.2,
+    "mc_confidence": 46.9,
+    "mc_sims": 2000
+  },
+  "wft": {
+    "oos_win_rate": 33.3,
+    "n_windows": 6,
+    "positive_windows": 2,
+    "avg_cagr_oos": 2.55,
+    "avg_cagr_pos": 80.8,
+    "verdict": "FAIL",
+    "date": "2026-05-10 02:06"
+  }
+}

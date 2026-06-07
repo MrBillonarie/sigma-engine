@@ -1,0 +1,777 @@
+"""
+SIGMA Multi-Timeframe Optimizer
+Testea 1m / 5m / 15m / 1h / 4h / 1D en BTC/USDT Futuros
+Random search adaptado por timeframe con parametros ajustados.
+Genera Pine Script para cada TF ganador.
+"""
+
+import sys, os, random
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+import pandas as pd
+import numpy as np
+import ccxt
+import warnings
+import subprocess
+import winsound
+from datetime import datetime, timedelta, timezone
+warnings.filterwarnings('ignore')
+
+random.seed(42); np.random.seed(42)
+
+OUTPUT_DIR = os.path.dirname(os.path.abspath(__file__))
+COMMISSION  = 0.0004   # 0.04% por lado Binance Futures
+CAPITAL     = 1000.0
+
+# ─── CONFIG POR TIMEFRAME ─────────────────────────────────────────────────────
+TF_CONFIG = {
+    '1m': {
+        'ccxt_tf':   '1m',
+        'days':       30,         # 30 dias = ~43k velas
+        'htf1':      '5m',
+        'htf2':      '15m',
+        'n_samples':  3000,
+        'min_trades': 200,
+        'label':      '1M',
+        'bars_year':  525960,
+        # Params base
+        'sl_range':  [0.5, 0.8, 1.0, 1.2, 1.5],
+        'tp_range':  [1.0, 1.5, 2.0, 2.5, 3.0],
+        'cd_range':  [3, 5, 8, 12, 20],
+        'risk_range':[0.2, 0.3, 0.5],
+        'adx_range': [15, 20, 25],
+        'comment':   'Alta frecuencia — comision pesa, necesita WR > 55%',
+    },
+    '5m': {
+        'ccxt_tf':   '5m',
+        'days':       90,
+        'htf1':      '15m',
+        'htf2':      '1h',
+        'n_samples':  4000,
+        'min_trades': 80,
+        'label':      '5M',
+        'bars_year':  105192,
+        'sl_range':  [0.8, 1.0, 1.3, 1.5, 1.8],
+        'tp_range':  [1.5, 2.0, 2.5, 3.0, 3.5],
+        'cd_range':  [4, 6, 8, 12, 16],
+        'risk_range':[0.3, 0.5, 0.8],
+        'adx_range': [18, 22, 25],
+        'comment':   'Intraday rapido — buena frecuencia con filtros',
+    },
+    '15m': {
+        'ccxt_tf':   '15m',
+        'days':       180,
+        'htf1':      '1h',
+        'htf2':      '4h',
+        'n_samples':  5000,
+        'min_trades': 40,
+        'label':      '15M',
+        'bars_year':  35040,
+        'sl_range':  [1.0, 1.3, 1.5, 1.7, 2.0, 2.15],
+        'tp_range':  [2.0, 2.5, 3.0, 3.5, 4.0, 4.5],
+        'cd_range':  [4, 6, 8, 12, 16],
+        'risk_range':[0.5, 0.8, 1.0],
+        'adx_range': [18, 20, 22, 25],
+        'comment':   'Sweet spot intraday crypto',
+    },
+    '1h': {
+        'ccxt_tf':   '1h',
+        'days':       365,
+        'htf1':      '4h',
+        'htf2':      '1d',
+        'n_samples':  4000,
+        'min_trades': 20,
+        'label':      '1H',
+        'bars_year':  8760,
+        'sl_range':  [1.3, 1.5, 1.8, 2.0, 2.5],
+        'tp_range':  [2.0, 2.5, 3.0, 4.0, 5.0],
+        'cd_range':  [2, 3, 4, 6, 8],
+        'risk_range':[0.5, 0.8, 1.0, 1.5],
+        'adx_range': [20, 22, 25, 28],
+        'comment':   'Swing intraday — alta calidad, menos trades',
+    },
+    '4h': {
+        'ccxt_tf':   '4h',
+        'days':       730,
+        'htf1':      '1d',
+        'htf2':      '1w',
+        'n_samples':  3000,
+        'min_trades': 15,
+        'label':      '4H',
+        'bars_year':  2190,
+        'sl_range':  [1.5, 1.8, 2.0, 2.5, 3.0],
+        'tp_range':  [2.5, 3.0, 4.0, 5.0, 6.0],
+        'cd_range':  [1, 2, 3, 4],
+        'risk_range':[0.5, 1.0, 1.5, 2.0],
+        'adx_range': [20, 22, 25, 28],
+        'comment':   'Posicional — alta calidad, muy pocos trades',
+    },
+    '1d': {
+        'ccxt_tf':   '1d',
+        'days':       1095,
+        'htf1':      '1w',
+        'htf2':      '1M',
+        'n_samples':  2000,
+        'min_trades': 10,
+        'label':      '1D',
+        'bars_year':  365,
+        'sl_range':  [1.5, 2.0, 2.5, 3.0],
+        'tp_range':  [3.0, 4.0, 5.0, 6.0, 8.0],
+        'cd_range':  [1, 2, 3],
+        'risk_range':[0.5, 1.0, 2.0],
+        'adx_range': [20, 22, 25],
+        'comment':   'Largo plazo — necesita mucha historia',
+    },
+}
+
+# ─── DESCARGA ─────────────────────────────────────────────────────────────────
+def fetch_tf(exchange, tf, days, sym='BTC/USDT'):
+    since_str = (datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=days)).strftime('%Y-%m-%dT00:00:00Z')
+    since = exchange.parse8601(since_str)
+    all_ohlcv = []
+    while True:
+        limit = 1000
+        ohlcv = exchange.fetch_ohlcv(sym, tf, since=since, limit=limit)
+        if not ohlcv: break
+        all_ohlcv += ohlcv
+        since = ohlcv[-1][0] + 1
+        if len(ohlcv) < limit: break
+    df = pd.DataFrame(all_ohlcv, columns=['timestamp','open','high','low','close','volume'])
+    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+    df.set_index('timestamp', inplace=True)
+    return df.astype(float)
+
+# ─── INDICADORES ──────────────────────────────────────────────────────────────
+def _ema(s, n): return s.ewm(span=n, adjust=False).mean()
+
+def _rsi(c, n=14):
+    d = c.diff()
+    g = d.clip(lower=0).ewm(alpha=1/n, adjust=False).mean()
+    ls = (-d.clip(upper=0)).ewm(alpha=1/n, adjust=False).mean()
+    return 100 - 100/(1 + g/ls.replace(0, np.nan))
+
+def _atr(h, l, c, n=14):
+    tr = pd.concat([h-l, (h-c.shift()).abs(), (l-c.shift()).abs()], axis=1).max(axis=1)
+    return tr.ewm(alpha=1/n, adjust=False).mean()
+
+def _adx_calc(h, l, c, n=14):
+    up = h.diff(); dn = -l.diff()
+    plus_dm  = np.where((up>dn)&(up>0), up, 0.0)
+    minus_dm = np.where((dn>up)&(dn>0), dn, 0.0)
+    atr_v = _atr(h, l, c, n)
+    plus_di  = 100*pd.Series(plus_dm, index=h.index).ewm(alpha=1/n,adjust=False).mean()/atr_v
+    minus_di = 100*pd.Series(minus_dm,index=h.index).ewm(alpha=1/n,adjust=False).mean()/atr_v
+    dx = 100*(plus_di-minus_di).abs()/(plus_di+minus_di+1e-9)
+    return dx.ewm(alpha=1/n, adjust=False).mean()
+
+# ─── FEATURES ─────────────────────────────────────────────────────────────────
+def build_features(df_base, df_htf1, df_htf2, tf_cfg):
+    df = df_base.copy()
+    c,h,l,v,o = df['close'],df['high'],df['low'],df['volume'],df['open']
+
+    df['atr']   = _atr(h,l,c,14)
+    df['ema20'] = _ema(c,20)
+    df['ema50'] = _ema(c,50)
+    df['ema200']= _ema(c,200)
+    df['bull']  = df['ema50'] > df['ema200']
+    df['bear']  = df['ema50'] < df['ema200']
+
+    m12=_ema(c,12); m26=_ema(c,26)
+    df['macd']  = m12-m26
+    df['signal']= _ema(df['macd'],9)
+    df['rsi']   = _rsi(c)
+    df['adx']   = _adx_calc(h,l,c)
+
+    # Hurst
+    rn  = h.rolling(50,min_periods=10).max()-l.rolling(50,min_periods=10).min()
+    rn2 = h.rolling(25,min_periods=5).max()-l.rolling(25,min_periods=5).min()
+    df['hurst'] = np.where(rn2>0, np.log(rn/(rn2+1e-9))/np.log(2), 0.5)
+
+    # BB
+    sma20=c.rolling(20).mean(); std20=c.rolling(20).std()
+    df['bb_upper']=sma20+2*std20; df['bb_lower']=sma20-2*std20
+
+    # OFI
+    body=(c-o).abs()/(h-l+1e-9)
+    bv=v*np.where(c>o,body,0); sv=v*np.where(c<o,body,0)
+    bvs=pd.Series(bv,index=df.index).rolling(20).sum()
+    svs=pd.Series(sv,index=df.index).rolling(20).sum()
+    tot=bvs+svs
+    df['ofi']=((bvs-svs)/(tot+1e-9)).ewm(span=3).mean()
+
+    # CVD
+    delta=np.where(c>o,v,np.where(c<o,-v,0))
+    df['cvd']=pd.Series(delta,index=df.index).cumsum()
+    df['cvd_ma']=df['cvd'].rolling(20).mean()
+    df['cvd_bull']=df['cvd']>df['cvd_ma']
+
+    # Vol
+    df['vol_ma'] = v.rolling(20).mean()
+    df['vol_ok'] = v>df['vol_ma']*1.5
+    df['atr_ratio']=df['atr']/df['atr'].rolling(50).mean().replace(0,np.nan)
+    df['is_spike']=(h-l)>df['atr']*2
+
+    # Fake move
+    liq_up  = h>h.rolling(20).max().shift(1)
+    liq_dn  = l<l.rolling(20).min().shift(1)
+    df['fake_move']=(liq_up&(c<o))|(liq_dn&(c>o))
+
+    # Vol percentile
+    amin=df['atr'].rolling(100,min_periods=10).min()
+    amax=df['atr'].rolling(100,min_periods=10).max()
+    df['vol_pct']=((df['atr']-amin)/(amax-amin+1e-9)*100).clip(0,100)
+
+    # OB / FVG
+    imp_up=(c.shift(9)>o.shift(9))&((c.shift(9)-o.shift(9))>df['atr'].shift(9)*0.8)
+    ob_b=(c.shift(10)<o.shift(10))&imp_up
+    df['in_bull_ob']=ob_b&(c<=o.shift(10))&(c>=c.shift(10))&df['bull']
+    imp_dn=(c.shift(9)<o.shift(9))&((o.shift(9)-c.shift(9))>df['atr'].shift(9)*0.8)
+    ob_s=(c.shift(10)>o.shift(10))&imp_dn
+    df['in_bear_ob']=ob_s&(c>=o.shift(10))&(c<=c.shift(10))&df['bear']
+    df['fvg_bull']=l>h.shift(2); df['fvg_bear']=h<l.shift(2)
+    df['fill_bull_fvg']=(c<=l.shift(1))&(c>=h.shift(3))&df['bull']
+    df['fill_bear_fvg']=(c>=h.shift(1))&(c<=l.shift(3))&df['bear']
+
+    # AVWAP
+    tp=(h+l+c)/3
+    df['week']=df.index.isocalendar().week.values
+    an_=[]; avd_=[]; pn_=avd_n=0.0; pw_=-1
+    for i in range(len(df)):
+        wk=df['week'].iloc[i]
+        if wk!=pw_: pn_=0.0; avd_n=0.0; pw_=wk
+        pn_+=tp.iloc[i]*v.iloc[i]; avd_n+=v.iloc[i]
+        an_.append(pn_); avd_.append(avd_n)
+    df['avwap']=np.array(an_)/np.maximum(np.array(avd_),1e-9)
+    df['above_avwap']=c>df['avwap']
+
+    # Gap block
+    gap=(o-c.shift()).abs()>df['atr']*2
+    bsg_=[]; cnt_=9999
+    for ig in gap:
+        if ig: cnt_=0
+        bsg_.append(cnt_); cnt_+=1
+    df['bars_since_gap']=bsg_
+
+    # Session / DOW
+    df['hour']=df.index.hour
+    df['dow'] =df.index.dayofweek
+
+    # RSI divergence
+    rll=df['rsi'].rolling(14).min(); rhh=df['rsi'].rolling(14).max()
+    pll=l.rolling(14).min(); phh=h.rolling(14).max()
+    df['bull_div']=(l<=pll)&(df['rsi']>rll.shift(1))&(df['rsi']>30)
+    df['bear_div']=(h>=phh)&(df['rsi']<rhh.shift(1))&(df['rsi']<70)
+
+    # HTF 1
+    h1=df_htf1.copy()
+    h1['e50']=_ema(h1['close'],50); h1['e200']=_ema(h1['close'],200)
+    h1['htf1_long']=h1['e50']>h1['e200']; h1['htf1_short']=h1['e50']<h1['e200']
+    df=pd.merge_asof(df.reset_index(),h1[['htf1_long','htf1_short']].reset_index(),
+                     on='timestamp',direction='backward').set_index('timestamp')
+
+    # HTF 2
+    h2=df_htf2.copy()
+    h2['e50']=_ema(h2['close'],50); h2['e200']=_ema(h2['close'],200)
+    h2['htf2_long']=h2['e50']>h2['e200']
+    df=pd.merge_asof(df.reset_index(),h2[['htf2_long']].reset_index(),
+                     on='timestamp',direction='backward').set_index('timestamp')
+
+    for col in ['htf1_long','htf1_short','htf2_long']:
+        if col in df.columns:
+            df[col]=df[col].fillna(False).astype(bool)
+
+    # Smart / Elite signals
+    df['trend_power']=(df['ema50']-df['ema200']).abs()
+    df['trend_gate']=df['trend_power']>df['atr']*0.5
+    df['smart_long'] =df['bull']&df['trend_gate']&(df['macd']>df['signal'])&df['htf1_long'] &~df['is_spike']
+    df['smart_short']=df['bear']&df['trend_gate']&(df['macd']<df['signal'])&df['htf1_short']&~df['is_spike']
+    df['tf3_bull']=df['bull']&df['htf1_long'] &df['htf2_long']
+    df['tf3_bear']=df['bear']&df['htf1_short']&~df['htf2_long']
+    df['elite_long'] =df['smart_long'] &df['tf3_bull']&~df['fake_move']&(df['rsi']<70)
+    df['elite_short']=df['smart_short']&df['tf3_bear']&~df['fake_move']&(df['rsi']>30)
+    df['eit_long'] =df['elite_long'] &(df['in_bull_ob']|df['fill_bull_fvg']|df['above_avwap'])
+    df['eit_short']=df['elite_short']&(df['in_bear_ob']|df['fill_bear_fvg']|~df['above_avwap'])
+
+    df['is_trend_up']  =df['bull']&(df['close']>df['ema50'])
+    df['is_trend_down']=df['bear']&(df['close']<df['ema50'])
+    df['is_weak_range']=(df['hurst']<0.50)&(df['adx']<20)
+
+    return df.ffill().bfill()
+
+# ─── SEÑALES ──────────────────────────────────────────────────────────────────
+def get_signals(df, cfg, tf_cfg):
+    hr  = df['hour']
+    dow = df['dow']
+
+    # Session — adaptada por TF
+    if tf_cfg['label'] in ('1D','4H'):
+        in_sess = pd.Series(True, index=df.index)  # siempre abierto
+    else:
+        in_a = (hr>=8)&(hr<12)
+        in_b = (hr>=13)&(hr<20) if cfg['use_sess_b'] else pd.Series(False,index=df.index)
+        in_c = (hr>=1)&(hr<6)   if cfg['use_asia']   else pd.Series(False,index=df.index)
+        in_sess = in_a|in_b|in_c
+
+    allowed=[1,2,3]
+    if cfg['allow_friday']: allowed.append(4)
+    if tf_cfg['label']=='1D': allowed=[0,1,2,3,4]
+    day_ok=pd.Series(dow,index=df.index).isin(allowed)
+
+    gap_ok=df['bars_since_gap']>=2
+    temp_ok=(df['vol_pct']>=cfg['temp_min'])&(df['vol_pct']<=cfg['temp_max'])
+    base=~df['fake_move']&~df['is_spike']&day_ok&gap_ok&temp_ok&in_sess
+
+    htf_l=df['htf1_long'] &(df['htf2_long']  if cfg['req_htf2'] else pd.Series(True,index=df.index))
+    htf_s=df['htf1_short']&(~df['htf2_long'] if cfg['req_htf2'] else pd.Series(True,index=df.index))
+
+    sig_l=pd.Series(False,index=df.index); sig_s=pd.Series(False,index=df.index)
+    sig_l=sig_l|df['eit_long'] ; sig_s=sig_s|df['eit_short']
+    if cfg['use_elite']:
+        sig_l=sig_l|(df['elite_long'] &~df['eit_long'] &htf_l)
+        sig_s=sig_s|(df['elite_short']&~df['eit_short']&htf_s)
+    if cfg['use_execute']:
+        exc_l=df['smart_long'] &~df['elite_long'] &(df['adx']>cfg['adx_min'])&htf_l
+        exc_s=df['smart_short']&~df['elite_short']&(df['adx']>cfg['adx_min'])&htf_s
+        sig_l=sig_l|exc_l; sig_s=sig_s|exc_s
+    if cfg['use_trend']:
+        is_tu=(df['hurst']>cfg['hurst_t'])&(df['adx']>cfg['adx_t'])&df['is_trend_up']
+        is_td=(df['hurst']>cfg['hurst_t'])&(df['adx']>cfg['adx_t'])&df['is_trend_down']
+        tl=is_tu&(df['low']<=df['ema20']*1.005)&(df['close']>df['ema20'])&(df['macd']>df['signal'])&~df['fake_move']
+        ts=is_td&(df['high']>=df['ema20']*0.995)&(df['close']<df['ema20'])&(df['macd']<df['signal'])&~df['fake_move']
+        if cfg['req_htf2']: tl=tl&htf_l; ts=ts&htf_s
+        sig_l=sig_l|(tl&base); sig_s=sig_s|(ts&base)
+    if cfg['use_range']:
+        is_wr=df['is_weak_range']
+        rl=is_wr&(df['low']<=df['bb_lower'])&(df['close']>df['bb_lower'])&(df['rsi']<30)&df['bull_div']&~df['fake_move']
+        rs=is_wr&(df['high']>=df['bb_upper'])&(df['close']<df['bb_upper'])&(df['rsi']>70)&df['bear_div']&~df['fake_move']
+        sig_l=sig_l|(rl&base); sig_s=sig_s|(rs&base)
+
+    sig_l=sig_l&base; sig_s=sig_s&base
+
+    cd=cfg['cooldown']
+    final=pd.Series(0,index=df.index); qual=pd.Series('NONE',index=df.index)
+    last=-cd-1
+    for i in range(len(df)):
+        if (i-last)<cd: continue
+        if sig_l.iloc[i]:
+            final.iloc[i]=1
+            qual.iloc[i]='EIT' if df['eit_long'].iloc[i] else 'ELT' if df['elite_long'].iloc[i] else 'EXC'
+            last=i
+        elif sig_s.iloc[i]:
+            final.iloc[i]=-1
+            qual.iloc[i]='EIT' if df['eit_short'].iloc[i] else 'ELT' if df['elite_short'].iloc[i] else 'EXC'
+            last=i
+    return final, qual
+
+# ─── BACKTEST ─────────────────────────────────────────────────────────────────
+def backtest(df, signals, quality, cfg):
+    capital=CAPITAL; equity=[capital]
+    trades=[]; pos=0; entry=sl=tp1=tp2=0.0; size=0.0
+    be_done=False; partial=0.0
+
+    for i in range(1,len(df)):
+        row=df.iloc[i]; prev=df.iloc[i-1]
+        sig=signals.iloc[i-1]; qual=quality.iloc[i-1]
+        pr=row['close']; atr=prev['atr']
+        h_=row['high']; lo=row['low']
+
+        sl_m=cfg['sl_elite'] if qual in ('EIT','ELT') else cfg['sl_exec']
+        tp_m=cfg['tp_elite'] if qual in ('EIT','ELT') else cfg['tp_exec']
+        qt1=cfg['qty_tp1']
+
+        if pos!=0:
+            pnl=0.0; closed=False; reason=''
+            sl_eff=entry if (be_done and cfg['use_be']) else sl
+            if pos==1:
+                if not be_done and h_>=tp1:
+                    pnl+=size*qt1*(tp1-entry)-size*qt1*(entry+tp1)*COMMISSION
+                    partial+=pnl; be_done=True
+                if be_done and h_>=tp2:
+                    pnl+=size*(1-qt1)*(tp2-entry)-size*(1-qt1)*(entry+tp2)*COMMISSION
+                    closed=True; reason='TP2'
+                if not closed and lo<=sl_eff:
+                    rem=(1-qt1) if be_done else 1.0
+                    pnl+=rem*size*(sl_eff-entry)-rem*size*(entry+sl_eff)*COMMISSION
+                    closed=True; reason='BE' if be_done else 'SL'
+            else:
+                if not be_done and lo<=tp1:
+                    pnl+=size*qt1*(entry-tp1)-size*qt1*(entry+tp1)*COMMISSION
+                    partial+=pnl; be_done=True
+                if be_done and lo<=tp2:
+                    pnl+=size*(1-qt1)*(entry-tp2)-size*(1-qt1)*(entry+tp2)*COMMISSION
+                    closed=True; reason='TP2'
+                if not closed and h_>=sl_eff:
+                    rem=(1-qt1) if be_done else 1.0
+                    pnl+=rem*size*(entry-sl_eff)-rem*size*(entry+sl_eff)*COMMISSION
+                    closed=True; reason='BE' if be_done else 'SL'
+            if not closed and sig==-pos:
+                rem=(1-qt1) if be_done else 1.0
+                pnl+=rem*size*(pr-entry)*pos-rem*size*(entry+pr)*COMMISSION
+                closed=True; reason='Signal'
+            if closed:
+                total=partial+pnl; capital+=total
+                trades.append({'pnl':total,'won':total>0,'reason':reason,'capital':capital})
+                pos=0; be_done=False; partial=0.0
+
+        if pos==0 and sig!=0 and capital>50:
+            pos=sig; entry=pr; be_done=False; partial=0.0
+            r_sl=atr*sl_m
+            sl=entry-r_sl if pos==1 else entry+r_sl
+            tp1=entry+atr*tp_m     if pos==1 else entry-atr*tp_m
+            tp2=entry+atr*tp_m*1.5 if pos==1 else entry-atr*tp_m*1.5
+            size=(capital*cfg['risk_pct']/100)/r_sl if r_sl>0 else 0
+        equity.append(capital)
+
+    df_t=pd.DataFrame(trades)
+    eq=pd.Series(equity[:len(df)],index=df.index[:len(equity)])
+    if df_t.empty or len(df_t)<3:
+        return {'trades':0,'winrate':0,'pnl_pct':-999,'cagr':-999,
+                'trades_month':0,'sharpe':-99,'max_dd':-100,'profit_factor':0,'calmar':0}
+    w=df_t[df_t['pnl']>0]; ls=df_t[df_t['pnl']<=0]
+    gp=w['pnl'].sum(); gl=abs(ls['pnl'].sum())
+    peak=eq.cummax(); dd=(eq-peak)/peak*100
+    ret=eq.pct_change().dropna()
+    # Sharpe anualizado segun barras reales del TF
+    n_bars=len(eq); bars_year=tf_cfg.get('bars_year',35040)
+    sh=ret.mean()/ret.std()*np.sqrt(bars_year) if ret.std()>0 else 0
+    # PnL total y CAGR
+    pnl=(eq.iloc[-1]-CAPITAL)/CAPITAL*100
+    # Periodo real en años
+    days_total=(eq.index[-1]-eq.index[0]).days if len(eq)>1 else 365
+    years=max(days_total/365.25, 0.01)
+    cagr=((eq.iloc[-1]/CAPITAL)**(1/years)-1)*100
+    # Trades por mes
+    trades_month=len(df_t)/(days_total/30.44) if days_total>0 else 0
+    cal=cagr/abs(dd.min()) if dd.min()<0 else 0
+    return {'trades':len(df_t),'winrate':len(w)/len(df_t)*100,
+            'pnl_pct':pnl,'cagr':cagr,'trades_month':round(trades_month,1),
+            'sharpe':sh,'max_dd':dd.min(),
+            'profit_factor':gp/gl if gl>0 else 999,'calmar':cal}
+
+# ─── SCORE ────────────────────────────────────────────────────────────────────
+def score(m, min_trades):
+    if m['trades']<min_trades: return -9999+m['trades']
+    trade_b=min(m['trades']/max(min_trades,1),3.0)*0.15
+    wr_pen=max(0,55-m['winrate'])*0.04
+    wr=m['winrate']/100
+    pf=min(m['profit_factor'],20)/20
+    sh=max(min(m['sharpe'],8),-8)/8
+    pnl=max(min(m['pnl_pct'],150),-50)/150
+    dd=max(min(m['max_dd'],0),-30)/-30
+    return 0.25*wr+0.20*pf+0.15*sh+0.20*pnl+0.10*(1-dd)+trade_b-wr_pen
+
+# ─── ESPACIO POR TF ───────────────────────────────────────────────────────────
+def sample_cfg(tf_cfg):
+    return {
+        'use_elite':    True,
+        'use_execute':  random.choice([True,True,False]),
+        'use_trend':    random.choice([True,True,False]),
+        'use_range':    random.choice([True,False]),
+        'use_sess_b':   random.choice([True,True,False]),
+        'use_asia':     random.choice([True,False]),
+        'allow_friday': random.choice([True,False]),
+        'req_htf2':     random.choice([True,True,False]),
+        'use_be':       random.choice([True,True,False]),
+        'cooldown':     random.choice(tf_cfg['cd_range']),
+        'sl_elite':     random.choice(tf_cfg['sl_range']),
+        'tp_elite':     random.choice(tf_cfg['tp_range']),
+        'sl_exec':      random.choice(tf_cfg['sl_range']),
+        'tp_exec':      random.choice(tf_cfg['tp_range']),
+        'risk_pct':     random.choice(tf_cfg['risk_range']),
+        'qty_tp1':      random.choice([0.40,0.50,0.60]),
+        'adx_min':      random.choice(tf_cfg['adx_range']),
+        'hurst_t':      random.choice([0.52,0.54,0.55,0.57,0.60]),
+        'adx_t':        random.choice(tf_cfg['adx_range']),
+        'temp_min':     random.choice([5,10,15,20]),
+        'temp_max':     random.choice([80,85,90,100]),
+        'ofi_thr':      random.choice([0.4,0.5,0.55,0.6,0.7]),
+    }
+
+# ─── PINE SCRIPT TEMPLATE ─────────────────────────────────────────────────────
+def gen_pine(tf_label, cfg, m, tf_cfg):
+    modes=["ELITE"]
+    if cfg['use_execute']: modes.append("EXEC")
+    if cfg['use_trend']:   modes.append("TREND")
+    if cfg['use_range']:   modes.append("RANGE")
+    mode_str="+".join(modes)
+    htf1=tf_cfg['htf1']; htf2=tf_cfg['htf2']
+    htf1_pine = htf1.replace('1d','D').replace('1w','W').replace('1M','M')
+    htf2_pine = htf2.replace('1d','D').replace('1w','W').replace('1M','M')
+
+    return f"""//@version=6
+// SIGMA K1 {tf_label} — {mode_str}
+// Backtest: {m['trades']}T | WR {m['winrate']:.1f}% | PnL {m['pnl_pct']:+.1f}%
+// MaxDD {m['max_dd']:.1f}% | PF {m['profit_factor']:.2f} | Sharpe {m['sharpe']:.2f}
+// SL: {cfg['sl_elite']}x(elite) / {cfg['sl_exec']}x(exec) | TP: {cfg['tp_elite']}x / {cfg['tp_exec']}x
+strategy("SIGMA K1 {tf_label} — {mode_str}", overlay=true,
+         default_qty_type=strategy.percent_of_equity, default_qty_value=100,
+         commission_type=strategy.commission.percent, commission_value=0.04,
+         slippage=2, initial_capital=1000)
+
+atr    = ta.atr(14)
+ema20  = ta.ema(close,20)
+ema50  = ta.ema(close,50)
+ema200 = ta.ema(close,200)
+[ml,sl2,hist] = ta.macd(close,12,26,9)
+rsi    = ta.rsi(close,14)
+[dp,dm,adx]  = ta.dmi(14,14)
+rn     = ta.highest(close,50)-ta.lowest(close,50)
+rn2    = ta.highest(close,25)-ta.lowest(close,25)
+hurst  = rn2>0 ? math.log(rn/math.max(rn2,0.001))/math.log(2.0) : 0.5
+
+[ema50_h1,ema200_h1] = request.security(syminfo.tickerid,"{htf1_pine}",[ta.ema(close,50),ta.ema(close,200)],lookahead=barmerge.lookahead_off)
+[ema50_h2,ema200_h2] = request.security(syminfo.tickerid,"{htf2_pine}",[ta.ema(close,50),ta.ema(close,200)],lookahead=barmerge.lookahead_off)
+bull=ema50>ema200; bear=ema50<ema200
+htf1_long=ema50_h1>ema200_h1; htf1_short=ema50_h1<ema200_h1
+htf2_long=ema50_h2>ema200_h2
+
+liq_up=high>ta.highest(high,20)[1]; liq_dn=low<ta.lowest(low,20)[1]
+fake_move=(liq_up and close<open) or (liq_dn and close>open)
+is_spike=(high-low)>atr*2.0
+bar_gap=math.abs(open-close[1])>atr*2.0
+var int bsg=9999; bsg:=bar_gap?0:bsg+1; gap_ok=bsg>=2
+
+h_utc=hour(time,"UTC"); dow_v=dayofweek(time,"UTC")
+in_sess=(h_utc>=8 and h_utc<12) or (h_utc>=13 and h_utc<20){" or (h_utc>=1 and h_utc<6)" if cfg['use_asia'] else ""}
+dow_ok=dow_v>=dayofweek.tuesday and dow_v<={("dayofweek.friday" if cfg['allow_friday'] else "dayofweek.thursday")}
+
+is_trend_up  =hurst>{cfg['hurst_t']} and adx>{cfg['adx_t']} and bull and close>ema50
+is_trend_down=hurst>{cfg['hurst_t']} and adx>{cfg['adx_t']} and bear and close<ema50
+is_weak_range=hurst<0.50 and adx<20
+[bbM,bbU,bbL]=ta.bb(close,20,2)
+
+tf3_bull=bull and htf1_long and htf2_long
+tf3_bear=bear and htf1_short and not htf2_long
+smart_long =bull and math.abs(ema50-ema200)>atr*0.5 and ml>sl2 and htf1_long  and not is_spike
+smart_short=bear and math.abs(ema50-ema200)>atr*0.5 and ml<sl2 and htf1_short and not is_spike
+elite_long =smart_long  and tf3_bull and not fake_move and rsi<70
+elite_short=smart_short and tf3_bear and not fake_move and rsi>30
+
+ob_imp_up=close[9]>open[9] and (close[9]-open[9])>atr[9]*0.8
+in_bull_ob=close[10]<open[10] and ob_imp_up and close<=open[10] and close>=close[10] and bull
+ob_imp_dn=close[9]<open[9] and (open[9]-close[9])>atr[9]*0.8
+in_bear_ob=close[10]>open[10] and ob_imp_dn and close>=open[10] and close<=close[10] and bear
+
+var float avn=na; var float avdn=na
+wk_start=ta.change(time("W"))!=0
+avn:=wk_start or na(avn)?(high+low+close)/3*volume:avn+(high+low+close)/3*volume
+avdn:=wk_start or na(avdn)?volume:avdn+volume
+avwap=avdn>0?avn/avdn:close
+
+eit_long =elite_long  and (in_bull_ob or close<=low[1] and close>=high[3] or close>avwap)
+eit_short=elite_short and (in_bear_ob or close>=high[1] and close<=low[3] or close<avwap)
+
+trend_long ={(f"is_trend_up   and low<=ema20*1.005 and close>ema20 and close>open and ml>sl2 and not fake_move" if cfg['use_trend'] else "false")}
+trend_short={(f"is_trend_down and high>=ema20*0.995 and close<ema20 and close<open and ml<sl2 and not fake_move" if cfg['use_trend'] else "false")}
+
+bull_div=low<=ta.lowest(low,14) and rsi>ta.lowest(rsi,14)[1] and rsi>30
+bear_div=high>=ta.highest(high,14) and rsi<ta.highest(rsi,14)[1] and rsi<70
+range_long ={(f"is_weak_range and low<=bbL and close>bbL and rsi<30 and bull_div and not fake_move" if cfg['use_range'] else "false")}
+range_short={(f"is_weak_range and high>=bbU and close<bbU and rsi>70 and bear_div and not fake_move" if cfg['use_range'] else "false")}
+
+exec_long ={(f"smart_long  and not elite_long  and adx>{cfg['adx_min']} and not fake_move" if cfg['use_execute'] else "false")}
+exec_short={(f"smart_short and not elite_short and adx>{cfg['adx_min']} and not fake_move" if cfg['use_execute'] else "false")}
+
+base_ok=not fake_move and not is_spike and dow_ok and gap_ok and in_sess
+entry_long =base_ok and (eit_long  or elite_long  or exec_long  or trend_long  or range_long)
+entry_short=base_ok and (eit_short or elite_short or exec_short or trend_short or range_short)
+
+is_e=eit_long or eit_short or elite_long or elite_short
+sl_m=is_e ? {cfg['sl_elite']} : {cfg['sl_exec']}
+tp_m=is_e ? {cfg['tp_elite']} : {cfg['tp_exec']}
+
+var float eref=na; var bool be_done=false
+if entry_long  and strategy.position_size==0; eref:=close; be_done:=false; strategy.entry("L",strategy.long)
+if entry_short and strategy.position_size==0; eref:=close; be_done:=false; strategy.entry("S",strategy.short)
+if high>=(eref+atr*tp_m) and strategy.position_size>0  and not be_done; be_done:=true
+if low <=(eref-atr*tp_m) and strategy.position_size<0  and not be_done; be_done:=true
+sl_l=be_done and {str(cfg['use_be']).lower()}?eref:eref-atr*sl_m
+sl_s=be_done and {str(cfg['use_be']).lower()}?eref:eref+atr*sl_m
+if strategy.position_size>0
+    strategy.exit("LX1","L",qty_percent=50,stop=sl_l,limit=eref+atr*tp_m)
+    strategy.exit("LX2","L",stop=sl_l,limit=eref+atr*tp_m*1.5)
+if strategy.position_size<0
+    strategy.exit("SX1","S",qty_percent=50,stop=sl_s,limit=eref-atr*tp_m)
+    strategy.exit("SX2","S",stop=sl_s,limit=eref-atr*tp_m*1.5)
+
+plot(ema50,"EMA50",color.new(color.yellow,10),1)
+plot(ema200,"EMA200",color.new(color.orange,10),2)
+plotshape(entry_long, "L",shape.triangleup,  location.belowbar,color.lime,size=size.small)
+plotshape(entry_short,"S",shape.triangledown,location.abovebar,color.red, size=size.small)
+bgcolor(entry_long?color.new(color.green,90):entry_short?color.new(color.red,90):na)
+"""
+
+# ─── OPTIMIZAR UN TF ──────────────────────────────────────────────────────────
+def optimize_tf(tf_name, tf_cfg, exchange):
+    print(f"\n{'='*65}")
+    print(f"  OPTIMIZANDO {tf_cfg['label']} — {tf_cfg['comment']}")
+    print(f"  {tf_cfg['days']} dias | {tf_cfg['n_samples']:,} muestras | min {tf_cfg['min_trades']} trades")
+    print(f"{'='*65}")
+
+    # Descargar datos
+    print(f"[DATA] Descargando {tf_cfg['label']}...")
+    df_base = fetch_tf(exchange, tf_cfg['ccxt_tf'], tf_cfg['days'])
+    print(f"  Base: {len(df_base)} velas")
+
+    # HTF 1
+    htf1_tf = tf_cfg['htf1']
+    htf1_days = min(tf_cfg['days']*2, 1095)
+    df_htf1  = fetch_tf(exchange, htf1_tf, htf1_days)
+    print(f"  HTF1 ({htf1_tf}): {len(df_htf1)} velas")
+
+    # HTF 2 — si es 1w o 1M usar 1d
+    htf2_tf = tf_cfg['htf2']
+    if htf2_tf in ('1w','1M'):
+        htf2_tf = '1d'
+    htf2_days = min(tf_cfg['days']*3, 1095)
+    df_htf2  = fetch_tf(exchange, htf2_tf, htf2_days)
+    print(f"  HTF2 ({htf2_tf}): {len(df_htf2)} velas")
+
+    print(f"[FEATURES] Calculando...")
+    df = build_features(df_base, df_htf1, df_htf2, tf_cfg)
+    print(f"[FEATURES] {len(df)} velas listas")
+
+    # Search
+    best_score_v = -9999; best_m = None; best_cfg_v = None
+    all_pos = []; n_beat = 0
+
+    for i in range(tf_cfg['n_samples']):
+        cfg = sample_cfg(tf_cfg)
+        try:
+            sig, qual = get_signals(df, cfg, tf_cfg)
+            if (sig!=0).sum() < tf_cfg['min_trades']//2: continue
+            m = backtest(df, sig, qual, cfg)
+            s = score(m, tf_cfg['min_trades'])
+
+            if m['pnl_pct']>0 and m['trades']>=tf_cfg['min_trades'] and m['winrate']>=55:
+                all_pos.append((m.copy(), cfg.copy(), s))
+
+            if m['trades']>=tf_cfg['min_trades'] and m['winrate']>=65 and m['pnl_pct']>10 and m['profit_factor']>=2:
+                n_beat += 1
+                print(f"  *** EXCELENTE *** {m['trades']}T | WR {m['winrate']:.1f}% | "
+                      f"PnL {m['pnl_pct']:+.1f}% | PF {m['profit_factor']:.2f}")
+
+            if s > best_score_v:
+                best_score_v = s; best_m = m; best_cfg_v = cfg.copy()
+                if m['trades'] >= tf_cfg['min_trades']:
+                    print(f"  [MEJOR] {m['trades']}T ({m.get('trades_month',0):.1f}T/mes) | "
+                          f"WR {m['winrate']:.1f}% | CAGR {m.get('cagr',m['pnl_pct']):+.1f}%/año | "
+                          f"PF {m['profit_factor']:.2f} | DD {m['max_dd']:.1f}%")
+        except Exception:
+            continue
+
+        if (i+1)%1000==0:
+            print(f"  [{i+1:,}/{tf_cfg['n_samples']:,}] Positivos: {len(all_pos)} | Excelentes: {n_beat}")
+
+    all_pos.sort(key=lambda x: x[2], reverse=True)
+
+    print(f"\n  RESULTADO {tf_cfg['label']}:")
+    if best_m:
+        print(f"  Mejor: {best_m['trades']}T ({best_m.get('trades_month',0):.1f}T/mes) | "
+              f"WR {best_m['winrate']:.1f}% | CAGR {best_m.get('cagr',best_m['pnl_pct']):+.1f}%/año | "
+              f"PF {best_m['profit_factor']:.2f} | DD {best_m['max_dd']:.1f}% | Sharpe {best_m['sharpe']:.2f}")
+    print(f"  Positivos (WR>55%, PnL>0, {tf_cfg['min_trades']}+T): {len(all_pos)}")
+    print(f"  Excelentes (WR>65%, PnL>10%, PF>2): {n_beat}")
+
+    # Guardar Pine Script
+    if all_pos:
+        wm, wc, _ = all_pos[0]
+        pine = gen_pine(tf_cfg['label'], wc, wm, tf_cfg)
+        path = os.path.join(OUTPUT_DIR, f"SIGMA_{tf_cfg['label']}_WINNER.pine")
+        with open(path,'w',encoding='utf-8') as f: f.write(pine.strip())
+        print(f"  [PINE] {path}")
+
+        # CSV
+        rows=[]
+        for m,c,s in all_pos[:50]:
+            row={'tf':tf_name,'score':round(s,4)}
+            row.update({k:round(v,2) if isinstance(v,float) else v for k,v in m.items()})
+            row.update({f"p_{k}":v for k,v in c.items()})
+            rows.append(row)
+        pd.DataFrame(rows).to_csv(os.path.join(OUTPUT_DIR,f'sigma_{tf_cfg["label"]}_results.csv'),index=False)
+
+    return best_m, best_cfg_v, all_pos
+
+# ─── MAIN ─────────────────────────────────────────────────────────────────────
+def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--tf', nargs='+', default=['1m','5m','15m','1h','4h','1d'],
+                        help='Timeframes a optimizar')
+    args = parser.parse_args()
+
+    tfs_to_run = [tf for tf in args.tf if tf in TF_CONFIG]
+
+    print("\n"+"="*65)
+    print("  SIGMA MULTI-TF OPTIMIZER")
+    print(f"  Timeframes: {tfs_to_run}")
+    print("="*65)
+
+    exchange = ccxt.binance({'timeout':30000,'options':{'defaultType':'future'}})
+
+    summary = []
+
+    for tf_name in tfs_to_run:
+        tf_cfg = TF_CONFIG[tf_name]
+        try:
+            best_m, best_cfg, all_pos = optimize_tf(tf_name, tf_cfg, exchange)
+            if best_m:
+                summary.append({
+                    'tf':           tf_cfg['label'],
+                    'trades':       best_m['trades'],
+                    'trades_month': best_m.get('trades_month', 0),
+                    'winrate':      best_m['winrate'],
+                    'pnl_pct':      best_m['pnl_pct'],
+                    'cagr':         best_m.get('cagr', best_m['pnl_pct']),
+                    'profit_factor':best_m['profit_factor'],
+                    'max_dd':       best_m['max_dd'],
+                    'sharpe':       best_m['sharpe'],
+                    'calmar':       best_m.get('calmar', 0),
+                    'n_positivos':  len(all_pos),
+                    'comment':      tf_cfg['comment'],
+                })
+        except Exception as e:
+            print(f"  ERROR en {tf_name}: {e}")
+            continue
+
+    # Resumen cross-TF
+    print("\n"+"="*70)
+    print(f"{'RESUMEN CROSS-TIMEFRAME':^70}")
+    print("="*70)
+    print(f"{'TF':<6} {'T/mes':>6} {'WR%':>7} {'CAGR%/año':>10} {'PF':>6} {'DD%':>7} {'Sharpe':>8} {'Positivos':>10}")
+    print("-"*70)
+    for r in summary:
+        print(f"{r['tf']:<6} {r.get('trades_month',0):>5.1f} {r['winrate']:>6.1f}% "
+              f"{r.get('cagr',r['pnl_pct']):>9.1f}% {r['profit_factor']:>6.2f} "
+              f"{r['max_dd']:>6.1f}% {r['sharpe']:>8.2f} {r['n_positivos']:>10}")
+    print("="*70)
+
+    # Guardar resumen
+    if summary:
+        pd.DataFrame(summary).to_csv(os.path.join(OUTPUT_DIR,'sigma_multitf_summary.csv'),index=False)
+        print(f"\n[CSV] sigma_multitf_summary.csv guardado")
+
+    print("\n[DONE] Multi-TF optimizer completado.")
+
+    # Notificacion
+    try:
+        for _ in range(5): winsound.Beep(1200,300)
+        best_row = max(summary, key=lambda x: x['pnl_pct']) if summary else None
+        if best_row:
+            msg=(f"SIGMA MULTI-TF LISTO!\\n\\n"
+                 f"Timeframes: {', '.join(tfs_to_run)}\\n\\n"
+                 f"MEJOR TF: {best_row['tf']}\\n"
+                 f"Trades: {best_row['trades']} | WR: {best_row['winrate']:.1f}%\\n"
+                 f"PnL: {best_row['pnl_pct']:+.1f}% | PF: {best_row['profit_factor']:.2f}\\n"
+                 f"DD: {best_row['max_dd']:.1f}%\\n\\n"
+                 f"Pine Scripts guardados en BACKTESSTING")
+        else:
+            msg="Multi-TF completado. Ver sigma_multitf_summary.csv"
+        subprocess.Popen(['powershell','-WindowStyle','Hidden','-Command',
+            f'Add-Type -AssemblyName PresentationFramework;'
+            f'[System.Windows.MessageBox]::Show("{msg}","SIGMA Multi-TF","OK","Information")'])
+    except: pass
+
+if __name__=='__main__':
+    import ccxt
+    main()

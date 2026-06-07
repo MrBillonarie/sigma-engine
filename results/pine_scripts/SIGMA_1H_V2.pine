@@ -1,0 +1,316 @@
+//@version=6
+// ╔══════════════════════════════════════════════════════════════════════════════╗
+// ║  SIGMA K1 1H v2 — ELITE+EXEC+TREND  [MEJORAS ESTRUCTURALES]               ║
+// ║  Mejoras vs v1:                                                             ║
+// ║  1. Trailing stop tras TP1 (en vez de TP2 fijo)                            ║
+// ║  2. SL/TP adaptativo por regimen (TREND/RANGE/VOLATILE)                    ║
+// ║  3. HTF scoring 0/1/2 (en vez de AND binario)                              ║
+// ║  4. Sesgo largo BTC (shorts requieren score 2)                              ║
+// ║  5. Tiempo maximo de posicion: 48 barras                                   ║
+// ╚══════════════════════════════════════════════════════════════════════════════╝
+strategy("SIGMA K1 1H v2 — ELITE+EXEC+TREND", overlay=true,
+         default_qty_type=strategy.percent_of_equity, default_qty_value=100,
+         commission_type=strategy.commission.percent, commission_value=0.04,
+         slippage=2, initial_capital=1000, pyramiding=0,
+         process_orders_on_close=false, calc_on_every_tick=false)
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INPUTS
+// ═══════════════════════════════════════════════════════════════════════════════
+elite_sl    = input.float(2.4,  "ELITE SL x ATR",        group="SL/TP")
+elite_tp    = input.float(2.0,  "ELITE TP x ATR",        group="SL/TP")
+exec_sl     = input.float(1.9,  "EXEC SL x ATR",         group="SL/TP")
+exec_tp     = input.float(3.5,  "EXEC TP x ATR",         group="SL/TP")
+qty_tp1     = input.float(0.65, "% cerrar en TP1",       group="SL/TP", minval=0.1, maxval=0.9)
+trail_atr   = input.float(1.5,  "Trailing ATR tras TP1", group="SL/TP")
+max_bars    = input.int(48,     "Max barras en trade",   group="SL/TP")
+
+risk_pct    = input.float(1.5,  "Riesgo % / trade",      group="Risk", minval=0.1, maxval=5.0)
+capital     = input.float(1000, "Capital ($)",           group="Risk")
+
+adx_min     = input.int(20,     "ADX minimo",            group="Filtros")
+ofi_thr     = input.float(0.75, "OFI umbral",            group="Filtros")
+temp_min    = input.int(11,     "Temp minima",           group="Filtros")
+temp_max    = input.int(75,     "Temp maxima",           group="Filtros")
+long_bias   = input.bool(true,  "Sesgo largo BTC",       group="Filtros")
+
+send_alerts = input.bool(true,  "Enviar alertas CSV",    group="Conexion")
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INDICADORES BASE
+// ═══════════════════════════════════════════════════════════════════════════════
+atr    = ta.atr(14)
+ema20  = ta.ema(close, 20)
+ema50  = ta.ema(close, 50)
+ema200 = ta.ema(close, 200)
+[ml, sl2, hist] = ta.macd(close, 12, 26, 9)
+rsi    = ta.rsi(close, 14)
+[dp, dm, adxV] = ta.dmi(14, 14)
+bull   = ema50 > ema200
+bear   = ema50 < ema200
+
+// HTF
+[ema50_h1, ema200_h1] = request.security(syminfo.tickerid, "240",
+    [ta.ema(close,50), ta.ema(close,200)], lookahead=barmerge.lookahead_off)
+[ema50_h2, ema200_h2] = request.security(syminfo.tickerid, "D",
+    [ta.ema(close,50), ta.ema(close,200)], lookahead=barmerge.lookahead_off)
+htf1_long  = ema50_h1 > ema200_h1
+htf1_short = ema50_h1 < ema200_h1
+htf2_long  = ema50_h2 > ema200_h2
+
+// ─── MEJORA 3: HTF SCORING 0/1/2 ─────────────────────────────────────────────
+htf_score_l = (htf1_long  ? 1 : 0) + (htf2_long  ? 1 : 0)
+htf_score_s = (htf1_short ? 1 : 0) + (not htf2_long ? 1 : 0)
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// REGIMEN DE MERCADO
+// ═══════════════════════════════════════════════════════════════════════════════
+rn    = ta.highest(close,50) - ta.lowest(close,50)
+rn2   = ta.highest(close,25) - ta.lowest(close,25)
+hurst = rn2 > 0 ? math.log(rn / math.max(rn2,0.001)) / math.log(2.0) : 0.5
+
+atr_ratio = atr / math.max(ta.sma(atr,50), 0.0001)
+is_volatile   = atr_ratio > 1.8
+is_trending   = hurst > 0.57 and adxV > 25
+is_ranging    = not is_trending and not is_volatile and adxV < 22
+
+regime_str = is_volatile ? "VOLATILE" :
+             is_trending and bull ? "TREND_BULL" :
+             is_trending and bear ? "TREND_BEAR" :
+             is_ranging ? "RANGE" : "TRANSITION"
+
+// ─── MEJORA 2: MULTIPLICADORES ADAPTATIVOS POR REGIMEN ───────────────────────
+sl_regime_m = regime_str == "TREND_BULL" or regime_str == "TREND_BEAR" ? 1.2 :
+              regime_str == "VOLATILE"   ? 1.5 :
+              regime_str == "RANGE"      ? 0.8 : 1.0
+
+tp_regime_m = regime_str == "TREND_BULL" or regime_str == "TREND_BEAR" ? 1.6 :
+              regime_str == "VOLATILE"   ? 0.8 :
+              regime_str == "RANGE"      ? 0.7 : 1.0
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CONDICIONES BASE
+// ═══════════════════════════════════════════════════════════════════════════════
+liq_up    = high > ta.highest(high,20)[1]
+liq_dn    = low  < ta.lowest(low, 20)[1]
+fake_move = (liq_up and close < open) or (liq_dn and close > open)
+is_spike  = (high - low) > atr * 2.0
+var int bsg = 9999
+is_gap    = math.abs(open - close[1]) > atr * 2.0
+bsg      := is_gap ? 0 : bsg + 1
+gap_ok    = bsg >= 2
+
+body_r   = math.abs(close-open) / math.max(high-low, 0.0001)
+buy_v    = volume * (close > open ? body_r : 0.0)
+sell_v   = volume * (close < open ? body_r : 0.0)
+tot_v    = math.sum(buy_v,20) + math.sum(sell_v,20)
+ofi      = ta.ema(tot_v > 0 ? (math.sum(buy_v,20)-math.sum(sell_v,20))/tot_v : 0.0, 3)
+ofi_bull = ofi >  ofi_thr
+ofi_bear = ofi < -ofi_thr
+
+atr_ratio2  = atr / math.max(ta.sma(atr,50), 0.0001)
+rsi_heat    = math.abs(rsi-50) * 2
+price_chg   = math.abs(close-close[3]) / math.max(atr*3, 0.0001) * 100
+vol_pct_raw = ta.percentrank(atr, 100)
+mkt_temp    = math.min(100, price_chg*0.4 + vol_pct_raw*0.3 + math.min(atr_ratio2*50,100)*0.1 + rsi_heat*0.2)
+mkt_dead    = mkt_temp < 15
+temp_ok     = mkt_temp >= temp_min and mkt_temp <= temp_max
+
+h_utc   = hour(time, "UTC")
+dow_v   = dayofweek(time, "UTC")
+in_sess = (h_utc>=8 and h_utc<12) or (h_utc>=13 and h_utc<20) or (h_utc>=1 and h_utc<6)
+// Bonus: Lunes a Viernes (antes era solo Mar-Jue)
+dow_ok  = dow_v >= dayofweek.monday and dow_v <= dayofweek.friday
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ORDER BLOCKS & FVG
+// ═══════════════════════════════════════════════════════════════════════════════
+ob_imp_up  = close[9]>open[9] and (close[9]-open[9])>atr[9]*0.8
+in_bull_ob = close[10]<open[10] and ob_imp_up and close<=open[10] and close>=close[10] and bull
+ob_imp_dn  = close[9]<open[9] and (open[9]-close[9])>atr[9]*0.8
+in_bear_ob = close[10]>open[10] and ob_imp_dn and close>=open[10] and close<=close[10] and bear
+fvg_bull   = low > high[2] and (low-high[2])/close*100 >= 0.05
+fvg_bear   = high < low[2] and (low[2]-high)/close*100 >= 0.05
+fill_b_fvg = close<=low[1] and close>=high[3] and bull
+fill_s_fvg = close>=high[1] and close<=low[3] and bear
+
+var float avn=na; var float avdn=na
+wk_start    = ta.change(time("W")) != 0
+avn        := wk_start or na(avn)  ? (high+low+close)/3*volume : avn+(high+low+close)/3*volume
+avdn       := wk_start or na(avdn) ? volume : avdn+volume
+avwap       = avdn>0 ? avn/avdn : close
+above_avwap = close > avwap
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SEÑALES — CON HTF SCORING
+// ═══════════════════════════════════════════════════════════════════════════════
+adx_ok   = adxV > adx_min
+base_ok  = not fake_move and not is_spike and gap_ok and dow_ok and in_sess and temp_ok
+
+trend_gate  = math.abs(ema50-ema200) > atr*0.5
+smart_long  = bull and trend_gate and ml>sl2 and htf1_long  and not is_spike
+smart_short = bear and trend_gate and ml<sl2 and htf1_short and not is_spike
+
+// ELITE: score 2 (ambos HTF alineados)
+elite_long  = smart_long  and htf_score_l==2 and not fake_move and rsi < 70
+elite_short = smart_short and htf_score_s==2 and not fake_move and rsi > 30
+eit_long    = elite_long  and (in_bull_ob or fill_b_fvg or above_avwap)
+eit_short   = elite_short and (in_bear_ob or fill_s_fvg or not above_avwap)
+
+// EXECUTE: score >= 1 (al menos 1 HTF alineado)
+exec_long  = smart_long  and not elite_long  and adx_ok and htf_score_l>=1 and not fake_move
+exec_short = smart_short and not elite_short and adx_ok and htf_score_s>=1 and not fake_move
+
+// TREND: score >= 1
+is_tu       = hurst>0.57 and adxV>28 and bull and close>ema50
+is_td       = hurst>0.57 and adxV>28 and bear and close<ema50
+trend_long  = is_tu and low<=ema20*1.005 and close>ema20 and close>open and ml>sl2 and htf_score_l>=1 and not fake_move
+trend_short = is_td and high>=ema20*0.995 and close<ema20 and close<open and ml<sl2 and htf_score_s>=1 and not fake_move
+
+entry_long  = base_ok and (eit_long  or (elite_long  and htf_score_l>=1) or exec_long  or trend_long)
+// ─── MEJORA 4: SESGO LARGO — shorts requieren score 2 ────────────────────────
+entry_short = base_ok and (not long_bias or htf_score_s==2) and
+              (eit_short or (elite_short and htf_score_s>=1) or exec_short or trend_short)
+
+is_elite    = eit_long or eit_short or elite_long or elite_short
+quality_str = eit_long or eit_short ? "ELITE_ICT" : elite_long or elite_short ? "ELITE" : "EXECUTE"
+session_str = h_utc>=8 and h_utc<12 ? "LONDON" : h_utc>=13 and h_utc<20 ? "NY_AM" : h_utc>=1 and h_utc<6 ? "ASIA" : "OFF"
+
+// SL/TP con mejora 2 (regimen adaptativo)
+sl_m = (is_elite ? elite_sl : exec_sl) * sl_regime_m
+tp_m = (is_elite ? elite_tp : exec_tp) * tp_regime_m
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GESTION DE POSICION
+// ═══════════════════════════════════════════════════════════════════════════════
+var float entry_ref  = na
+var float sl_ref     = na
+var float tp1_ref    = na
+var bool  tp1_hit    = false
+var float trail_ref  = na
+var string side_str  = ""
+var float  rr_plan   = 0.0
+var int    bars_held = 0
+
+if strategy.position_size != 0
+    bars_held += 1
+else
+    bars_held := 0
+
+if entry_long and strategy.position_size == 0
+    entry_ref := close
+    sl_ref    := close - atr * sl_m
+    tp1_ref   := close + atr * tp_m
+    tp1_hit   := false
+    trail_ref := na
+    side_str  := "LONG"
+    rr_plan   := tp_m / sl_m
+    strategy.entry("Long", strategy.long)
+
+if entry_short and strategy.position_size == 0
+    entry_ref := close
+    sl_ref    := close + atr * sl_m
+    tp1_ref   := close - atr * tp_m
+    tp1_hit   := false
+    trail_ref := na
+    side_str  := "SHORT"
+    rr_plan   := tp_m / sl_m
+    strategy.entry("Short", strategy.short)
+
+// ─── MEJORA 1: TRAILING STOP TRAS TP1 ────────────────────────────────────────
+if strategy.position_size > 0 and high >= tp1_ref and not tp1_hit
+    tp1_hit   := true
+    trail_ref := close - atr * trail_atr  // activar trailing
+
+if strategy.position_size < 0 and low <= tp1_ref and not tp1_hit
+    tp1_hit   := true
+    trail_ref := close + atr * trail_atr
+
+// Actualizar trailing cada barra
+if tp1_hit and strategy.position_size > 0
+    trail_ref := math.max(trail_ref, close - atr * trail_atr)
+
+if tp1_hit and strategy.position_size < 0
+    trail_ref := math.min(trail_ref, close + atr * trail_atr)
+
+// ─── MEJORA 5: TIEMPO MAXIMO DE POSICION ─────────────────────────────────────
+if strategy.position_size != 0 and bars_held >= max_bars
+    strategy.close_all(comment="MaxHold")
+
+// Exits
+if strategy.position_size > 0
+    if tp1_hit
+        // Tras TP1: trailing stop sobre el remanente
+        strategy.exit("Long_Trail", "Long", stop=trail_ref, comment="TRAIL")
+    else
+        // Antes de TP1: SL fijo + TP1
+        strategy.exit("Long_TP1", "Long", qty_percent=qty_tp1*100, stop=sl_ref, limit=tp1_ref, comment="TP1")
+        strategy.exit("Long_SL",  "Long", stop=sl_ref, comment="SL")
+
+if strategy.position_size < 0
+    if tp1_hit
+        strategy.exit("Short_Trail", "Short", stop=trail_ref, comment="TRAIL")
+    else
+        strategy.exit("Short_TP1", "Short", qty_percent=qty_tp1*100, stop=sl_ref, limit=tp1_ref, comment="TP1")
+        strategy.exit("Short_SL",  "Short", stop=sl_ref, comment="SL")
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ALERTAS → MAKE.COM → EXCEL SIGMA K1
+// ═══════════════════════════════════════════════════════════════════════════════
+rr_real = strategy.position_size != 0 and not na(entry_ref) ?
+     (close-entry_ref)/math.max(math.abs(entry_ref-sl_ref),0.0001)*(strategy.position_size>0?1:-1) : 0.0
+
+if (entry_long or entry_short) and send_alerts
+    _dir  = entry_long ? "LONG" : "SHORT"
+    _sl   = entry_long ? close-atr*sl_m : close+atr*sl_m
+    _tp1  = entry_long ? close+atr*tp_m : close-atr*tp_m
+    _csv  = str.tostring(time)+","+syminfo.ticker+","+_dir+",0,"+quality_str+","+regime_str+","+session_str+","+
+            str.tostring(close,"#.##")+","+str.tostring(_sl,"#.##")+","+str.tostring(_tp1,"#.##")+
+            ",0,0,"+str.tostring(rr_plan,"#.##")+",0,"+str.tostring(risk_pct,"#.##")+
+            ",0,0,OPEN,0,0,SIGMA_1H_V2_"+quality_str
+    alert(_csv, alert.freq_once_per_bar_close)
+
+if strategy.position_size[1] != 0 and strategy.position_size == 0 and send_alerts
+    _result    = strategy.netprofit > strategy.netprofit[1] ? "WIN" : "LOSS"
+    _pnl       = strategy.netprofit - strategy.netprofit[1]
+    _csv_close = "CLOSE,"+syminfo.ticker+","+side_str+","+_result+","+
+                 str.tostring(close,"#.##")+","+str.tostring(_pnl,"#.##")+","+str.tostring(rr_real,"#.##")
+    alert(_csv_close, alert.freq_once_per_bar_close)
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// VISUALIZACION
+// ═══════════════════════════════════════════════════════════════════════════════
+plot(ema50,  "EMA50",  color.new(color.yellow,10), 1)
+plot(ema200, "EMA200", color.new(color.orange,10), 2)
+plot(strategy.position_size != 0 ? sl_ref   : na, "SL",    color.new(color.red,  0), 2, plot.style_linebr)
+plot(strategy.position_size != 0 ? tp1_ref  : na, "TP1",   color.new(color.lime, 0), 2, plot.style_linebr)
+plot(tp1_hit and strategy.position_size != 0 ? trail_ref : na, "Trail", color.new(color.aqua,0), 2, plot.style_linebr)
+
+plotshape(entry_long  and (eit_long  or elite_long),  "L ELITE", shape.triangleup,   location.belowbar, color.aqua, size=size.normal)
+plotshape(entry_long  and not elite_long,             "L EXEC",  shape.triangleup,   location.belowbar, color.lime, size=size.small)
+plotshape(entry_short and (eit_short or elite_short), "S ELITE", shape.triangledown, location.abovebar, color.aqua, size=size.normal)
+plotshape(entry_short and not elite_short,            "S EXEC",  shape.triangledown, location.abovebar, color.red,  size=size.small)
+
+bgcolor(entry_long  ? color.new(color.green,88) : na)
+bgcolor(entry_short ? color.new(color.red,  88) : na)
+
+// Tabla info
+var table t = table.new(position.top_right, 2, 8, bgcolor=color.new(color.navy,60), border_width=1)
+if barstate.islast
+    table.cell(t,0,0,"SIGMA 1H v2",     text_color=color.white,  bgcolor=color.navy, text_size=size.normal)
+    table.cell(t,1,0,"ELITE+EXEC+TREND",text_color=color.yellow, bgcolor=color.navy, text_size=size.small)
+    table.cell(t,0,1,"Regimen",   text_color=color.gray,  text_size=size.tiny)
+    table.cell(t,1,1,regime_str,  text_color=is_volatile ? color.red : is_trending ? color.lime : color.gray, text_size=size.tiny)
+    table.cell(t,0,2,"Sesion",    text_color=color.gray,  text_size=size.tiny)
+    table.cell(t,1,2,session_str, text_color=color.white,  text_size=size.tiny)
+    table.cell(t,0,3,"Temp",      text_color=color.gray,  text_size=size.tiny)
+    table.cell(t,1,3,str.tostring(math.round(mkt_temp))+"%", text_color=mkt_dead?color.red:color.lime, text_size=size.tiny)
+    table.cell(t,0,4,"HTF L",     text_color=color.gray,  text_size=size.tiny)
+    table.cell(t,1,4,str.tostring(htf_score_l)+"/2", text_color=htf_score_l==2?color.lime:htf_score_l==1?color.yellow:color.red, text_size=size.tiny)
+    table.cell(t,0,5,"HTF S",     text_color=color.gray,  text_size=size.tiny)
+    table.cell(t,1,5,str.tostring(htf_score_s)+"/2", text_color=htf_score_s==2?color.lime:htf_score_s==1?color.yellow:color.red, text_size=size.tiny)
+    table.cell(t,0,6,"OFI",       text_color=color.gray,  text_size=size.tiny)
+    table.cell(t,1,6,ofi_bull?"BULL":ofi_bear?"BEAR":"NEUTRAL", text_color=ofi_bull?color.lime:ofi_bear?color.red:color.gray, text_size=size.tiny)
+    table.cell(t,0,7,"ADX",       text_color=color.gray,  text_size=size.tiny)
+    table.cell(t,1,7,str.tostring(math.round(adxV)), text_color=adxV>adx_min?color.lime:color.red, text_size=size.tiny)

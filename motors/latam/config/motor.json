@@ -1,0 +1,15 @@
+{
+  "motor_name": "SIGMA LATAM Emerging",
+  "asset_class": "equity_etf_emerging",
+  "universe": ["EWZ", "ECH", "EWW", "EEM", "ILF"],
+  "data_source": "yahoo_or_ibkr_delayed",
+  "exchange": "NYSE",
+  "timeframes": ["1h", "4h", "1d"],
+  "regime_detector": "usd_strength_emerging_flow",
+  "commission_pct": 0.005,
+  "min_capital_alloc_pct": 0,
+  "max_capital_alloc_pct": 20,
+  "status": "SKELETON",
+  "notes": "Liquidez menor que US ETFs - empezar con sizing conservador",
+  "next_step": "validar liquidity profile antes de operar live"
+}

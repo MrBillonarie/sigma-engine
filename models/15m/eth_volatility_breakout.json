@@ -1,0 +1,72 @@
+{
+  "symbol": "ETH/USDT",
+  "tf": "15m",
+  "strategy": "volatility_breakout",
+  "params": {
+    "sl_mult": 3.4000000000000004,
+    "tp_mult": 2.8,
+    "cooldown": 4,
+    "rsi_w_thr": 44,
+    "vb_period": 12,
+    "vol_expand": 1.3
+  },
+  "risk_pct": 5.0,
+  "metrics_is": {
+    "trades": 131,
+    "wr": 70.2,
+    "cagr": 34.2,
+    "dd": -18.3,
+    "pf": 1.79,
+    "trades_year": 22.3
+  },
+  "metrics_oos": {
+    "trades": 48,
+    "wr": 72.9,
+    "cagr": 77.6,
+    "dd": -25.3,
+    "pf": 1.68,
+    "trades_year": 32.7
+  },
+  "oos_days": 536,
+  "saved_at": "2026-05-20 13:13:17.870922",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 91.6,
+      "median": 166.7,
+      "ic95_lo": -51.6,
+      "ic95_hi": 419.7,
+      "ic80_lo": 11.8,
+      "ic80_hi": 326.2,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 18,
+      "positive": 16,
+      "pct_positive": 88.9,
+      "avg_cagr": 118.0,
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "passed_steps": 2,
+    "max_steps": 2,
+    "validated_at": "2026-05-20 13:13:19.747801"
+  },
+  "mc": {
+    "mc_cagr_p05": 56.9,
+    "mc_cagr_p50": 306.4,
+    "mc_cagr_p95": 953.0,
+    "mc_dd_p50": -45.9,
+    "mc_dd_p95": -31.1,
+    "mc_confidence": 99.3,
+    "mc_sims": 1000
+  },
+  "wft": {
+    "oos_win_rate": 75.0,
+    "n_windows": 4,
+    "positive_windows": 3,
+    "avg_cagr_oos": 68.65,
+    "avg_cagr_pos": 93.0,
+    "verdict": "PASS",
+    "date": "2026-06-07 02:09"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "strategy": "VWAP Bounce",
+  "params": {
+    "tolerance": 0.002,
+    "cooldown": 6
+  },
+  "sl_mult": 2.3,
+  "tp_mult": 4.5,
+  "metrics": {
+    "trades": 67,
+    "winrate": 41.791,
+    "pnl_pct": -1.5315,
+    "cagr": -3.0832,
+    "sharpe": -0.3221,
+    "max_dd": -8.4027,
+    "pf": 0.9364,
+    "strategy": "VWAP Bounce",
+    "sl": 2.3,
+    "tp": 4.5
+  }
+}

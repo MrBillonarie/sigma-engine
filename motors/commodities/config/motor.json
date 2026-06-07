@@ -1,0 +1,14 @@
+{
+  "motor_name": "SIGMA Commodities",
+  "asset_class": "commodity_etf",
+  "universe": ["GLD", "SLV", "USO", "UNG", "DBA"],
+  "data_source": "yahoo_or_ibkr_delayed",
+  "exchange": "NYSEARCA",
+  "timeframes": ["1h", "4h", "1d"],
+  "regime_detector": "dxy_inverse_correlation_inflation_proxy",
+  "commission_pct": 0.005,
+  "min_capital_alloc_pct": 5,
+  "max_capital_alloc_pct": 30,
+  "status": "SKELETON",
+  "next_step": "implement data_fetcher.py + regime via DXY / TIPS"
+}

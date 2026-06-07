@@ -1,0 +1,54 @@
+{
+  "symbol": "LTC/USDT",
+  "tf": "4h",
+  "strategy": "momentum_short",
+  "params": {
+    "sl_mult": 1.6,
+    "tp_mult": 4.0,
+    "cooldown": 3,
+    "rsi_w_thr": 62,
+    "vol_mult": 1.2,
+    "rsi_min": 33
+  },
+  "risk_pct": 3.7,
+  "metrics_is": {
+    "trades": 82,
+    "wr": 36.6,
+    "cagr": 6.0,
+    "dd": -26.0,
+    "pf": 1.21,
+    "trades_year": 12.2
+  },
+  "metrics_oos": {
+    "trades": 25,
+    "wr": 48.0,
+    "cagr": 48.1,
+    "dd": -16.1,
+    "pf": 2.32,
+    "trades_year": 14.9,
+    "cagr_bear_adj": 66.9,
+    "bear_days_oos": 470.0,
+    "funding_boost_pct": 14.2,
+    "cagr_with_funding": 77.9
+  },
+  "oos_days": 613,
+  "saved_at": "2026-05-10 09:52:44.582542",
+  "mc": {
+    "mc_cagr_p05": 11.7,
+    "mc_cagr_p50": 66.3,
+    "mc_cagr_p95": 147.6,
+    "mc_dd_p50": -21.7,
+    "mc_dd_p95": -11.5,
+    "mc_confidence": 97.6,
+    "mc_sims": 1000
+  },
+  "wft": {
+    "oos_win_rate": 16.7,
+    "n_windows": 6,
+    "positive_windows": 1,
+    "avg_cagr_oos": -7.25,
+    "avg_cagr_pos": 73.1,
+    "verdict": "FAIL",
+    "date": "2026-06-07 02:20"
+  }
+}

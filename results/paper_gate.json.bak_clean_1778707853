@@ -1,0 +1,18 @@
+{
+  "BTC/USDT_1h_momentum_short": {
+    "sym": "BTC/USDT",
+    "tf": "1h",
+    "strategy": "momentum_short",
+    "remaining": 5,
+    "trades": [],
+    "created": "2026-05-11 15:10:49"
+  },
+  "BTC/USDT_1h_pullback": {
+    "sym": "BTC/USDT",
+    "tf": "1h",
+    "strategy": "pullback",
+    "remaining": 5,
+    "trades": [],
+    "created": "2026-05-11 18:58:18"
+  }
+}

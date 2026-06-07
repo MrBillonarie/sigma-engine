@@ -1,0 +1,177 @@
+//@version=6
+// ╔══════════════════════════════════════════════════════════════════════════════╗
+// ║  SIGMA 1H BREAKOUT — Validado OOS 2024-2026                               ║
+// ║  IS  (7yr):  232T | WR 59.5% | CAGR +19.6% | DD -26.3%                  ║
+// ║  OOS (1.7yr): 95T | WR 55.8% | CAGR +16.2% | DD -30.6%  <- REAL        ║
+// ║  IS→OOS Eficiencia: 0.83 (83% del IS se preserva en OOS)                 ║
+// ║  Filtro bull: RSI-W > 55 | risk 3.3% | lookback 60 barras                ║
+// ║  Estrategia: precio rompe maximo 60H con volumen 2.9x                     ║
+// ╚══════════════════════════════════════════════════════════════════════════════╝
+strategy("SIGMA 1H BREAKOUT", overlay=true,
+         default_qty_type=strategy.percent_of_equity, default_qty_value=100,
+         commission_type=strategy.commission.percent, commission_value=0.04,
+         slippage=1, initial_capital=1000, pyramiding=0,
+         process_orders_on_close=false, calc_on_every_tick=false)
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INPUTS
+// ═══════════════════════════════════════════════════════════════════════════════
+lookback   = input.int(60,   "Lookback barras (60=2.5 dias)",   group="Breakout", minval=10, maxval=120)
+vol_mult   = input.float(2.9, "Volumen minimo x promedio",       group="Breakout", minval=1.0, maxval=5.0, step=0.1)
+sl_mult    = input.float(2.3, "SL x ATR",                        group="SL/TP",   minval=0.5, maxval=4.0, step=0.1)
+tp_mult    = input.float(2.0, "TP x ATR",                        group="SL/TP",   minval=0.5, maxval=6.0, step=0.25)
+qty_tp1    = input.float(0.5, "% cerrar en TP1",                 group="SL/TP",   minval=0.1, maxval=0.9)
+cooldown_b = input.int(11,   "Cooldown (barras entre trades)",   group="Filtros", minval=1, maxval=30)
+risk_pct   = input.float(3.3, "Riesgo % / trade",                group="Risk",    minval=0.5, maxval=5.0, step=0.1)
+capital    = input.float(1000,"Capital ($)",                      group="Risk")
+
+// Filtro macro bull (RSI-W > 55 — solo operar en bull market)
+use_bull   = input.bool(true,  "Filtro Bull RSI-W > umbral",     group="Macro")
+bull_thr   = input.int(55,     "Umbral RSI-W bull",              group="Macro", minval=40, maxval=70)
+
+// Halving cycle
+use_cycle  = input.bool(true,  "Reducir size en fase dificil halving", group="Ciclo")
+cycle_mult_bad = input.float(0.5, "Size en fase 50-75% ciclo",  group="Ciclo", minval=0.1, maxval=1.0)
+
+// Make.com
+send_alerts = input.bool(true, "Enviar alertas CSV", group="Alertas")
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INDICADORES
+// ═══════════════════════════════════════════════════════════════════════════════
+atr     = ta.atr(14)
+ema200  = ta.ema(close, 200)
+vol_ma  = ta.sma(volume, 20)
+
+// Maximos/minimos del lookback (excluyendo barra actual)
+prev_high = ta.highest(high,   lookback)[1]
+prev_low  = ta.lowest(low,     lookback)[1]
+
+// Volumen fuerte
+vol_ok    = volume > vol_ma * vol_mult
+
+// Trend filter
+above_ema = close > ema200
+below_ema = close < ema200
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// FILTRO MACRO — RSI semanal (proxy bull market)
+// ═══════════════════════════════════════════════════════════════════════════════
+rsi_w   = request.security(syminfo.tickerid, "W", ta.rsi(close, 14), lookahead=barmerge.lookahead_off)
+bull_ok = not use_bull or rsi_w > bull_thr
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// HALVING CYCLE
+// ═══════════════════════════════════════════════════════════════════════════════
+days_halv  = (time - timestamp("2024-04-20T00:00:00")) / 86400000
+cycle_pct  = days_halv / 1461
+bad_phase  = use_cycle and cycle_pct > 0.50 and cycle_pct < 0.75
+size_mult  = bad_phase ? cycle_mult_bad : 1.0
+risk_adj   = risk_pct * size_mult
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// COOLDOWN
+// ═══════════════════════════════════════════════════════════════════════════════
+var int bars_since_trade = cooldown_b + 1
+bars_since_trade := strategy.position_size == 0 ? bars_since_trade + 1 : 0
+cd_ok = bars_since_trade >= cooldown_b
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SEÑALES DE BREAKOUT
+// ═══════════════════════════════════════════════════════════════════════════════
+// LONG: cierra sobre el maximo de 60 barras, volumen fuerte, sobre EMA200, bull market
+breakout_long  = close > prev_high and vol_ok and above_ema and bull_ok and cd_ok
+                 and strategy.position_size == 0
+
+// SHORT: cierra bajo el minimo de 60 barras, volumen fuerte, bajo EMA200
+breakout_short = close < prev_low  and vol_ok and below_ema and bull_ok and cd_ok
+                 and strategy.position_size == 0
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GESTIÓN DE POSICIÓN
+// ═══════════════════════════════════════════════════════════════════════════════
+var float sl_ref  = na
+var float tp1_ref = na
+var float tp2_ref = na
+var string side   = ""
+
+if breakout_long
+    sl_ref  := close - atr * sl_mult
+    tp1_ref := close + atr * tp_mult
+    tp2_ref := close + atr * tp_mult * 1.5
+    side    := "LONG"
+    bars_since_trade := 0
+    strategy.entry("Long", strategy.long)
+
+if breakout_short
+    sl_ref  := close + atr * sl_mult
+    tp1_ref := close - atr * tp_mult
+    tp2_ref := close - atr * tp_mult * 1.5
+    side    := "SHORT"
+    bars_since_trade := 0
+    strategy.entry("Short", strategy.short)
+
+if strategy.position_size > 0 and not na(sl_ref)
+    strategy.exit("L_TP1", "Long",  qty_percent=qty_tp1*100, stop=sl_ref, limit=tp1_ref, comment="TP1")
+    strategy.exit("L_TP2", "Long",                            stop=sl_ref, limit=tp2_ref, comment="TP2")
+
+if strategy.position_size < 0 and not na(sl_ref)
+    strategy.exit("S_TP1", "Short", qty_percent=qty_tp1*100, stop=sl_ref, limit=tp1_ref, comment="TP1")
+    strategy.exit("S_TP2", "Short",                           stop=sl_ref, limit=tp2_ref, comment="TP2")
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ALERTAS CSV → Make.com
+// ═══════════════════════════════════════════════════════════════════════════════
+if (breakout_long or breakout_short) and send_alerts
+    _dir = breakout_long ? "LONG" : "SHORT"
+    _sl  = breakout_long ? close - atr*sl_mult  : close + atr*sl_mult
+    _tp  = breakout_long ? close + atr*tp_mult  : close - atr*tp_mult
+    _rr  = tp_mult / sl_mult
+    _csv = str.tostring(time) + "," + syminfo.ticker + "," + _dir + ",BREAKOUT_60H," +
+           str.tostring(close,"#.##") + "," + str.tostring(_sl,"#.##") + "," +
+           str.tostring(_tp,"#.##") + "," + str.tostring(_rr,"#.##") + "RR," +
+           str.tostring(risk_adj,"#.##") + "%risk," +
+           str.tostring(math.round(rsi_w)) + "RSI-W"
+    alert(_csv, alert.freq_once_per_bar_close)
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// VISUALIZACIÓN
+// ═══════════════════════════════════════════════════════════════════════════════
+plot(ema200, "EMA200", color.new(color.orange, 20), 2)
+plot(prev_high, "Máx 60H", color.new(color.aqua,  50), 1, plot.style_stepline)
+plot(prev_low,  "Mín 60H", color.new(color.red,   50), 1, plot.style_stepline)
+
+plot(strategy.position_size != 0 ? sl_ref  : na, "SL",  color.new(color.red,  0), 2, plot.style_linebr)
+plot(strategy.position_size != 0 ? tp1_ref : na, "TP1", color.new(color.lime, 0), 2, plot.style_linebr)
+plot(strategy.position_size != 0 ? tp2_ref : na, "TP2", color.new(color.lime,50), 1, plot.style_linebr)
+
+plotshape(breakout_long,  "LONG",  shape.triangleup,   location.belowbar, color.lime, size=size.normal)
+plotshape(breakout_short, "SHORT", shape.triangledown, location.abovebar, color.red,  size=size.normal)
+
+bgcolor(not bull_ok ? color.new(color.orange, 93) : na)
+bgcolor(strategy.position_size > 0 ? color.new(color.green, 92) : na)
+bgcolor(strategy.position_size < 0 ? color.new(color.red,   92) : na)
+
+// Tabla info
+var table t = table.new(position.top_right, 2, 6, bgcolor=color.new(color.navy,60), border_width=1)
+if barstate.islast
+    _bull_str = rsi_w > bull_thr ? "BULL " + str.tostring(math.round(rsi_w)) + " OK" :
+                                   "BEAR " + str.tostring(math.round(rsi_w)) + " BLOQ"
+    _bull_col = rsi_w > bull_thr ? color.lime : color.orange
+    _cyc_str  = bad_phase ? "FASE DIFICIL x" + str.tostring(cycle_mult_bad) : "FASE OK x1.0"
+    _cyc_col  = bad_phase ? color.orange : color.lime
+    table.cell(t,0,0,"1H BREAKOUT", text_color=color.white, bgcolor=color.navy, text_size=size.normal)
+    table.cell(t,1,0,"OOS +16.2%",  text_color=color.lime,  bgcolor=color.navy, text_size=size.small)
+    table.cell(t,0,1,"Máx 60H",  text_color=color.gray, text_size=size.tiny)
+    table.cell(t,1,1,str.tostring(prev_high,"#.##"), text_color=color.aqua, text_size=size.tiny)
+    table.cell(t,0,2,"Volumen",  text_color=color.gray, text_size=size.tiny)
+    table.cell(t,1,2,vol_ok ? "OK " + str.tostring(math.round(volume/vol_ma*10)/10.0) + "x" :
+                              str.tostring(math.round(volume/vol_ma*10)/10.0) + "x (necesita " + str.tostring(vol_mult) + "x)",
+               text_color=vol_ok ? color.lime : color.red, text_size=size.tiny)
+    table.cell(t,0,3,"RSI-W",   text_color=color.gray, text_size=size.tiny)
+    table.cell(t,1,3,_bull_str, text_color=_bull_col, text_size=size.tiny)
+    table.cell(t,0,4,"Ciclo",   text_color=color.gray, text_size=size.tiny)
+    table.cell(t,1,4,_cyc_str,  text_color=_cyc_col,  text_size=size.tiny)
+    table.cell(t,0,5,"Risk/trade", text_color=color.gray, text_size=size.tiny)
+    table.cell(t,1,5,str.tostring(risk_adj,"#.##") + "% ($" + str.tostring(math.round(capital*risk_adj/100)) + ")",
+               text_color=color.white, text_size=size.tiny)

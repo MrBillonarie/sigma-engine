@@ -1,0 +1,74 @@
+{
+  "timestamp": "2026-05-08 19:15:57.312712",
+  "params": {
+    "lookback": 60,
+    "vol_mult": 2.9000000000000004,
+    "sl_mult": 2.3,
+    "tp_mult": 2.0
+  },
+  "risk_pct": 3.3000000000000003,
+  "results": {
+    "IS": {
+      "Asia": {
+        "trades": 23,
+        "wr": 47.8,
+        "pf": 0.98,
+        "total_pnl": -11.56,
+        "cagr_est": -0.2
+      },
+      "London": {
+        "trades": 27,
+        "wr": 70.4,
+        "pf": 2.59,
+        "total_pnl": 560.28,
+        "cagr_est": 8.0
+      },
+      "NY": {
+        "trades": 63,
+        "wr": 58.7,
+        "pf": 0.71,
+        "total_pnl": -507.43,
+        "cagr_est": -7.2
+      },
+      "Off": {
+        "trades": 29,
+        "wr": 62.1,
+        "pf": 4.25,
+        "total_pnl": 1370.08,
+        "cagr_est": 19.4
+      }
+    },
+    "OOS": {
+      "Asia": {
+        "trades": 7,
+        "wr": 71.4,
+        "pf": 1.61,
+        "total_pnl": 51.02,
+        "cagr_est": 3.0
+      },
+      "London": {
+        "trades": 8,
+        "wr": 87.5,
+        "pf": 4.18,
+        "total_pnl": 107.45,
+        "cagr_est": 6.4
+      },
+      "NY": {
+        "trades": 38,
+        "wr": 50.0,
+        "pf": 1.27,
+        "total_pnl": 156.34,
+        "cagr_est": 9.3
+      },
+      "Off": {
+        "trades": 17,
+        "wr": 58.8,
+        "pf": 1.15,
+        "total_pnl": 40.8,
+        "cagr_est": 2.4
+      }
+    }
+  },
+  "best_session": "London",
+  "best_wr_oos": 87.5
+}

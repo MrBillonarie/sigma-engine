@@ -1,0 +1,1932 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""SIGMA ENGINE — Notifier Pro v3.0 con Agente de Comandos"""
+# --- SIGMA secrets loader (audit 2026-05-13) ---
+import sys as _sigma_sys
+if "/opt/sigma" not in _sigma_sys.path:
+    _sigma_sys.path.insert(0, "/opt/sigma")
+from utils.secrets import get_tg_token as _sigma_get_tg_token
+# --- end SIGMA secrets loader ---
+
+import urllib.request, json, time, os, sys, threading, html
+from datetime import datetime, timezone, timedelta
+
+TOKEN    = _sigma_get_tg_token()
+CHAT_ID  = "-1003787411069"
+VPS_URL  = "http://127.0.0.1:8080"
+INTERVAL = int(os.getenv("SIGMA_INTERVAL", "20"))
+
+CHILE = timezone(timedelta(hours=-3))
+
+_esc = html.escape  # defense-in-depth contra HTTP 400 por HTML mal formado
+
+# ── Helpers basicos ───────────────────────────────────────────────────────────
+def send(msg, silent=False, chat_id=None):
+    try:
+        url  = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+        data = json.dumps({
+            "chat_id": chat_id or CHAT_ID, "text": msg,
+            "parse_mode": "HTML",
+            "disable_notification": silent,
+            "link_preview_options": {"is_disabled": True}
+        }, ensure_ascii=False).encode("utf-8")
+        req = urllib.request.Request(url, data=data,
+              headers={"Content-Type": "application/json; charset=utf-8"})
+        urllib.request.urlopen(req, timeout=10)
+    except Exception as e:
+        print(f"[TG] {e}", flush=True)
+
+def pin(msg_id):
+    try:
+        url  = f"https://api.telegram.org/bot{TOKEN}/pinChatMessage"
+        data = json.dumps({"chat_id": CHAT_ID, "message_id": msg_id,
+                            "disable_notification": True}).encode()
+        req  = urllib.request.Request(url, data=data,
+               headers={"Content-Type": "application/json"})
+        urllib.request.urlopen(req, timeout=10)
+    except: pass
+
+def send_pin(msg):
+    try:
+        url  = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+        data = json.dumps({
+            "chat_id": CHAT_ID, "text": msg,
+            "parse_mode": "HTML",
+            "link_preview_options": {"is_disabled": True}
+        }, ensure_ascii=False).encode("utf-8")
+        req  = urllib.request.Request(url, data=data,
+               headers={"Content-Type": "application/json; charset=utf-8"})
+        r    = urllib.request.urlopen(req, timeout=10)
+        mid  = json.loads(r.read()).get("result", {}).get("message_id")
+        if mid: pin(mid)
+    except Exception as e:
+        print(f"[TG PIN] {e}", flush=True)
+
+def fetch(path):
+    try:
+        r = urllib.request.urlopen(VPS_URL + path, timeout=8)
+        return json.loads(r.read())
+    except:
+        return None
+
+def fmt(p):
+    if not p: return "—"
+    return f"{p:,.2f}" if p > 100 else f"{p:.4f}"
+
+def bar(pct, width=10):
+    filled = int(min(pct, 100) / 100 * width)
+    return "█" * filled + "░" * (width - filled)
+
+def pnl_icon(v):  return "📈" if v >= 0 else "📉"
+def medal(wr):
+    if wr >= 70: return "🥇"
+    if wr >= 60: return "🥈"
+    if wr >= 50: return "🥉"
+    return "⚠️"
+
+def chile_now():
+    return datetime.now(CHILE)
+
+def time_ago(dt_str):
+    """Convierte un datetime string a 'hace X horas/min'."""
+    try:
+        dt = datetime.fromisoformat(dt_str)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=CHILE)
+        diff = datetime.now(CHILE) - dt
+        mins = int(diff.total_seconds() / 60)
+        if mins < 60:   return f"{mins}min"
+        if mins < 1440: return f"{mins//60}h {mins%60}min"
+        return f"{mins//1440}d"
+    except:
+        return "?"
+
+# ── Agente de comandos Telegram ───────────────────────────────────────────────
+
+def get_updates(offset=0):
+    """Obtiene mensajes nuevos del bot (long-polling, timeout 3s)."""
+    try:
+        url  = f"https://api.telegram.org/bot{TOKEN}/getUpdates"
+        data = json.dumps({"offset": offset, "timeout": 3,
+                           "allowed_updates": ["message"]}).encode()
+        req  = urllib.request.Request(url, data=data,
+               headers={"Content-Type": "application/json"})
+        r    = urllib.request.urlopen(req, timeout=8)
+        return json.loads(r.read()).get("result", [])
+    except:
+        return []
+
+def cmd_trades(chat_id, signals, trades):
+    """Posiciones abiertas + cola de senales."""
+    now    = chile_now()
+    regime = (signals or {}).get("regime", "?")
+    models = (signals or {}).get("models", [])
+
+    # Posiciones abiertas
+    open_t = {}
+    if trades:
+        raw = trades.get("open_trades", trades.get("open", {}))
+        if isinstance(raw, dict):
+            open_t = {k: v for k, v in raw.items() if v.get("status") == "open"}
+        elif isinstance(raw, list):
+            open_t = {f"{t['sym']}_{t['tf']}": t for t in raw if t.get("status") == "open"}
+
+    MAX_SLOTS  = 3  # subido 2026-05-12 (matches MAX_OPEN_SLOTS=3)
+    lines_open = []
+    for key, t in open_t.items():
+        isL   = t.get("direction", "long") != "short"
+        arrow = "🟢 LONG" if isL else "🔴 SHORT"
+        since = time_ago(t.get("opened_at", ""))
+        sl    = t.get("sl", 0); tp = t.get("tp", 0); en = t.get("entry", 0)
+        rr    = round(abs(tp - en) / max(abs(en - sl), 1e-6), 2) if sl and tp else 0
+        lines_open.append(
+            f"{arrow}  <b>{t.get('sym')} {t.get('tf','').upper()}</b>\n"
+            f"  Entrada: <code>{fmt(en)}</code>  SL: <code>{fmt(sl)}</code>  TP: <code>{fmt(tp)}</code>\n"
+            f"  RR: <code>{rr:.1f}:1</code>  Estrategia: <code>{t.get('strategy','?')}</code>\n"
+            f"  Grade {t.get('grade','?')} | WR {t.get('wr',0):.0f}% | Hace {since}"
+        )
+
+    n_open  = len(open_t)
+    hdr_pos = f"📊 <b>POSICIONES ABIERTAS ({n_open}/{MAX_SLOTS} slots)</b>"
+    blk_open = "\n\n".join(lines_open) if lines_open else "Sin posiciones abiertas."
+
+    # open_keys (necesario tanto para SLOTS RESERVADOS como EN COLA)
+    open_keys = set()
+    for _t in open_t.values():
+        _d = (_t.get("direction", "long") or "long").lower()
+        open_keys.add(f"{_t.get('sym','')}_{(_t.get('tf','') or '').lower()}_{_d}")
+
+    # 2026-05-20: SLOTS RESERVADOS — modelos con slot>=1 pero sin trade abierto (esperando setup tecnico)
+    lines_reserved = []
+    for m in models:
+        slot_val = m.get("slot", 0)
+        if slot_val < 1:
+            continue  # no esta reservado
+        # Skip si ya tiene trade abierto (esta en POSICIONES, no reservado)
+        _d_r = "short" if m.get("type") == "short" else "long"
+        _k_r = f"{m.get('sym','')}_{(m.get('tf','') or '').lower()}_{_d_r}"
+        if _k_r in open_keys:
+            continue
+        isL_r = m.get("type") != "short"
+        arrow_r = "🟢 LONG" if isL_r else "🔴 SHORT"
+        cagr_r = m.get("cagr", 0) or 0
+        wr_r = m.get("wr", 0) or 0
+        strat_r = m.get("strategy", "?")
+        grade_r = m.get("grade", "?")
+        firing_r = bool(m.get("signal"))
+        state_r = "FIRMANDO 🔥" if firing_r else "RESERVADO ⏸"
+        lines_reserved.append(
+            f"🎯 {arrow_r}  <b>{m.get('sym')} {m.get('tf','').upper()}</b>  <i>· {state_r}</i> · SLOT {slot_val}\n"
+            f"  Estrategia: <code>{strat_r}</code>  CAGR backtest: <code>{cagr_r:+.1f}%</code>\n"
+            f"  Grade {grade_r} | WR {wr_r:.0f}% · <i>esperando setup tecnico para abrir trade</i>"
+        )
+
+    if lines_reserved:
+        _slots_lib = max(0, MAX_SLOTS - n_open)
+        blk_reserved = (
+            f"\n\n🎯 <b>SLOTS RESERVADOS</b> ({len(lines_reserved)} con slot asignado, esperando setup)\n\n"
+            + "\n\n".join(lines_reserved)
+        )
+    else:
+        blk_reserved = ""
+
+    # Cola: alineada con el panel del dashboard (ESTADO=COLA cuando recommendation=ACTIVAR sin slot)
+    # Excluye lo ya abierto y los slots actuales (open_keys ya definido arriba)
+
+    # Deduplicar por sym+tf — mismo criterio que el dashboard (un row por par+TF)
+    by_pair_tf = {}
+    for m in models:
+        if m.get("slot", 0) >= 1:
+            continue  # ya esta en posicion abierta (slot 1/2/3 = POSICION)
+        # slot=-1 (CONDICIONAL) y slot=0 (ACTIVAR sin slot asignado) ambos validos para cola
+        is_firing = bool(m.get("signal"))
+        is_queued = m.get("recommendation") in ("ACTIVAR", "CONDICIONAL")
+        if not (is_firing or is_queued):
+            continue
+        if m.get("grade", "D") not in ("A+", "A", "B"):
+            continue
+        _d = "short" if m.get("type") == "short" else "long"
+        _k = f"{m.get('sym','')}_{(m.get('tf','') or '').lower()}_{_d}"
+        if _k in open_keys:
+            continue  # esa direccion ya esta abierta — es "activa", no "en cola"
+        # Dedupe: mejor por signal, luego por score
+        pkey = f"{m.get('sym','')}_{m.get('tf','')}"
+        ex = by_pair_tf.get(pkey)
+        if not ex or (is_firing and not ex.get("signal")) or            (bool(ex.get("signal")) == is_firing and m.get("score",0) > ex.get("score",0)):
+            by_pair_tf[pkey] = m
+
+    # Ordenar: firing primero, luego por score
+    cola = sorted(by_pair_tf.values(),
+                  key=lambda m: (1 if m.get("signal") else 0, m.get("score", 0)),
+                  reverse=True)
+
+    lines_cola = []
+    for m in cola:
+        isL    = m.get("type") != "short"
+        arrow  = "🟢 LONG" if isL else "🔴 SHORT"
+        firing = bool(m.get("signal"))
+        badge  = "⚡" if firing else "⏳"
+        _is_paper = m.get("recommendation") == "CONDICIONAL"
+        if firing:
+            state = "FIRMANDO"
+        elif _is_paper:
+            state = "PAPER (CONDICIONAL)"
+        else:
+            state = "EN ESPERA"
+        sl     = m.get("sl", 0); tp = m.get("tp", 0); pr = m.get("price", 0)
+        rr     = round(abs(tp - pr) / max(abs(pr - sl), 1e-6), 2) if sl and tp else 0
+        ev     = m.get("ev")
+        ens    = m.get("ensemble_count", 1)
+        htf    = " ⚠️ HTF no confirma" if m.get("htf_penalty") else ""
+        ev_s   = f" | EV <code>{ev:+.1f}%</code>" if ev is not None else ""
+        ens_s  = f" | E{ens}" if ens > 1 else ""
+        # Mostrar prices siempre (firing=reales, en espera=hipoteticos)
+        if pr and sl and tp:
+            price_label = "Entrada" if firing else "Entrada hip."
+            tail = "" if firing else "  <i>(precio actual, se refresca cada 5s)</i>"
+            price_line = (f"  {price_label}: <code>{fmt(pr)}</code>  SL: <code>{fmt(sl)}</code>  TP: <code>{fmt(tp)}</code>\n"
+                          f"  RR: <code>{rr:.1f}:1</code>  Estrategia: <code>{m.get('strategy','?')}</code>{tail}\n")
+        else:
+            price_line = f"  Estrategia: <code>{m.get('strategy','?')}</code>  <i>(esperando datos)</i>\n"
+        lines_cola.append(
+            f"{badge} {arrow}  <b>{m.get('sym')} {m.get('tf','').upper()}</b>  <i>· {state}</i>\n"
+            f"{price_line}"
+            f"  Grade {m.get('grade','?')} | WR {m.get('wr',0):.0f}%"
+            f"{ev_s}{ens_s}{htf}"
+        )
+
+    if lines_cola:
+        _n_l = sum(1 for m in cola if (m.get("type") or "long") != "short")
+        _n_s = len(cola) - _n_l
+        _n_activar = sum(1 for m in cola if m.get("recommendation") == "ACTIVAR")
+        _n_cond = sum(1 for m in cola if m.get("recommendation") == "CONDICIONAL")
+        _slots_libres = max(0, MAX_SLOTS - n_open)
+        blk_cola = (
+            f"\n\n📬 <b>EN COLA</b> ({_n_l}L / {_n_s}S — slots libres: {_slots_libres})\n"
+            f"  <i>ACTIVAR (live-ready): {_n_activar} | CONDICIONAL (paper-only): {_n_cond}</i>\n\n"
+            + "\n\n".join(lines_cola)
+        )
+    else:
+        blk_cola = "\n\nNo hay señales en cola."
+
+    # Armados por régimen — espejo del panel del dashboard
+    import re as _re_arm
+    armed_longs  = []
+    armed_shorts = []
+    for m in models:
+        if m.get("recommendation") != "ESPERAR":
+            continue
+        if not _re_arm.search(r"[Rr]egimen", m.get("reason") or ""):
+            continue
+        if m.get("grade", "D") not in ("A+", "A", "B"):
+            continue
+        (armed_shorts if m.get("type") == "short" else armed_longs).append(m)
+    armed_longs.sort(key=lambda x: x.get("cagr", 0) or 0, reverse=True)
+    armed_shorts.sort(key=lambda x: x.get("cagr", 0) or 0, reverse=True)
+    blk_armed = ""
+    if armed_longs or armed_shorts:
+        _arm_lines = []
+        for _m in (armed_longs[:5] + armed_shorts[:5]):
+            _arrow = "🟢 LONG" if _m.get("type") != "short" else "🔴 SHORT"
+            _cagr  = _m.get("cagr", 0) or 0
+            _wr    = _m.get("wr", 0) or 0
+            _arm_lines.append(
+                f"{_arrow}  <b>{_m.get('sym')} {(_m.get('tf') or '').upper()}</b>  "
+                f"<code>{_m.get('strategy','?')}</code>  "
+                f"Grade {_m.get('grade','?')} · CAGR {_cagr:+.1f}% · WR {_wr:.0f}%"
+            )
+        blk_armed = (
+            f"\n\n🎯 <b>ARMADOS POR RÉGIMEN</b> ({len(armed_longs)}L / {len(armed_shorts)}S)"
+            f" — listos cuando rote el régimen\n\n"
+            + "\n".join(_arm_lines)
+        )
+
+    send(
+        f"{hdr_pos}\n\n{blk_open}{blk_reserved}{blk_cola}{blk_armed}\n\n"
+        f"Regimen: <b>{regime}</b> | {now.strftime('%H:%M')} (Chile)",
+        chat_id=chat_id
+    )
+
+def cmd_status(chat_id, signals, trades):
+    """Estado completo del sistema."""
+    now    = chile_now()
+    regime = (signals or {}).get("regime", "?")
+    models = (signals or {}).get("models", [])
+    cb     = (signals or {}).get("circuit_breaker", False)
+
+    port   = (trades or {}).get("portfolio", {})
+    st     = (trades or {}).get("stats", {})
+    lr     = (trades or {}).get("live_readiness", {}) or {}
+    eq     = port.get("equity", 10000)
+    ret    = port.get("return_pct", 0)
+    maxdd  = port.get("max_dd", 0)
+    wr     = st.get("win_rate", 0)
+    total  = st.get("total", 0)
+    pf     = st.get("profit_factor", 0)
+    score  = lr.get("score", 0)
+
+    n_grade  = sum(1 for m in models if m.get("grade") in ("A+", "A"))
+    n_activos= sum(1 for m in models if m.get("grade") in ("A+", "A", "B"))
+    n_signal = sum(1 for m in models if m.get("signal") and m.get("slot", 0) > 0)
+
+    stats_vps = fetch("/api/stats") or {}
+    rate_hr   = stats_vps.get("rate_hr", 0)
+    total_r   = stats_vps.get("total", 0)
+
+    reg_icon = {"BULL": "📈", "BEAR": "📉", "RANGE": "↔️"}.get(regime, "🔄")
+    cb_line  = "\n⛔ <b>CIRCUIT BREAKER ACTIVO</b>" if cb else ""
+
+    # Estado del agente autonomo
+    import os
+    paused       = os.path.exists("/opt/sigma/results/pausa.flag")
+    ai_log       = "/opt/sigma/results/reports/ai_filter.log"
+    ai_active    = os.path.exists(ai_log) and os.path.getsize(ai_log) > 0
+    secrets_path = "/opt/sigma/engine/config/secrets.json"
+    live_ready   = False
+    ai_key_ok    = False
+    try:
+        import json as _j
+        sec = _j.loads(open(secrets_path).read())
+        ai_key_ok  = bool(sec.get("ANTHROPIC_API_KEY", ""))
+        live_ready = bool(sec.get("BINANCE_API_KEY", ""))
+    except: pass
+
+    gate_to_live = max(0, 85 - score)
+    agent_lines  = (
+        f"\n\n🧠 <b>Agente Autonomo</b>\n"
+        f"Smart Exit:   {'✅ activo' if True else '—'}\n"
+        f"AI Filter:    {'✅ activo' if ai_key_ok else '⚠️ sin API key'}\n"
+        f"Modo:         {'⏸ PAUSADO' if paused else '▶️ operando'}\n"
+        f"Live Trading: {'✅ API lista' if live_ready else '🔒 paper mode'}\n"
+        f"Gate para live: <code>{bar(score)}</code> {score}/85"
+        + (f" {'✅ LISTO' if score >= 85 else f'— faltan {gate_to_live} pts'}")
+    )
+
+    send(
+        f"🤖 <b>SIGMA ENGINE — Estado</b>\n"
+        f"{now.strftime('%d %b %Y %H:%M')} (Chile)\n\n"
+        f"{reg_icon} Regimen: <b>{regime}</b>{cb_line}\n"
+        f"Gate capital: <code>{bar(score)}</code> {score}/100\n"
+        f"Modelos activos: <code>{n_activos}</code> | "
+        f"Grade A+/A: <code>{n_grade}</code> | "
+        f"Señales: <code>{n_signal}</code>\n\n"
+        f"💰 <b>Portfolio Paper</b>\n"
+        f"Equity: <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>\n"
+        f"WR live: {medal(wr)} <code>{wr:.0f}%</code>  ({total} trades)\n"
+        f"Profit Factor: <code>{pf:.2f}</code>  Max DD: <code>{maxdd:.1f}%</code>\n\n"
+        f"⚙️ <b>VPS</b>\n"
+        f"Runs/hora: <code>{rate_hr:,}</code>  Total: <code>{total_r:,}</code>"
+        f"{agent_lines}",
+        chat_id=chat_id
+    )
+
+def cmd_hoy(chat_id, trades):
+    """Trades del dia de hoy."""
+    now   = chile_now()
+    hist  = (trades or {}).get("history", [])
+    port  = (trades or {}).get("portfolio", {})
+    today = now.strftime("%Y-%m-%d")
+    hoy   = [t for t in hist if str(t.get("closed_at","")).startswith(today)]
+
+    if not hoy:
+        send(
+            f"📅 <b>Hoy — {now.strftime('%d %b %Y')}</b>\n\n"
+            f"Sin trades cerrados hoy todavia.\n"
+            f"{now.strftime('%H:%M')} (Chile)",
+            chat_id=chat_id
+        )
+        return
+
+    day_pnl  = sum(t.get("pnl_pct", 0) for t in hoy)
+    day_wins = sum(1 for t in hoy if t.get("pnl_pct", 0) >= 0)
+    day_wr   = day_wins / len(hoy) * 100
+    reason_map = {"TP_HIT": "TP ✅", "SL_HIT": "SL ❌", "REGIME_CHANGE": "Reg 🔄", "MANUAL": "Manual"}
+    lines = []
+    for t in hoy:
+        pnl  = t.get("pnl_pct", 0)
+        icon = "✅" if pnl >= 0 else "❌"
+        rsn  = reason_map.get(t.get("reason",""), t.get("reason","?"))
+        hora = str(t.get("closed_at",""))[-8:-3]
+        lines.append(
+            f"  {icon} <b>{t.get('sym')} {t.get('tf','').upper()}</b>  "
+            f"<code>{pnl:+.2f}%</code>  [{rsn}]  {hora}"
+        )
+
+    eq  = port.get("equity", 0)
+    ret = port.get("return_pct", 0)
+    send(
+        f"📅 <b>Hoy — {now.strftime('%d %b %Y')}</b>\n\n"
+        f"<b>Trades cerrados: {len(hoy)}</b>\n"
+        + "\n".join(lines) +
+        f"\n\n{pnl_icon(day_pnl)} P&L dia: <code>{day_pnl:+.2f}%</code>\n"
+        f"WR dia: {medal(day_wr)} <code>{day_wr:.0f}%</code>  "
+        f"({day_wins}W / {len(hoy)-day_wins}L)\n\n"
+        f"Equity: <code>${eq:,.2f}</code>  <code>{ret:+.2f}%</code> total",
+        chat_id=chat_id
+    )
+
+def cmd_semana(chat_id, trades):
+    """Ultimos 7 dias de performance."""
+    now      = chile_now()
+    hist     = (trades or {}).get("history", [])
+    port     = (trades or {}).get("portfolio", {})
+    week_ago = (now - timedelta(days=7)).strftime("%Y-%m-%d")
+    semana   = [t for t in hist if str(t.get("closed_at","")) >= week_ago]
+
+    if not semana:
+        send("Sin trades en los ultimos 7 dias.", chat_id=chat_id)
+        return
+
+    pnl_tot = sum(t.get("pnl_pct",0) for t in semana)
+    wins    = sum(1 for t in semana if t.get("pnl_pct",0) >= 0)
+    wr_sem  = wins / len(semana) * 100
+    lines   = []
+    for t in semana[-10:]:
+        pnl  = t.get("pnl_pct", 0)
+        icon = "🟢" if pnl >= 0 else "🔴"
+        blen = min(int(abs(pnl) * 2), 10)
+        dia  = str(t.get("closed_at",""))[:10][5:]
+        lines.append(
+            f"  {icon} {t.get('sym'):<4} {t.get('tf','').upper():<4} "
+            f"{'█'*blen:<10} <code>{pnl:+.2f}%</code>  {dia}"
+        )
+
+    eq  = port.get("equity", 10000)
+    ret = port.get("return_pct", 0)
+    send(
+        f"📆 <b>Ultimos 7 dias</b>\n\n"
+        + "\n".join(lines) +
+        f"\n\n{pnl_icon(pnl_tot)} P&L semana: <code>{pnl_tot:+.2f}%</code>\n"
+        f"WR: {medal(wr_sem)} <code>{wr_sem:.0f}%</code>  "
+        f"({wins}W / {len(semana)-wins}L / {len(semana)} trades)\n\n"
+        f"Equity: <code>${eq:,.2f}</code>  <code>{ret:+.2f}%</code> total",
+        chat_id=chat_id
+    )
+
+def cmd_modelo(chat_id, args, signals):
+    """Detalle de un modelo: /modelo BTC 1H"""
+    models = (signals or {}).get("models", [])
+    regime = (signals or {}).get("regime", "?")
+
+    if not args:
+        send(
+            "Uso: <code>/modelo SYM TF</code>\n"
+            "Ejemplos: <code>/modelo BTC 1H</code>  <code>/modelo ETH 4H</code>  <code>/modelo SOL 15m</code>",
+            chat_id=chat_id
+        )
+        return
+
+    parts = args.upper().split()
+    sym   = parts[0] if parts else ""
+    tf    = parts[1].lower() if len(parts) > 1 else ""
+    found = [m for m in models
+             if m.get("sym","").upper() == sym and m.get("tf","").lower() == tf]
+
+    if not found:
+        all_sym_tf = sorted({f"{m.get('sym')} {m.get('tf','').upper()}" for m in models})
+        send(
+            f"No encontre <b>{sym} {tf.upper()}</b>.\n\n"
+            f"Modelos disponibles:\n" +
+            "\n".join(f"  • {s}" for s in all_sym_tf),
+            chat_id=chat_id
+        )
+        return
+
+    m      = found[0]
+    isL    = m.get("type") != "short"
+    arrow  = "🟢 LONG" if isL else "🔴 SHORT"
+    sig    = m.get("signal", False)
+    slot   = m.get("slot", 0)
+    rec    = m.get("recommendation", "—")
+    reason = m.get("reason", "—")
+    wft    = m.get("wft_pass_rate")
+    wft_s  = f"{wft:.0f}%" if wft is not None else "N/A"
+    conf   = m.get("val_confidence", "?")
+    ens    = m.get("ensemble_count", 1)
+
+    if sig and slot > 0:   estado = f"⚡ <b>SEÑAL ACTIVA — SLOT {slot}</b>"
+    elif sig:               estado = "👁 Señal detectada (slot lleno)"
+    else:                   estado = "💤 Sin señal activa"
+
+    msg = (
+        f"🔍 <b>{sym} {tf.upper()} — {_esc(str(m.get('strategy','?')))}</b>\n"
+        f"{arrow}  {estado}\n\n"
+        f"Grade: <b>{m.get('grade','?')}</b>  Score: <code>{m.get('score',0):.3f}</code>\n"
+        f"CAGR OOS: <code>{m.get('cagr',0):+.1f}%</code>  "
+        f"WR: <code>{m.get('wr',0):.0f}%</code>  "
+        f"DD: <code>{m.get('dd',0):.1f}%</code>\n"
+        f"WFT: <code>{wft_s}</code>  Confianza: <code>{conf}</code>  "
+        f"Ensemble: <code>{ens}</code>\n\n"
+        f"Recomendacion: <b>{rec}</b>\n"
+        f"Razon: <i>{_esc(str(reason))}</i>\n\n"
+    )
+    if sig:
+        pr = m.get("price",0); sl = m.get("sl",0); tp = m.get("tp",0)
+        rn = abs(tp-pr)/max(abs(pr-sl),1e-6) if sl and tp else 0
+        ev = m.get("ev")
+        msg += (
+            f"<b>Niveles actuales</b>\n"
+            f"Entrada:   <code>{fmt(pr)}</code>\n"
+            f"Stop Loss: <code>{fmt(sl)}</code>\n"
+            f"TP:        <code>{fmt(tp)}</code>  RR <code>{rn:.1f}:1</code>\n"
+        )
+        if ev is not None:
+            msg += f"EV neto:   <code>{ev:+.1f}%</code>\n"
+        msg += f"Kelly: <code>{m.get('eff_risk_pct','?')}%</code>  Regime: <b>{regime}</b>"
+    else:
+        msg += f"Regime actual: <b>{regime}</b>"
+    send(msg, chat_id=chat_id)
+
+PAUSA_FLAG = "/opt/sigma/results/pausa.flag"
+
+def is_paused():
+    import os
+    return os.path.exists(PAUSA_FLAG)
+
+def cmd_checklist(chat_id):
+    """Evalua y muestra el checklist de live trading."""
+    send("🔍 Evaluando sistema...", silent=True, chat_id=chat_id)
+    try:
+        import sys as _sys
+        _sys.path.insert(0, '/opt/sigma/engine/live')
+        from live_checklist import run_checklist, format_telegram
+        checks = run_checklist()
+        msg    = format_telegram(checks)
+        send(msg, chat_id=chat_id)
+    except Exception as e:
+        send(f"Error ejecutando checklist: {e}", chat_id=chat_id)
+
+def cmd_pausa(chat_id):
+    import os
+    if is_paused():
+        os.remove(PAUSA_FLAG)
+        send(
+            "▶️ <b>SISTEMA REANUDADO</b>\n\n"
+            "El bot volvera a abrir nuevas posiciones normalmente.\n"
+            "Usa /pausa para volver a pausar.",
+            chat_id=chat_id
+        )
+        send(
+            "▶️ <b>Sistema reanudado</b> — nuevas entradas activas.",
+            silent=True
+        )
+    else:
+        open(PAUSA_FLAG, 'w').write("paused")
+        send(
+            "⏸ <b>SISTEMA EN PAUSA</b>\n\n"
+            "No se abriran nuevas posiciones hasta que escribas /pausa de nuevo.\n"
+            "Las posiciones abiertas siguen activas normalmente.\n\n"
+            "<i>Usa /pausa para reanudar.</i>",
+            chat_id=chat_id
+        )
+        send(
+            "⏸ <b>Sistema en pausa</b> — sin nuevas entradas.",
+            silent=True
+        )
+
+def cmd_modelos(chat_id, signals):
+    """Lista TODOS los modelos disponibles en produccion (campeones activos)."""
+    if not signals:
+        send("Cargando signals... reintenta en 10s.", chat_id=chat_id)
+        return
+    models = signals.get("models", []) or []
+    if not models:
+        send("Sin modelos disponibles en produccion.", chat_id=chat_id)
+        return
+    # Agrupar por recommendation
+    from collections import defaultdict
+    by_rec = defaultdict(list)
+    for m in models:
+        by_rec[m.get("recommendation","?")].append(m)
+
+    lines = [f"📊 <b>MODELOS EN PRODUCCION</b> ({len(models)} total)\n"]
+    lines.append(f"<i>Regimen actual: {signals.get('regime','?')}</i>\n")
+
+    icons = {"ACTIVAR":"✅","CONDICIONAL":"⚠️","ESPERAR":"⏸","NO_ACTIVAR":"⛔"}
+    order = ["ACTIVAR","CONDICIONAL","ESPERAR","NO_ACTIVAR"]
+    for rec in order:
+        ms = by_rec.get(rec, [])
+        if not ms: continue
+        lines.append(f"\n<b>{icons.get(rec,'•')} {rec} ({len(ms)})</b>")
+        # ordenar por grade
+        grade_rank = {"A+":0,"A":1,"B":2,"C":3,"D":4,"?":5}
+        ms_sorted = sorted(ms, key=lambda x: grade_rank.get(x.get("grade","?"),5))
+        for m in ms_sorted:
+            sym = m.get("sym","?")
+            tf  = m.get("tf","?").upper()
+            strat = m.get("strategy","?")
+            grade = m.get("grade","?")
+            cagr = m.get("cagr", 0) or 0
+            wr = m.get("wr", 0) or 0
+            dirn = m.get("type","long")
+            arrow = "▼" if dirn == "short" else "▲"
+            signal = "🟢" if m.get("signal") else "⚪"
+            lines.append(f"{signal} {arrow} <code>{sym} {tf}</code> {strat} [{grade}] cagr {cagr:.0f}% wr {wr:.0f}%")
+
+    lines.append("\n<i>Detalle: <code>/modelo SYM TF</code></i>")
+    lines.append("<i>🟢 = signal activa ahora · ⚪ = standby</i>")
+    msg = "\n".join(lines)
+    # Telegram limit 4096
+    if len(msg) > 4000:
+        msg = msg[:3950] + "\n\n<i>... lista truncada</i>"
+    send(msg, chat_id=chat_id)
+
+
+def cmd_salud(chat_id):
+    """Health check del sistema completo."""
+    try:
+        import urllib.request as _u, json as _j
+        r = _u.urlopen('http://localhost:8080/api/health', timeout=10)
+        h = _j.loads(r.read().decode('utf-8'))
+    except Exception as e:
+        send(f"Error consultando /api/health: {e}", chat_id=chat_id)
+        return
+    cache = h.get('cache', {})
+    port = h.get('portfolio', {})
+    trainer = h.get('trainer', {})
+    svc = h.get('services', {})
+    pm = h.get('per_model', {})
+    status_icon = "✅" if h.get('status') == 'ok' else ("⚠️" if h.get('status')=='degraded' else "❌")
+    lines = [f"{status_icon} <b>SIGMA SALUD</b>  ({h.get('checks_passed',0)}/{h.get('checks_total',0)} checks)"]
+    lines.append("")
+    lines.append(f"<b>📡 Cache senales</b>")
+    cache_icon = "✅" if not cache.get('stale') else "⚠️"
+    lines.append(f"  {cache_icon} updated: <code>{cache.get('updated','?')}</code> (edad {cache.get('age_s',0):.0f}s)")
+    lines.append(f"  duration: <code>{cache.get('duration_s',0):.1f}s</code> · modelos: <code>{cache.get('models_count',0)}</code> · regime: <b>{cache.get('regime','?')}</b>")
+    lines.append("")
+    lines.append(f"<b>💼 Portafolio</b>")
+    ret_color = "🟢" if port.get('return_pct',0) > 0 else "🔴"
+    lines.append(f"  {ret_color} equity: <b>${port.get('equity',0):,.2f}</b> ({port.get('return_pct',0):+.2f}%)")
+    lines.append(f"  peak: <code>${port.get('peak',0):,.2f}</code> · DD: <code>{port.get('max_dd_pct',0):.2f}%</code>")
+    cb_icon = "🟢 libre" if not port.get('cb_active') else "🔴 ACTIVO"
+    lines.append(f"  trades: {port.get('open_count',0)} abiertos · {port.get('history_count',0)} cerrados · CB {cb_icon}")
+    lines.append("")
+    lines.append(f"<b>🧠 Trainer</b>")
+    lines.append(f"  runs ultima hora: <b>{trainer.get('runs_last_hour',0):,}</b>")
+    lines.append(f"  total: <b>{trainer.get('total_runs',0):,}</b>")
+    lines.append("")
+    lines.append(f"<b>⚙️ Servicios</b>")
+    for s, st in svc.items():
+        icon = "✅" if st == 'active' else "⛔"
+        lines.append(f"  {icon} {s}: <code>{st}</code>")
+    if pm:
+        lines.append("")
+        lines.append(f"<b>🔬 Per-Model</b>")
+        lines.append(f"  modelos: <b>{pm.get('total',0)}</b> · abiertos: {pm.get('opens',0)} · cerrados: {pm.get('history',0)}")
+    if h.get('failed_checks'):
+        lines.append("")
+        lines.append(f"⚠️ <b>Failed checks:</b> {', '.join(h.get('failed_checks',[]))}")
+    send("\n".join(lines), chat_id=chat_id)
+
+
+def cmd_performance(chat_id, trades):
+    """Performance live vs expectativa del backtest."""
+    if not trades:
+        send("Cargando trades...", chat_id=chat_id)
+        return
+    port = trades.get('portfolio', {})
+    hist = trades.get('history', [])
+    if not hist:
+        send("Sin trades cerrados aun.", chat_id=chat_id)
+        return
+    n = len(hist)
+    wins = [t for t in hist if t.get('pnl_pct', 0) > 0]
+    losses = [t for t in hist if t.get('pnl_pct', 0) < 0]
+    wr_live = len(wins)/n*100 if n else 0
+    avg_win = sum(t.get('pnl_pct',0) for t in wins)/len(wins) if wins else 0
+    avg_loss = sum(t.get('pnl_pct',0) for t in losses)/len(losses) if losses else 0
+    sum_pnl = sum(t.get('pnl_pct',0) for t in hist)
+    gains = sum(t.get('pnl_pct',0) for t in hist if t.get('pnl_pct',0) > 0)
+    losses_amt = abs(sum(t.get('pnl_pct',0) for t in hist if t.get('pnl_pct',0) < 0))
+    pf = (gains/losses_amt) if losses_amt > 0 else (gains if gains else 0)
+    eq = port.get('equity', 10000)
+    initial = port.get('initial_capital', 10000)
+    ret_total = (eq/initial - 1) * 100
+    peak = port.get('peak_equity', eq)
+    dd = (eq/peak - 1) * 100 if peak > eq else 0
+
+    # Anualizar (asumimos 3 dias por ahora)
+    from datetime import datetime
+    try:
+        first = min(t.get('opened_at','')[:10] for t in hist if t.get('opened_at'))
+        days = max((datetime.now() - datetime.strptime(first, '%Y-%m-%d')).days, 1)
+    except: days = 1
+    cagr_live = ((eq/initial) ** (365/days) - 1) * 100
+
+    # Expectativa backtest
+    BT_CAGR = 30
+    BT_WR = 62
+    BT_PF = 2.2
+    BT_DD = -15
+
+    lines = [f"📊 <b>SIGMA PERFORMANCE — Live vs Backtest</b>"]
+    lines.append(f"<i>Periodo: {days} dia(s) · {n} trades cerrados</i>")
+    lines.append("")
+    def cmp(label, live, bt, unit='%', better_high=True):
+        icon = "✅" if (live >= bt if better_high else live <= bt) else "⚠️"
+        return f"  {icon} {label:<15} live: <b>{live:+.2f}{unit}</b> · backtest: <code>{bt:+.1f}{unit}</code>"
+
+    lines.append(cmp("CAGR (anual.)", cagr_live, BT_CAGR))
+    lines.append(cmp("Win Rate", wr_live, BT_WR))
+    lines.append(cmp("Profit Factor", pf, BT_PF))
+    lines.append(cmp("Max DD", dd, BT_DD, better_high=False))
+    lines.append("")
+    lines.append(f"<b>Trades:</b>")
+    lines.append(f"  Wins: {len(wins)}  ·  Losses: {len(losses)}")
+    lines.append(f"  Avg win: <code>+{avg_win:.2f}%</code>  ·  Avg loss: <code>{avg_loss:.2f}%</code>")
+    lines.append(f"  Equity: <b>${eq:,.2f}</b>  ({ret_total:+.2f}%)")
+    lines.append("")
+    if cagr_live > BT_CAGR * 1.5:
+        lines.append("🚀 <b>Performance EXCELENTE</b> — superando backtest por mucho")
+    elif cagr_live > BT_CAGR * 0.8:
+        lines.append("✅ <b>Performance en linea</b> con el backtest")
+    elif cagr_live > 0:
+        lines.append("⚠️ <b>Performance baja</b> vs backtest — observar")
+    else:
+        lines.append("🔴 <b>Performance negativa</b> — revisar urgente")
+    lines.append("")
+    lines.append(f"<i>Muestra pequena ({n} trades). Para validacion estadistica robusta: >= 30 trades.</i>")
+    send("\n".join(lines), chat_id=chat_id)
+
+
+
+# Lista de estrategias agregadas el 2026-05-14 (sprint shorts expansion 3 -> 26)
+_NEW_STRATS_2026_05_14 = ['rsi_overbought_short', 'death_cross_short', 'ema200_rejection_short', 'macd_bear_cross', 'lower_high_break_short', 'wedge_breakdown_short', 'supply_zone_rejection', 'bearish_rsi_divergence', 'volume_climax_top', 'range_break_down', 'macd_zero_cross_down', 'stoch_rsi_short', 'williams_r_short', 'cci_reversal_short', 'engulfing_short', 'three_candles_short', 'inside_bar_short', 'zscore_rich_short', 'heikin_ashi_short', 'roc_negative_short', 'dmi_bear', 'vwap_overpriced_short', 'keltner_breakdown_short']
+
+def cmd_nuevas(chat_id):
+    """Lista las 23 estrategias short agregadas el 2026-05-14 con su estado de evaluacion."""
+    import sqlite3 as _sq
+    try:
+        c = _sq.connect('/opt/sigma/models/sigma.db')
+        placeholders = ','.join(['?']*len(_NEW_STRATS_2026_05_14))
+        rows = c.execute(
+            f"SELECT mode, COUNT(*) cnt, MAX(score) best, AVG(score) avg, "
+            f"  MAX(CASE WHEN score > 0 THEN cagr END) best_cagr, "
+            f"  MAX(CASE WHEN score > 0 THEN winrate END) best_wr "
+            f"FROM runs WHERE mode IN ({placeholders}) GROUP BY mode ORDER BY MAX(score) DESC",
+            _NEW_STRATS_2026_05_14
+        ).fetchall()
+        c.close()
+    except Exception as e:
+        send(f"Error consultando DB: {e}", chat_id=chat_id)
+        return
+
+    if not rows:
+        send(
+            "📋 <b>Estrategias nuevas (23)</b>\n\n"
+            "Las 23 estrategias short del 2026-05-14 aún no aparecen en la DB de evaluaciones.\n"
+            "Esto es normal si fueron agregadas hace poco — el trainer las va a ciclar.",
+            chat_id=chat_id
+        )
+        return
+
+    # Cross-reference con port_snapshot para detectar champions
+    try:
+        import json as _j
+        snap = _j.load(open('/opt/sigma/results/reports/port_snapshot.json'))
+        champion_strats = set(v.split('|')[0] for v in snap.get('champions', {}).values())
+    except:
+        champion_strats = set()
+
+    lines = [f"📋 <b>UNIVERSO NUEVO (23 shorts del 14-05)</b>\n"]
+    n_evaluated = sum(1 for r in rows if r[1] > 0)
+    lines.append(f"<i>{n_evaluated}/23 ya tienen trials · {len(champion_strats & set(_NEW_STRATS_2026_05_14))} son champions activos</i>\n")
+
+    for mode, cnt, best, avg, best_cagr, best_wr in rows:
+        is_champ = mode in champion_strats
+        emoji = "👑" if is_champ else ("🔥" if best and best > 0.5 else ("⚡" if best and best > 0.2 else "⏳"))
+        best_str = f"{best:.3f}" if best else "-"
+        cagr_str = f"+{best_cagr:.0f}%" if best_cagr else "—"
+        wr_str = f"{best_wr:.0f}%" if best_wr else "—"
+        lines.append(f"{emoji} <code>{mode[:24]:24}</code> trials={cnt:>4} best={best_str:>6} cagr={cagr_str:>5} wr={wr_str:>4}")
+
+    # Estrategias sin evaluar todavía
+    seen = set(r[0] for r in rows)
+    pendientes = [s for s in _NEW_STRATS_2026_05_14 if s not in seen]
+    if pendientes:
+        lines.append(f"\n<b>⏳ Sin trials aún ({len(pendientes)})</b>")
+        for s in pendientes[:8]:
+            lines.append(f"   <code>{s}</code>")
+        if len(pendientes) > 8:
+            lines.append(f"   <i>... y {len(pendientes)-8} más</i>")
+
+    lines.append("\n<i>👑=champion · 🔥=score&gt;0.5 · ⚡=score&gt;0.2 · ⏳=esperando trials</i>")
+    msg = "\n".join(lines)
+    if len(msg) > 4000:
+        msg = msg[:3950] + "\n\n<i>... truncado</i>"
+    send(msg, chat_id=chat_id)
+
+
+
+# ── FIRE Tracker (Financial Independence Retire Early) ───────────────────
+_FIRE_CONFIG_PATH = '/opt/sigma/results/fire_config.json'
+
+def _fire_load_config():
+    import json as _j, os as _os
+    if not _os.path.exists(_FIRE_CONFIG_PATH):
+        return {"starting_equity": 10000.0, "target_equity": 100000.0,
+                "target_deadline_days": None, "baseline_date": "2026-05-12",
+                "last_milestone_notified": 0, "milestones": [25, 50, 75, 100]}
+    try:
+        with open(_FIRE_CONFIG_PATH) as f:
+            return _j.load(f)
+    except: return {}
+
+def _fire_save_config(cfg):
+    import json as _j, os as _os
+    _os.makedirs(_os.path.dirname(_FIRE_CONFIG_PATH), exist_ok=True)
+    with open(_FIRE_CONFIG_PATH, 'w') as f:
+        _j.dump(cfg, f, indent=2)
+
+def _fire_current_equity():
+    """Lee equity actual del paper trader principal."""
+    import json as _j
+    try:
+        with open('/opt/sigma/results/trade_state.json') as f:
+            state = _j.load(f)
+        # Calcular equity desde history (suma de pnl_pct sobre starting)
+        cfg = _fire_load_config()
+        start = cfg.get('starting_equity', 10000)
+        history = state.get('history', [])
+        # Compounding: cada trade pnl_pct% acumulado
+        eq = start
+        for t in history:
+            pnl = t.get('pnl_pct', 0) / 100
+            eq *= (1 + pnl)
+        return eq
+    except: return 10000.0
+
+def _fire_progress_bar(pct, width=20):
+    """Generar barra de progreso visual."""
+    filled = int(min(max(pct, 0), 100) / 100 * width)
+    return "█" * filled + "░" * (width - filled)
+
+def cmd_fire(chat_id):
+    """Muestra estado FIRE: progreso al target, CAGR, ETA, milestones."""
+    from datetime import datetime as _dt
+    import math as _math
+    cfg = _fire_load_config()
+    start_eq = cfg.get('starting_equity', 10000)
+    target_eq = cfg.get('target_equity', 100000)
+    baseline_date = cfg.get('baseline_date', '2026-05-12')
+    deadline_days = cfg.get('target_deadline_days')
+
+    current_eq = _fire_current_equity()
+    progress_pct = (current_eq - start_eq) / (target_eq - start_eq) * 100 if target_eq > start_eq else 0
+    progress_pct = max(0, min(100, progress_pct))
+    bar = _fire_progress_bar(progress_pct, 20)
+
+    # Calcular días desde baseline
+    try:
+        bd = _dt.fromisoformat(baseline_date)
+        days_since = (_dt.now() - bd).days
+    except:
+        days_since = 0
+
+    # CAGR realizado
+    if days_since > 0 and current_eq > 0 and start_eq > 0:
+        years = days_since / 365.25
+        cagr_realized = ((current_eq / start_eq) ** (1/max(years, 0.01)) - 1) * 100 if years > 0 else 0
+    else:
+        cagr_realized = 0
+
+    # CAGR necesario para llegar al target en deadline_days
+    if deadline_days and deadline_days > days_since:
+        days_left = deadline_days - days_since
+        years_left = days_left / 365.25
+        cagr_needed = ((target_eq / max(current_eq, 1)) ** (1/max(years_left, 0.01)) - 1) * 100 if years_left > 0 else 0
+        deadline_str = f"{days_left} días restantes"
+    else:
+        cagr_needed = None
+        deadline_str = "sin deadline"
+
+    # ETA al target al ritmo actual (si CAGR>0)
+    if cagr_realized > 0 and current_eq > 0 and current_eq < target_eq:
+        years_to_target = _math.log(target_eq / current_eq) / _math.log(1 + cagr_realized/100)
+        eta_days = int(years_to_target * 365.25)
+        if eta_days < 365:
+            eta_str = f"{eta_days} días"
+        else:
+            eta_str = f"{years_to_target:.1f} años"
+    else:
+        eta_str = "indefinido (CAGR ≤ 0)"
+
+    # Milestone más cercano superior
+    milestones = cfg.get('milestones', [25, 50, 75, 100])
+    next_ms = next((m for m in sorted(milestones) if m > progress_pct), None)
+    if next_ms:
+        ms_eq = start_eq + (target_eq - start_eq) * next_ms / 100
+        ms_dist = ms_eq - current_eq
+        ms_str = f"{next_ms}% (${ms_eq:,.0f}) — faltan ${ms_dist:,.0f}"
+    else:
+        ms_str = "🎉 Target alcanzado"
+
+    lines = [
+        f"🔥 <b>FIRE Tracker</b>\n",
+        f"<code>{bar}</code> <b>{progress_pct:.1f}%</b>\n",
+        f"Equity actual:   <b>${current_eq:,.0f}</b>",
+        f"Meta FIRE:       <b>${target_eq:,.0f}</b>",
+        f"Punto de partida: ${start_eq:,.0f}",
+        f"Días desde baseline: {days_since}\n",
+        f"<b>📊 CAGR</b>",
+        f"   Realizado: <code>{cagr_realized:+.1f}%</code>",
+    ]
+    if cagr_needed is not None:
+        lines.append(f"   Necesario para deadline: <code>{cagr_needed:.1f}%</code>")
+        lines.append(f"   Deadline: <i>{deadline_str}</i>")
+    lines.append(f"\n<b>⏱ ETA al target al ritmo actual:</b> {eta_str}")
+    lines.append(f"\n<b>🎯 Próximo milestone:</b> {ms_str}")
+
+    if not deadline_days:
+        lines.append("\n<i>💡 Tip: usá <code>/fire set 100000 365</code> para fijar meta + deadline.</i>")
+
+    send("\n".join(lines), chat_id=chat_id)
+
+
+def cmd_fire_set(chat_id, args):
+    """Configurar meta FIRE: /fire set <target> [<days>]."""
+    cfg = _fire_load_config()
+    parts = (args or "").split()
+    if not parts:
+        send(
+            "<b>Uso:</b>\n"
+            "<code>/fire set 100000</code> — fija meta a $100k\n"
+            "<code>/fire set 100000 365</code> — meta $100k en 365 días",
+            chat_id=chat_id
+        )
+        return
+
+    try:
+        target = float(parts[0].replace(',', '').replace('$', '').replace('k', '000'))
+        if target < cfg.get('starting_equity', 10000):
+            send(f"Meta debe ser mayor a ${cfg.get('starting_equity', 10000):,.0f}", chat_id=chat_id)
+            return
+        cfg['target_equity'] = target
+        if len(parts) > 1:
+            cfg['target_deadline_days'] = int(parts[1])
+        _fire_save_config(cfg)
+        # Reset milestone notifier para que vuelva a notificar si baja un nivel
+        cfg['last_milestone_notified'] = 0
+        _fire_save_config(cfg)
+        send(
+            f"✅ <b>FIRE configurado</b>\n"
+            f"Meta: <b>${target:,.0f}</b>\n"
+            f"Deadline: <b>{cfg.get('target_deadline_days', 'sin deadline')}</b> días\n\n"
+            f"Usá <code>/fire</code> para ver el progreso.",
+            chat_id=chat_id
+        )
+    except (ValueError, IndexError) as e:
+        send(f"Error parsing: {e}\nUso: <code>/fire set 100000 [365]</code>", chat_id=chat_id)
+
+
+def fire_check_milestone():
+    """Llamar periódicamente para notificar cuando se cruza un milestone."""
+    cfg = _fire_load_config()
+    start_eq = cfg.get('starting_equity', 10000)
+    target_eq = cfg.get('target_equity', 100000)
+    last_ms = cfg.get('last_milestone_notified', 0)
+    current_eq = _fire_current_equity()
+    progress_pct = (current_eq - start_eq) / (target_eq - start_eq) * 100 if target_eq > start_eq else 0
+
+    for ms in sorted(cfg.get('milestones', [25, 50, 75, 100])):
+        if progress_pct >= ms and ms > last_ms:
+            # Cruzó milestone — notificar
+            ms_eq = start_eq + (target_eq - start_eq) * ms / 100
+            send(
+                f"🔥🎉 <b>MILESTONE FIRE ALCANZADO: {ms}%</b>\n\n"
+                f"Equity: <b>${current_eq:,.0f}</b>\n"
+                f"Cruzaste ${ms_eq:,.0f}\n"
+                f"Faltan ${target_eq - current_eq:,.0f} para FIRE total\n\n"
+                f"<i>Sigamos adelante con disciplina.</i> 🤖"
+            )
+            cfg['last_milestone_notified'] = ms
+            _fire_save_config(cfg)
+            break  # solo un milestone por chequeo
+
+
+def cmd_portfolio(chat_id):
+    """3 vistas honestas del CAGR ponderado del portafolio."""
+    import json as _j, os as _os
+    try:
+        snap = _j.load(open('/opt/sigma/results/reports/port_snapshot.json'))
+        champs = snap.get('champions', {})
+    except Exception as e:
+        send(f"Error leyendo snapshot: {e}", chat_id=chat_id)
+        return
+
+    data = []
+    for slot, value in sorted(champs.items()):
+        strat = value.split('|')[0]
+        sym, tf = slot.split('|')
+        jpath = f'/opt/sigma/models/{tf}/{sym.lower()}_{strat}.json'
+        if not _os.path.exists(jpath):
+            continue
+        try:
+            m = _j.load(open(jpath))
+            oos = m.get('metrics_oos', {})
+            data.append((oos.get('cagr', 0), oos.get('wr', 0), oos.get('trades', 0),
+                         oos.get('dd', 0), oos.get('pf', 0), slot, strat))
+        except: pass
+
+    if not data:
+        send("Sin datos de portfolio disponibles.", chat_id=chat_id)
+        return
+
+    n_total = len(data)
+
+    def wavg(items, key_v, key_w=2):
+        items = list(items)
+        if not items: return 0
+        wsum = sum(max(it[key_w], 1) for it in items)
+        return sum(it[key_v] * max(it[key_w], 1) for it in items) / wsum if wsum else 0
+
+    # 3 vistas
+    # 1) Real operativo (CAGR>=12% ponderado por trades)
+    op = [d for d in data if d[0] >= 12.0]
+    cagr_real = wavg(op, 0)
+    wr_real = wavg(op, 1)
+    pf_real = sum(d[4] for d in op if d[4] > 0) / max(sum(1 for d in op if d[4] > 0), 1)
+
+    # 2) TOP performers (CAGR>=25% ponderado)
+    top = [d for d in data if d[0] >= 25.0]
+    cagr_top = wavg(top, 0)
+    wr_top = wavg(top, 1)
+
+    # 3) Simple sin ponderar (todos los slots, igual peso)
+    cagr_simple = sum(d[0] for d in data) / n_total
+    wr_simple = sum(d[1] for d in data) / n_total
+
+    # Best individual slot
+    best = max(data, key=lambda x: x[0])
+
+    # Leer kelly boost del snapshot
+    try:
+        _snap = _j.load(open("/opt/sigma/results/reports/port_snapshot.json"))
+        port_kelly_boost = _snap.get("port_cagr_kelly_boost", 0) or 0
+        port_with_kelly = _snap.get("port_cagr_with_kelly", cagr_real) or cagr_real
+    except Exception:
+        port_kelly_boost = 0
+        port_with_kelly = cagr_real
+    lines = [
+        "📊 <b>PORTFOLIO ANALYTICS — 4 VISTAS HONESTAS</b>\n",
+        f"<i>Cada métrica te cuenta una historia distinta. Ninguna es 'la verdadera'.</i>\n",
+        "",
+        "<b>🎯 1. REAL OPERATIVO</b> (ponderado por trades, CAGR&ge;12%)",
+        f"   CAGR: <b>{cagr_real:.2f}%</b>  ·  WR: {wr_real:.1f}%  ·  PF: {pf_real:.2f}",
+        f"   <i>{len(op)}/{n_total} slots operables. Refleja el alpha que vas a cosechar dado el flujo real.</i>",
+        "",
+        "<b>🏆 2. TOP PERFORMERS</b> (solo CAGR&ge;25%)",
+        f"   CAGR: <b>{cagr_top:.2f}%</b>  ·  WR: {wr_top:.1f}%",
+        f"   <i>{len(top)}/{n_total} slots de élite. El potencial si tu sistema dominara solo con estos.</i>",
+        "",
+        "<b>📐 3. SIMPLE</b> (promedio aritmético todos)",
+        f"   CAGR: <b>{cagr_simple:.2f}%</b>  ·  WR: {wr_simple:.1f}%",
+        f"   <i>{n_total} slots, peso igual. La métrica más optimista (ignora frecuencia).</i>",
+        "",
+        "<b>💰 4. CON KELLY v2</b> (real + alpha funding)",
+        f"   CAGR base:     <b>{cagr_real:.2f}%</b>",
+        f"   Kelly boost:   <b>+{port_kelly_boost:.2f} pp</b>",
+        f"   <b>CAGR efectivo: {port_with_kelly:.2f}%</b>",
+        f"   <i>Lo que esperamos en LIVE con el sizing optimizado.</i>",
+        "",
+        f"<b>⭐ Mejor slot individual</b>",
+        f"   {best[5]:8} {best[6]:22} CAGR <b>{best[0]:+.1f}%</b> · WR {best[1]:.0f}% · {best[2]}T",
+        "",
+        f"<i>Total trades históricos (todos los slots): {sum(d[2] for d in data)}</i>",
+    ]
+    send("\n".join(lines), chat_id=chat_id)
+
+
+def cmd_ayuda(chat_id):
+    send(
+        "🤖 <b>SIGMA AGENT — Comandos</b>\n\n"
+        "/trades       Posiciones abiertas + señales en cola\n"
+        "/status       Estado del sistema (regime, gate, VPS)\n"
+        "/hoy          Trades del dia y P&L\n"
+        "/semana       Performance ultimos 7 dias\n"
+        "/modelos       Lista todos los modelos en produccion (26)\n"
+        "/nuevas        Estado de las 23 estrategias short nuevas (14-05)\n"
+        "/portfolio     3 vistas del CAGR ponderado (real/top/simple)\n"
+        "/fire          Tracker FIRE: progreso al objetivo de portafolio\n"
+        "/fire set N D  Configurar meta FIRE ($N en D días)\n"
+        f"/checklist    Checklist para activar live trading\n"
+        f"/salud        Health check del sistema\n"
+        "/performance  Performance live vs backtest\n"
+        "/pausa        Pausar/reanudar nuevas entradas [{pausa_txt}]\n\n"
+        "El bot responde en tiempo real 24/7 🚀",
+        chat_id=chat_id
+    )
+
+def handle_command(text, chat_id, signals, trades):
+    text    = (text or "").strip()
+    if not text.startswith("/"): return
+    parts   = text.split(None, 1)
+    cmd_raw = parts[0].split("@")[0].lower()
+    args    = parts[1].strip() if len(parts) > 1 else ""
+    print(f"[CMD] {cmd_raw} {args}", flush=True)
+    if cmd_raw in ("/trades", "/posiciones"):
+        cmd_trades(chat_id, signals, trades)
+    elif cmd_raw in ("/status", "/estado"):
+        cmd_status(chat_id, signals, trades)
+    elif cmd_raw in ("/hoy", "/today"):
+        cmd_hoy(chat_id, trades)
+    elif cmd_raw == "/semana":
+        cmd_semana(chat_id, trades)
+    elif cmd_raw in ("/modelos", "/models"):
+        cmd_modelos(chat_id, signals)
+    elif cmd_raw in ("/nuevas", "/new"):
+        cmd_nuevas(chat_id)
+    elif cmd_raw in ("/portfolio", "/port"):
+        cmd_portfolio(chat_id)
+    elif cmd_raw == "/fire":
+        # Distinguir /fire de /fire set ...
+        if args.lower().startswith("set"):
+            cmd_fire_set(chat_id, args[3:].strip())
+        else:
+            cmd_fire(chat_id)
+    elif cmd_raw in ("/modelo", "/model"):
+        cmd_modelo(chat_id, args, signals)
+    elif cmd_raw in ("/checklist", "/live"):
+        cmd_checklist(chat_id)
+    elif cmd_raw in ("/salud", "/health"):
+        cmd_salud(chat_id)
+    elif cmd_raw in ("/performance", "/perf"):
+        cmd_performance(chat_id, trades)
+    elif cmd_raw in ("/ayuda", "/help", "/start"):
+        cmd_ayuda(chat_id)
+    else:
+        send(
+            f"Comando no reconocido: <code>{cmd_raw}</code>\n"
+            "Escribe /ayuda para ver los comandos disponibles.",
+            chat_id=chat_id
+        )
+
+# ── Datos compartidos entre threads ──────────────────────────────────────────
+_shared      = {"signals": None, "trades": None}
+_shared_lock = threading.Lock()
+
+def command_listener():
+    """Thread independiente: escucha y despacha comandos."""
+    offset  = 0
+    updates = get_updates(offset=-1)
+    if updates:
+        offset = updates[-1]["update_id"] + 1
+    print("[CMD] Agente de comandos listo", flush=True)
+    while True:
+        try:
+            updates = get_updates(offset)
+            for upd in updates:
+                offset = upd["update_id"] + 1
+                msg    = upd.get("message") or upd.get("edited_message", {})
+                text   = msg.get("text", "")
+                cid    = str(msg.get("chat", {}).get("id", ""))
+                if text.startswith("/"):
+                    with _shared_lock:
+                        sig = _shared["signals"]
+                        trd = _shared["trades"]
+                    handle_command(text, cid, sig, trd)
+        except Exception as e:
+            print(f"[CMD] Error: {e}", flush=True)
+            time.sleep(5)
+
+# ── Briefings ─────────────────────────────────────────────────────────────────
+def morning_briefing(signals, trades):
+    now    = chile_now()
+    port   = (trades or {}).get("portfolio", {})
+    st     = (trades or {}).get("stats", {})
+    lr     = (trades or {}).get("live_readiness", {}) or {}
+    regime = (signals or {}).get("regime", "?")
+    models = (signals or {}).get("models", [])
+    cb     = (signals or {}).get("circuit_breaker", False)
+    eq     = port.get("equity", 10000)
+    ret    = port.get("return_pct", 0)
+    wr     = st.get("win_rate", 0)
+    total  = st.get("total", 0)
+    score  = lr.get("score", 0)
+    active = [m for m in models if m.get("signal") and m.get("slot", 0) > 0]
+    regime_desc = {
+        "BULL": "Tendencia alcista — condiciones favorables para LONG",
+        "BEAR": "Tendencia bajista — condiciones favorables para SHORT",
+        "RANGE": "Mercado lateral — mayor selectividad en entradas",
+    }.get(regime, regime)
+    reg_icon = {"BULL": "📈", "BEAR": "📉", "RANGE": "↔️"}.get(regime, "🔄")
+    cb_line  = "\n⛔ <b>CIRCUIT BREAKER ACTIVO</b> — sin nuevas operaciones" if cb else ""
+    if active:
+        lines = [
+            f"  • SLOT {m.get('slot')} | {'▲ LONG' if m.get('type')!='short' else '▼ SHORT'} "
+            f"{m.get('sym')} {m.get('tf','').upper()}\n"
+            f"    Entrada {fmt(m.get('price'))} | SL {fmt(m.get('sl'))} | TP {fmt(m.get('tp'))}\n"
+            f"    WR {m.get('wr',0):.0f}% | Grade {m.get('grade','?')}"
+            for m in active
+        ]
+        signal_block = "\n\n<b>Señales activas:</b>\n" + "\n\n".join(lines)
+    else:
+        signal_block = "\n\nSin señales activas al momento."
+    send_pin(
+        f"☀️ <b>Briefing Matutino — {now.strftime('%d %b %Y')}</b>\n\n"
+        f"{reg_icon} Regimen: <b>{regime}</b>\n{regime_desc}{cb_line}\n\n"
+        f"<b>Estado del Portfolio</b>\n"
+        f"Equity:    <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>\n"
+        f"Win Rate:  {medal(wr)} <code>{wr:.0f}%</code>  ({total} trades)\n"
+        f"Gate live: <code>{bar(score)}</code> {score}/100"
+        f"{signal_block}\n\n"
+        f"<i>Escribe /ayuda para ver todos los comandos 🤖</i>"
+    )
+    print(f"[{now.strftime('%H:%M')}] Briefing matutino enviado", flush=True)
+
+def evening_summary(signals, trades):
+    now   = chile_now()
+    port  = (trades or {}).get("portfolio", {})
+    st    = (trades or {}).get("stats", {})
+    hist  = (trades or {}).get("history", [])
+    lr    = (trades or {}).get("live_readiness", {}) or {}
+    eq    = port.get("equity", 10000); ret   = port.get("return_pct", 0)
+    maxdd = port.get("max_dd", 0);     wr    = st.get("win_rate", 0)
+    wins  = st.get("wins", 0);         losses= st.get("losses", 0)
+    total = st.get("total", 0);        avg_w = st.get("avg_win", 0)
+    avg_l = st.get("avg_loss", 0);     pf    = st.get("profit_factor", 0)
+    score = lr.get("score", 0)
+    today_str    = now.strftime("%Y-%m-%d")
+    today_trades = [t for t in hist if t.get("closed_at","").startswith(today_str)]
+    if today_trades:
+        day_pnl = 0; lines = []
+        for t in today_trades:
+            pnl = t.get("pnl_pct",0); day_pnl += pnl
+            icon = "✅" if pnl >= 0 else "❌"
+            rsn  = {"TP_HIT":"TP","SL_HIT":"SL","REGIME_CHANGE":"Regimen","MANUAL":"Manual"}.get(t.get("reason",""),"?")
+            lines.append(f"  {icon} {t.get('sym')} {t.get('tf','').upper()}  <code>{pnl:+.2f}%</code>  [{rsn}]")
+        today_block = (
+            f"\n\n<b>Trades de hoy ({len(today_trades)}):</b>\n" + "\n".join(lines) +
+            f"\n{'📈' if day_pnl>=0 else '📉'} P&amp;L del dia: <code>{day_pnl:+.2f}%</code>"
+        )
+    else:
+        today_block = "\n\nSin trades cerrados hoy."
+    best  = max(hist, key=lambda t: t.get("pnl_pct",0), default=None) if hist else None
+    worst = min(hist, key=lambda t: t.get("pnl_pct",0), default=None) if hist else None
+    records = ""
+    if best:  records += f"\n🏆 Mejor: {best.get('sym')} {best.get('tf','').upper()} <code>{best.get('pnl_pct',0):+.2f}%</code>"
+    if worst: records += f"\n💀 Peor:  {worst.get('sym')} {worst.get('tf','').upper()} <code>{worst.get('pnl_pct',0):+.2f}%</code>"
+    send(
+        f"🌙 <b>Resumen Diario — {now.strftime('%d %b %Y')}</b>\n\n"
+        f"<b>Portfolio</b>\n"
+        f"Equity:         <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>\n"
+        f"Win Rate:       {medal(wr)} <code>{wr:.0f}%</code>  ({wins}W / {losses}L / {total} trades)\n"
+        f"Avg Win/Loss:   <code>+{avg_w:.2f}%</code> / <code>{avg_l:.2f}%</code>\n"
+        f"Profit Factor:  <code>{pf:.2f}</code>  Max DD: <code>{maxdd:.1f}%</code>\n"
+        f"Gate capital:   <code>{bar(score)}</code> {score}/100"
+        f"{today_block}{records}"
+    )
+    print(f"[{now.strftime('%H:%M')}] Resumen diario enviado", flush=True)
+
+def weekly_report(signals, trades):
+    now   = chile_now()
+    port  = (trades or {}).get("portfolio", {})
+    st    = (trades or {}).get("stats", {})
+    hist  = (trades or {}).get("history", [])
+    lr    = (trades or {}).get("live_readiness", {}) or {}
+    eq    = port.get("equity", 10000); ret  = port.get("return_pct", 0)
+    maxdd = port.get("max_dd", 0);     wr   = st.get("win_rate", 0)
+    wins  = st.get("wins", 0);         losses=st.get("losses", 0)
+    total = st.get("total", 0);        avg_w= st.get("avg_win", 0)
+    avg_l = st.get("avg_loss", 0);     pf   = st.get("profit_factor", 0)
+    score = lr.get("score", 0);        cagr = port.get("cagr_live")
+    week_ago    = (now - timedelta(days=7)).strftime("%Y-%m-%d")
+    week_trades = [t for t in hist if t.get("closed_at","") >= week_ago]
+    wt_pnl  = sum(t.get("pnl_pct",0) for t in week_trades)
+    wt_wins = sum(1 for t in week_trades if t.get("pnl_pct",0) >= 0)
+    wt_wr   = (wt_wins/len(week_trades)*100) if week_trades else 0
+    chart   = "\n".join(
+        f"  {'🟢' if t.get('pnl_pct',0)>=0 else '🔴'} "
+        f"{t.get('sym'):<4} {t.get('tf','').upper():<4} "
+        f"{'█'*min(int(abs(t.get('pnl_pct',0))*2),10):<10} "
+        f"<code>{t.get('pnl_pct',0):+.2f}%</code>"
+        for t in week_trades[-7:]
+    ) or "  Sin trades esta semana."
+    cagr_line = f"\nCAGR live: <code>{cagr:+.1f}%</code>" if cagr else ""
+    send(
+        f"📅 <b>Reporte Semanal</b>\n\n"
+        f"<b>Esta semana</b>\n"
+        f"Trades: {len(week_trades)} | P&amp;L: <code>{wt_pnl:+.2f}%</code> | WR: <code>{wt_wr:.0f}%</code>\n\n"
+        f"<b>Rendimiento:</b>\n{chart}\n\n"
+        f"<b>Portfolio acumulado</b>\n"
+        f"Equity:       <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>{cagr_line}\n"
+        f"Win Rate:     {medal(wr)} <code>{wr:.0f}%</code>  ({wins}W / {losses}L)\n"
+        f"Profit Factor: <code>{pf:.2f}</code>  Max DD: <code>{maxdd:.1f}%</code>\n"
+        f"Gate capital: <code>{bar(score)}</code> {score}/100\n\n"
+        f"<i>El sistema sigue aprendiendo. A por la proxima semana 💪</i>"
+    )
+    print(f"[{now.strftime('%H:%M')}] Reporte semanal enviado", flush=True)
+
+def silent_ping(signals, trades):
+    now    = chile_now()
+    port   = (trades or {}).get("portfolio", {})
+    st     = (trades or {}).get("stats", {})
+    lr     = (trades or {}).get("live_readiness", {}) or {}
+    regime = (signals or {}).get("regime", "?")
+    eq     = port.get("equity", 10000)
+    ret    = port.get("return_pct", 0)
+    wr     = st.get("win_rate", 0)
+    score  = lr.get("score", 0)
+    send(
+        f"📊 <b>Update</b> — {now.strftime('%d %b %H:%M')}\n"
+        f"Equity: <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>\n"
+        f"WR: <code>{wr:.0f}%</code> | Regimen: {regime} | Gate: {score}/100",
+        silent=True
+    )
+
+# ── MAIN ─────────────────────────────────────────────────────────────────────
+def _signal_explainer(m, regime, hist_trades, now_str):
+    """Contexto inteligente para una nueva senal."""
+    try:
+        sym=m.get("sym","?"); tf=m.get("tf","?").upper()
+        strategy=m.get("strategy","?"); wr=m.get("wr",0)
+        cagr=m.get("cagr",0); grade=m.get("grade","?")
+        ens=m.get("ensemble_count",1); ens_src=m.get("ensemble_detail","")
+        ev=m.get("ev"); htf_ok=not m.get("htf_penalty",False)
+        mc_conf=m.get("mc_confidence"); isL=m.get("type","long")!="short"
+        dir_txt="LONG" if isL else "SHORT"
+
+        past=[t for t in hist_trades
+              if t.get("sym")==sym and t.get("tf","").lower()==tf.lower()
+              and t.get("strategy","")==strategy]
+        n_past=len(past); wins_past=sum(1 for t in past if t.get("pnl_pct",0)>0)
+        live_wr=round(wins_past/n_past*100,0) if n_past>0 else None
+
+        lines=[]
+        regime_ctx={"BEAR":f"Mercado bajista — favorece {dir_txt}.",
+                    "BULL":f"Mercado alcista — favorece {dir_txt}.",
+                    "RANGE":"Mercado lateral — ser selectivo."}.get(regime,"")
+        if regime_ctx: lines.append(f"Contexto: {regime_ctx}")
+
+        if grade in ("A+","A") and wr>=65:
+            lines.append(f"Modelo de alta conviccion: {wr:.0f}% WR backtest, CAGR {cagr:+.1f}%.")
+        if ens>=2 and ens_src:
+            src_map={"price":"precio","momentum":"momentum","oscillator":"osciladores",
+                     "volume":"volumen","crypto":"señales crypto","statistical":"estadistica"}
+            srcs=[src_map.get(s,s) for s in ens_src.split(",")[:3]]
+            lines.append(f"{ens} fuentes distintas confirman: {', '.join(srcs)}.")
+        if htf_ok: lines.append("Timeframe mayor confirma la direccion.")
+        if mc_conf and mc_conf>=85: lines.append(f"Monte Carlo {mc_conf:.0f}% de confianza estadistica.")
+        if n_past>=3:
+            status="consistente con backtest" if live_wr and live_wr>=wr-5 else "monitorear decay"
+            lines.append(f"En live: {wins_past}/{n_past} trades ({live_wr:.0f}% WR) — {status}.")
+        elif n_past>0: lines.append(f"Primeras {n_past} operaciones en live.")
+        else: lines.append("Primera vez en produccion — modelo nuevo.")
+        if ev is not None and ev>0: lines.append(f"Valor esperado: {ev:+.1f}% por trade.")
+        if not lines: return None
+        return (f"<b>Contexto de la senal</b>\n\n"
+                +chr(10).join(f"• {l}" for l in lines)
+                +f"\n\n<i>{sym} {tf} · {strategy} · {now_str}</i>")
+    except Exception: return None
+
+
+_last_dd_alert = 0  # evitar spam de alertas
+
+def _check_drawdown_alert(trades_data, send_fn):
+    """Alerta cuando el drawdown supera umbrales criticos."""
+    global _last_dd_alert
+    try:
+        import time as _t
+        port = trades_data.get("portfolio",{})
+        max_dd = abs(port.get("max_dd_pct", port.get("max_dd",0)))
+        equity = port.get("equity",10000)
+        ret    = port.get("return_pct",0)
+        if max_dd < 5 or (_t.time() - _last_dd_alert) < 3600: return
+
+        st = trades_data.get("stats",{})
+        wr = st.get("win_rate",0)
+
+        if max_dd >= 15:
+            nivel="CRITICO"; color="🔴"; accion="Reducir exposicion. Evaluar pause manual del sistema."
+        elif max_dd >= 10:
+            nivel="ALTO"; color="🟠"; accion="El circuit breaker se activa a 8% de perdida en 5 dias. Vigilar."
+        elif max_dd >= 5:
+            nivel="MODERADO"; color="🟡"; accion="Normal para el sistema. Mantener posiciones actuales."
+        else:
+            return
+
+        send_fn(
+            f"{color} <b>Alerta de Drawdown — {nivel}</b>\n\n"
+            f"Max Drawdown actual: <code>{max_dd:.1f}%</code>\n"
+            f"Equity: <code>${equity:,.2f}</code> ({ret:+.1f}% total)\n"
+            f"Win Rate live: <code>{wr:.0f}%</code>\n\n"
+            f"<b>Plan de accion:</b> {accion}\n\n"
+            f"<i>El sistema continua operando con los filtros de riesgo activos.</i>",
+            silent=(max_dd < 10)
+        )
+        _last_dd_alert = _t.time()
+    except Exception: pass
+
+
+
+_last_decay_alert = {}
+
+def _check_model_decay(trades, send_fn):
+    """Alerta cuando un modelo activo esta perdiendo consistencia en live."""
+    try:
+        import sqlite3 as _sq, time as _t
+        hist = (trades or {}).get('history', [])
+        if len(hist) < 5:
+            return
+        by_model = {}
+        for t in hist[-50:]:
+            key = f"{t.get('sym','?')}_{t.get('tf','?')}_{t.get('strategy','?')}"
+            by_model.setdefault(key, []).append(t.get('pnl_pct', 0))
+
+        alerts = []
+        now_ts = _t.time()
+        for key, pnls in by_model.items():
+            if len(pnls) < 5:
+                continue
+            last5 = pnls[-5:]
+            if all(p <= 0 for p in last5):
+                last_alert = _last_decay_alert.get(key, 0)
+                if now_ts - last_alert > 14400:
+                    sym, tf, strat = key.split('_', 2)
+                    wr_live = round(sum(1 for p in pnls if p > 0) / len(pnls) * 100, 0)
+                    alerts.append((key, sym, tf, strat, wr_live, len(pnls)))
+                    _last_decay_alert[key] = now_ts
+            else:
+                try:
+                    conn = _sq.connect('/opt/sigma/models/sigma.db')
+                    sym2, tf2, strat2 = key.split('_', 2)
+                    row = conn.execute(
+                        'SELECT MAX(wr) FROM runs WHERE symbol=? AND tf=? AND strategy=?',
+                        (sym2 + '/USDT' if '/' not in sym2 else sym2, tf2, strat2)
+                    ).fetchone()
+                    conn.close()
+                    if row and row[0]:
+                        wr_bt = row[0]
+                        wr_live2 = sum(1 for p in pnls if p > 0) / len(pnls) * 100
+                        if wr_live2 < wr_bt - 20 and len(pnls) >= 8:
+                            last_alert = _last_decay_alert.get(key + '_wr', 0)
+                            if now_ts - last_alert > 21600:
+                                sym3, tf3, strat3 = key.split('_', 2)
+                                alerts.append((key + '_wr', sym3, tf3, strat3,
+                                               round(wr_live2, 0), len(pnls)))
+                                _last_decay_alert[key + '_wr'] = now_ts
+                except Exception:
+                    pass
+
+        for alert_key, sym, tf, strat, wr_live, n in alerts:
+            send_fn(
+                f"⚠️ <b>Model Decay Detectado</b>\n\n"
+                f"Modelo: <code>{sym} {tf} | {strat}</code>\n"
+                f"WR live: <code>{wr_live:.0f}%</code> en {n} trades\n\n"
+                f"El sistema ha priorizado reoptimizar este activo.\n"
+                f"<i>Accion: buscar sucesor con mayor robustez OOS</i>",
+                silent=True
+            )
+    except Exception:
+        pass
+
+def _rich_trade_card(t, port):
+    """Genera tarjeta narrativa rica para un trade cerrado."""
+    try:
+        import sqlite3 as _sq
+        from datetime import datetime as _dtt
+
+        sym      = t.get('sym', '?')
+        tf       = t.get('tf', '?').upper()
+        strategy = t.get('strategy', '?')
+        direction= t.get('direction', 'long')
+        entry    = t.get('entry', 0)
+        exit_p   = t.get('exit_price', 0)
+        pnl      = t.get('pnl_pct', 0)
+        reason   = t.get('reason', '')
+        grade    = t.get('grade', '?')
+        wr_bt    = t.get('wr', 0)
+        kelly    = t.get('kelly_pct', 3.3)
+        eq       = t.get('equity_after') or port.get('equity', 0)
+
+        # Duracion del trade
+        try:
+            op   = _dtt.fromisoformat(t.get('opened_at', '')[:19])
+            cl   = _dtt.fromisoformat(t.get('closed_at', '')[:19])
+            secs = max(0, (cl - op).total_seconds())
+            hrs  = int(secs // 3600)
+            mins = int((secs % 3600) // 60)
+            dur  = (str(hrs) + 'h ' + str(mins) + 'm') if hrs > 0 else (str(mins) + 'm')
+        except Exception:
+            dur = '?'
+
+        # Stats live del modelo desde DB
+        live_str = ''
+        try:
+            conn = _sq.connect('/opt/sigma/models/sigma.db')
+            row = conn.execute(
+                'SELECT wins, losses FROM model_live_stats WHERE sym=? AND tf=? AND strategy=?',
+                (sym, tf.lower(), strategy)
+            ).fetchone()
+            conn.close()
+            if row and (row[0] + row[1]) >= 3:
+                w, l = row; total = w + l
+                lwr  = round(w / total * 100, 0)
+                diff = lwr - wr_bt
+                if diff >= -5:
+                    lv = 'consistente con backtest'
+                elif diff >= -15:
+                    lv = 'ligeramente bajo backtest'
+                else:
+                    lv = 'muy bajo backtest'
+                live_str = '\nLive: ' + str(w) + '/' + str(total) + ' (' + str(int(lwr)) + '% WR) — ' + lv
+        except Exception:
+            pass
+
+        # Icono y titulo por razon
+        if reason == 'TP_HIT':
+            icon = '✅'; title = 'TAKE PROFIT'
+        elif reason == 'SL_HIT':
+            icon = '🔴'; title = 'STOP LOSS'
+        elif reason == 'MANUAL':
+            icon = '🔵'; title = 'CIERRE MANUAL'
+        else:
+            icon = '⬜'; title = reason or 'CERRADO'
+
+        arrow = '▲ LONG' if direction == 'long' else '▼ SHORT'
+        pnl_s = ('+' if pnl >= 0 else '') + str(round(pnl, 2)) + '%'
+
+        msg = (
+            icon + ' <b>' + title + ' — ' + sym + ' ' + tf + '</b>\n\n'
+            + arrow + ' | <code>' + strategy + '</code> (Grade ' + str(grade) + ')\n'
+            + 'Entrada: <code>' + str(round(entry, 4)) + '</code> → Salida: <code>' + str(round(exit_p, 4)) + '</code>\n'
+            + 'Duración: <b>' + dur + '</b>\n\n'
+            + 'P&amp;L: <code>' + pnl_s + '</code>  Kelly: <code>' + str(round(kelly, 1)) + '%</code>\n'
+            + 'WR backtest: <code>' + str(int(wr_bt)) + '%</code>' + live_str + '\n\n'
+            + 'Equity: <code>$' + '{:,.2f}'.format(eq) + '</code>'
+        )
+        return msg
+    except Exception:
+        return None
+
+
+_last_equity_alert = 0
+
+def _equity_curve_monitor(portfolio, send_fn):
+    """Compara equity live vs esperada por CAGR de los mejores modelos."""
+    global _last_equity_alert
+    try:
+        import sqlite3 as _sq, time as _t2
+        from datetime import datetime as _dt3, date as _date3
+        if _t2.time() - _last_equity_alert < 43200:
+            return
+        port    = portfolio or {}
+        equity  = port.get('equity', 0)
+        initial = port.get('initial_capital', 10000)
+        start_s = port.get('start_date', '')
+        if not start_s or equity <= 0 or initial <= 0:
+            return
+        try:
+            start = _dt3.fromisoformat(start_s[:10]).date()
+            days  = (_date3.today() - start).days
+        except Exception:
+            return
+        if days < 14:
+            return
+        conn = _sq.connect('/opt/sigma/models/sigma.db')
+        row  = conn.execute(
+            'SELECT AVG(c) FROM (SELECT cagr as c FROM runs WHERE cagr > 0 ORDER BY cagr DESC LIMIT 20)'
+        ).fetchone()
+        conn.close()
+        if not row or not row[0]:
+            return
+        exp_cagr   = min(float(row[0]), 120)
+        exp_equity = initial * ((1 + exp_cagr / 100) ** (days / 365))
+        ratio      = equity / exp_equity
+        if ratio < 0.70:
+            gap = round((1 - ratio) * 100, 1)
+            send_fn(
+                '📉 <b>Equity Curve Monitor</b>\n\n'
+                'Equity actual:   <code>$' + '{:,.2f}'.format(equity) + '</code>\n'
+                'Equity esperada: <code>$' + '{:,.2f}'.format(exp_equity) + '</code>\n'
+                'Rendimiento: <code>' + str(round(ratio * 100, 0)) + '%</code> del esperado (' + str(gap) + '% bajo)\n\n'
+                'CAGR modelos DB: <code>' + str(round(exp_cagr, 1)) + '%</code> | Días operando: <code>' + str(days) + '</code>\n\n'
+                '<b>Acción:</b> Revisar decay de modelos y condiciones del mercado.',
+                silent=True
+            )
+            _last_equity_alert = _t2.time()
+    except Exception:
+        pass
+
+
+def _paper_gate_label(sym, tf, strategy):
+    """Retorna etiqueta si el modelo esta en paper gate."""
+    try:
+        import json as _jj
+        from pathlib import Path as _P
+        gp = _P('/opt/sigma/results/paper_gate.json')
+        if not gp.exists():
+            return ''
+        gate = _jj.loads(gp.read_text())
+        key  = sym + '_' + tf + '_' + strategy
+        e    = gate.get(key)
+        if e and e.get('remaining', 0) > 0:
+            rem = e['remaining']
+            s   = 's' if rem > 1 else ''
+            return '\n🔬 <b>NUEVO</b> — ' + str(rem) + ' paper trade' + s + ' restante' + s
+    except Exception:
+        pass
+    return ''
+
+
+def _paper_gate_update(sym, tf, strategy, won):
+    """Actualiza paper gate tras un trade. Envia resultado cuando completa."""
+    try:
+        import json as _jj
+        from pathlib import Path as _P
+        gp = _P('/opt/sigma/results/paper_gate.json')
+        if not gp.exists():
+            return
+        gate = _jj.loads(gp.read_text())
+        key  = sym + '_' + tf + '_' + strategy
+        if key not in gate:
+            return
+        e = gate[key]
+        e.setdefault('trades', []).append(1 if won else 0)
+        e['remaining'] = max(0, e.get('remaining', 0) - 1)
+        if e['remaining'] == 0:
+            tl   = e.get('trades', [])
+            wr_p = round(sum(tl) / len(tl) * 100, 0) if tl else 0
+            if wr_p >= 50:
+                send(
+                    '✅ <b>Modelo Validado en Live</b>\n\n'
+                    '<code>' + sym + ' ' + tf + ' | ' + strategy + '</code>\n'
+                    'WR paper: <code>' + str(int(wr_p)) + '%</code> en ' + str(len(tl)) + ' trades\n\n'
+                    'Superó el paper gate. Operando con capital real.',
+                    silent=True
+                )
+            else:
+                send(
+                    '⚠️ <b>Modelo No Validado</b>\n\n'
+                    '<code>' + sym + ' ' + tf + ' | ' + strategy + '</code>\n'
+                    'WR paper: <code>' + str(int(wr_p)) + '%</code> en ' + str(len(tl)) + ' trades\n\n'
+                    'Bajo el umbral (50%). El trainer priorizara reoptimizacion.',
+                    silent=True
+                )
+            del gate[key]
+        gp.write_text(_jj.dumps(gate, indent=2))
+    except Exception:
+        pass
+
+
+def main():
+    print("SIGMA Notifier Pro v3.0 — iniciando", flush=True)
+    send(
+        "🤖 <b>SIGMA Notifier Pro v3.0 — Online</b>\n"
+        "Agente de comandos activo 🚀\n\n"
+        "Escribe /ayuda para ver todos los comandos\n\n"
+        f"<i>{chile_now().strftime('%d/%m/%Y %H:%M')} (Chile)</i>",
+        silent=True
+    )
+
+    # Arrancar thread de comandos (daemon: muere con el proceso principal)
+    threading.Thread(target=command_listener, daemon=True).start()
+
+    seen_signals      = set()
+    # Cargar seen_trades persistidos a disco
+    # Si no existe el archivo, hacer preload desde history (primer arranque)
+    seen_trades = set()
+    _SEEN_FILE = '/opt/sigma/results/reports/notifier_seen_trades.json'
+    try:
+        import json as _j_init, os as _os_init
+        if _os_init.path.exists(_SEEN_FILE):
+            seen_trades = set(_j_init.load(open(_SEEN_FILE)))
+            print(f"[INIT] Cargados {len(seen_trades)} trades vistos desde disco", flush=True)
+        else:
+            # Primer arranque: marcar todo history como visto
+            _state = _j_init.load(open('/opt/sigma/results/trade_state.json'))
+            for _t in _state.get('history', []):
+                _key = f"{_t.get('sym')}_{_t.get('tf')}_{_t.get('closed_at','')}"
+                seen_trades.add(_key)
+            print(f"[INIT] Primer arranque: preload {len(seen_trades)} trades como vistos", flush=True)
+    except Exception as _e:
+        print(f"[INIT] Error cargando seen_trades: {_e}", flush=True)
+    # Persist seen_signals para sobrevivir restart sin spam
+    _SEEN_SIG_FILE = '/opt/sigma/results/seen_signals.json'
+    try:
+        import json as _jss, os as _oss
+        if _oss.path.exists(_SEEN_SIG_FILE):
+            seen_signals = set(_jss.loads(open(_SEEN_SIG_FILE).read()))
+            print(f"[INIT] seen_signals cargado de disco: {len(seen_signals)}", flush=True)
+    except Exception as _ess:
+        print(f"[INIT] err seen_signals: {_ess}", flush=True)
+    last_trade_notify = 0
+    prev_regime       = None
+    cb_notified       = False
+    prev_readiness    = 0
+    last_6h           = 0
+    last_morning      = None
+    last_evening      = None
+    last_weekly       = None
+
+    while True:
+        now     = chile_now()
+        signals = fetch("/api/signals")
+        trades  = fetch("/api/trades")
+        hour    = now.hour; minute = now.minute
+        weekday = now.weekday(); today = now.date()
+
+        # Actualizar datos compartidos para el thread de comandos
+        with _shared_lock:
+            _shared["signals"] = signals
+            _shared["trades"]  = trades
+
+        if hour == 8 and minute < 1 and last_morning != today:
+            morning_briefing(signals, trades); last_morning = today
+
+        if hour == 20 and minute < 1 and last_evening != today:
+            evening_summary(signals, trades); last_evening = today
+
+        if weekday == 0 and hour == 9 and minute < 1 and last_weekly != today:
+            weekly_report(signals, trades); last_weekly = today
+
+        try:
+            if trades: _equity_curve_monitor(trades.get("portfolio", {}), send)
+        except Exception: pass
+        now_ts = time.time()
+        if now_ts - last_6h > 43200 and trades:
+            silent_ping(signals, trades); last_6h = now_ts
+
+        if signals:
+            regime = signals.get("regime", "?")
+            models = signals.get("models", [])
+            cb     = signals.get("circuit_breaker", False)
+
+            if cb and not cb_notified:
+                send("⛔ <b>CIRCUIT BREAKER ACTIVADO</b>\n"
+                     "Perdida >8% en 5 dias — sin nuevas operaciones 48h.\n"
+                     "El sistema protege el capital automaticamente.")
+                cb_notified = True
+            elif not cb:
+                cb_notified = False
+
+            if prev_regime and regime != prev_regime and regime not in ("LOADING","?"):
+                icons = {"BULL":"📈","BEAR":"📉","RANGE":"↔️"}
+                desc  = {"BULL":"Mercado alcista. Sistema prioriza LONG.",
+                         "BEAR":"Mercado bajista. Sistema prioriza SHORT.",
+                         "RANGE":"Mercado lateral. Mayor selectividad."}.get(regime,"")
+                send(f"{icons.get(regime,'🔄')} <b>Cambio de Regimen</b>\n"
+                     f"{prev_regime} → <b>{regime}</b>\n{desc}", silent=True)
+            if regime not in ("LOADING","?"): prev_regime = regime
+
+            open_now = []
+            if trades:
+                open_now = trades.get("open_trades", trades.get("open", []))
+            MAX_SLOTS    = 3  # subido 2026-05-12 (matches MAX_OPEN_SLOTS=3)
+            slots_llenos = len(open_now) >= MAX_SLOTS
+
+            curr_active = {}; curr_info = {}
+            for m in models:
+                if not m.get("signal"): continue
+                # Skip si ya tiene trade abierto o esta en cooldown — no re-notificar
+                if m.get("has_open_trade"): continue
+                grade = m.get("grade","D")
+                key   = f"{m.get('sym')}_{m.get('tf')}"
+                if m.get("slot",0) > 0:
+                    curr_active[key] = m
+                elif grade in ("A+","A") and slots_llenos:
+                    curr_info[key] = m
+
+            for key in set(curr_active) - seen_signals:
+                m     = curr_active[key]
+                isL   = m.get("type") != "short"
+                arrow = "▲ LONG" if isL else "▼ SHORT"
+                rr    = ""
+                ev    = m.get("ev")
+                if m.get("sl") and m.get("tp") and m.get("price"):
+                    rn  = abs(m["tp"]-m["price"]) / max(abs(m["price"]-m["sl"]),1e-6)
+                    rr  = f"\nRatio RR: <code>{rn:.1f}:1</code>"
+                ev_s  = f"\nValor Esperado: <code>{ev:+.1f}%</code>" if ev is not None else ""
+                ens   = m.get("ensemble_count",1)
+                ens_s    = f"\nEnsemble: {ens} modelos votaron esta señal" if ens > 1 else ""
+                paper_lbl = _paper_gate_label(m.get("sym",""), m.get("tf",""), m.get("strategy",""))
+                htf   = "\n⚠️ HTF no confirma — señal de menor confianza" if m.get("htf_penalty") else ""
+                dd_k  = m.get("dd_kelly_mult",1)
+                dd_s  = f"\n📉 Kelly reducido x{dd_k:.2f} por drawdown" if dd_k < 1 else ""
+                send(
+                    f"⚡ <b>NUEVA SEÑAL — SLOT {m.get('slot')}</b>\n\n"
+                    f"{arrow} <b>{m.get('sym')} {m.get('tf','').upper()}</b>\n\n"
+                    f"Estrategia: <code>{m.get('strategy','?')}</code>\n"
+                    f"Grade: <b>{m.get('grade','?')}</b> | WR historico: <code>{m.get('wr',0):.0f}%</code>\n\n"
+                    f"Entrada: <code>{fmt(m.get('price'))}</code>\n"
+                    f"Stop Loss: <code>{fmt(m.get('sl'))}</code>\n"
+                    f"Take Profit: <code>{fmt(m.get('tp'))}</code>{rr}\n"
+                    f"Kelly: <code>{m.get('eff_risk_pct','?')}%</code> del capital{ev_s}{ens_s}{htf}{dd_s}\n\n"
+                    f"Regimen: <b>{regime}</b> | {now.strftime('%H:%M')} (Chile)"
+                    f"{paper_lbl}"
+                )
+                # Signal Explainer — contexto inteligente
+                try:
+                    _hist = trades.get("history",[]) if trades else []
+                    _exp = _signal_explainer(m, regime, _hist, now.strftime("%H:%M"))
+                    if _exp: send(_exp, silent=True)
+                except Exception: pass
+
+            for key in set(curr_info) - seen_signals - set(curr_active):
+                m      = curr_info[key]
+                arrow  = "LONG" if m.get("type") != "short" else "SHORT"
+                rr_str = ""
+                if m.get("sl") and m.get("tp") and m.get("price"):
+                    rn     = abs(m["tp"]-m["price"]) / max(abs(m["price"]-m["sl"]),1e-6)
+                    rr_str = "  RR " + str(round(rn,1)) + ":1"
+                slots_txt = ", ".join(
+                    op.get("sym","") + " " + op.get("tf","").upper() for op in open_now
+                ) if open_now else "slots llenos"
+                send(
+                    "👁 <b>SEÑAL INFORMATIVA</b> — slots llenos (3/3)\n\n"
+                    + arrow + " <b>" + m.get("sym","") + " " + m.get("tf","").upper() + "</b>\n\n"
+                    + "Estrategia: <code>" + m.get("strategy","?") + "</code>\n"
+                    + "Grade: <b>" + m.get("grade","?") + "</b>  WR: <code>" + str(int(m.get("wr",0))) + "%</code>\n\n"
+                    + "Entrada: <code>" + fmt(m.get("price")) + "</code>  "
+                    + "SL: <code>" + fmt(m.get("sl")) + "</code>  "
+                    + "TP: <code>" + fmt(m.get("tp")) + "</code>" + rr_str + "\n\n"
+                    + "⛔ <b>NO OPERAR</b> — Ya tenemos 2 posiciones activas\n"
+                    + "<i>(" + slots_txt + ")</i>",
+                    silent=True
+                )
+            seen_signals = set(curr_active) | set(curr_info)
+            # Persistir seen_signals a disco para sobrevivir restart
+            try:
+                with open('/opt/sigma/results/seen_signals.json','w') as _fps:
+                    import json as _jsv
+                    _jsv.dump(list(seen_signals), _fps)
+            except Exception: pass
+
+        if trades:
+            hist  = trades.get("history", [])
+            lr    = trades.get("live_readiness", {}) or {}
+            port  = trades.get("portfolio", {})
+            nuevos = []
+            for t in hist[:5]:  # API devuelve reversed (mas nuevo primero)
+                key = f"{t.get('sym')}_{t.get('tf')}_{t.get('closed_at','')}"
+                if key not in seen_trades:
+                    seen_trades.add(key); nuevos.append(t)
+            # Persistir seen_trades a disco si hubo cambios
+            if nuevos:
+                try:
+                    import json as _j_sv
+                    with open(_SEEN_FILE, 'w') as _fsv:
+                        _j_sv.dump(list(seen_trades), _fsv)
+                except Exception: pass
+            if nuevos and (now_ts - last_trade_notify) >= 3600:
+                last_trade_notify = now_ts
+                t      = nuevos[0]  # mas reciente con hist[:5]
+                pnl    = t.get("pnl_pct",0)
+                reason = t.get("reason","")
+                eq     = t.get("equity_after") or port.get("equity",0)
+                kelly  = t.get("kelly_pct",0)
+                # Trade Narrative — reemplaza la notificacion simple
+                try:
+                    _card = _rich_trade_card(t, port)
+                    if _card:
+                        send(_card, silent=(reason != "TP_HIT"))
+                except Exception:
+                    pass
+                if False:  # desactivado: sustituido por _rich_trade_card
+                    pass
+                # Trade Journal — analisis narrativo del trade
+                try:
+                    import subprocess as _sp, json as _jj
+                    _td = {**t, "equity_after": eq, "kelly_pct": kelly}
+                    _sp.Popen(
+                        ["/opt/sigma_env/bin/python3",
+                         "/opt/sigma/engine/live/trade_journal.py",
+                         _jj.dumps(_td)],
+                        stdout=_sp.DEVNULL, stderr=_sp.DEVNULL
+                    )
+                except Exception as _je:
+                    print(f"[JOURNAL] {_je}", flush=True)
+
+            score = lr.get("score",0)
+            if score > 0 and score != prev_readiness:
+                if score >= 85 and prev_readiness < 85:
+                    send_pin(
+                        f"🚀 <b>HITO: Sistema listo para capital real</b>\n\n"
+                        f"Gate: <code>{bar(score)}</code> {score}/100\n"
+                        f"Todos los checks de validacion superados.\n\n"
+                        f"El sistema puede conectarse a la API de Binance "
+                        f"para operar con capital real.\n\n"
+                        f"<b>Este es el momento que estuvimos construyendo.</b> 🎯"
+                    )
+                elif score > prev_readiness and score % 10 == 0:
+                    send(
+                        f"📊 Gate capital real: <code>{bar(score)}</code> {score}/100\n"
+                        f"{lr.get('trades_done',0)} trades cerrados | {now.strftime('%H:%M')}",
+                        silent=True
+                    )
+                prev_readiness = score
+
+        # 2026-05-14: chequeo FIRE milestone cada ciclo (notifica al cruzar 25/50/75/100%)
+        try:
+            fire_check_milestone()
+        except Exception as _e_fire:
+            print(f"[FIRE CHECK ERROR] {_e_fire}", flush=True)
+
+        time.sleep(INTERVAL)
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        send("🔴 <b>SIGMA Notifier detenido.</b>", silent=True)
+        print("\nDetenido.")

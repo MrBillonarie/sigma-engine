@@ -1,0 +1,71 @@
+{
+  "symbol": "LTC/USDT",
+  "tf": "15m",
+  "strategy": "psar_flip",
+  "params": {
+    "sl_mult": 3.2,
+    "tp_mult": 1.5,
+    "cooldown": 5,
+    "rsi_w_thr": 54,
+    "psar_mult": 2.0
+  },
+  "risk_pct": 4.9,
+  "metrics_is": {
+    "trades": 101,
+    "wr": 80.2,
+    "cagr": 12.5,
+    "dd": -25.7,
+    "pf": 1.46,
+    "trades_year": 14.9
+  },
+  "metrics_oos": {
+    "trades": 25,
+    "wr": 72.0,
+    "cagr": 15.8,
+    "dd": -26.0,
+    "pf": 1.6,
+    "trades_year": 14.8
+  },
+  "oos_days": 616,
+  "saved_at": "2026-05-28 15:18:08.285300",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 71.3,
+      "median": 56.7,
+      "ic95_lo": -69.8,
+      "ic95_hi": 421.7,
+      "ic80_lo": -43.5,
+      "ic80_hi": 258.2,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 15,
+      "positive": 11,
+      "pct_positive": 73.3,
+      "avg_cagr": 55.2,
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "passed_steps": 2,
+    "max_steps": 2,
+    "validated_at": "2026-05-28 15:18:10.303173"
+  },
+  "mc": {
+    "mc_cagr_p05": -34.3,
+    "mc_cagr_p50": 6.4,
+    "mc_cagr_p95": 72.5,
+    "mc_dd_p50": -41.7,
+    "mc_dd_p95": -23.7,
+    "mc_confidence": 59.0,
+    "mc_sims": 1000
+  },
+  "wft": {
+    "oos_win_rate": 75.0,
+    "n_windows": 4,
+    "positive_windows": 3,
+    "avg_cagr_oos": 47.52,
+    "avg_cagr_pos": 70.0,
+    "verdict": "PASS",
+    "date": "2026-06-07 02:12"
+  }
+}

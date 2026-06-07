@@ -1,0 +1,35 @@
+# SIGMA ENGINE — .gitignore
+# Binarios grandes
+ibkr/gateway/jars/
+ibkr/gateway/*.jar
+*.jar
+*.war
+*.zip
+*.tar.gz
+*.tar.bz2
+
+# Datos y modelos (se respaldan por separado en /backups)
+models/data_*.csv
+models/*.db
+models/*.pkl
+models/*.h5
+*.db
+*.sqlite
+*.sqlite3
+results/lsr.db
+
+# Logs grandes
+results/reports/*.log
+ibkr/logs/*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+sigma_env/
+
+# Temporales
+*.tmp
+*.bak
+.DS_Store

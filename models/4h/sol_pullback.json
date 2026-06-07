@@ -1,0 +1,51 @@
+{
+  "symbol": "SOL/USDT",
+  "tf": "4h",
+  "strategy": "pullback",
+  "params": {
+    "sl_mult": 2.1,
+    "tp_mult": 4.0,
+    "cooldown": 7,
+    "rsi_w_thr": 49,
+    "ema_type": 34,
+    "rsi_entry": 50
+  },
+  "risk_pct": 3.8,
+  "metrics_is": {
+    "trades": 55,
+    "wr": 41.8,
+    "cagr": 5.3,
+    "dd": -30.4,
+    "pf": 1.14,
+    "trades_year": 12.0
+  },
+  "metrics_oos": {
+    "trades": 12,
+    "wr": 50.0,
+    "cagr": 5.2,
+    "dd": -2.1,
+    "pf": 1.96,
+    "trades_year": 10.5
+  },
+  "saved_at": "2026-05-08 23:19:09.314485",
+  "reeval_date": "2026-05-09 18:19",
+  "reeval_note": "funding+slippage aplicados",
+  "mc": {
+    "mc_cagr_p05": -8.3,
+    "mc_cagr_p50": 43.7,
+    "mc_cagr_p95": 101.3,
+    "mc_dd_p50": -28.3,
+    "mc_dd_p95": -15.3,
+    "mc_confidence": 89.5,
+    "mc_sims": 1000
+  },
+  "wft": {
+    "oos_win_rate": 60.0,
+    "n_windows": 5,
+    "positive_windows": 3,
+    "avg_cagr_oos": 36.54,
+    "avg_cagr_pos": 72.97,
+    "verdict": "PASS",
+    "date": "2026-06-07 02:20"
+  }
+}

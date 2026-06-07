@@ -1,0 +1,24 @@
+{
+  "champions": {
+    "SOL|15m": "regime_adaptive|long",
+    "LTC|15m": "macd_zero_cross_down|short",
+    "BNB|15m": "consecutive_wick|long",
+    "ETH|15m": "volatility_breakout|long",
+    "BTC|4h": "psar_flip|long",
+    "ETH|4h": "tma_bands|long",
+    "SOL|4h": "tma_bands|long",
+    "BNB|4h": "breakout|long",
+    "LTC|4h": "momentum_short|short",
+    "BTC|1h": "momentum_short|short",
+    "ETH|1h": "breakout|long",
+    "BNB|1h": "mfi_reversal|long",
+    "SOL|1h": "breakdown|short",
+    "LTC|1h": "breakout|long"
+  },
+  "last_notified_at": "2026-05-14T14:28:40.717734",
+  "changes_summary": {
+    "fresh_discoveries": 0,
+    "discoveries": 0,
+    "rotations": 1
+  }
+}

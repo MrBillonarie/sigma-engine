@@ -1,0 +1,60 @@
+// SIGMA ENGINE — SOL/USDT 15M MEAN REVERSION
+// Confianza: ALTA | OOS CAGR: +14.8% | WR: 83.3%
+// Auto-generado: 2026-05-16
+
+//@version=5
+indicator(title="SIGMA SOL 15M MeanRev", shorttitle="ΣSOL15MMR", overlay=true, max_bars_back=500)
+
+// ═══════════════════════════ PARAMETROS ═══════════════════════════
+sl_mult    = input.float(3.2, "SL Multiplier", step=0.1)
+tp_mult    = input.float(2.7, "TP Multiplier", step=0.1)
+cooldown   = input.int(14, "Cooldown")
+rsi_w_thr  = input.int(50, "RSI Semanal threshold")
+rsi_os     = input.int(42,  "RSI14 oversold level")
+risk_pct_v = input.float(3.3, "Risk %", step=0.1)
+show_hud   = input.bool(true, "Mostrar HUD")
+
+// ═══════════════════════════ INDICADORES ═══════════════════════════
+atr    = ta.atr(14)
+rsi14  = ta.rsi(close, 14)
+ema200 = ta.ema(close, 200)
+rsi_w_raw = request.security(syminfo.tickerid, "W", ta.rsi(close, 14))
+rsi_w     = ta.valuewhen(not na(rsi_w_raw), rsi_w_raw, 0)
+
+regime_bull = rsi_w > rsi_w_thr and close > ema200
+regime_bear = rsi_w < 40 or close < ema200 * 0.97
+
+// ═══════════════════════════ SEÑAL ════════════════════════════════
+var int last_sig = -cooldown - 1
+bar_dist = bar_index - last_sig
+raw_signal = rsi14 < rsi_os and close > ema200 and regime_bull and bar_dist >= cooldown
+if raw_signal
+    last_sig := bar_index
+
+long_signal = raw_signal
+sl_price = close - atr * sl_mult
+tp_price = close + atr * tp_mult
+
+// ═══════════════════════════ VISUALES ══════════════════════════════
+bgcolor(regime_bull ? color.new(color.green, 95) : na)
+bgcolor(regime_bear ? color.new(color.red,   95) : na)
+plot(ema200, "EMA200", color=color.new(color.white, 40), linewidth=2)
+plotshape(long_signal, location=location.belowbar, color=color.green, style=shape.triangleup, size=size.normal, text="MR▲")
+plot(long_signal ? sl_price : na, "SL", color=color.red,   style=plot.style_circles, linewidth=2)
+plot(long_signal ? tp_price : na, "TP", color=color.green, style=plot.style_circles, linewidth=2)
+
+// HUD
+if show_hud
+    t = table.new(position.top_right, 2, 5, bgcolor=color.new(color.black, 75), border_color=color.gray, border_width=1)
+    table.cell(t, 0, 0, "SIGMA SOL 15M MR", text_color=color.white, colspan=2, bgcolor=color.new(color.purple, 70))
+    table.cell(t, 0, 1, "RSI14",  text_color=color.gray,  text_size=size.small)
+    table.cell(t, 1, 1, str.tostring(math.round(rsi14,1)), text_color=rsi14<rsi_os?color.green:color.white, text_size=size.small)
+    table.cell(t, 0, 2, "RSI_W",  text_color=color.gray,  text_size=size.small)
+    table.cell(t, 1, 2, str.tostring(math.round(rsi_w,1)), text_color=color.white, text_size=size.small)
+    table.cell(t, 0, 3, "OOS",    text_color=color.gray,  text_size=size.small)
+    table.cell(t, 1, 3, "+14.8% ALTA", text_color=color.yellow, text_size=size.small)
+    table.cell(t, 0, 4, "Régimen", text_color=color.gray,  text_size=size.small)
+    table.cell(t, 1, 4, regime_bull?"🟢 BULL":regime_bear?"🔴 BEAR":"🟡 RANGE", text_color=color.white, text_size=size.small)
+
+alertcondition(long_signal, "SIGMA SOL 15M MEAN REV LONG", "{{ticker}} Oversold bounce — RSI14=" + str.tostring(math.round(rsi14,1)))
+alertcondition(regime_bull and not regime_bull[1], "SIGMA SOL BULL activado", "{{ticker}} régimen cambió a BULL")

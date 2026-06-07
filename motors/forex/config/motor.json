@@ -1,0 +1,19 @@
+{
+  "motor_name": "SIGMA Forex",
+  "asset_class": "forex_majors",
+  "universe": ["EUR.USD", "GBP.USD", "USD.JPY", "AUD.USD", "USD.CAD"],
+  "data_source": "ibkr_forex_or_oanda",
+  "exchange": "IDEALPRO",
+  "timeframes": ["15m", "1h", "4h"],
+  "regime_detector": "carry_trade_risk_on_off",
+  "commission_pct": 0.00002,
+  "min_capital_alloc_pct": 0,
+  "max_capital_alloc_pct": 25,
+  "status": "SKELETON",
+  "warnings": [
+    "Forex es el mercado mas competitivo - edge real es dificil",
+    "Considerar como motor #5, ultimo en activarse",
+    "Riesgo de over-leverage si no se controla margen"
+  ],
+  "next_step": "DEJAR PARA EL FINAL - validar primero los otros 4 motores"
+}

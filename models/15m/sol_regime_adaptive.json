@@ -1,0 +1,78 @@
+{
+  "symbol": "SOL/USDT",
+  "tf": "15m",
+  "strategy": "regime_adaptive",
+  "params": {
+    "sl_mult": 1.8,
+    "tp_mult": 3.3,
+    "cooldown": 3,
+    "rsi_w_thr": 52,
+    "lookback": 59,
+    "vol_mult": 1.7,
+    "sl_mult_long": 3.5,
+    "tp_mult_long": 2.5,
+    "sl_mult_short": 2.5,
+    "tp_mult_short": 3.0,
+    "rsi_w_bull": 65,
+    "rsi_w_bear": 34
+  },
+  "risk_pct": 3.4000000000000004,
+  "metrics_is": {
+    "trades": 812,
+    "wr": 61.6,
+    "cagr": 63.5,
+    "dd": -53.6,
+    "pf": 1.1,
+    "trades_year": 176.6
+  },
+  "metrics_oos": {
+    "trades": 141,
+    "wr": 58.2,
+    "cagr": 29.9,
+    "dd": -36.7,
+    "pf": 1.13,
+    "trades_year": 122.9
+  },
+  "oos_days": 419,
+  "saved_at": "2026-05-11 04:19:28.971781",
+  "wft": {
+    "oos_win_rate": 40.0,
+    "n_windows": 10,
+    "positive_windows": 4,
+    "avg_cagr_oos": 192.33,
+    "avg_cagr_pos": 529.9,
+    "verdict": "FAIL",
+    "date": "2026-06-07 02:14"
+  },
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 73.0,
+      "median": 13.3,
+      "ic95_lo": -36.8,
+      "ic95_hi": 45.5,
+      "ic80_lo": -16.3,
+      "ic80_hi": 35.8,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 28,
+      "positive": 17,
+      "pct_positive": 60.7,
+      "avg_cagr": 367.4,
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "passed_steps": 2,
+    "max_steps": 2,
+    "validated_at": "2026-05-11 04:19:29.918753"
+  },
+  "mc": {
+    "mc_cagr_p05": 1550.9,
+    "mc_cagr_p50": 7489.5,
+    "mc_cagr_p95": 34790.0,
+    "mc_dd_p50": -28.5,
+    "mc_dd_p95": -18.9,
+    "mc_confidence": 100.0,
+    "mc_sims": 1000
+  }
+}

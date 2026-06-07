@@ -1,0 +1,264 @@
+//@version=6
+indicator("SIGMA ENGINE v1.0", shorttitle="SIG ENG", overlay=true, max_bars_back=500)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// INPUTS
+// ─────────────────────────────────────────────────────────────────────────────
+capital     = input.float(1000.0, "Capital ($)",           group="Risk")
+risk_pct_in = input.float(3.0,    "Risk % / trade",        group="Risk", step=0.1)
+eng_enable  = input.bool(true,    "Activar senales",       group="ENGINE")
+show_hud    = input.bool(true,    "Mostrar HUD",           group="ENGINE")
+data_export = input.bool(true,    "Alert JSON Make.com",   group="ENGINE")
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FUNCION: helper HUD (scope global — obligatorio en Pine v6)
+// ─────────────────────────────────────────────────────────────────────────────
+// Mismo estilo que SIGMA TERMINAL v13.0
+f_cell(tbl, col, row, txt, fg) =>
+    table.cell(tbl, col, row, txt,
+        text_color       = fg,
+        bgcolor          = color.rgb(14,18,36),
+        text_size        = size.tiny,
+        text_font_family = font.family_monospace)
+
+f_hdr_eng(tbl, col, row, txt, c) =>
+    table.cell(tbl, col, row, txt,
+        text_color       = c,
+        bgcolor          = color.new(c,80),
+        text_size        = size.tiny,
+        text_font_family = font.family_monospace)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FUNCION: lookup table par+TF -> parametros del modelo VPS
+// Actualizar cuando el VPS valide nuevos modelos
+// ─────────────────────────────────────────────────────────────────────────────
+f_params() =>
+    _tk  = syminfo.ticker
+    _tf  = timeframe.period
+    // Deteccion par + TF — 13 modelos validados
+    _s15_ra = str.contains(_tk,"SOL") and _tf=="15"   // SOL 15m adaptive  +93.3%
+    _b1_tb  = str.contains(_tk,"BNB") and _tf=="60"   // BNB 1h  tma_bands +71.6%
+    _e1_bk  = str.contains(_tk,"ETH") and _tf=="60"   // ETH 1h  breakout  +65.3%
+    _s4_tb  = str.contains(_tk,"SOL") and _tf=="240"  // SOL 4h  tma_bands +36.9%
+    _s5_mr  = str.contains(_tk,"SOL") and _tf=="5"    // SOL 5m  mean_rev  +26.0%
+    _b4_bk  = str.contains(_tk,"BNB") and _tf=="240"  // BNB 4h  breakout  +23.8%
+    _e15_tb = str.contains(_tk,"ETH") and _tf=="15"   // ETH 15m tma_bands +20.4%
+    _s1_tb  = str.contains(_tk,"SOL") and _tf=="60"   // SOL 1h  tma_bands +18.0%
+    _c4_bk  = str.contains(_tk,"BTC") and _tf=="240"  // BTC 4h  breakout  +16.9%
+    _e4_tb  = str.contains(_tk,"ETH") and _tf=="240"  // ETH 4h  tma_bands +12.1%
+
+    // Estrategia
+    _st = _s15_ra?"regime_adaptive" : _b1_tb?"breakout_long"  : _e1_bk?"breakout_long" :
+          _s4_tb ?"breakout_long"   : _s5_mr ?"mean_rev_long" : _b4_bk?"breakout_long" :
+          _e15_tb?"breakout_long"   : _s1_tb ?"breakout_long" : _c4_bk?"breakout_long" :
+          _e4_tb ?"breakout_long"   : "breakout_long"
+
+    // Lookback
+    _lb = _s15_ra?37 : _b1_tb?50 : _e1_bk?31 : _s4_tb?50 : _s5_mr?50 :
+          _b4_bk?65  : _e15_tb?50: _s1_tb?50  : _c4_bk?32 : _e4_tb?50 : 50
+
+    // Vol mult
+    _vm = _s15_ra?2.8 : _b1_tb?2.0 : _e1_bk?3.4 : _s4_tb?2.0 : _s5_mr?2.0 :
+          _b4_bk?1.2  : _e15_tb?2.0: _s1_tb?2.0  : _c4_bk?1.3 : _e4_tb?2.0 : 2.0
+
+    // SL mult
+    _sl = _s15_ra?3.0 : _b1_tb?2.2 : _e1_bk?1.7 : _s4_tb?2.9 : _s5_mr?3.5 :
+          _b4_bk?2.2  : _e15_tb?3.2: _s1_tb?3.5  : _c4_bk?3.2 : _e4_tb?3.5 : 2.0
+
+    // TP mult
+    _tp = _s15_ra?2.7 : _b1_tb?2.2 : _e1_bk?2.4 : _s4_tb?1.6 : _s5_mr?3.1 :
+          _b4_bk?3.7  : _e15_tb?1.6: _s1_tb?2.2  : _c4_bk?1.7 : _e4_tb?1.6 : 2.5
+
+    // Cooldown
+    _cd = _s15_ra?12 : _b1_tb?9 : _e1_bk?8 : _s4_tb?9 : _s5_mr?8 :
+          _b4_bk?9   : _e15_tb?11: _s1_tb?13: _c4_bk?13: _e4_tb?13: 8
+
+    // RSI-W threshold
+    _rw = _s15_ra?45 : _b1_tb?46 : _e1_bk?62 : _s4_tb?54 : _s5_mr?44 :
+          _b4_bk?59  : _e15_tb?50: _s1_tb?48 : _c4_bk?61 : _e4_tb?60 : 55
+
+    // RSI oversold (solo mean_rev y adaptive)
+    _ro = _s5_mr?35 : _s15_ra?35 : 35
+
+    // Metricas OOS
+    _cg = _s15_ra?93.3 : _b1_tb?71.6 : _e1_bk?65.3 : _s4_tb?36.9 : _s5_mr?26.0 :
+          _b4_bk?23.8  : _e15_tb?20.4: _s1_tb?18.0 : _c4_bk?16.9 : _e4_tb?12.1 : 0.0
+    _wr = _s15_ra?57.2 : _b1_tb?60.0 : _e1_bk?64.3 : _s4_tb?75.0 : _s5_mr?83.3 :
+          _b4_bk?69.2  : _e15_tb?72.3: _s1_tb?66.7 : _c4_bk?72.2 : _e4_tb?81.0 : 0.0
+    _cf = _s15_ra?"ALTA" : _b1_tb?"ALTA" : _e1_bk?"ALTA" : _s4_tb?"ALTA" : _s5_mr?"ALTA" :
+          _b4_bk?"MEDIA": _e15_tb?"ALTA": _s1_tb?"ALTA": _c4_bk?"ALTA" : _e4_tb?"ALTA" : "PENDIENTE"
+    _rk = _s5_mr?2.0 : _s15_ra?3.3 : _b1_tb?4.0 : _e1_bk?4.5 : _s4_tb?3.5 :
+          _b4_bk?4.5  : _e15_tb?3.5: _s1_tb?3.5 : _c4_bk?3.5 : _e4_tb?3.5 : risk_pct_in
+    [_st,_lb,_vm,_sl,_tp,_cd,_rw,_ro,_cg,_wr,_cf,_rk]
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FUNCION: timestamp ISO-8601
+// ─────────────────────────────────────────────────────────────────────────────
+f_pad(n) => n < 10 ? "0" + str.tostring(n) : str.tostring(n)
+f_ts() =>
+    _y  = str.tostring(year(time,"UTC"))
+    _mo = f_pad(month(time,"UTC"))
+    _d  = f_pad(dayofmonth(time,"UTC"))
+    _h  = f_pad(hour(time,"UTC"))
+    _mi = f_pad(minute(time,"UTC"))
+    _y + "-" + _mo + "-" + _d + "T" + _h + ":" + _mi + ":00Z"
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CALCULOS PRINCIPALES
+// ─────────────────────────────────────────────────────────────────────────────
+_tf_m   = timeframe.in_seconds(timeframe.period) / 60
+tf_label = _tf_m<=1?"1M":_tf_m<=5?"5M":_tf_m<=15?"15M":_tf_m<=30?"30M":_tf_m<=60?"1H":_tf_m<=240?"4H":_tf_m<=1440?"D":"W"
+
+[e_st,e_lb,e_vm,e_sl,e_tp,e_cd,e_rw,e_ro,e_cg,e_wr,e_cf,e_rk] = f_params()
+
+atr    = ta.atr(14)
+ema200 = ta.ema(close, 200)
+vol_ma = ta.sma(volume, 20)
+rsi14  = ta.rsi(close, 14)
+
+rsi_w_raw = request.security(syminfo.tickerid, "W", ta.rsi(close,14), lookahead=barmerge.lookahead_off)
+rsi_w     = ta.valuewhen(not na(rsi_w_raw), rsi_w_raw, 0)
+
+// Regimen
+reg_bull  = rsi_w > e_rw and close > ema200
+reg_bear  = rsi_w < 40   or  close < ema200 * 0.97
+reg_range = not reg_bull and not reg_bear
+reg_txt   = reg_bull ? "BULL" : reg_bear ? "BEAR" : "RANGE"
+
+// Niveles de referencia
+prev_high = ta.highest(high, e_lb)[1]
+prev_low  = ta.lowest(low,   e_lb)[1]
+vol_ok    = volume > vol_ma * e_vm
+
+// Cooldown
+var int last_sig = 0
+bar_dist = bar_index - last_sig
+
+// Senales por estrategia
+sig_bkl = e_st=="breakout_long"    and close>prev_high and vol_ok and close>ema200 and reg_bull              and bar_dist>=e_cd
+sig_bds = e_st=="breakdown_short"  and close<prev_low  and vol_ok and close<ema200 and (reg_bear or reg_range) and bar_dist>=e_cd
+sig_mrl = e_st=="mean_rev_long"    and rsi14<e_ro      and close>ema200            and reg_bull              and bar_dist>=e_cd
+sig_abl = e_st=="regime_adaptive"  and close>prev_high and vol_ok and close>ema200 and reg_bull              and bar_dist>=e_cd
+sig_abs = e_st=="regime_adaptive"  and close<prev_low  and vol_ok and close<ema200 and reg_bear              and bar_dist>=e_cd
+sig_amr = e_st=="regime_adaptive"  and rsi14<e_ro      and close>ema200            and reg_range             and bar_dist>=e_cd
+
+eng_long  = eng_enable and (sig_bkl or sig_mrl or sig_abl or sig_amr)
+eng_short = eng_enable and (sig_bds or sig_abs)
+
+if eng_long or eng_short
+    last_sig := bar_index
+
+// SL / TP
+sl_s  = e_sl * 0.9
+tp_s  = e_tp * 0.8
+sl_p  = eng_long  ? close - atr*e_sl : eng_short ? close + atr*sl_s : float(na)
+tp1_p = eng_long  ? close + atr*e_tp : eng_short ? close - atr*tp_s : float(na)
+tp2_p = eng_long  ? close + atr*e_tp*1.5 : eng_short ? close - atr*tp_s*1.5 : float(na)
+rr    = eng_short ? tp_s/sl_s : e_tp/e_sl
+sl_pct    = (eng_short ? sl_s : e_sl) * (atr/close) * 100
+risk_usd  = capital * e_rk / 100
+pos_usd   = sl_pct > 0 ? risk_usd / (sl_pct/100) : 0.0
+
+// Texto display estrategia
+s_disp = e_st=="breakout_long"   ? "BK LONG"       :
+         e_st=="breakdown_short" ? "BD SHORT"       :
+         e_st=="mean_rev_long"   ? "MEAN REV"       :
+         reg_bull                ? "ADAPTIVE LONG"  :
+         reg_bear                ? "ADAPTIVE SHORT" : "ADAPTIVE MR"
+
+// ─────────────────────────────────────────────────────────────────────────────
+// VISUALES
+// ─────────────────────────────────────────────────────────────────────────────
+bgcolor(reg_bull  ? color.new(color.green,  97) : na)
+bgcolor(reg_bear  ? color.new(color.red,    97) : na)
+bgcolor(reg_range ? color.new(color.yellow, 98) : na)
+
+plot(ema200, "EMA200", color.new(color.orange,30), 1)
+
+plotshape(eng_long,  title="ENG LONG",  style=shape.triangleup,   location=location.belowbar, color=color.yellow, text="E", textcolor=color.black, size=size.large)
+plotshape(eng_short, title="ENG SHORT", style=shape.triangledown, location=location.abovebar, color=color.orange, text="E", textcolor=color.black, size=size.large)
+
+plot(eng_long or eng_short ? sl_p  : na, "SL",  color.new(color.red,  20), 2, plot.style_linebr)
+plot(eng_long or eng_short ? tp1_p : na, "TP1", color.new(color.lime, 20), 2, plot.style_linebr)
+plot(eng_long or eng_short ? tp2_p : na, "TP2", color.new(color.lime, 50), 1, plot.style_linebr)
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HUD
+// ─────────────────────────────────────────────────────────────────────────────
+// HUD — bottom_right, misma anchura que TERMINAL, estilo identico
+if show_hud and barstate.islast
+    _act = eng_long or eng_short
+    _fc  = eng_long ? color.lime : eng_short ? color.red : color.new(color.aqua,50)
+
+    // Rango de entrada: zona optima de compra/venta
+    _entry_low  = eng_long ? close - atr*0.15 : eng_short ? close - atr*0.05 : float(na)
+    _entry_high = eng_long ? close + atr*0.05 : eng_short ? close + atr*0.15 : float(na)
+    _entry_str  = not na(_entry_low) ? str.tostring(_entry_low,format.mintick) + " - " + str.tostring(_entry_high,format.mintick) : "---"
+
+    t = table.new(position.bottom_right, 2, 7,
+        border_width = 0,
+        frame_width  = 1,
+        frame_color  = color.new(_fc,40))
+
+    // Header identico al TERMINAL
+    table.cell(t,0,0,"SIGMA ENGINE",
+        text_color=color.rgb(255,200,0), bgcolor=color.rgb(5,8,20),
+        text_size=size.small, text_font_family=font.family_monospace)
+    table.cell(t,1,0,syminfo.ticker + " - " + tf_label + "  (modelo OOS +"+str.tostring(e_cg,"#.#")+"%  "+e_cf+")",
+        text_color=color.rgb(100,140,200), bgcolor=color.rgb(5,8,20),
+        text_size=size.small, text_font_family=font.family_monospace)
+
+    // ESTADO — igual que SEMAFORO del TERMINAL
+    _est_txt = eng_long ? "LONG" : eng_short ? "SHORT" : "ESPERAR"
+    _est_col = eng_long ? color.lime : eng_short ? color.red : color.silver
+    _est_bg  = eng_long ? color.new(color.lime,75) : eng_short ? color.new(color.red,75) : color.new(color.gray,90)
+    table.cell(t,0,1,"ESTADO",
+        text_color=color.rgb(200,200,200), bgcolor=color.rgb(10,14,30),
+        text_size=size.small, text_font_family=font.family_monospace)
+    table.cell(t,1,1,_est_txt,
+        text_color=_est_col, bgcolor=_est_bg,
+        text_size=size.small, text_font_family=font.family_monospace)
+
+    // Separador seccion niveles
+    table.cell(t,0,2,"── NIVELES ──────────",
+        text_color=color.new(color.aqua,50), bgcolor=color.new(color.aqua,88),
+        text_size=size.tiny, text_font_family=font.family_monospace)
+    table.cell(t,1,2,"──────────────────────────────────────────",
+        text_color=color.new(color.aqua,50), bgcolor=color.new(color.aqua,88),
+        text_size=size.tiny, text_font_family=font.family_monospace)
+
+    // RANGO DE ENTRADA
+    f_cell(t,0,3,"ENTRADA", color.rgb(140,155,190))
+    f_cell(t,1,3, _entry_str, _act ? color.yellow : color.new(color.gray,50))
+
+    // SL
+    f_cell(t,0,4,"SL", color.rgb(140,155,190))
+    f_cell(t,1,4,
+        _act and not na(sl_p)  ? str.tostring(sl_p, format.mintick) + "   -" + str.tostring(sl_pct,"#.#")+"%" : "---",
+        _act ? color.red : color.new(color.gray,50))
+
+    // TP1
+    f_cell(t,0,5,"TP1", color.rgb(140,155,190))
+    f_cell(t,1,5,
+        _act and not na(tp1_p) ? str.tostring(tp1_p,format.mintick) + "   RR " + str.tostring(rr,"#.#")+"x" : "---",
+        _act ? color.lime : color.new(color.gray,50))
+
+    // TP2
+    f_cell(t,0,6,"TP2", color.rgb(140,155,190))
+    f_cell(t,1,6,
+        _act and not na(tp2_p) ? str.tostring(tp2_p,format.mintick) : "---",
+        _act ? color.new(color.lime,40) : color.new(color.gray,50))
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ALERTAS JSON Make.com -> Excel SIGMA K1
+// Todo en funcion para evitar errores de continuacion de linea (CE10156)
+// ─────────────────────────────────────────────────────────────────────────────
+f_json(string dir) =>
+    '{"v":"ENGINE_1.0","src":"SIGMA_ENGINE","sym":"' + syminfo.ticker + '","tf":"' + timeframe.period + '","ts":"' + f_ts() + '","dir":"' + dir + '","strategy":"' + e_st + '","price":' + str.tostring(close,format.mintick) + ',"sl":' + str.tostring(na(sl_p)?close:sl_p,format.mintick) + ',"tp1":' + str.tostring(na(tp1_p)?close:tp1_p,format.mintick) + ',"tp2":' + str.tostring(na(tp2_p)?close:tp2_p,format.mintick) + ',"rr":' + str.tostring(rr,"#.##") + ',"risk_usd":' + str.tostring(risk_usd,"#.##") + ',"size_usd":' + str.tostring(pos_usd,"#.##") + ',"regime":"' + reg_txt + '","rsi_w":' + str.tostring(rsi_w,"#.#") + ',"model_cagr":' + str.tostring(e_cg,"#.#") + ',"model_wr":' + str.tostring(e_wr,"#.#") + ',"model_conf":"' + e_cf + '"}'
+
+if data_export and (eng_long or eng_short) and barstate.isconfirmed
+    alert(f_json(eng_long ? "LONG" : "SHORT"), alert.freq_once_per_bar_close)
+
+alertcondition(reg_bear  and not reg_bear[1],  "SIGMA ENGINE BEAR",  "SIGMA ENGINE: mercado entro en BEAR")
+alertcondition(reg_bull  and not reg_bull[1],  "SIGMA ENGINE BULL",  "SIGMA ENGINE: mercado volvio a BULL")
+alertcondition(reg_range and not reg_range[1], "SIGMA ENGINE RANGE", "SIGMA ENGINE: mercado en RANGE")

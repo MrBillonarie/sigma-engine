@@ -1,0 +1,37 @@
+{
+  "tf": "1h",
+  "strategy": "PULLBACK",
+  "params": {
+    "ema_fast": 9,
+    "ema_slow": 80,
+    "pull_tol": 0.014000000000000002,
+    "sl_mult": 0.8,
+    "tp_mult": 6.75
+  },
+  "cooldown": 12,
+  "risk_pct": 1.7000000000000002,
+  "bull_filter": "RSI-W > 55",
+  "metrics_is": {
+    "trades": 864.0,
+    "wr": 17.7,
+    "cagr": 28.8,
+    "dd": -92.6,
+    "pf": 1.01,
+    "sharpe": 0.07,
+    "calmar": 0.31,
+    "trades_month": 10.2,
+    "rr": 4.71
+  },
+  "metrics_oos": {
+    "trades": 218.0,
+    "wr": 19.7,
+    "cagr": 24.2,
+    "dd": -53.4,
+    "pf": 1.07,
+    "sharpe": 0.1,
+    "calmar": 0.45,
+    "trades_month": 10.9,
+    "rr": 4.36
+  },
+  "score": 0.22249999999999998
+}

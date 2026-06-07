@@ -1,0 +1,679 @@
+{
+  "tf": "1h",
+  "train_months": 6,
+  "test_months": 2,
+  "windows": [
+    {
+      "window": "2017-08",
+      "cagr_test": 32.82267739407114,
+      "wr_test": 43.75,
+      "trades_test": 16,
+      "status": "OK"
+    },
+    {
+      "window": "2017-09",
+      "cagr_test": 34.89646090735954,
+      "wr_test": 52.63157894736842,
+      "trades_test": 19,
+      "status": "OK"
+    },
+    {
+      "window": "2017-10",
+      "cagr_test": 132.90066628093396,
+      "wr_test": 60.0,
+      "trades_test": 15,
+      "status": "OK"
+    },
+    {
+      "window": "2017-11",
+      "cagr_test": 14.183973718737185,
+      "wr_test": 45.45454545454545,
+      "trades_test": 11,
+      "status": "OK"
+    },
+    {
+      "window": "2017-12",
+      "cagr_test": 16.434407117188886,
+      "wr_test": 47.05882352941176,
+      "trades_test": 17,
+      "status": "OK"
+    },
+    {
+      "window": "2018-01",
+      "cagr_test": 6.883135386628325,
+      "wr_test": 46.666666666666664,
+      "trades_test": 15,
+      "status": "OK"
+    },
+    {
+      "window": "2018-02",
+      "cagr_test": -52.205537617283525,
+      "wr_test": 27.27272727272727,
+      "trades_test": 11,
+      "status": "XX"
+    },
+    {
+      "window": "2018-03",
+      "cagr_test": -60.60826474559988,
+      "wr_test": 28.57142857142857,
+      "trades_test": 14,
+      "status": "XX"
+    },
+    {
+      "window": "2018-04",
+      "cagr_test": 236.98719018745967,
+      "wr_test": 69.23076923076923,
+      "trades_test": 13,
+      "status": "OK"
+    },
+    {
+      "window": "2018-05",
+      "cagr_test": 193.48503807692362,
+      "wr_test": 60.0,
+      "trades_test": 15,
+      "status": "OK"
+    },
+    {
+      "window": "2018-06",
+      "cagr_test": -63.59722473477598,
+      "wr_test": 0.0,
+      "trades_test": 7,
+      "status": "XX"
+    },
+    {
+      "window": "2018-07",
+      "cagr_test": -16.96974370126193,
+      "wr_test": 50.0,
+      "trades_test": 6,
+      "status": "XX"
+    },
+    {
+      "window": "2018-08",
+      "cagr_test": -999,
+      "wr_test": 0,
+      "trades_test": 0,
+      "status": "XX"
+    },
+    {
+      "window": "2018-09",
+      "cagr_test": -999,
+      "wr_test": 0,
+      "trades_test": 0,
+      "status": "XX"
+    },
+    {
+      "window": "2018-10",
+      "cagr_test": -999,
+      "wr_test": 0,
+      "trades_test": 0,
+      "status": "XX"
+    },
+    {
+      "window": "2018-11",
+      "cagr_test": 288.9262637826034,
+      "wr_test": 65.0,
+      "trades_test": 20,
+      "status": "OK"
+    },
+    {
+      "window": "2018-12",
+      "cagr_test": 61.9173893047549,
+      "wr_test": 45.45454545454545,
+      "trades_test": 11,
+      "status": "OK"
+    },
+    {
+      "window": "2019-01",
+      "cagr_test": 32.45543540666,
+      "wr_test": 57.14285714285714,
+      "trades_test": 7,
+      "status": "OK"
+    },
+    {
+      "window": "2019-02",
+      "cagr_test": 120.8825088640185,
+      "wr_test": 66.66666666666666,
+      "trades_test": 6,
+      "status": "OK"
+    },
+    {
+      "window": "2019-05",
+      "cagr_test": -33.43986510450424,
+      "wr_test": 0.0,
+      "trades_test": 3,
+      "status": "XX"
+    },
+    {
+      "window": "2019-06",
+      "cagr_test": 30.17493390272996,
+      "wr_test": 50.0,
+      "trades_test": 12,
+      "status": "OK"
+    },
+    {
+      "window": "2019-07",
+      "cagr_test": 16.181303883511312,
+      "wr_test": 66.66666666666666,
+      "trades_test": 3,
+      "status": "OK"
+    },
+    {
+      "window": "2019-08",
+      "cagr_test": -52.18255477675824,
+      "wr_test": 33.33333333333333,
+      "trades_test": 15,
+      "status": "XX"
+    },
+    {
+      "window": "2019-09",
+      "cagr_test": 46.62421932245715,
+      "wr_test": 53.333333333333336,
+      "trades_test": 15,
+      "status": "OK"
+    },
+    {
+      "window": "2019-10",
+      "cagr_test": -4.050616284915886,
+      "wr_test": 47.05882352941176,
+      "trades_test": 17,
+      "status": "XX"
+    },
+    {
+      "window": "2019-11",
+      "cagr_test": -75.04912029596427,
+      "wr_test": 15.384615384615385,
+      "trades_test": 13,
+      "status": "XX"
+    },
+    {
+      "window": "2019-12",
+      "cagr_test": -11.858731431842129,
+      "wr_test": 42.857142857142854,
+      "trades_test": 7,
+      "status": "XX"
+    },
+    {
+      "window": "2020-01",
+      "cagr_test": -8.252968370886238,
+      "wr_test": 46.666666666666664,
+      "trades_test": 15,
+      "status": "XX"
+    },
+    {
+      "window": "2020-02",
+      "cagr_test": -61.43649009386887,
+      "wr_test": 18.75,
+      "trades_test": 16,
+      "status": "XX"
+    },
+    {
+      "window": "2020-03",
+      "cagr_test": -60.20555202763096,
+      "wr_test": 40.0,
+      "trades_test": 20,
+      "status": "XX"
+    },
+    {
+      "window": "2020-04",
+      "cagr_test": -3.4090675651938906,
+      "wr_test": 52.94117647058824,
+      "trades_test": 17,
+      "status": "XX"
+    },
+    {
+      "window": "2020-05",
+      "cagr_test": 10.343525911944296,
+      "wr_test": 39.285714285714285,
+      "trades_test": 28,
+      "status": "OK"
+    },
+    {
+      "window": "2020-06",
+      "cagr_test": 8.103548718422404,
+      "wr_test": 44.44444444444444,
+      "trades_test": 9,
+      "status": "OK"
+    },
+    {
+      "window": "2020-07",
+      "cagr_test": -10.429293791333304,
+      "wr_test": 42.857142857142854,
+      "trades_test": 7,
+      "status": "XX"
+    },
+    {
+      "window": "2020-08",
+      "cagr_test": -42.66785197393461,
+      "wr_test": 37.5,
+      "trades_test": 16,
+      "status": "XX"
+    },
+    {
+      "window": "2020-09",
+      "cagr_test": -44.20519815668295,
+      "wr_test": 33.33333333333333,
+      "trades_test": 12,
+      "status": "XX"
+    },
+    {
+      "window": "2020-10",
+      "cagr_test": 20.890278969512476,
+      "wr_test": 66.66666666666666,
+      "trades_test": 3,
+      "status": "OK"
+    },
+    {
+      "window": "2020-11",
+      "cagr_test": 199.14093590425534,
+      "wr_test": 63.63636363636363,
+      "trades_test": 11,
+      "status": "OK"
+    },
+    {
+      "window": "2020-12",
+      "cagr_test": -50.86203116129191,
+      "wr_test": 33.33333333333333,
+      "trades_test": 24,
+      "status": "XX"
+    },
+    {
+      "window": "2021-01",
+      "cagr_test": -73.26965566382458,
+      "wr_test": 29.629629629629626,
+      "trades_test": 27,
+      "status": "XX"
+    },
+    {
+      "window": "2021-02",
+      "cagr_test": -21.5979560276377,
+      "wr_test": 50.0,
+      "trades_test": 8,
+      "status": "XX"
+    },
+    {
+      "window": "2021-03",
+      "cagr_test": -35.562776827798956,
+      "wr_test": 35.714285714285715,
+      "trades_test": 14,
+      "status": "XX"
+    },
+    {
+      "window": "2021-04",
+      "cagr_test": -13.148574519635615,
+      "wr_test": 16.666666666666664,
+      "trades_test": 6,
+      "status": "XX"
+    },
+    {
+      "window": "2021-05",
+      "cagr_test": -999,
+      "wr_test": 0,
+      "trades_test": 0,
+      "status": "XX"
+    },
+    {
+      "window": "2021-06",
+      "cagr_test": -41.16953017936168,
+      "wr_test": 35.714285714285715,
+      "trades_test": 14,
+      "status": "XX"
+    },
+    {
+      "window": "2021-07",
+      "cagr_test": -2.899634327926337,
+      "wr_test": 38.46153846153847,
+      "trades_test": 13,
+      "status": "XX"
+    },
+    {
+      "window": "2021-08",
+      "cagr_test": 35.98557884327458,
+      "wr_test": 50.0,
+      "trades_test": 12,
+      "status": "OK"
+    },
+    {
+      "window": "2021-09",
+      "cagr_test": -22.737302821466454,
+      "wr_test": 42.857142857142854,
+      "trades_test": 21,
+      "status": "XX"
+    },
+    {
+      "window": "2021-10",
+      "cagr_test": -14.190083758709115,
+      "wr_test": 42.857142857142854,
+      "trades_test": 7,
+      "status": "XX"
+    },
+    {
+      "window": "2021-11",
+      "cagr_test": -6.136786571092401,
+      "wr_test": 44.44444444444444,
+      "trades_test": 9,
+      "status": "XX"
+    },
+    {
+      "window": "2021-12",
+      "cagr_test": -42.34469955249411,
+      "wr_test": 35.714285714285715,
+      "trades_test": 14,
+      "status": "XX"
+    },
+    {
+      "window": "2022-01",
+      "cagr_test": -53.105024118316365,
+      "wr_test": 14.285714285714285,
+      "trades_test": 7,
+      "status": "XX"
+    },
+    {
+      "window": "2022-02",
+      "cagr_test": -5.680181511776173,
+      "wr_test": 45.45454545454545,
+      "trades_test": 11,
+      "status": "XX"
+    },
+    {
+      "window": "2022-03",
+      "cagr_test": 22.208120797381103,
+      "wr_test": 62.5,
+      "trades_test": 8,
+      "status": "OK"
+    },
+    {
+      "window": "2022-04",
+      "cagr_test": -24.79768246580032,
+      "wr_test": 41.66666666666667,
+      "trades_test": 12,
+      "status": "XX"
+    },
+    {
+      "window": "2022-05",
+      "cagr_test": 0.7437757165889458,
+      "wr_test": 57.14285714285714,
+      "trades_test": 7,
+      "status": "OK"
+    },
+    {
+      "window": "2022-06",
+      "cagr_test": 19.334065262805588,
+      "wr_test": 61.111111111111114,
+      "trades_test": 18,
+      "status": "OK"
+    },
+    {
+      "window": "2022-07",
+      "cagr_test": 88.59634270054086,
+      "wr_test": 66.66666666666666,
+      "trades_test": 18,
+      "status": "OK"
+    },
+    {
+      "window": "2022-08",
+      "cagr_test": 52.21483981191397,
+      "wr_test": 53.333333333333336,
+      "trades_test": 15,
+      "status": "OK"
+    },
+    {
+      "window": "2022-09",
+      "cagr_test": -31.17958357621401,
+      "wr_test": 43.75,
+      "trades_test": 16,
+      "status": "XX"
+    },
+    {
+      "window": "2022-10",
+      "cagr_test": 160.0923284269568,
+      "wr_test": 64.28571428571429,
+      "trades_test": 14,
+      "status": "OK"
+    },
+    {
+      "window": "2022-11",
+      "cagr_test": -13.274240473541077,
+      "wr_test": 35.714285714285715,
+      "trades_test": 14,
+      "status": "XX"
+    },
+    {
+      "window": "2022-12",
+      "cagr_test": 83.28313209567635,
+      "wr_test": 66.66666666666666,
+      "trades_test": 12,
+      "status": "OK"
+    },
+    {
+      "window": "2023-01",
+      "cagr_test": 120.7698419038238,
+      "wr_test": 62.5,
+      "trades_test": 16,
+      "status": "OK"
+    },
+    {
+      "window": "2023-02",
+      "cagr_test": -3.3549864794991557,
+      "wr_test": 47.368421052631575,
+      "trades_test": 19,
+      "status": "XX"
+    },
+    {
+      "window": "2023-03",
+      "cagr_test": -54.48503407113681,
+      "wr_test": 33.33333333333333,
+      "trades_test": 12,
+      "status": "XX"
+    },
+    {
+      "window": "2023-04",
+      "cagr_test": -2.7148639282807863,
+      "wr_test": 42.857142857142854,
+      "trades_test": 7,
+      "status": "XX"
+    },
+    {
+      "window": "2023-05",
+      "cagr_test": 0.9405090337710975,
+      "wr_test": 33.33333333333333,
+      "trades_test": 6,
+      "status": "OK"
+    },
+    {
+      "window": "2023-06",
+      "cagr_test": 39.310009697765835,
+      "wr_test": 66.66666666666666,
+      "trades_test": 12,
+      "status": "OK"
+    },
+    {
+      "window": "2023-07",
+      "cagr_test": 20.830373713548568,
+      "wr_test": 75.0,
+      "trades_test": 8,
+      "status": "OK"
+    },
+    {
+      "window": "2023-08",
+      "cagr_test": -24.81749245358578,
+      "wr_test": 30.76923076923077,
+      "trades_test": 13,
+      "status": "XX"
+    },
+    {
+      "window": "2023-09",
+      "cagr_test": 10.914405894481828,
+      "wr_test": 50.0,
+      "trades_test": 8,
+      "status": "OK"
+    },
+    {
+      "window": "2023-10",
+      "cagr_test": 3.4717498230321775,
+      "wr_test": 45.45454545454545,
+      "trades_test": 11,
+      "status": "OK"
+    },
+    {
+      "window": "2023-11",
+      "cagr_test": -13.24504928489425,
+      "wr_test": 40.0,
+      "trades_test": 5,
+      "status": "XX"
+    },
+    {
+      "window": "2023-12",
+      "cagr_test": 5.626325035493762,
+      "wr_test": 50.0,
+      "trades_test": 6,
+      "status": "OK"
+    },
+    {
+      "window": "2024-01",
+      "cagr_test": -999,
+      "wr_test": 0,
+      "trades_test": 0,
+      "status": "XX"
+    },
+    {
+      "window": "2024-02",
+      "cagr_test": -6.930023386879003,
+      "wr_test": 50.0,
+      "trades_test": 6,
+      "status": "XX"
+    },
+    {
+      "window": "2024-03",
+      "cagr_test": 21.513002403974625,
+      "wr_test": 80.0,
+      "trades_test": 5,
+      "status": "OK"
+    },
+    {
+      "window": "2024-04",
+      "cagr_test": 32.56782764922532,
+      "wr_test": 80.0,
+      "trades_test": 5,
+      "status": "OK"
+    },
+    {
+      "window": "2024-05",
+      "cagr_test": -999,
+      "wr_test": 0,
+      "trades_test": 0,
+      "status": "XX"
+    },
+    {
+      "window": "2024-06",
+      "cagr_test": -5.015798815809491,
+      "wr_test": 37.5,
+      "trades_test": 8,
+      "status": "XX"
+    },
+    {
+      "window": "2024-07",
+      "cagr_test": 5.544955840952093,
+      "wr_test": 50.0,
+      "trades_test": 12,
+      "status": "OK"
+    },
+    {
+      "window": "2024-08",
+      "cagr_test": -19.56316547329544,
+      "wr_test": 35.294117647058826,
+      "trades_test": 17,
+      "status": "XX"
+    },
+    {
+      "window": "2024-09",
+      "cagr_test": -3.7321061318706494,
+      "wr_test": 41.66666666666667,
+      "trades_test": 12,
+      "status": "XX"
+    },
+    {
+      "window": "2024-10",
+      "cagr_test": 16.28692647274388,
+      "wr_test": 57.14285714285714,
+      "trades_test": 7,
+      "status": "OK"
+    },
+    {
+      "window": "2024-11",
+      "cagr_test": 3.5175215222919,
+      "wr_test": 50.0,
+      "trades_test": 12,
+      "status": "OK"
+    },
+    {
+      "window": "2024-12",
+      "cagr_test": 5.542801289588017,
+      "wr_test": 66.66666666666666,
+      "trades_test": 3,
+      "status": "OK"
+    },
+    {
+      "window": "2025-01",
+      "cagr_test": 20.950431922981295,
+      "wr_test": 42.857142857142854,
+      "trades_test": 7,
+      "status": "OK"
+    },
+    {
+      "window": "2025-02",
+      "cagr_test": 73.78840086934453,
+      "wr_test": 66.66666666666666,
+      "trades_test": 12,
+      "status": "OK"
+    },
+    {
+      "window": "2025-03",
+      "cagr_test": -15.568640989184468,
+      "wr_test": 50.0,
+      "trades_test": 4,
+      "status": "XX"
+    },
+    {
+      "window": "2025-04",
+      "cagr_test": -58.41000706621844,
+      "wr_test": 28.57142857142857,
+      "trades_test": 14,
+      "status": "XX"
+    },
+    {
+      "window": "2025-05",
+      "cagr_test": -13.155032851673642,
+      "wr_test": 28.57142857142857,
+      "trades_test": 7,
+      "status": "XX"
+    },
+    {
+      "window": "2025-06",
+      "cagr_test": -11.913272177581756,
+      "wr_test": 40.0,
+      "trades_test": 20,
+      "status": "XX"
+    },
+    {
+      "window": "2025-07",
+      "cagr_test": 66.04122926172087,
+      "wr_test": 63.63636363636363,
+      "trades_test": 11,
+      "status": "OK"
+    },
+    {
+      "window": "2025-08",
+      "cagr_test": -32.29858515486769,
+      "wr_test": 28.57142857142857,
+      "trades_test": 14,
+      "status": "XX"
+    }
+  ],
+  "summary": {
+    "total_windows": 95,
+    "positive_windows": 43,
+    "pct_positive": 45.3,
+    "avg_cagr_positive": 56.15,
+    "avg_cagr_all": -51.55
+  }
+}

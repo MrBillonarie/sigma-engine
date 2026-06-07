@@ -1,0 +1,3 @@
+[2026-05-21 18:32:37] Motores disponibles: ['latam', 'stocks_us', 'forex', 'commodities']
+[2026-05-21 18:32:37] Motores ACTIVE: 0
+[2026-05-21 18:32:37] No hay motores ACTIVE - skip rebalance
