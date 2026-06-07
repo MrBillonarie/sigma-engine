@@ -1,0 +1,19 @@
+[Unit]
+Description=SIGMA Telegram Notifier
+After=sigma-web.service
+Wants=sigma-web.service
+
+[Service]
+Environment=TZ=America/Santiago
+Type=simple
+Restart=always
+RestartSec=10
+User=root
+WorkingDirectory=/opt/sigma
+ExecStart=/opt/sigma_env/bin/python engine/live/telegram_notifier.py
+StandardOutput=append:/opt/sigma/results/reports/telegram.log
+StandardError=append:/opt/sigma/results/reports/telegram.log
+Environment=SIGMA_INTERVAL=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,7 @@
+[Unit]
+Description=SIGMA Dashboard Guardian - protege dashboard.py de overwrites
+
+[Service]
+Type=oneshot
+ExecStart=/opt/sigma_env/bin/python /opt/sigma/engine/live/dashboard_guardian.py
+WorkingDirectory=/opt/sigma

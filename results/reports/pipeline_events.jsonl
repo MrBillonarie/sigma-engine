@@ -1,10 +1,3 @@
-{"ts": "11:08", "asset": "BTC", "tf": "4H", "strategy": "dmi_trend", "result": "OOS_NEG", "cagr_oos": -14.4, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "11:09", "asset": "ETH", "tf": "4H", "strategy": "volume_climax_top", "result": "OVERFIT", "cagr_oos": 8.7, "wr": 46.7, "trades_oos": null, "note": "IS/OOS ratio 2.6x"}
-{"ts": "11:09", "asset": "BTC", "tf": "4H", "strategy": "mfi_reversal", "result": "OOS_NEG", "cagr_oos": -11.9, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "11:09", "asset": "SOL", "tf": "15M", "strategy": "ichimoku", "result": "OOS_NEG", "cagr_oos": -13.8, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "11:10", "asset": "BTC", "tf": "4H", "strategy": "tema_cross", "result": "OOS_NEG", "cagr_oos": -12.4, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "11:10", "asset": "SOL", "tf": "5M", "strategy": "cci_reversal", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "11:10", "asset": "ETH", "tf": "4H", "strategy": "range_break_down", "result": "POSITIVO_NO_MEJOR", "cagr_oos": 9.1, "wr": 42.9, "trades_oos": 7, "note": "No supera score record 0.4795"}
 {"ts": "11:11", "asset": "BTC", "tf": "4H", "strategy": "ichimoku", "result": "OOS_NEG", "cagr_oos": -18.2, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
 {"ts": "11:11", "asset": "ETH", "tf": "4H", "strategy": "macd_zero_cross_down", "result": "SIN_TRADES", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "OOS < 5 trades, params muy selectivos"}
 {"ts": "11:11", "asset": "BTC", "tf": "4H", "strategy": "pivot_bounce", "result": "OOS_NEG", "cagr_oos": -7.0, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
@@ -198,3 +191,10 @@
 {"ts": "12:24", "asset": "SOL", "tf": "15M", "strategy": "aroon_cross", "result": "OOS_NEG", "cagr_oos": -13.2, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
 {"ts": "12:25", "asset": "SOL", "tf": "5M", "strategy": "vwap_overpriced_short", "result": "SIN_TRADES", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "OOS < 5 trades, params muy selectivos"}
 {"ts": "12:25", "asset": "BNB", "tf": "15M", "strategy": "trend_strength", "result": "OOS_NEG", "cagr_oos": -26.7, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "12:27", "asset": "LTC", "tf": "15M", "strategy": "momentum", "result": "OOS_NEG", "cagr_oos": -13.6, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "12:27", "asset": "SOL", "tf": "5M", "strategy": "keltner_breakdown_short", "result": "SIN_TRADES", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "OOS < 5 trades, params muy selectivos"}
+{"ts": "12:28", "asset": "SOL", "tf": "15M", "strategy": "psar_flip", "result": "OOS_NEG", "cagr_oos": -8.1, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "12:29", "asset": "SOL", "tf": "15M", "strategy": "pullback_short", "result": "OOS_NEG", "cagr_oos": -20.4, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "12:30", "asset": "SOL", "tf": "5M", "strategy": "atr_channel_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "12:30", "asset": "LTC", "tf": "15M", "strategy": "mean_rev", "result": "OOS_NEG", "cagr_oos": -37.0, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "12:31", "asset": "SOL", "tf": "15M", "strategy": "dmi_trend", "result": "OOS_NEG", "cagr_oos": -36.4, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}

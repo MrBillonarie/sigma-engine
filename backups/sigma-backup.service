@@ -1,0 +1,8 @@
+[Unit]
+Description=SIGMA Backup diario
+
+[Service]
+Type=oneshot
+ExecStart=/opt/sigma/scripts/backup_models.sh
+StandardOutput=append:/opt/sigma/results/reports/backup.log
+StandardError=append:/opt/sigma/results/reports/backup.log

@@ -1,0 +1,8 @@
+[Unit]
+Description=SIGMA Telegram Milestone Monitor
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/sigma_env/bin/python /opt/sigma/engine/live/telegram_milestone.py
+WorkingDirectory=/opt/sigma

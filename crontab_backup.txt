@@ -1,0 +1,41 @@
+0 2 * * 0 cd /opt/sigma && /opt/sigma_env/bin/python engine/optimization/wft_all_models.py >> results/reports/wft_weekly.log 2>&1
+0 2 1 * * cd /opt/sigma && /opt/sigma_env/bin/python -u run_mc_all.py >> results/reports/mc_monthly.log 2>&1
+0 3 * * 0 cd /opt/sigma && /opt/sigma_env/bin/python engine/analysis/monte_carlo_v2.py >> results/reports/mc.log 2>&1
+0 3 * * 1 cd /opt/sigma && /opt/sigma_env/bin/python -u engine/optimization/walk_forward_v2.py --tf 1h --trials 60 > results/reports/wft_eth.log 2>&1
+0 * * * * cd /opt/sigma && /opt/sigma_env/bin/python sync_models.py >> results/reports/sync.log 2>&1
+*/15 * * * * systemctl is-active sigma-pipeline || systemctl start sigma-pipeline
+*/2 * * * * curl -sf --max-time 10 http://localhost:8080/api/stats > /dev/null 2>&1 || (sleep 30 && curl -sf --max-time 10 http://localhost:8080/api/stats > /dev/null 2>&1) || (fuser -k 8080/tcp 2>/dev/null; sleep 1; systemctl start sigma-web) # web watchdog
+30 0 * * * cd /opt/sigma && /opt/sigma_env/bin/python update_data.py >> results/reports/update_data.log 2>&1
+30 3 1 * * cd /opt/sigma && /opt/sigma_env/bin/python engine/live/decay_monitor.py --days 90 >> results/reports/decay_cron.log 2>&1
+# Actualizar datos BTC diario 00:30 UTC
+# Monte Carlo y correlacion cada semana (domingo 03:00)
+# Reactivar sigma-trainer tras aceleracion pipeline
+# Re-validacion mensual de todos los modelos (dia 1, 02:00)
+# Sync modelos a PC cada hora
+# Watchdog sigma-trainer cada 15min
+# WFT ETH 1H - corre a las 3am cuando hay menos carga
+0 */6 * * * cd /opt/sigma && /opt/sigma_env/bin/python engine/live/champion_elector.py --notify >> results/reports/champion_elector_cron.log 2>&1
+
+# === SIGMA Daily News (added 2026-05-14) ===
+CRON_TZ=America/Santiago
+0 9 * * *  /opt/sigma_env/bin/python /opt/sigma/morning_news.py  >> /opt/sigma/results/reports/tg_news.log 2>&1
+0 21 * * * /opt/sigma_env/bin/python /opt/sigma/evening_news.py >> /opt/sigma/results/reports/tg_news.log 2>&1
+*/5 * * * * /opt/sigma_env/bin/python /opt/sigma/engine/data/lsr_fetcher.py 1 >> /opt/sigma/results/reports/lsr_fetcher.log 2>&1
+*/15 * * * * /opt/sigma_env/bin/python /opt/sigma/engine/data/oi_fetcher.py 1 >> /opt/sigma/results/reports/oi_fetcher.log 2>&1
+0 */6 * * *  /opt/sigma_env/bin/python /opt/sigma/engine/data/fng_fetcher.py 2 >> /opt/sigma/results/reports/fng_fetcher.log 2>&1
+*/5 * * * * /opt/sigma_env/bin/python /opt/sigma/scripts/funding_emergency_dispatcher.py >> /var/log/funding_emergency.log 2>&1
+# Rotate backups daily 05:00 — keep 7 days
+0 5 * * * /opt/sigma/scripts/rotate_backups.sh >> /opt/sigma/results/reports/backup_rotation.log 2>&1
+# Verify Pine sync vs VPS champions, daily 06:00
+0 6 * * * cd /opt/sigma && /opt/sigma_env/bin/python verify_pine_sync.py >> /opt/sigma/results/reports/pine_sync.log 2>&1
+# Auto-regenerate Pine from VPS champions every 30 min
+*/30 * * * * cd /opt/sigma && /opt/sigma_env/bin/python engine/live/generate_pine_params.py >> /opt/sigma/results/reports/pine_regen.log 2>&1
+*/30 * * * * cd /opt/sigma && /opt/sigma_env/bin/python bayesian_tracker.py >> results/reports/bayesian_tracker.log 2>&1
+*/15 * * * * /opt/sigma_env/bin/python /opt/sigma/gap_auto_launcher.py >> /opt/sigma/results/reports/gap_auto_launcher.log 2>&1
+# Adaptive Grade-A pusher — corre cada hora si load < 7
+30 * * * * /opt/sigma_env/bin/python /opt/sigma/scripts/adaptive_push_launcher.py
+# IBKR positions fetcher (Read-Only API, datos filtrados sin USD)
+*/5 * * * * /opt/sigma_env/bin/python /opt/sigma/ibkr/ibkr_fetcher.py >> /opt/sigma/ibkr/logs/cron.log 2>&1
+0 1 * * * /opt/sigma_env/bin/python /opt/sigma/update_xau_data.py >> /opt/sigma/results/reports/xau_update.log 2>&1
+# Backup nocturno de codigo: git commit + code tar.gz (04:30)
+30 4 * * * /opt/sigma/scripts/nightly_backup.sh

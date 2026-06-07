@@ -1,0 +1,8 @@
+[Unit]
+Description=SIGMA Watchdog
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/sigma_env/bin/python /opt/sigma/engine/live/watchdog_sigma.py
+WorkingDirectory=/opt/sigma

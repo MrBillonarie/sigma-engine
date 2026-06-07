@@ -1,0 +1,21 @@
+[Unit]
+Description=SIGMA Trainer
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+MemoryMax=5G
+MemoryHigh=4G
+Environment=TZ=America/Santiago
+Type=simple
+Restart=always
+RestartSec=10
+User=root
+WorkingDirectory=/opt/sigma
+ExecStart=/opt/sigma_env/bin/python -u engine/live/continuous_trainer.py
+StandardOutput=append:/opt/sigma/results/reports/trainer.log
+StandardError=append:/opt/sigma/results/reports/trainer.log
+Environment=PYTHONIOENCODING=utf-8
+
+[Install]
+WantedBy=multi-user.target
