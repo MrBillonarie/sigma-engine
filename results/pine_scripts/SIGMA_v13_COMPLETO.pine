@@ -1,7 +1,7 @@
 // [SIGMA-HEADER-START]
 // ╔══════════════════════════════════════════════════════════╗
 // ║  SIGMA TERMINAL v13  —  Auto-generado desde VPS         ║
-// ║  Actualizado : 07/06/2026  19:30 hrs (Chile)             ║
+// ║  Actualizado : 07/06/2026  20:30 hrs (Chile)             ║
 // ║  Modelos     : 17 activos                                ║
 // ║  Top modelos : ETH 1h:BRE A +44%  SOL 1h:BRE A +37%  BNB ║
 // ╚══════════════════════════════════════════════════════════╝
@@ -613,19 +613,19 @@ f_strat(_tk, _tf_m) =>
     if str.contains(_tk,"BNB") and _tf_m==15
         _r := "consecutive_wick"
     if str.contains(_tk,"BNB") and _tf_m==60
-        _r := "mfi_reversal"
+        _r := "break_of_structure"
     if str.contains(_tk,"BNB") and _tf_m==240
         _r := "breakout"
     if str.contains(_tk,"BTC") and _tf_m==15
         _r := "dmi_bear"
     if str.contains(_tk,"BTC") and _tf_m==60
-        _r := "momentum"
+        _r := "momentum_short"
     if str.contains(_tk,"BTC") and _tf_m==240
         _r := "tma_bands"
     if str.contains(_tk,"BTC") and _tf_m==5
         _r := "momentum_short"
     if str.contains(_tk,"ETH") and _tf_m==15
-        _r := "breakout"
+        _r := "volatility_breakout"
     if str.contains(_tk,"ETH") and _tf_m==60
         _r := "breakout"
     if str.contains(_tk,"ETH") and _tf_m==240
@@ -633,15 +633,17 @@ f_strat(_tk, _tf_m) =>
     if str.contains(_tk,"ETH") and _tf_m==5
         _r := "volatility_breakout"
     if str.contains(_tk,"LTC") and _tf_m==15
-        _r := "psar_flip"
+        _r := "wedge_breakdown_short"
+    if str.contains(_tk,"LTC") and _tf_m==60
+        _r := "williams_r"
     if str.contains(_tk,"LTC") and _tf_m==240
-        _r := "bearish_rsi_divergence"
+        _r := "momentum_short"
     if str.contains(_tk,"SOL") and _tf_m==15
         _r := "regime_adaptive"
     if str.contains(_tk,"SOL") and _tf_m==60
         _r := "breakdown"
     if str.contains(_tk,"SOL") and _tf_m==240
-        _r := "tma_bands"
+        _r := "pullback_short"
     if str.contains(_tk,"SOL") and _tf_m==5
         _r := "roc_negative_short"
     _r
@@ -672,12 +674,14 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,4.0)
         array.set(_p,2,10.0)
         array.set(_p,3,62.0)
-    // BNB/USDT 1h mfi_reversal CAGR:+11.5% WR:82% Grade:B
+    // BNB/USDT 1h break_of_structure CAGR:+19.5% Grade:C
     if str.contains(_tk,"BNB") and _tf_m==60
-        array.set(_p,0,3.5)
-        array.set(_p,1,1.6)
-        array.set(_p,2,13.0)
-        array.set(_p,3,49.0)
+        array.set(_p,0,3.3)
+        array.set(_p,1,4.0)
+        array.set(_p,2,4.0)
+        array.set(_p,3,58.0)
+        array.set(_p,4,26.0)
+        array.set(_p,5,1.9)
     // BNB/USDT 4h breakout CAGR:+29.0% WR:78% Grade:A
     if str.contains(_tk,"BNB") and _tf_m==240
         array.set(_p,0,3.0)
@@ -692,14 +696,13 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,3.2)
         array.set(_p,2,9.0)
         array.set(_p,3,62.0)
-    // BTC/USDT 1h momentum CAGR:+32.0% WR:58% Grade:B
+    // BTC/USDT 1h momentum_short CAGR:+46.3% Grade:A
     if str.contains(_tk,"BTC") and _tf_m==60
-        array.set(_p,0,2.7)
-        array.set(_p,1,2.9)
-        array.set(_p,2,12.0)
-        array.set(_p,3,61.0)
-        array.set(_p,5,1.2)
-        array.set(_p,11,64.0)
+        array.set(_p,0,2.4)
+        array.set(_p,1,2.0)
+        array.set(_p,2,5.0)
+        array.set(_p,3,56.0)
+        array.set(_p,5,2.5)
     // BTC/USDT 4h tma_bands CAGR:+11.2% WR:71% Grade:C
     if str.contains(_tk,"BTC") and _tf_m==240
         array.set(_p,0,3.1)
@@ -715,14 +718,12 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,2,11.0)
         array.set(_p,3,60.0)
         array.set(_p,5,2.3)
-    // ETH/USDT 15m breakout CAGR:+24.6% WR:59% Grade:C
+    // ETH/USDT 15m volatility_breakout CAGR:+77.6% Grade:A
     if str.contains(_tk,"ETH") and _tf_m==15
-        array.set(_p,0,3.3)
-        array.set(_p,1,3.2)
-        array.set(_p,2,3.0)
-        array.set(_p,3,61.0)
-        array.set(_p,4,70.0)
-        array.set(_p,5,3.0)
+        array.set(_p,0,3.4)
+        array.set(_p,1,2.8)
+        array.set(_p,2,4.0)
+        array.set(_p,3,44.0)
     // ETH/USDT 1h breakout CAGR:+43.7% WR:85% Grade:A
     if str.contains(_tk,"ETH") and _tf_m==60
         array.set(_p,0,1.7)
@@ -745,19 +746,21 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,3.5)
         array.set(_p,2,3.0)
         array.set(_p,3,61.0)
-    // LTC/USDT 15m psar_flip CAGR:+15.8% WR:72% Grade:C
+    // LTC/USDT 15m wedge_breakdown_short CAGR:+76.5% Grade:A
     if str.contains(_tk,"LTC") and _tf_m==15
-        array.set(_p,0,3.2)
-        array.set(_p,1,1.5)
-        array.set(_p,2,5.0)
-        array.set(_p,3,54.0)
-    // LTC/USDT 4h bearish_rsi_divergence CAGR:+39.7% WR:73% Grade:B
+        array.set(_p,0,3.3)
+        array.set(_p,1,3.1)
+        array.set(_p,2,6.0)
+        array.set(_p,3,47.0)
+        array.set(_p,4,8.0)
+        array.set(_p,5,1.6)
+    // LTC/USDT 4h momentum_short CAGR:+48.1% Grade:A
     if str.contains(_tk,"LTC") and _tf_m==240
-        array.set(_p,0,2.6)
-        array.set(_p,1,1.8)
-        array.set(_p,2,8.0)
-        array.set(_p,3,53.0)
-        array.set(_p,4,17.0)
+        array.set(_p,0,1.6)
+        array.set(_p,1,4.0)
+        array.set(_p,2,3.0)
+        array.set(_p,3,62.0)
+        array.set(_p,5,1.2)
     // SOL/USDT 15m regime_adaptive CAGR:+29.9% WR:58% Grade:C
     if str.contains(_tk,"SOL") and _tf_m==15
         array.set(_p,0,1.8)
@@ -776,14 +779,14 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,3,47.0)
         array.set(_p,4,53.0)
         array.set(_p,5,3.2)
-    // SOL/USDT 4h tma_bands CAGR:+21.7% WR:75% Grade:B
+    // SOL/USDT 4h pullback_short CAGR:+48.3% Grade:A
     if str.contains(_tk,"SOL") and _tf_m==240
-        array.set(_p,0,2.0)
-        array.set(_p,1,1.6)
-        array.set(_p,2,11.0)
-        array.set(_p,3,60.0)
-        array.set(_p,6,19.0)
-        array.set(_p,7,2.1)
+        array.set(_p,0,1.5)
+        array.set(_p,1,4.0)
+        array.set(_p,2,6.0)
+        array.set(_p,3,49.0)
+        array.set(_p,8,50.0)
+        array.set(_p,9,55.0)
     // SOL/USDT 5m roc_negative_short CAGR:+29.6% WR:46% Grade:C
     if str.contains(_tk,"SOL") and _tf_m==5
         array.set(_p,0,1.9)
@@ -798,19 +801,19 @@ f_meta(_tk, _tf_m) =>
     if str.contains(_tk,"BNB") and _tf_m==15
         _r := "C|0|61|FAIL"
     if str.contains(_tk,"BNB") and _tf_m==60
-        _r := "B|0|82|OK"
+        _r := "C|0|?|OK"
     if str.contains(_tk,"BNB") and _tf_m==240
         _r := "A|0|78|OK"
     if str.contains(_tk,"BTC") and _tf_m==15
         _r := "B|0|63|OK"
     if str.contains(_tk,"BTC") and _tf_m==60
-        _r := "B|0|58|OK"
+        _r := "A|0|?|OK"
     if str.contains(_tk,"BTC") and _tf_m==240
         _r := "C|0|71|OK"
     if str.contains(_tk,"BTC") and _tf_m==5
         _r := "D|0|67|--"
     if str.contains(_tk,"ETH") and _tf_m==15
-        _r := "C|0|59|FAIL"
+        _r := "A|0|?|OK"
     if str.contains(_tk,"ETH") and _tf_m==60
         _r := "A|0|85|OK"
     if str.contains(_tk,"ETH") and _tf_m==240
@@ -818,15 +821,17 @@ f_meta(_tk, _tf_m) =>
     if str.contains(_tk,"ETH") and _tf_m==5
         _r := "C|0|73|FAIL"
     if str.contains(_tk,"LTC") and _tf_m==15
-        _r := "C|0|72|OK"
+        _r := "A|0|?|OK"
+    if str.contains(_tk,"LTC") and _tf_m==60
+        _r := "A|0|?|OK"
     if str.contains(_tk,"LTC") and _tf_m==240
-        _r := "B|0|73|OK"
+        _r := "A|0|?|OK"
     if str.contains(_tk,"SOL") and _tf_m==15
         _r := "C|0|58|FAIL"
     if str.contains(_tk,"SOL") and _tf_m==60
         _r := "A|0|75|FAIL"
     if str.contains(_tk,"SOL") and _tf_m==240
-        _r := "B|0|75|OK"
+        _r := "A|0|?|OK"
     if str.contains(_tk,"SOL") and _tf_m==5
         _r := "C|0|46|OK"
     _r
@@ -942,8 +947,8 @@ _macdzd = macd_line[1] >= 0 and macd_line < 0 and signal_line < 0 and close < em
 sig_macdzd_s = strat_name == "macd_zero_cross_down" and not m_in_cd and m_t_short and _macdzd and rsi_w < 55
 
 // ── Señal activa resultante ───────────────────────────────────────────────────
-smart_long  = sig_breakout_l or sig_pullback_l or sig_tma_l or sig_mom_l or sig_mr_l or sig_adapt_l or sig_bos_l or sig_volb_l
-smart_short = sig_breakdown_s or sig_pullback_s or sig_mom_s or sig_adapt_s or sig_bos_s or sig_volb_s or sig_macdzd_s
+smart_long  = sig_breakout_l or sig_pullback_l or sig_tma_l or sig_mom_l or sig_mr_l or sig_adapt_l or sig_bos_l or sig_volb_l or sig_willy_l
+smart_short = sig_breakdown_s or sig_pullback_s or sig_mom_s or sig_adapt_s or sig_bos_s or sig_volb_s or sig_macdzd_s or sig_wedge_s or sig_dmi_s or sig_roc_s
 m_has_signal   = smart_long or smart_short
 m_direction    = smart_long ? "LONG" : smart_short ? "SHORT" : "—"
 m_is_short_str = str.contains(strat_name,"short") or str.contains(strat_name,"breakdown")
