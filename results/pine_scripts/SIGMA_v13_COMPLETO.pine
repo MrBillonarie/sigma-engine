@@ -1,9 +1,9 @@
 // [SIGMA-HEADER-START]
 // ╔══════════════════════════════════════════════════════════╗
 // ║  SIGMA TERMINAL v13  —  Auto-generado desde VPS         ║
-// ║  Actualizado : 07/06/2026  20:30 hrs (Chile)             ║
-// ║  Modelos     : 17 activos                                ║
-// ║  Top modelos : ETH 1h:BRE A +44%  SOL 1h:BRE A +37%  BNB ║
+// ║  Actualizado : 08/06/2026  04:30 hrs (Chile)             ║
+// ║  Modelos     : 19 activos                                ║
+// ║  Top modelos : XAU 1h:REG A+ +205%  LTC 1h:WIL A+ +130%  ║
 // ╚══════════════════════════════════════════════════════════╝
 // [SIGMA-HEADER-END]
 //@version=6
@@ -613,15 +613,15 @@ f_strat(_tk, _tf_m) =>
     if str.contains(_tk,"BNB") and _tf_m==15
         _r := "consecutive_wick"
     if str.contains(_tk,"BNB") and _tf_m==60
-        _r := "break_of_structure"
+        _r := "mfi_reversal"
     if str.contains(_tk,"BNB") and _tf_m==240
         _r := "breakout"
     if str.contains(_tk,"BTC") and _tf_m==15
         _r := "dmi_bear"
     if str.contains(_tk,"BTC") and _tf_m==60
-        _r := "momentum_short"
+        _r := "momentum"
     if str.contains(_tk,"BTC") and _tf_m==240
-        _r := "tma_bands"
+        _r := "three_candles_short"
     if str.contains(_tk,"BTC") and _tf_m==5
         _r := "momentum_short"
     if str.contains(_tk,"ETH") and _tf_m==15
@@ -637,15 +637,17 @@ f_strat(_tk, _tf_m) =>
     if str.contains(_tk,"LTC") and _tf_m==60
         _r := "williams_r"
     if str.contains(_tk,"LTC") and _tf_m==240
-        _r := "momentum_short"
+        _r := "bearish_rsi_divergence"
     if str.contains(_tk,"SOL") and _tf_m==15
-        _r := "regime_adaptive"
+        _r := "roc_negative_short"
     if str.contains(_tk,"SOL") and _tf_m==60
         _r := "breakdown"
     if str.contains(_tk,"SOL") and _tf_m==240
-        _r := "pullback_short"
+        _r := "supply_zone_rejection"
     if str.contains(_tk,"SOL") and _tf_m==5
         _r := "roc_negative_short"
+    if str.contains(_tk,"XAU") and _tf_m==60
+        _r := "regime_adaptive"
     _r
 
 // Función 2: parámetros numéricos — índices: 0=sl 1=tp 2=cd 3=rw 4=lb 5=vm 6=tp2 7=am 8=et 9=re 10=ros 11=rmx 12=sl_s 13=tp_s 14=rwb 15=rwbr
@@ -674,14 +676,12 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,4.0)
         array.set(_p,2,10.0)
         array.set(_p,3,62.0)
-    // BNB/USDT 1h break_of_structure CAGR:+19.5% Grade:C
+    // BNB/USDT 1h mfi_reversal CAGR:+11.5% WR:82% Grade:B
     if str.contains(_tk,"BNB") and _tf_m==60
-        array.set(_p,0,3.3)
-        array.set(_p,1,4.0)
-        array.set(_p,2,4.0)
-        array.set(_p,3,58.0)
-        array.set(_p,4,26.0)
-        array.set(_p,5,1.9)
+        array.set(_p,0,3.5)
+        array.set(_p,1,1.6)
+        array.set(_p,2,13.0)
+        array.set(_p,3,49.0)
     // BNB/USDT 4h breakout CAGR:+29.0% WR:78% Grade:A
     if str.contains(_tk,"BNB") and _tf_m==240
         array.set(_p,0,3.0)
@@ -696,21 +696,21 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,3.2)
         array.set(_p,2,9.0)
         array.set(_p,3,62.0)
-    // BTC/USDT 1h momentum_short CAGR:+46.3% Grade:A
+    // BTC/USDT 1h momentum CAGR:+32.0% WR:58% Grade:B
     if str.contains(_tk,"BTC") and _tf_m==60
-        array.set(_p,0,2.4)
-        array.set(_p,1,2.0)
-        array.set(_p,2,5.0)
-        array.set(_p,3,56.0)
-        array.set(_p,5,2.5)
-    // BTC/USDT 4h tma_bands CAGR:+11.2% WR:71% Grade:C
+        array.set(_p,0,2.7)
+        array.set(_p,1,2.9)
+        array.set(_p,2,12.0)
+        array.set(_p,3,61.0)
+        array.set(_p,5,1.2)
+        array.set(_p,11,64.0)
+    // BTC/USDT 4h three_candles_short CAGR:+24.3% WR:70% Grade:B
     if str.contains(_tk,"BTC") and _tf_m==240
-        array.set(_p,0,3.1)
-        array.set(_p,1,1.6)
-        array.set(_p,2,8.0)
-        array.set(_p,3,48.0)
-        array.set(_p,6,23.0)
-        array.set(_p,7,2.1)
+        array.set(_p,0,2.8)
+        array.set(_p,1,1.8)
+        array.set(_p,2,3.0)
+        array.set(_p,3,61.0)
+        array.set(_p,5,1.0)
     // BTC/USDT 5m momentum_short CAGR:+6.6% WR:67% Grade:D
     if str.contains(_tk,"BTC") and _tf_m==5
         array.set(_p,0,2.9)
@@ -718,7 +718,7 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,2,11.0)
         array.set(_p,3,60.0)
         array.set(_p,5,2.3)
-    // ETH/USDT 15m volatility_breakout CAGR:+77.6% Grade:A
+    // ETH/USDT 15m volatility_breakout CAGR:+77.6% WR:73% Grade:A
     if str.contains(_tk,"ETH") and _tf_m==15
         array.set(_p,0,3.4)
         array.set(_p,1,2.8)
@@ -746,7 +746,7 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,3.5)
         array.set(_p,2,3.0)
         array.set(_p,3,61.0)
-    // LTC/USDT 15m wedge_breakdown_short CAGR:+76.5% Grade:A
+    // LTC/USDT 15m wedge_breakdown_short CAGR:+76.5% WR:61% Grade:A
     if str.contains(_tk,"LTC") and _tf_m==15
         array.set(_p,0,3.3)
         array.set(_p,1,3.1)
@@ -754,23 +754,25 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,3,47.0)
         array.set(_p,4,8.0)
         array.set(_p,5,1.6)
-    // LTC/USDT 4h momentum_short CAGR:+48.1% Grade:A
+    // LTC/USDT 1h williams_r CAGR:+130.5% WR:56% Grade:A+
+    if str.contains(_tk,"LTC") and _tf_m==60
+        array.set(_p,0,2.2)
+        array.set(_p,1,2.9)
+        array.set(_p,2,12.0)
+        array.set(_p,3,44.0)
+    // LTC/USDT 4h bearish_rsi_divergence CAGR:+39.7% WR:73% Grade:B
     if str.contains(_tk,"LTC") and _tf_m==240
-        array.set(_p,0,1.6)
-        array.set(_p,1,4.0)
-        array.set(_p,2,3.0)
-        array.set(_p,3,62.0)
-        array.set(_p,5,1.2)
-    // SOL/USDT 15m regime_adaptive CAGR:+29.9% WR:58% Grade:C
+        array.set(_p,0,2.6)
+        array.set(_p,1,1.8)
+        array.set(_p,2,8.0)
+        array.set(_p,3,53.0)
+        array.set(_p,4,17.0)
+    // SOL/USDT 15m roc_negative_short CAGR:+35.7% WR:63% Grade:B
     if str.contains(_tk,"SOL") and _tf_m==15
-        array.set(_p,0,1.8)
-        array.set(_p,1,3.3)
+        array.set(_p,0,3.2)
+        array.set(_p,1,3.2)
         array.set(_p,2,3.0)
-        array.set(_p,3,52.0)
-        array.set(_p,4,59.0)
-        array.set(_p,5,1.7)
-        array.set(_p,14,65.0)
-        array.set(_p,15,34.0)
+        array.set(_p,3,44.0)
     // SOL/USDT 1h breakdown CAGR:+36.9% WR:75% Grade:A
     if str.contains(_tk,"SOL") and _tf_m==60
         array.set(_p,0,2.0)
@@ -779,20 +781,30 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,3,47.0)
         array.set(_p,4,53.0)
         array.set(_p,5,3.2)
-    // SOL/USDT 4h pullback_short CAGR:+48.3% Grade:A
+    // SOL/USDT 4h supply_zone_rejection CAGR:+28.3% WR:70% Grade:A
     if str.contains(_tk,"SOL") and _tf_m==240
-        array.set(_p,0,1.5)
-        array.set(_p,1,4.0)
-        array.set(_p,2,6.0)
-        array.set(_p,3,49.0)
-        array.set(_p,8,50.0)
-        array.set(_p,9,55.0)
+        array.set(_p,0,3.2)
+        array.set(_p,1,2.2)
+        array.set(_p,2,4.0)
+        array.set(_p,3,61.0)
+        array.set(_p,4,21.0)
+        array.set(_p,5,1.3)
     // SOL/USDT 5m roc_negative_short CAGR:+29.6% WR:46% Grade:C
     if str.contains(_tk,"SOL") and _tf_m==5
         array.set(_p,0,1.9)
         array.set(_p,1,4.0)
         array.set(_p,2,3.0)
         array.set(_p,3,62.0)
+    // XAU/USD 1h regime_adaptive CAGR:+205.1% WR:70% Grade:A+
+    if str.contains(_tk,"XAU") and _tf_m==60
+        array.set(_p,0,1.6)
+        array.set(_p,1,3.2)
+        array.set(_p,2,11.0)
+        array.set(_p,3,58.0)
+        array.set(_p,4,23.0)
+        array.set(_p,5,1.9)
+        array.set(_p,14,63.0)
+        array.set(_p,15,32.0)
     _p
 
 // Función 3: metadata del modelo (Grade|dias|WR%|WFT)
@@ -801,19 +813,19 @@ f_meta(_tk, _tf_m) =>
     if str.contains(_tk,"BNB") and _tf_m==15
         _r := "C|0|61|FAIL"
     if str.contains(_tk,"BNB") and _tf_m==60
-        _r := "C|0|?|OK"
+        _r := "B|0|82|OK"
     if str.contains(_tk,"BNB") and _tf_m==240
         _r := "A|0|78|OK"
     if str.contains(_tk,"BTC") and _tf_m==15
         _r := "B|0|63|OK"
     if str.contains(_tk,"BTC") and _tf_m==60
-        _r := "A|0|?|OK"
+        _r := "B|0|58|OK"
     if str.contains(_tk,"BTC") and _tf_m==240
-        _r := "C|0|71|OK"
+        _r := "B|0|70|FAIL"
     if str.contains(_tk,"BTC") and _tf_m==5
         _r := "D|0|67|--"
     if str.contains(_tk,"ETH") and _tf_m==15
-        _r := "A|0|?|OK"
+        _r := "A|0|73|OK"
     if str.contains(_tk,"ETH") and _tf_m==60
         _r := "A|0|85|OK"
     if str.contains(_tk,"ETH") and _tf_m==240
@@ -821,19 +833,21 @@ f_meta(_tk, _tf_m) =>
     if str.contains(_tk,"ETH") and _tf_m==5
         _r := "C|0|73|FAIL"
     if str.contains(_tk,"LTC") and _tf_m==15
-        _r := "A|0|?|OK"
+        _r := "A|0|61|OK"
     if str.contains(_tk,"LTC") and _tf_m==60
-        _r := "A|0|?|OK"
+        _r := "A+|0|56|OK"
     if str.contains(_tk,"LTC") and _tf_m==240
-        _r := "A|0|?|OK"
+        _r := "B|0|73|OK"
     if str.contains(_tk,"SOL") and _tf_m==15
-        _r := "C|0|58|FAIL"
+        _r := "B|0|63|OK"
     if str.contains(_tk,"SOL") and _tf_m==60
         _r := "A|0|75|FAIL"
     if str.contains(_tk,"SOL") and _tf_m==240
-        _r := "A|0|?|OK"
+        _r := "A|0|70|OK"
     if str.contains(_tk,"SOL") and _tf_m==5
         _r := "C|0|46|OK"
+    if str.contains(_tk,"XAU") and _tf_m==60
+        _r := "A+|0|70|--"
     _r
 
 // Cargar parámetros automáticamente según ticker y TF del chart actual
@@ -884,29 +898,30 @@ m_ema_pd = m_ema_type == 50 ? _ema50 : m_ema_type == 34 ? _ema34 : _ema21
 // [SIGMA-GEN-INDICATORS-START]
 _tl14 = ta.sma(ta.sma(close, 14), 14)
 _tl19 = ta.sma(ta.sma(close, 19), 19)
-_tl23 = ta.sma(ta.sma(close, 23), 23)
-m_tma_line  = m_tma_per==14?_tl14 : m_tma_per==19?_tl19 : m_tma_per==23?_tl23 : _tl19
+m_tma_line  = m_tma_per==14?_tl14 : m_tma_per==19?_tl19 : _tl19
 m_tma_lower = m_tma_line - atr * m_atr_mult
 m_tma_upper = m_tma_line + atr * m_atr_mult
 
+_hi8 = ta.highest(high, 8)
 _hi17 = ta.highest(high, 17)
+_hi21 = ta.highest(high, 21)
+_hi23 = ta.highest(high, 23)
 _hi29 = ta.highest(high, 29)
 _hi30 = ta.highest(high, 30)
 _hi48 = ta.highest(high, 48)
 _hi53 = ta.highest(high, 53)
-_hi59 = ta.highest(high, 59)
 _hi66 = ta.highest(high, 66)
-_hi70 = ta.highest(high, 70)
+_lo8 = ta.lowest(low,   8)
 _lo17 = ta.lowest(low,   17)
+_lo21 = ta.lowest(low,   21)
+_lo23 = ta.lowest(low,   23)
 _lo29 = ta.lowest(low,   29)
 _lo30 = ta.lowest(low,   30)
 _lo48 = ta.lowest(low,   48)
 _lo53 = ta.lowest(low,   53)
-_lo59 = ta.lowest(low,   59)
 _lo66 = ta.lowest(low,   66)
-_lo70 = ta.lowest(low,   70)
-_m_hi = m_lookback==17?_hi17 : m_lookback==29?_hi29 : m_lookback==30?_hi30 : m_lookback==48?_hi48 : m_lookback==53?_hi53 : m_lookback==59?_hi59 : m_lookback==66?_hi66 : m_lookback==70?_hi70 : _hi30
-_m_lo = m_lookback==17?_lo17 : m_lookback==29?_lo29 : m_lookback==30?_lo30 : m_lookback==48?_lo48 : m_lookback==53?_lo53 : m_lookback==59?_lo59 : m_lookback==66?_lo66 : m_lookback==70?_lo70 : _lo30
+_m_hi = m_lookback==8?_hi8 : m_lookback==17?_hi17 : m_lookback==21?_hi21 : m_lookback==23?_hi23 : m_lookback==29?_hi29 : m_lookback==30?_hi30 : m_lookback==48?_hi48 : m_lookback==53?_hi53 : m_lookback==66?_hi66 : _hi30
+_m_lo = m_lookback==8?_lo8 : m_lookback==17?_lo17 : m_lookback==21?_lo21 : m_lookback==23?_lo23 : m_lookback==29?_lo29 : m_lookback==30?_lo30 : m_lookback==48?_lo48 : m_lookback==53?_lo53 : m_lookback==66?_lo66 : _lo30
 // [SIGMA-GEN-INDICATORS-END]
 
 // ── Señales por estrategia (una línea cada una — Pine v6) ────────────────────

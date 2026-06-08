@@ -55,8 +55,16 @@ def robustness_score(model_dict: dict) -> dict:
     cagr_is = float(m_is.get("cagr", 0) or 0)
     cagr_oos = float(m_oos.get("cagr", 0) or 0)
     if cagr_is and cagr_oos:
-        gap = abs(cagr_is - cagr_oos)
-        consistency = max(0, 1 - gap / max(abs(cagr_is), 30))
+        if cagr_is <= 0:
+            # IS negativo: estrategia sin edge claro en training → penalizar moderado
+            consistency = 0.20
+        elif cagr_oos >= cagr_is:
+            # OOS >= IS: conservador en IS, mejor en OOS → anti-overfit (recompensa)
+            consistency = 1.0
+        else:
+            # IS > OOS: overfit clásico → penalizar por gap
+            gap = cagr_is - cagr_oos
+            consistency = max(0, 1 - gap / max(abs(cagr_is), 30))
     else:
         consistency = 0.30
 

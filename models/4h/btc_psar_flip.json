@@ -29,12 +29,12 @@
   "oos_days": 637,
   "saved_at": "2026-05-13 03:32:44.558060",
   "mc": {
-    "mc_cagr_p05": -8.3,
-    "mc_cagr_p50": 20.8,
+    "mc_cagr_p05": -16.4,
+    "mc_cagr_p50": 10.1,
     "mc_cagr_p95": 45.1,
     "mc_dd_p50": -20.4,
     "mc_dd_p95": -10.8,
-    "mc_confidence": 87.3,
+    "mc_confidence": 85.2,
     "mc_sims": 1000
   },
   "validation": {

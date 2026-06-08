@@ -4,14 +4,14 @@
     "SOL|5m": "roc_negative_short|short",
     "ETH|5m": "volatility_breakout|long",
     "BTC|15m": "dmi_bear|short",
-    "ETH|15m": "breakout|long",
-    "SOL|15m": "regime_adaptive|long",
-    "LTC|15m": "psar_flip|long",
+    "ETH|15m": "volatility_breakout|long",
+    "SOL|15m": "roc_negative_short|short",
+    "LTC|15m": "wedge_breakdown_short|short",
     "BNB|15m": "consecutive_wick|long",
-    "BTC|4h": "tma_bands|long",
+    "BTC|4h": "three_candles_short|short",
     "ETH|4h": "tma_bands|long",
     "LTC|4h": "bearish_rsi_divergence|short",
-    "SOL|4h": "tma_bands|long",
+    "SOL|4h": "supply_zone_rejection|short",
     "BNB|4h": "breakout|long",
     "BTC|1h": "momentum|long",
     "ETH|1h": "breakout|long",
@@ -20,10 +20,10 @@
     "SOL|1h": "breakdown|short",
     "XAU/USD|1h": "regime_adaptive|long"
   },
-  "last_notified_at": "2026-06-07T13:21:52.158207",
+  "last_notified_at": "2026-06-07T22:49:52.723390",
   "changes_summary": {
-    "fresh_discoveries": 0,
-    "discoveries": 0,
+    "fresh_discoveries": 4,
+    "discoveries": 1,
     "rotations": 0
   }
 }

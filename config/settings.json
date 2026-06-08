@@ -1,5 +1,5 @@
 {
-  "_comment": "SIGMA ENGINE — Configuracion central. Todo el sistema referencia este archivo.",
+  "_comment": "SIGMA ENGINE \u2014 Configuracion central. Todo el sistema referencia este archivo.",
   "identity": {
     "name": "SIGMA ENGINE",
     "version": "1.0.0",
@@ -174,7 +174,7 @@
   },
   "telegram": {},
   "discord": {
-    "bot_token": "MTUwNDkwNTk5MjA2Mjc2NzE2NA.GDsVYD.FJ8cO5bq1gzOSimBmzUAx3TTct2BOs-IR0TB-U",
+    "bot_token": "MTUwNDkwNTk5MjA2Mjc2NzE2NA.GrQzOY.yVpqIPy3htFP7ihkorTDCMHKL1jXCdsH1sO96Q",
     "application_id": "1504905992062767164",
     "guild_id": 1387450237349662854,
     "channel_ids": {

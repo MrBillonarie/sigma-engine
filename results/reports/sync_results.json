@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-07T19:00:01.780604",
+  "timestamp": "2026-06-08T04:00:01.964480",
   "models": {
     "1h": [
       {
@@ -9,14 +9,6 @@
         "wr_oos": 70.0,
         "dd_oos": -6.7,
         "trades_oos": 20
-      },
-      {
-        "file": "xau_regime_adaptive.json",
-        "strategy": "regime_adaptive",
-        "cagr_oos": 167.4,
-        "wr_oos": 71.4,
-        "dd_oos": -6.5,
-        "trades_oos": 21
       },
       {
         "file": "ltc_williams_r.json",
