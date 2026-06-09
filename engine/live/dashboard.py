@@ -18,9 +18,12 @@ from datetime import datetime, date, timezone
 
 OUTPUT_DIR = Path(__file__).parent.parent.parent
 
-ASSETS = ['BTC','ETH','LTC','SOL','BNB','XAU']
-ASSET_EMOJI = {'BTC':'&#8383;','ETH':'&#926;','LTC':'&#321;','SOL':'&#9678;','BNB':'&#11042;','XAU':'Au'}
-ASSET_COLOR = {'BTC':'#f7931a','ETH':'#627eea','LTC':'#345d9d','SOL':'#9945ff','BNB':'#f3ba2f','XAU':'#FFD700'}
+ASSETS    = ['BTC','ETH','LTC','SOL','BNB','XAU','XAG']
+ASSETS_M1 = ['BTC','ETH','LTC','SOL','BNB']          # Motor 1: Crypto
+ASSETS_M2 = ['XAU','XAG','WTI','HG','NG','PL']         # Motor 2: Commodities
+TIMEFRAMES_M2 = ['4h','1h','15m','5m']               # Motor 2 mismos TFs que Motor 1
+ASSET_EMOJI = {'BTC':'&#8383;','ETH':'&#926;','LTC':'&#321;','SOL':'&#9678;','BNB':'&#11042;','XAU':'Au','XAG':'Ag','WTI':'&#9651;','HG':'Cu','NG':'&#9650;','PL':'Pt'}
+ASSET_COLOR = {'BTC':'#f7931a','ETH':'#627eea','LTC':'#345d9d','SOL':'#9945ff','BNB':'#f3ba2f','XAU':'#FFD700','XAG':'#C0C0C0','WTI':'#4a90d9','HG':'#B87333','NG':'#e67e22','PL':'#7ec8e3'}
 TIMEFRAMES  = ['4h','1h','15m','5m']
 TF_LABEL    = {'4h':'4H','1h':'1H','15m':'15m','5m':'5m'}
 TF_COLORS_H = {'4h':'#2ecc71','1h':'#58a6ff','15m':'#f1c40f','5m':'#e67e22'}
@@ -600,9 +603,11 @@ def cell_html(asset, tf):
 
         if ma and not ml and not ms:
             # Solo adaptive — mostrar compacto
+            _sep_div = '<div style="border-top:1px solid #1c2128;margin:2px 0"></div>'
+            _adp = comb_row.replace('margin-top:1px', 'margin-top:6px').replace(_sep_div, '', 1)
             return (
                 f'<td class="cell-ok" style="background:linear-gradient(180deg,rgba(88,166,255,.07),rgba(88,166,255,.01))">'
-                f'{comb_row.replace("<div style=", "<div style=").replace("margin-top:1px", "margin-top:0")}'
+                f'{_adp}'
                 f'</td>'
             )
 
@@ -648,9 +653,9 @@ def generate_html():
     phase_txt = f'FASE OK ({cyc_pct:.0f}%)' if phase_ok else f'FASE DIFICIL ({cyc_pct:.0f}%)'
     phase_col = '#2ecc71' if phase_ok else '#e74c3c'
 
-    # Top models for portfolio rule
+    # Top models for portfolio rule (Motor 1 only — Motor 2 is independent)
     all_m = []
-    for asset in ASSETS:
+    for asset in ASSETS_M1:
         for tf in ['1h','4h','15m','5m']:
             ml = load_model(asset, tf, direction='long')
             ms = load_model(asset, tf, direction='short')
@@ -685,7 +690,7 @@ def generate_html():
 
     # Count total ready
     n_ready   = sum(1 for c,a,t,m in all_m)
-    n_total   = len(ASSETS) * len(TIMEFRAMES)  # 5 activos x 4 TFs = 20
+    n_total   = len(ASSETS_M1) * len(TIMEFRAMES) + len(ASSETS_M2) * len(TIMEFRAMES_M2)  # M1: 5x4=20 + M2: 2x2=4 = 24
 
     # Walk-forward stats
     wft_done = len(wft)
@@ -703,7 +708,7 @@ def generate_html():
     tf_models = {tf: [] for tf in TIMEFRAMES}  # tf -> list of (cagr, wr, trades, score)
     current_champions = {}  # 'ASSET|tf|dir' -> strategy_name (para detectar cambios de campeon)
 
-    for asset in ASSETS:
+    for asset in ASSETS_M1:
         color  = ASSET_COLOR[asset]
         emoji  = ASSET_EMOJI[asset]
         cells  = ''.join(cell_html(asset, tf) for tf in TIMEFRAMES)
@@ -1162,6 +1167,112 @@ def generate_html():
           <td>{t}</td>
           <td><span class="badge" style="background:{cc2}20;color:{cc2};border:1px solid {cc2}">{ct2}{f" ({p_pos:.0f}%)" if p_pos else ""}</span></td>
         </tr>'''
+
+
+    #  Motor 2 matrix (XAU/XAG x 4h/1h/15m/5m) - misma tabla que Motor 1
+    m2_tf_models = {tf: [] for tf in TIMEFRAMES_M2}
+    matrix_rows_m2 = ''
+    for _m2a in ASSETS_M2:
+        _color = ASSET_COLOR[_m2a]
+        _emoji = ASSET_EMOJI[_m2a]
+        _cells = ''.join(cell_html(_m2a, tf) for tf in TIMEFRAMES_M2)
+        matrix_rows_m2 += (
+            f'<tr><td class="asset-col">'
+            f'<div class="asset-box" style="--asset-color:{_color}">'
+            f'<span class="asset-emoji" style="color:{_color}">{_emoji}</span>'
+            f'<span class="asset-name">{_m2a}</span>'
+            f'</div></td>{_cells}</tr>'
+        )
+        for _tf2 in TIMEFRAMES_M2:
+            _m2ml = load_model(_m2a, _tf2, direction='long')
+            _m2ms = load_model(_m2a, _tf2, direction='short')
+            _m2b  = None
+            if _m2ml and _m2ms:
+                _m2b = _m2ml if ((_m2ml.get('score') or -9999) >= (_m2ms.get('score') or -9999)) else _m2ms
+            elif _m2ml: _m2b = _m2ml
+            elif _m2ms: _m2b = _m2ms
+            if _m2b:
+                m2_tf_models[_tf2].append((
+                    float(_m2b.get('cagr', 0) or 0),
+                    float(_m2b.get('wr', 0) or 0),
+                    int(_m2b.get('trades', 0) or 0),
+                    float(_m2b.get('score', -9999) or -9999),
+                    float(_m2b.get('dd', 0) or 0),
+                    float(_m2b.get('pf', 0) or 0),
+                ))
+
+    # Ponderado row (same style as M1)
+    _m2_sum_cells = ''
+    _m2_all_c, _m2_all_wr, _m2_all_dd, _m2_all_t = [], [], [], 0
+    for _tf2 in TIMEFRAMES_M2:
+        _ms2 = m2_tf_models[_tf2]
+        if _ms2:
+            _c2 = [x[0] for x in _ms2]; _w2 = [x[1] for x in _ms2]
+            _t2 = [x[2] for x in _ms2]; _d2 = [x[4] for x in _ms2]
+            _tot2 = sum(_t2)
+            _wwr2 = sum(_w2[i]*_t2[i] for i in range(len(_ms2))) / max(_tot2, 1)
+            _avg2 = sum(_c2) / len(_c2)
+            _m2_all_c.extend(_c2); _m2_all_wr.extend(_w2)
+            _m2_all_dd.extend(_d2); _m2_all_t += _tot2
+            _m2_sum_cells += (
+                f'<td style="text-align:center;border-top:2px solid #FFD70033;padding:7px 4px">'
+                f'<div style="color:{c_cagr(_avg2)};font-family:\'JetBrains Mono\',monospace;font-size:12px;font-weight:700">{_avg2:+.1f}%</div>'
+                f'<div style="font-size:10px;color:{c_wr(_wwr2)}">WR {_wwr2:.0f}%</div>'
+                f'<div style="font-size:10px;color:#8b949e">{_tot2}T</div>'
+                f'</td>'
+            )
+        else:
+            _m2_sum_cells += '<td style="border-top:2px solid #FFD70033;text-align:center;color:#30363d">--</td>'
+    matrix_rows_m2 += (
+        f'<tr style="background:#0d1117">'
+        f'<td style="border-top:2px solid #FFD70033;padding:7px 8px">'
+        f'<span style="font-size:10px;font-weight:700;color:#FFD700;text-transform:uppercase;letter-spacing:.05em">Ponderado</span>'
+        f'</td>{_m2_sum_cells}</tr>'
+    )
+
+    # Stats row (colspan across all cols)
+    _m2pc  = round(sum(_m2_all_c)/len(_m2_all_c),1) if _m2_all_c else 0.0
+    _m2wr  = round(sum(_m2_all_wr)/len(_m2_all_wr),1) if _m2_all_wr else 0.0
+    _m2dd  = round(sum(_m2_all_dd)/len(_m2_all_dd),1) if _m2_all_dd else 0.0
+    _m2_ns = len(_m2_all_c)
+    _m2_nt = len(ASSETS_M2) * len(TIMEFRAMES_M2)
+    _m2_dxy = _m2_y10 = 0.0
+    try:
+        import pandas as _mpd
+        _m2_csv = OUTPUT_DIR / 'models' / 'data_XAU_1h_max.csv'
+        if _m2_csv.exists():
+            _m2_df = _mpd.read_csv(str(_m2_csv), index_col=0)
+            if 'dxy' in _m2_df.columns:
+                _s = _m2_df['dxy'].dropna()
+                if len(_s): _m2_dxy = float(_s.iloc[-1])
+            if 'yield_10y' in _m2_df.columns:
+                _s = _m2_df['yield_10y'].dropna()
+                if len(_s): _m2_y10 = float(_s.iloc[-1])
+    except Exception: pass
+    _m2_dxy_col  = '#f85149' if _m2_dxy > 104 else '#ff9800' if _m2_dxy > 101 else '#2ecc71' if _m2_dxy > 0 else '#8b949e'
+    _m2_y10_col  = '#f85149' if _m2_y10 > 4.5 else '#ff9800' if _m2_y10 > 4.0 else '#2ecc71' if _m2_y10 > 0 else '#8b949e'
+    _m2_dd_col   = '#f85149' if _m2dd < -25 else '#ff9800' if _m2dd < -15 else '#e6edf3'
+    _m2_slots_col= '#2ecc71' if _m2_ns == _m2_nt else '#f1c40f' if _m2_ns > 0 else '#555'
+    _m2_dxy_str  = f'<span style="color:{_m2_dxy_col};font-family:monospace;font-weight:700">{_m2_dxy:.1f}</span>' if _m2_dxy else '<span style="color:#555">--</span>'
+    _m2_y10_str  = f'<span style="color:{_m2_y10_col};font-family:monospace;font-weight:700">{_m2_y10:.2f}%</span>' if _m2_y10 else '<span style="color:#555">--</span>'
+    _m2_ncols = 1 + len(TIMEFRAMES_M2)
+    matrix_rows_m2 += (
+        f'<tr style="background:#070d17">'
+        f'<td colspan="{_m2_ncols}" style="padding:8px 10px;border-top:1px solid #21262d">'
+        f'<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px 8px;text-align:center">'
+        f'<div><div style="color:#8b949e;font-size:9px;text-transform:uppercase">CAGR</div>'
+        f'<div style="font-family:\'JetBrains Mono\',monospace;color:{c_cagr(_m2pc)};font-weight:700;font-size:14px">{_m2pc:+.1f}%</div></div>'
+        f'<div><div style="color:#8b949e;font-size:9px;text-transform:uppercase">Win Rate</div>'
+        f'<div style="font-family:\'JetBrains Mono\',monospace;color:{c_wr(_m2wr)};font-weight:700;font-size:14px">{_m2wr:.1f}%</div></div>'
+        f'<div><div style="color:#8b949e;font-size:9px;text-transform:uppercase">Max DD</div>'
+        f'<div style="font-family:\'JetBrains Mono\',monospace;color:{_m2_dd_col};font-weight:700;font-size:13px">{_m2dd:.1f}%</div></div>'
+        f'<div><div style="color:#8b949e;font-size:9px">DXY</div><div style="font-size:11px">{_m2_dxy_str}</div></div>'
+        f'<div><div style="color:#8b949e;font-size:9px">US10Y</div><div style="font-size:11px">{_m2_y10_str}</div></div>'
+        f'<div><div style="color:#8b949e;font-size:9px">Slots</div>'
+        f'<div style="color:{_m2_slots_col};font-weight:600;font-size:12px">{_m2_ns}/{_m2_nt} &bull; {_m2_all_t}T</div></div>'
+        f'</div></td></tr>'
+    )
+    #  end Motor 2 matrix
 
     # WFT table (last 15 windows)
     wft_rows = ''
@@ -1896,34 +2007,54 @@ table.t tr:hover td{{background:#1c2128}}
   <div class="prog">Modelos listos: <strong>{n_ready}/{n_total}</strong></div>
 </div>
 
-<!-- MATRIX 5x5 -->
-<div class="card" id="matrix-section">
-  <div class="card-title" style="display:flex;justify-content:space-between">
-    <span>Matriz de Modelos — 5 Activos x 5 Timeframes</span>
-    <span style="font-weight:400;color:#555">
-      <span style="color:#2ecc71">&#9632;</span> Positivo &nbsp;
-      <span style="color:#58a6ff">&#9632;</span> Optimizando &nbsp;
-      <span style="color:#30363d">&#9632;</span> Pendiente &nbsp;
-      <span style="color:#e74c3c44">&#9632;</span> OOS neg.
-    </span>
+<!-- MOTOR 1 -->
+
+  <!-- Motor 1: Crypto -->
+  <div class="card" id="matrix-section">
+    <div class="card-title" style="display:flex;justify-content:space-between">
+      <span>Motor 1 &mdash; Crypto &nbsp;<span style="font-weight:400;color:#8b949e;font-size:12px">BTC / ETH / LTC / SOL / BNB</span></span>
+      <span style="font-weight:400;color:#555;font-size:12px">
+        <span style="color:#2ecc71">&#9632;</span> Positivo &nbsp;
+        <span style="color:#58a6ff">&#9632;</span> Optimizando &nbsp;
+        <span style="color:#30363d">&#9632;</span> Pendiente &nbsp;
+        <span style="color:#e74c3c44">&#9632;</span> OOS neg.
+      </span>
+    </div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th class="th-asset">Activo</th>
+            <th>4H</th>
+            <th>1H</th>
+            <th>15m</th>
+            <th>5m</th>
+          </tr>
+        </thead>
+        <tbody>
+          {matrix_rows}
+        </tbody>
+      </table>
+    </div>
   </div>
-  <div class="matrix-wrap">
-    <table class="matrix">
-      <thead>
-        <tr>
+
+  <!-- Motor 2: Commodities -->
+  <div class="card" id="matrix-section-m2" style="border:1px solid #FFD70044;background:linear-gradient(180deg,rgba(255,215,0,.05),#161b22)">
+    <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
+      <span><span style="color:#FFD700;font-weight:700">Motor 2</span> <span style="color:#8b949e;font-weight:400">&mdash; Commodities</span> <span style="font-weight:400;color:#8b949e;font-size:11px">XAU / XAG</span></span>
+      <span style="font-weight:400;color:#555;font-size:10px"><span style="color:#2ecc71">&#9632;</span> Listo &nbsp;<span style="color:#58a6ff">&#9632;</span> Optim. &nbsp;<span style="color:#30363d">&#9632;</span> Pendiente</span>
+    </div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead><tr>
           <th class="th-asset">Activo</th>
-          <th>4H</th>
-          <th>1H</th>
-          <th>15m</th>
-          <th>5m</th>
-        </tr>
-      </thead>
-      <tbody>
-        {matrix_rows}
-      </tbody>
-    </table>
+          <th>4H</th><th>1H</th><th>15m</th><th>5m</th>
+        </tr></thead>
+        <tbody>{matrix_rows_m2}</tbody>
+      </table>
+    </div>
   </div>
-</div>
+
 
 <!-- BTC DETAIL + MC CONFIDENCE --><div id="btc-detail">
 {"" if not btc_detail else f'''
@@ -3565,7 +3696,7 @@ function showToast(e) {{
       <div style="font-size:11px;font-weight:700;color:#a78bfa;letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px">📊 Per-Model Trade</div>
       <div style="font-size:14px;font-weight:700;color:#c9d1d9">${{arrow}} <b>${{e.sym}}</b> ${{(e.tf||'').toUpperCase()}} ${{isShort?'SHORT':'LONG'}}</div>
       <div style="font-size:11px;color:#8b949e;margin-top:2px">${{e.strategy||''}} [${{e.grade||'?'}}]</div>
-      <div style="font-size:10px;color:#6e7681;margin-top:6px;font-family:'JetBrains Mono',monospace">Entry ${{e.entry}} · SL ${{e.sl}} · TP ${{e.tp}}</div>
+      
       <div style="font-size:10px;color:#6e7681;margin-top:2px">RR ${{e.rr}}:1 · Kelly ${{e.kelly_pct}}%</div>
     </div>
     <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:#6e7681;cursor:pointer;font-size:16px;line-height:1;padding:0">×</button>
@@ -3592,6 +3723,7 @@ function renderBellList(events) {{
         <span style="color:#6e7681;font-size:9px;font-family:'JetBrains Mono',monospace">${{(e.ts||'').substring(11,16)}}</span>
       </div>
       <div style="color:#8b949e;font-size:10px;margin-top:2px">[${{e.grade||'?'}}] Entry <b>${{e.entry}}</b> · Kelly ${{e.kelly_pct}}% · RR ${{e.rr}}:1</div>
+      <div style="font-size:10px;color:#6e7681;margin-top:5px;font-family:'JetBrains Mono',monospace">SL <b>${{e.sl||'--'}}</b> &bull; TP <b>${{e.tp||'--'}}</b></div>
     </div>`;
   }}
   list.innerHTML = html;

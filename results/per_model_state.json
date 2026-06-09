@@ -197,7 +197,18 @@
   "ETH_1h_momentum_short": {
     "equity": 8067.14,
     "initial": 10000,
-    "open": null,
+    "open": {
+      "sym": "ETH",
+      "tf": "1h",
+      "strategy": "momentum_short",
+      "direction": "short",
+      "entry": 1668.55,
+      "sl": 1740.5454,
+      "tp": 1619.1818,
+      "sl_dist_pct_at_open": 4.3148,
+      "kelly_pct": 1.5,
+      "opened_at": "2026-06-08 21:45:11"
+    },
     "history": [
       {
         "sym": "ETH",
@@ -736,5 +747,23 @@
     "created_at": "2026-06-07 18:39:40",
     "pre_initialized": true,
     "recommendation_at_init": "NO_ACTIVAR"
+  },
+  "HG_1h_mean_rev": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-06-09 01:29:13",
+    "pre_initialized": true,
+    "recommendation_at_init": "CONDICIONAL"
+  },
+  "HG_1h_lower_lows": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-06-09 01:33:48",
+    "pre_initialized": true,
+    "recommendation_at_init": "CONDICIONAL"
   }
 }

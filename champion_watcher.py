@@ -201,7 +201,7 @@ def _regen_snapshot():
                 d = json.loads(jf.read_text())
             except Exception:
                 continue
-            sym = (d.get('symbol') or '').replace('/USDT', '').upper()
+            sym = (d.get('symbol') or '').replace('/USDT', '').replace('/USD', '').upper()
             strat = d.get('strategy') or jf.stem.split('_', 1)[-1]
             if not sym or not strat: continue  # 2026-05-19: skip JSONs con symbol/strategy vacíos
             m = d.get('metrics_oos') or {}

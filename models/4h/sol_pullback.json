@@ -32,11 +32,11 @@
   "reeval_note": "funding+slippage aplicados",
   "mc": {
     "mc_cagr_p05": -8.3,
-    "mc_cagr_p50": 28.4,
+    "mc_cagr_p50": 43.7,
     "mc_cagr_p95": 101.3,
     "mc_dd_p50": -28.3,
     "mc_dd_p95": -15.3,
-    "mc_confidence": 90.9,
+    "mc_confidence": 91.2,
     "mc_sims": 1000
   },
   "wft": {

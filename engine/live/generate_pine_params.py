@@ -157,15 +157,16 @@ def get_best_models():
                         continue
                     # rank: PASS_LIVE=2, PAPER_ONLY=1, default=0
                     _rob_rank = {'PASS_LIVE': 2, 'PAPER_ONLY': 1}.get(_rob.get('action',''), 0)
+                    _rob_final = _rob.get('final', 0.0)  # final robustness score for tiebreak
                 except Exception:
                     pass
 
-                score = _score_fn(m, tf)
+                score = _score_fn(m, tf)  # canonical_score — used only for grade display
                 if score <= -9999: continue
 
                 key = (symbol, tf)
-                # Ranking tupla: (robustness_rank desc, score desc) — igual que port_snapshot
-                this_rank = (_rob_rank, score)
+                # Ranking: (robustness_rank, robustness_final) — matches port_snapshot exactly
+                this_rank = (_rob_rank, _rob_final)
                 if key in best_score and this_rank <= best_score[key]: continue
                 best_score[key] = this_rank
 

@@ -1,0 +1,90 @@
+{
+  "computed_at": "2026-06-09 04:05",
+  "n_trades": 21,
+  "portfolio": {
+    "equity": 11488.46,
+    "initial": 10000,
+    "return_pct": 14.88,
+    "var_95_pct": -3.5549,
+    "cvar_95_pct": -5.2339,
+    "var_99_pct": -5.2339,
+    "max_dd_pct": -8.74,
+    "max_losing_streak": 3
+  },
+  "concentration": {
+    "hhi": 0.4286,
+    "n_effective_assets": 2.33,
+    "ok": false,
+    "assets": {
+      "SOL": {
+        "n": 11,
+        "weight_pct": 52.4,
+        "wr": 63.6,
+        "total_pnl": 6.3,
+        "avg_pnl": 0.57,
+        "var_95": -5.2339
+      },
+      "BTC": {
+        "n": 8,
+        "weight_pct": 38.1,
+        "wr": 75.0,
+        "total_pnl": 2.98,
+        "avg_pnl": 0.37,
+        "var_95": -3.5549
+      },
+      "ETH": {
+        "n": 2,
+        "weight_pct": 9.5,
+        "wr": 100.0,
+        "total_pnl": 7.19,
+        "avg_pnl": 3.6,
+        "var_95": 3.2033
+      }
+    }
+  },
+  "direction_split": {
+    "short": {
+      "n": 21,
+      "weight_pct": 100.0,
+      "wr": 71.4,
+      "total_pnl": 16.47
+    }
+  },
+  "correlations": {
+    "all": {
+      "SOL/1h/breakdown\u2194BTC/1h/momentum_short": -0.403,
+      "SOL/1h/breakdown\u2194SOL/4h/momentum_short": 0.154,
+      "SOL/1h/breakdown\u2194BTC/4h/three_candles_short": 0.207,
+      "BTC/1h/momentum_short\u2194SOL/4h/momentum_short": 0.427,
+      "BTC/1h/momentum_short\u2194BTC/4h/three_candles_short": 0.59,
+      "SOL/4h/momentum_short\u2194BTC/4h/three_candles_short": -0.112
+    },
+    "high_pairs": {
+      "BTC/1h/momentum_short\u2194BTC/4h/three_candles_short": 0.59
+    },
+    "n_high": 1
+  },
+  "alpha_per_strategy": {
+    "BTC/1h/momentum_short": {
+      "n": 4,
+      "avg_pnl": 0.02,
+      "dir_avg": 0.784,
+      "alpha": -0.765,
+      "positive_alpha": false
+    },
+    "SOL/4h/momentum_short": {
+      "n": 4,
+      "avg_pnl": 1.27,
+      "dir_avg": 0.784,
+      "alpha": 0.486,
+      "positive_alpha": true
+    },
+    "BTC/4h/three_candles_short": {
+      "n": 4,
+      "avg_pnl": 0.725,
+      "dir_avg": 0.784,
+      "alpha": -0.059,
+      "positive_alpha": false
+    }
+  }
+}

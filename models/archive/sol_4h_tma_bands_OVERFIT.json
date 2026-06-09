@@ -31,12 +31,12 @@
   "reeval_date": "2026-05-09 18:19",
   "reeval_note": "funding+slippage aplicados",
   "mc": {
-    "mc_cagr_p05": -6.2,
+    "mc_cagr_p05": -16.4,
     "mc_cagr_p50": 86.3,
     "mc_cagr_p95": 230.0,
-    "mc_dd_p50": -45.8,
+    "mc_dd_p50": -42.5,
     "mc_dd_p95": -26.6,
-    "mc_confidence": 91.8,
+    "mc_confidence": 89.9,
     "mc_sims": 1000
   },
   "wft": {

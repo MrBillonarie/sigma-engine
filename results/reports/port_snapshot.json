@@ -1,15 +1,15 @@
 {
-  "port_cagr": 48.1,
+  "port_cagr": 44.49,
   "port_cagr_kelly_boost": 0.7506,
-  "port_cagr_with_kelly": 49.8508,
-  "port_wr": 62.637126436781614,
-  "port_dd": -30.88471264367816,
-  "port_pf": 2.076111111111111,
-  "port_calmar": 0.99,
-  "total_trades": 891,
-  "n_grade_a": 8,
-  "snapshot_at": "2026-06-08T08:11:38.279388Z",
-  "trigger": "BTC 1h: momentum|long\u2192pullback|long; BNB 1h: mfi_reversal|long\u2192break_of_structure|long; XAU 1h: \u2014\u2192regime_adaptive|long",
+  "port_cagr_with_kelly": 46.1802,
+  "port_wr": 62.46388235294118,
+  "port_dd": -31.453764705882353,
+  "port_pf": 2.048235294117647,
+  "port_calmar": 0.92,
+  "total_trades": 871,
+  "n_grade_a": 7,
+  "snapshot_at": "2026-06-09T06:49:30.256500Z",
+  "trigger": "BTC 1h: momentum|long\u2192pullback|long; BNB 1h: mfi_reversal|long\u2192break_of_structure|long",
   "champions": {
     "BTC|4h": "three_candles_short|short",
     "BTC|1h": "pullback|long",
@@ -28,12 +28,11 @@
     "SOL|5m": "roc_negative_short|short",
     "BNB|4h": "breakout|long",
     "BNB|1h": "break_of_structure|long",
-    "BNB|15m": "consecutive_wick|long",
-    "XAU|1h": "regime_adaptive|long"
+    "BNB|15m": "consecutive_wick|long"
   },
-  "port_cagr_operational": 48.1,
+  "port_cagr_operational": 44.49,
   "port_cagr_pass_live": 47.95,
-  "port_cagr_all_inc_blocked": 48.1,
+  "port_cagr_all_inc_blocked": 44.49,
   "n_pass_live": 12,
   "n_blocked": 0
 }

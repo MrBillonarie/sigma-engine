@@ -253,6 +253,19 @@ def add_features(df):
         df['htf_bull']  = True  # fallback: sin filtro HTF
         df['htf_bear']  = False
         df['htf_range'] = False
+
+    # Macro features — solo si existen en el CSV (commodities: XAU/XAG)
+    if 'dxy' in df.columns:
+        _dxy = df['dxy'].ffill().bfill()
+        df['dxy_ema50']  = _dxy.ewm(span=50, adjust=False).mean()
+        df['dxy_bull']   = (_dxy > df['dxy_ema50']).astype(float)   # USD fuerte: malo para oro
+        df['dxy_chg5']   = _dxy.pct_change(5).fillna(0)
+    if 'yield_10y' in df.columns:
+        _y10 = df['yield_10y'].ffill().bfill()
+        df['yield_ema20']  = _y10.ewm(span=20, adjust=False).mean()
+        df['yield_rising'] = (_y10 > df['yield_ema20']).astype(float)  # yields subiendo: malo para oro
+        df['yield_chg5']   = _y10.pct_change(5).fillna(0)
+
     df.dropna(subset=['atr', 'ema200'], inplace=True)
     return df
 

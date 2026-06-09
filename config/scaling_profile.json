@@ -1,0 +1,56 @@
+{
+  "_comment": "CPU tiers for SIGMA ENGINE \u2014 run utils/cpu_scaler.py after CPU upgrade",
+  "auto_detect": true,
+  "cpu_tiers": {
+    "1": {
+      "max_parallel": 1,
+      "optuna_trials": 200,
+      "wft_windows": 3,
+      "mc_sims": 300,
+      "push_trials": 400,
+      "label": "Entry"
+    },
+    "2": {
+      "max_parallel": 2,
+      "optuna_trials": 300,
+      "wft_windows": 3,
+      "mc_sims": 500,
+      "push_trials": 600,
+      "label": "Basic"
+    },
+    "4": {
+      "max_parallel": 4,
+      "optuna_trials": 600,
+      "wft_windows": 5,
+      "mc_sims": 1000,
+      "push_trials": 1200,
+      "label": "Standard"
+    },
+    "8": {
+      "max_parallel": 8,
+      "optuna_trials": 1200,
+      "wft_windows": 6,
+      "mc_sims": 2000,
+      "push_trials": 2500,
+      "label": "Advanced"
+    },
+    "16": {
+      "max_parallel": 14,
+      "optuna_trials": 2500,
+      "wft_windows": 8,
+      "mc_sims": 4000,
+      "push_trials": 5000,
+      "label": "Professional"
+    },
+    "32": {
+      "max_parallel": 28,
+      "optuna_trials": 5000,
+      "wft_windows": 10,
+      "mc_sims": 8000,
+      "push_trials": 10000,
+      "label": "Institutional"
+    }
+  },
+  "last_applied_cpu": 8,
+  "last_applied_date": "2026-06-08"
+}

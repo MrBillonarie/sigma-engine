@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-08T04:00:01.964480",
+  "timestamp": "2026-06-09T04:00:01.552079",
   "models": {
     "1h": [
       {
@@ -17,6 +17,14 @@
         "wr_oos": 56.2,
         "dd_oos": -18.6,
         "trades_oos": 32
+      },
+      {
+        "file": "hgusd_lower_lows.json",
+        "strategy": "lower_lows",
+        "cagr_oos": 64.0,
+        "wr_oos": 58.1,
+        "dd_oos": -22.3,
+        "trades_oos": 31
       },
       {
         "file": "btc_momentum_short.json",
@@ -81,6 +89,14 @@
         "wr_oos": 58.0,
         "dd_oos": -26.4,
         "trades_oos": 50
+      },
+      {
+        "file": "hgusd_mean_rev.json",
+        "strategy": "mean_rev",
+        "cagr_oos": 12.0,
+        "wr_oos": 70.8,
+        "dd_oos": -14.1,
+        "trades_oos": 24
       },
       {
         "file": "bnb_dmi_trend.json",

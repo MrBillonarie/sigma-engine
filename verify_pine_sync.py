@@ -86,7 +86,7 @@ def read_vps_champions(models_dir: Path) -> dict:
         for jf in sorted(tf_dir.glob("*.json")):
             try:
                 d = json.loads(jf.read_text())
-                sym = d.get("symbol", "").replace("/USDT", "").upper()
+                sym = d.get("symbol", "").replace("/USDT", "").replace("/USD", "").upper()
                 strat = d.get("strategy", "")
                 cagr = (d.get("metrics_oos") or {}).get("cagr", 0) or 0
                 if not sym or not strat:

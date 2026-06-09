@@ -59,7 +59,7 @@ try:
                 d = json.load(open(fp))
                 m = d.get("metrics_oos") or {}
                 if (m.get("cagr",0) or 0) <= 0: continue
-                sym = (d.get("symbol","") or "").replace("/USDT","").upper()
+                sym = (d.get("symbol","") or "").replace("/USDT","").replace("/USD","").upper()
                 strat = d.get("strategy","")
                 if not (sym and strat): continue
                 direction = "short" if strat in SHORT_STRATEGIES else "long"

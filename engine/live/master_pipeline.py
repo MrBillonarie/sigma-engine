@@ -25,14 +25,14 @@ from datetime import datetime, timedelta
 
 OUTPUT_DIR = Path(__file__).parent.parent.parent
 
-ASSETS = ['BTC', 'ETH', 'LTC', 'SOL', 'BNB', 'XAU']
+ASSETS = ['BTC', 'ETH', 'LTC', 'SOL', 'BNB']  # Motor 1: solo crypto
 SYMBOLS = {
     'BTC': 'BTC/USDT',
     'ETH': 'ETH/USDT',
     'LTC': 'LTC/USDT',   # reemplaza XRP — patrones mas limpios, halving propio
     'SOL': 'SOL/USDT',
     'BNB': 'BNB/USDT',
-    'XAU': 'XAU/USD',
+    # 'XAU': 'XAU/USD',  # Motor 2 (commodities)
 }
 # Prioridad de TF: 1H y 4H primero (probados y valiosos), luego 15m, 5m y 1m al final
 TIMEFRAMES = ['1h', '4h', '15m']  # 5m/1m deshabilitados 2026-05-11: sin edge consistente
@@ -40,16 +40,14 @@ TIMEFRAMES = ['1h', '4h', '15m']  # 5m/1m deshabilitados 2026-05-11: sin edge co
 # Trials reducidos — Optuna TPE encuentra soluciones buenas antes de trial 120
 
 # Activos que usan CSV pre-descargado en lugar de Binance (ej: XAU)
-CSV_PATHS = {
-    'XAU': '/opt/sigma/models/data_XAU_{tf}_max.csv',
-}
+CSV_PATHS = {}  # Motor 2 handles commodities CSVs_max.csv',
 
 TRIALS_BY_TF = {'4h': 250, '1h': 300, '15m': 300, '5m': 150, '1m': 35}  # 2026-06-07: upgrade 8 cores, maximizar calidad
 # 5m y 1m tienen 600K+ candles — cada trial es 10x mas lento que 1H
 # Con 60 trials Optuna TPE igual encuentra buenas soluciones
 
 # 4 slots paralelos — sigma-trainer pausado, tenemos 3.5+ cores libres
-MAX_PARALLEL = 2  # 2026-06-07: 8 cores upgrade — 2 master + 6 gap = 8 total
+MAX_PARALLEL = 8  # 2026-06-07: 8 cores upgrade — 2 master + 6 gap = 8 total
 MIN_RAM_GB  = 2.5   # No lanzar si RAM libre < 2.5GB
 
 running_procs = {}
@@ -192,12 +190,20 @@ def build_queue():
 
 def is_running(asset, tf):
     key = f'{asset}_{tf}'
-    if key not in running_procs:
-        return False
-    proc = running_procs[key]
-    if proc.poll() is None:
-        return True
-    del running_procs[key]
+    if key in running_procs:
+        proc = running_procs[key]
+        if proc.poll() is None:
+            return True
+        del running_procs[key]
+    # Check ps aux for external processes (gap_auto_launcher may have launched it)
+    import subprocess as _sp
+    symbol_map = SYMBOLS.get(asset, asset)
+    r = _sp.run(['ps', '-eo', 'cmd'], capture_output=True, text=True)
+    for line in r.stdout.splitlines():
+        if 'asset_pipeline.py' not in line:
+            continue
+        if f'--symbol {symbol_map}' in line and f'--tf {tf}' in line:
+            return True
     return False
 
 

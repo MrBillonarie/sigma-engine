@@ -46,7 +46,7 @@ def check_freshness():
         ("port_snapshot.json", "results/reports/port_snapshot.json", 3600),
         ("signals_cache.json", "results/signals_cache.json", 600),
         ("trade_state.json",   "results/trade_state.json",     86400),
-        ("master_pipeline.log","results/reports/master_pipeline.log", 1800),
+        ("master_pipeline.log","results/reports/master_pipeline.log", 14400),
         ("watchdog.log",       "results/reports/watchdog.log",  900),
     ]
     out = []
@@ -109,7 +109,7 @@ def check_coverage():
         from utils.strategies import SHORT_STRATEGIES
     except Exception:
         SHORT_STRATEGIES = frozenset()
-    SYMS = ["BTC", "ETH", "SOL", "BNB", "LTC"]
+    SYMS = ["BTC", "ETH", "SOL", "BNB", "LTC", "XAU"]
     TFS = ["15m", "1h", "4h"]
     DIRS = ["long", "short"]
     cov = {}
@@ -119,7 +119,7 @@ def check_coverage():
         for p in d.glob("*.json"):
             try:
                 data = json.load(open(p))
-                sym = (data.get("symbol", "") or "").replace("/USDT", "").upper()
+                sym = (data.get("symbol", "") or "").replace("/USDT", "").replace("/USD", "").upper()
                 strat = data.get("strategy", "")
                 m = data.get("metrics_oos") or {}
                 if not (sym and strat and m.get("cagr", 0) > 0): continue
@@ -186,7 +186,7 @@ def render_text(result):
         out.append("  port_cagr_w_kelly   " + color(("%.2f%%" % pkelly), "c"))
         out.append("  n_grade_a           " + str(p.get("n_grade_a")))
         out.append("  total_trades        " + str(p.get("total_trades")))
-        out.append("  champions           " + str(p.get("champions")) + "/14")
+        out.append("  champions           " + str(p.get("champions")) + "/" + str(p.get("n_grade_a","?")))
         out.append("  last trigger        " + repr(p.get("trigger", "?")))
 
     out.append(color(NL + "[PAPER TRADING]", "y"))
@@ -209,7 +209,7 @@ def render_text(result):
         out.append("  gate trades         [" + gate_t + "] " + str(pt["trades_closed"]) + "/30")
         out.append("  gate dias           [" + gate_d + "] " + str(pt["days_running"]) + "/21")
 
-    out.append(color(NL + "[COBERTURA UNIVERSO 5x3x2]", "y"))
+    out.append(color(NL + "[COBERTURA M1:5x4x2 + M2:2x2x2]", "y"))
     cov = result["coverage"]
     cov_pct = cov["covered"] / cov["total"] * 100
     cov_c = "g" if cov_pct >= 90 else "y" if cov_pct >= 70 else "r"
@@ -323,7 +323,7 @@ def render_overnight(result):
     cov = result["coverage"]
     cov_pct = cov["covered"] / cov["total"] * 100
     cov_c = "g" if cov_pct >= 90 else "y" if cov_pct >= 70 else "r"
-    out.append(color(NL + "[COBERTURA UNIVERSO]", "y"))
+    out.append(color(NL + "[COBERTURA M1:5x4x2 + M2:2x2x2]", "y"))
     out.append("  " + color((str(cov["covered"]) + "/" + str(cov["total"]) + " slots (" + ("%.0f" % cov_pct) + "%)"), cov_c))
     if cov["gaps"]:
         for g in cov["gaps"][:6]:

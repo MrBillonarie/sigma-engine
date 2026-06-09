@@ -936,7 +936,7 @@ def get_regime():
 
     return {a: {'regime': 'LOADING', 'rsi_w': 0, 'price': 0, 'ema200': 0}
 
-            for a in ('BTC','ETH','LTC','SOL','BNB','XAU')}
+            for a in ('BTC','ETH','LTC','SOL','BNB','XAU','XAG')}
 
 
 
@@ -1186,6 +1186,65 @@ def _get_vol_factor():
 
 
 
+PAPER_SLIPPAGE_BPS = 1.0  # 1bp per side = 2bp round-trip drag on PnL
+
+# ── Vol-targeting: per-asset realized vol cache ───────────────────────────────
+_asset_vol_cache = {}   # {sym: (ts, daily_vol_pct)}
+BASE_VOLS_PCT = {       # historical avg daily vol — calibrated to backtest period
+    "BTC": 3.0, "ETH": 4.0, "SOL": 5.5, "BNB": 3.5, "LTC": 3.5, "XAU": 0.8, "XAG": 1.2,
+}
+VOL_TARGET_KELLY_MIN = 1.0   # never go below 1% kelly
+VOL_TARGET_KELLY_MAX = 8.0   # never go above 8% kelly
+# Regime vol multipliers
+REGIME_VOL_MULT = {"BEAR": 0.70, "BULL": 1.20, "NEUTRAL": 1.0, "UNKNOWN": 1.0}
+
+
+def _get_asset_realized_vol(sym):
+    """Realized daily vol for a specific asset (20-day lookback). Cached 30min."""
+    import time as _t2, ccxt as _cx2, numpy as _np2
+    global _asset_vol_cache
+    _now2 = _t2.time()
+    _cached = _asset_vol_cache.get(sym)
+    if _cached and _now2 - _cached[0] < 1800:
+        return _cached[1]
+    base = BASE_VOLS_PCT.get(sym, 3.0)
+    try:
+        _sym_ccxt = sym + "/USDT" if sym not in ("XAU",) else "XAU/USDT"
+        # XAU not on Binance spot — use a proxy
+        if sym == "XAU":
+            _sym_ccxt = "BTC/USDT"  # fallback to BTC for now
+        _exc2 = _cx2.binance({'timeout': 5000, 'enableRateLimit': True})
+        _ohlcv2 = _exc2.fetch_ohlcv(_sym_ccxt, '1d', limit=22)
+        _closes2 = _np2.array([c[4] for c in _ohlcv2], dtype=float)
+        _rets2   = _np2.diff(_np2.log(_closes2))
+        _vol2    = float(_np2.std(_rets2[-20:]) * 100)  # daily vol in %
+        _vol2    = max(_vol2, 0.3)   # floor at 0.3%
+        _asset_vol_cache[sym] = (_now2, _vol2)
+        return _vol2
+    except Exception:
+        _asset_vol_cache[sym] = (_now2, base)
+        return base
+
+
+def _vol_targeted_kelly(sym, kelly_base, regime="NEUTRAL"):
+    """
+    Scale kelly_base by ratio of historical vs current realized vol.
+    Low vol  → larger position (up to VOL_TARGET_KELLY_MAX)
+    High vol → smaller position (down to VOL_TARGET_KELLY_MIN)
+    Regime multiplier applied on top.
+    """
+    try:
+        _base_vol   = BASE_VOLS_PCT.get(sym, 3.0)
+        _real_vol   = _get_asset_realized_vol(sym)
+        _vol_ratio  = _base_vol / max(_real_vol, 0.3)
+        _regime_m   = REGIME_VOL_MULT.get(regime, 1.0)
+        _kelly_adj  = kelly_base * _vol_ratio * _regime_m
+        _kelly_adj  = max(VOL_TARGET_KELLY_MIN, min(VOL_TARGET_KELLY_MAX, _kelly_adj))
+        return round(_kelly_adj, 2), round(_real_vol, 2), round(_vol_ratio, 2)
+    except Exception:
+        return kelly_base, BASE_VOLS_PCT.get(sym, 3.0), 1.0
+
+
 def open_trade(sym, tf, direction, price, sl, tp, strategy='',
 
                paper=False, grade='B', wr=50.0, cagr=0.0, kelly_pct=3.3):
@@ -1206,21 +1265,16 @@ def open_trade(sym, tf, direction, price, sl, tp, strategy='',
 
         kelly_pct = round(kelly_pct * _corr_factor, 2)
 
-    # Volatility Adapter: reducir kelly en volatilidad extrema
-
+    # Vol-Targeting: sizing dinámico por activo (reemplaza vol adapter fijo)
     try:
-
-        _vf, _vr = _get_vol_factor()
-
-        if _vf < 1.0:
-
-            kelly_pct = round(kelly_pct * _vf, 2)
-
-            print(f"[VOL ADAPTER] {_vr} vol — kelly reducido a {kelly_pct}%", flush=True)
-
+        _global_regime = _signals_cache.get('regime', 'NEUTRAL') if isinstance(_signals_cache, dict) else 'NEUTRAL'
+        _kelly_adj, _realized_vol, _vol_ratio = _vol_targeted_kelly(sym, kelly_pct, _global_regime)
+        if abs(_kelly_adj - kelly_pct) > 0.05:
+            print(f'[VOL-TARGET] {sym} real_vol={_realized_vol:.1f}% ratio={_vol_ratio:.2f}x'
+                  f' kelly {kelly_pct}% → {_kelly_adj}% (regime={_global_regime})', flush=True)
+        kelly_pct = _kelly_adj
     except Exception as _e_vol:
-
-        print(f'[SILENT_BUG open_trade vol_adapter] {type(_e_vol).__name__}: {_e_vol}', flush=True)
+        print(f'[SILENT_BUG open_trade vol_target] {type(_e_vol).__name__}: {_e_vol}', flush=True)
 
     # sl_dist_pct_at_open: clave para sizing tipo backtest (no se afecta por trailing)
 
@@ -1293,6 +1347,9 @@ def close_trade(sym, tf, exit_price, reason='MANUAL'):
                else (entry - exit_price) / entry) * 100
 
         pnl_pct_raw = round(raw, 4)
+
+        # Slippage simulation: 1bp per side = 2bp round-trip drag
+        raw = raw - PAPER_SLIPPAGE_BPS * 2 * 0.01
 
         # Formula del backtest: pnl_eq = move% × (kelly% / sl_distance%)
 
@@ -1859,6 +1916,7 @@ def close_trade_per_model(sym, tf, strategy, exit_price, reason='AUTO'):
 
         if sl_dist > 0:
 
+            raw -= PAPER_SLIPPAGE_BPS * 2 * 0.01  # slippage drag
             pnl_pct = round(raw * (kelly/sl_dist), 4)
 
         else:
@@ -2452,6 +2510,70 @@ def check_circuit_breaker():
 
 
 _signals_cache = {}
+_ohlcv_cache = {}  # {(symbol, tf): (ts, df)} — persists between _compute_signals calls
+
+_deriv_cache = {}  # {symbol: (ts, data)} — 5-min TTL for LSR/OI/FG context
+
+
+def _get_deriv_context(symbol):
+    """Return latest LSR/OI/FG context for a symbol (read-only, never blocks signals)."""
+    import time as _tm, sqlite3 as _sq, os as _os
+    _now = _tm.time()
+    _cached = _deriv_cache.get(symbol)
+    if _cached and _now - _cached[0] < 300:
+        return _cached[1]
+
+    _out = {}
+    _sym_usdt = symbol if symbol.endswith("USDT") else symbol + "USDT"
+
+    # LSR — global long/short ratio for 1h timeframe
+    _lsr_db = "/opt/sigma/results/lsr.db"
+    if _os.path.exists(_lsr_db):
+        try:
+            _conn = _sq.connect(_lsr_db, timeout=2)
+            _row = _conn.execute(
+                "SELECT long_ratio, ls_ratio FROM lsr "
+                "WHERE symbol=? AND tf='1h' AND kind='global' ORDER BY ts DESC LIMIT 1",
+                (_sym_usdt,)
+            ).fetchone()
+            _conn.close()
+            if _row:
+                _out["lsr"] = round(_row[1], 3)
+                _out["lsr_long_pct"] = round(_row[0] * 100, 1)
+        except Exception:
+            pass
+
+    # OI — open interest change % in last 15m candle
+    _oi_db = "/opt/sigma/results/oi.db"
+    if _os.path.exists(_oi_db):
+        try:
+            _conn = _sq.connect(_oi_db, timeout=2)
+            _rows = _conn.execute(
+                "SELECT sum_open_interest FROM oi WHERE symbol=? AND tf='15m' ORDER BY ts DESC LIMIT 2",
+                (_sym_usdt,)
+            ).fetchall()
+            _conn.close()
+            if len(_rows) == 2 and _rows[1][0]:
+                _out["oi_change_pct"] = round((_rows[0][0] - _rows[1][0]) / _rows[1][0] * 100, 3)
+        except Exception:
+            pass
+
+    # FG — Fear & Greed (BTC global, same for all symbols)
+    _fg_db = "/opt/sigma/results/fng.db"
+    if _os.path.exists(_fg_db):
+        try:
+            _conn = _sq.connect(_fg_db, timeout=2)
+            _row = _conn.execute("SELECT value, classification FROM fng ORDER BY ts DESC LIMIT 1").fetchone()
+            _conn.close()
+            if _row:
+                _out["fg"] = _row[0]
+                _out["fg_label"] = _row[1]
+        except Exception:
+            pass
+
+    _deriv_cache[symbol] = (_now, _out)
+    return _out
+
 
 # Load cached signals from disk (warm start after restart)
 
@@ -3459,7 +3581,12 @@ def _compute_signals():
 
     # Load models
 
-    data_cache = {}
+    # Build data_cache from persistent OHLCV cache (skip stale entries)
+    global _ohlcv_cache
+    _TF_TTL = {'5m': 240, '15m': 600, '1h': 2700, '4h': 10800}
+    _now_cs = time.time()
+    data_cache = {k: df for k, (ts, df) in _ohlcv_cache.items()
+                  if _now_cs - ts < _TF_TTL.get(k[1], 600)}
 
     results = []
 
@@ -3571,19 +3698,21 @@ def _compute_signals():
 
                         tf_ccxt = tf_alias.get(tf, tf)
 
-                        if sym == 'XAU':
+                        if sym in ('XAU', 'XAG'):
 
                             try:
 
                                 import pandas as _pd_x
 
-                                _csv_x = f'/opt/sigma/models/data_XAU_{tf}_max.csv'
+                                _csv_x = f'/opt/sigma/models/data_{sym}_{tf}_max.csv'
 
                                 _dfx = _pd_x.read_csv(_csv_x, index_col=0, parse_dates=True)
 
                                 _dfx.columns = [c.lower() for c in _dfx.columns]
 
-                                data_cache[key] = _feats(_dfx.tail(500))
+                                _df_xau = _feats(_dfx.tail(500))
+                                data_cache[key] = _df_xau
+                                _ohlcv_cache[key] = (_now_cs, _df_xau)
 
                             except:
 
@@ -3601,7 +3730,9 @@ def _compute_signals():
 
                                 df.set_index('ts', inplace=True)
 
-                                data_cache[key] = _feats(df)
+                                _df_fetched = _feats(df)
+                                data_cache[key] = _df_fetched
+                                _ohlcv_cache[key] = (_now_cs, _df_fetched)
 
                     df = data_cache.get(key)
 
@@ -3619,7 +3750,7 @@ def _compute_signals():
 
                             try:
 
-                                if sym == 'XAU':
+                                if sym in ('XAU', 'XAG'):
 
                                     import yfinance as _yf_p
 
@@ -3819,6 +3950,8 @@ def _compute_signals():
 
                     'dd_kelly_mult':  _dd_kelly_mult,
 
+                    **_get_deriv_context(sym),
+
                 })
 
             except Exception as _e_mdl:
@@ -3831,7 +3964,7 @@ def _compute_signals():
 
     # Correlación entre activos: clusters que se mueven juntos
 
-    CORR_CLUSTERS = [{'BTC','ETH','LTC'}, {'SOL','BNB'}, {'XAU'}]
+    CORR_CLUSTERS = [{'BTC','ETH','LTC'}, {'SOL','BNB'}, {'XAU','XAG'}]
 
 
 
@@ -5509,6 +5642,64 @@ body{background:radial-gradient(ellipse at top,#11161f 0%,#0a0d12 60%) fixed;col
 
 
 
+
+  <div id="motors-matrix" style="margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div id="motor1-card" style="background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="color:#58a6ff;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase">Motor 1 — Crypto</span>
+        <span id="m1-pct" style="font-family:monospace;font-size:13px;font-weight:700;color:#e6edf3">-</span>
+      </div>
+      <div id="m1-bar" style="height:4px;background:#21262d;border-radius:2px;margin-bottom:10px;overflow:hidden">
+        <div id="m1-bar-fill" style="height:100%;background:linear-gradient(90deg,#58a6ff,#a78bfa);border-radius:2px;width:0%;transition:width .6s"></div>
+      </div>
+      <div id="m1-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;font-family:monospace;font-size:10px"></div>
+    </div>
+    <div id="motor2-card" style="background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="color:#ffa657;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase">Motor 2 — Commodities</span>
+        <span id="m2-pct" style="font-family:monospace;font-size:13px;font-weight:700;color:#e6edf3">-</span>
+      </div>
+      <div id="m2-bar" style="height:4px;background:#21262d;border-radius:2px;margin-bottom:10px;overflow:hidden">
+        <div id="m2-bar-fill" style="height:100%;background:linear-gradient(90deg,#ffa657,#ff7b72);border-radius:2px;width:0%;transition:width .6s"></div>
+      </div>
+      <div id="m2-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:4px;font-family:monospace;font-size:10px"></div>
+    </div>
+  </div>
+  <script>
+  (function(){
+    fetch('/api/motors').then(r=>r.json()).then(d=>{
+      function renderMotor(m, gridId, pctId, barId){
+        var g = document.getElementById(gridId);
+        var pct = d[m] ? d[m].coverage_pct : 0;
+        var filled = d[m] ? d[m].filled_slots : 0;
+        var total  = d[m] ? d[m].total_slots : 0;
+        document.getElementById(pctId).textContent = pct.toFixed(0)+'% ('+filled+'/'+total+')';
+        document.getElementById(barId+'-fill').style.width = Math.min(pct,100)+'%';
+        if(!d[m]) return;
+        var tfs = d[m].timeframes;
+        var assets = d[m].assets;
+        // header row
+        var hdr = '<div style="color:#6e7681;padding:2px 4px"></div>';
+        tfs.forEach(function(tf){ hdr += '<div style="color:#6e7681;padding:2px 4px;text-align:center">'+tf+'</div>'; });
+        g.innerHTML = hdr;
+        // asset rows
+        assets.forEach(function(sym){
+          g.innerHTML += '<div style="color:#8b949e;padding:2px 4px;font-weight:700">'+sym+'</div>';
+          tfs.forEach(function(tf){
+            var key = sym+'/'+tf;
+            var hasL = d[m].active_slots.indexOf(key+'/long')>=0;
+            var hasS = d[m].active_slots.indexOf(key+'/short')>=0;
+            var txt = (hasL?'L':'-')+(hasS?'S':'-');
+            var col = (hasL&&hasS)?'#00e676':((hasL||hasS)?'#ffa657':'#6e7681');
+            g.innerHTML += '<div style="padding:2px 4px;text-align:center;color:'+col+'">'+txt+'</div>';
+          });
+        });
+      }
+      renderMotor('motor1','m1-grid','m1-pct','m1-bar');
+      renderMotor('motor2','m2-grid','m2-pct','m2-bar');
+    }).catch(function(){});
+  })();
+  </script>
   <div class="grid" id="grid">
 
     <div class="empty">Cargando modelos...</div>
@@ -7403,7 +7594,68 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
                 _send_json(self, {'status': 'error', 'error': str(_eh)})
 
+        elif self.path == '/api/performance':
+            try:
+                import json as _json2, os as _os2
+                _fp = "/opt/sigma/results/reports/performance_tracker.json"
+                _d  = _json2.load(open(_fp)) if _os2.path.exists(_fp) else {"error":"not_computed_yet"}
+                _send_json(self, _d)
+            except Exception as _ex:
+                _send_json(self, {"error": str(_ex)})
 
+        elif self.path == '/api/portfolio_risk':
+            try:
+                import json as _json3, os as _os3
+                _fp = "/opt/sigma/results/reports/portfolio_risk.json"
+                _d  = _json3.load(open(_fp)) if _os3.path.exists(_fp) else {"error":"not_computed_yet"}
+                _send_json(self, _d)
+            except Exception as _ex:
+                _send_json(self, {"error": str(_ex)})
+
+
+        elif self.path == '/api/motors':
+            try:
+                import glob as _mg
+                def _motor_coverage(syms, tfs):
+                    import os as _os_mc
+                    total = len(syms) * len(tfs) * 2
+                    filled = 0
+                    for s in syms:
+                        for tf in tfs:
+                            td = f'/opt/sigma/models/{tf}'
+                            if not _os_mc.path.isdir(td): continue
+                            has_long  = bool([f for f in _mg.glob(f'{td}/{s.lower()}_*.json') if 'short' not in _os_mc.path.basename(f)])
+                            has_short = bool(_mg.glob(f'{td}/{s.lower()}_*short*.json'))
+                            if has_long:  filled += 1
+                            if has_short: filled += 1
+                    return total, filled
+
+                m1_t, m1_f = _motor_coverage(['BTC','ETH','SOL','BNB','LTC'], ['5m','15m','1h','4h'])
+                m2_t, m2_f = _motor_coverage(['XAU','XAG'], ['1h','4h'])
+                _send_json(self, {
+                    'motor1': {'name':'Crypto','assets':['BTC','ETH','SOL','BNB','LTC'],
+                               'timeframes':['5m','15m','1h','4h'],
+                               'total_slots':m1_t,'filled_slots':m1_f,
+                               'coverage_pct':round(100*m1_f/m1_t,1) if m1_t else 0},
+                    'motor2': {'name':'Commodities','assets':['XAU','XAG'],
+                               'timeframes':['1h','4h'],
+                               'total_slots':m2_t,'filled_slots':m2_f,
+                               'coverage_pct':round(100*m2_f/m2_t,1) if m2_t else 0},
+                    'total': {'slots':m1_t+m2_t,'filled':m1_f+m2_f,
+                              'coverage_pct':round(100*(m1_f+m2_f)/(m1_t+m2_t),1) if (m1_t+m2_t) else 0},
+                })
+            except Exception as _em:
+                print(f'[MOTORS ERROR] {_em}', flush=True)
+                _send_json(self, {'error': str(_em)})
+
+        elif self.path == '/api/risk_budget':
+            try:
+                import json as _jrb, os as _orb
+                _fp = "/opt/sigma/results/reports/risk_budget.json"
+                _d  = _jrb.load(open(_fp)) if _orb.path.exists(_fp) else {"error":"not_computed_yet"}
+                _send_json(self, _d)
+            except Exception as _ex:
+                _send_json(self, {"error": str(_ex)})
 
         elif self.path == '/api/signals/stream':
 
@@ -8169,7 +8421,7 @@ def _watch_open_trades():
 
                 try:
 
-                    if sym == 'XAU':
+                    if sym in ('XAU', 'XAG'):
 
                         import yfinance as _yf_w
 

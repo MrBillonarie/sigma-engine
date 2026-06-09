@@ -90,7 +90,7 @@ def current_champions():
             try:
                 data = json.load(open(f))
                 if not isinstance(data, dict): continue
-                sym = (data.get('symbol') or data.get('sym','')).replace('/USDT','')
+                sym = (data.get('symbol') or data.get('sym','')).replace('/USDT','').replace('/USD','')
                 strat = data.get('strategy','?')
                 direction = data.get('direction') or infer_direction(strat)
                 metrics = data.get('metrics_oos', {}) or data.get('metrics', {})

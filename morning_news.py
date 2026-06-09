@@ -58,6 +58,55 @@ RELEVANCE_KEYWORDS = [
 UA = "Mozilla/5.0 (SIGMA-NewsBot/1.0)"
 
 
+def _build_performance_section():
+    """Hedge-fund performance summary for morning news."""
+    import json as _j2, os as _o2
+    pf = "/opt/sigma/results/reports/performance_tracker.json"
+    pr = "/opt/sigma/results/reports/portfolio_risk.json"
+    rb = "/opt/sigma/results/reports/risk_budget.json"
+    out = []
+    try:
+        if _o2.path.exists(pf):
+            d  = _j2.load(open(pf))
+            p  = d.get("portfolio", {})
+            g  = d.get("gate_summary", {})
+            out.append("\U0001f4ca *Live Performance*")
+            out.append(f"  Equity: ${p.get('equity',10000):,.0f} ({p.get('return_pct',0):+.1f}%)")
+            out.append(f"  WR live: {p.get('portfolio_wr',0) or 0:.0f}% -- {p.get('total_trades',0)} trades")
+            out.append(f"  Superando BT: {g.get('beating_backtest',0)} | Gate: {p.get('total_trades',0)}/30")
+    except Exception:
+        pass
+    try:
+        if _o2.path.exists(pr):
+            d  = _j2.load(open(pr))
+            p  = d.get("portfolio", {})
+            c  = d.get("concentration", {})
+            sa = d.get("alpha_per_strategy", {})
+            out.append("\U0001f3af *Riesgo*")
+            out.append(f"  VaR 95%: {p.get('var_95_pct',0) or 0:.1f}% | MaxDD: {p.get('max_dd_pct',0) or 0:.1f}%")
+            neff = c.get("n_effective_assets", 0) or 0
+            flag = " concentrado" if not c.get("ok", True) else ""
+            out.append(f"  Diversif: {neff:.1f} activos efectivos{flag}")
+            pos_alpha = [(k,v) for k,v in sa.items() if v.get("positive_alpha") and v.get("n",0) >= 3]
+            if pos_alpha:
+                best = max(pos_alpha, key=lambda x: x[1]["alpha"])
+                out.append(f"  Alpha lider: {best[0].split('/')[-1]} ({best[1]['alpha']:+.2f}%/trade)")
+    except Exception:
+        pass
+    try:
+        if _o2.path.exists(rb):
+            d  = _j2.load(open(rb))
+            vm = d.get("vol_metrics", {})
+            kg = d.get("kelly_guidance", {})
+            st = d.get("status", "?")
+            out.append("\U0001f4b0 *Risk Budget*")
+            out.append(f"  Vol anual: {vm.get('annual_vol_pct',0):.1f}% (target {vm.get('vol_target_pct',30)}%) {st}")
+            out.append(f"  Kelly adj: {kg.get('vol_adjusted_suggestion',3.3):.1f}%")
+    except Exception:
+        pass
+    return "\n".join(out) if out else ""
+
+
 def safe_json(path: Path):
     try:
         return json.loads(path.read_text())
@@ -366,6 +415,10 @@ def main():
         partes.append("")
         partes.append("- SIGMA 24/7")
 
+    _pf_sec = _build_performance_section()
+    if _pf_sec:
+        partes.append("")
+        partes.append(_pf_sec)
     msg = "\n".join(partes)
 
     if args.dry_run:
