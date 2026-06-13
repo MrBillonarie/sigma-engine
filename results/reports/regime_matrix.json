@@ -1,0 +1,117 @@
+{
+  "computed_at": "2026-06-13T04:30:01.866753-04:00",
+  "global_regime_m1": "BEAR",
+  "correlation_global": 83.8,
+  "assets": {
+    "BTC": {
+      "momentum": 15.0,
+      "volatility": 45.0,
+      "correlation": 83.8,
+      "macro": 50.0,
+      "composite": 33.7,
+      "label": "BEAR",
+      "kelly_mult": 0.56,
+      "source": "global_regime"
+    },
+    "ETH": {
+      "momentum": 15.0,
+      "volatility": 45.0,
+      "correlation": 83.8,
+      "macro": 50.0,
+      "composite": 33.7,
+      "label": "BEAR",
+      "kelly_mult": 0.56,
+      "source": "global_regime"
+    },
+    "SOL": {
+      "momentum": 10.0,
+      "volatility": 45.0,
+      "correlation": 83.8,
+      "macro": 50.0,
+      "composite": 31.9,
+      "label": "BEAR",
+      "kelly_mult": 0.56,
+      "source": "global_regime"
+    },
+    "BNB": {
+      "momentum": 30.0,
+      "volatility": 45.0,
+      "correlation": 83.8,
+      "macro": 50.0,
+      "composite": 38.9,
+      "label": "BEAR",
+      "kelly_mult": 0.56,
+      "source": "global_regime"
+    },
+    "LTC": {
+      "momentum": 16.7,
+      "volatility": 45.0,
+      "correlation": 83.8,
+      "macro": 50.0,
+      "composite": 34.3,
+      "label": "BEAR",
+      "kelly_mult": 0.56,
+      "source": "global_regime"
+    },
+    "XAU": {
+      "momentum": 75.4,
+      "volatility": 61.4,
+      "correlation": 30.0,
+      "macro": 50.0,
+      "composite": 59.6,
+      "label": "BULL",
+      "kelly_mult": 1.05,
+      "source": "csv_based"
+    },
+    "XAG": {
+      "momentum": 91.2,
+      "volatility": 59.1,
+      "correlation": 30.0,
+      "macro": 50.0,
+      "composite": 65.6,
+      "label": "BULL",
+      "kelly_mult": 1.05,
+      "source": "csv_based"
+    },
+    "WTI": {
+      "momentum": 9.7,
+      "volatility": 88.6,
+      "correlation": 30.0,
+      "macro": 50.0,
+      "composite": 31.2,
+      "label": "BEAR_VOLATILE",
+      "kelly_mult": 0.55,
+      "source": "csv_based"
+    },
+    "HG": {
+      "momentum": 92.3,
+      "volatility": 77.3,
+      "correlation": 30.0,
+      "macro": 50.0,
+      "composite": 62.3,
+      "label": "BULL_VOLATILE",
+      "kelly_mult": 1.05,
+      "source": "csv_based"
+    },
+    "NG": {
+      "momentum": 75.2,
+      "volatility": 72.7,
+      "correlation": 30.0,
+      "macro": 50.0,
+      "composite": 57.3,
+      "label": "BULL_VOLATILE",
+      "kelly_mult": 1.05,
+      "source": "csv_based"
+    },
+    "PL": {
+      "momentum": 30.4,
+      "volatility": 56.8,
+      "correlation": 30.0,
+      "macro": 50.0,
+      "composite": 44.8,
+      "label": "BEAR",
+      "kelly_mult": 0.55,
+      "source": "csv_based"
+    }
+  }
+}

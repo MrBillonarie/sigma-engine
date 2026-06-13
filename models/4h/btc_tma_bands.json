@@ -43,8 +43,8 @@
     "mc_cagr_p50": 5.9,
     "mc_cagr_p95": 73.0,
     "mc_dd_p50": -40.5,
-    "mc_dd_p95": -17.9,
-    "mc_confidence": 61.1,
+    "mc_dd_p95": -22.9,
+    "mc_confidence": 62.8,
     "mc_sims": 1000
   },
   "validation": {

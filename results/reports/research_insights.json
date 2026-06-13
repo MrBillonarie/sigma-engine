@@ -1,0 +1,34 @@
+{
+  "computed_at": "2026-06-09T17:05:18.234086-04:00",
+  "stat_analysis": {
+    "trades_analyzed": 21,
+    "winners": 15,
+    "losers": 6,
+    "win_rate": 71.4,
+    "avg_win_pct": 2.24,
+    "avg_loss_pct": -2.85,
+    "reward_risk": 0.79,
+    "total_pnl": 16.47,
+    "insights": [
+      {
+        "type": "TIME_PATTERN",
+        "severity": "low",
+        "msg": "Hora 11:00 UTC acumula perdidas promedio -3.4% (2 trades)",
+        "action": "Agregar cooldown en hora 11:00-13:00 UTC"
+      },
+      {
+        "type": "DIRECTION_BIAS",
+        "severity": "info",
+        "msg": "100% SHORT — sin diversificacion direccional (probablemente por regimen BEAR)",
+        "action": "Normal en BEAR. Revisar cuando regimen cambie a BULL."
+      },
+      {
+        "type": "SLIPPAGE_HIGH",
+        "severity": "high",
+        "msg": "SL teorico 1.80% vs perdida real 2.85% — slippage alto (1.6x)",
+        "action": "Revisar execution quality o ampliar SL en 30%"
+      }
+    ]
+  },
+  "llm_narrative": null
+}

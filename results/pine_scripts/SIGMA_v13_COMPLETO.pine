@@ -1,9 +1,9 @@
 // [SIGMA-HEADER-START]
 // ╔══════════════════════════════════════════════════════════╗
 // ║  SIGMA TERMINAL v13  —  Auto-generado desde VPS         ║
-// ║  Actualizado : 09/06/2026  04:30 hrs (Chile)             ║
-// ║  Modelos     : 20 activos                                ║
-// ║  Top modelos : XAU 1h:REG A+ +205%  LTC 1h:WIL A+ +130%  ║
+// ║  Actualizado : 13/06/2026  04:30 hrs (Chile)             ║
+// ║  Modelos     : 24 activos                                ║
+// ║  Top modelos : ETH 1h:LOW A+ +227%  XAU 1h:REG A+ +205%  ║
 // ╚══════════════════════════════════════════════════════════╝
 // [SIGMA-HEADER-END]
 //@version=6
@@ -339,7 +339,9 @@ bos_bull    = close>prev_swing_h and bull
 bos_bear    = close<prev_swing_l and bear
 choch       = (bull and close<prev_swing_l) or (bear and close>prev_swing_h)
 choch_first = choch and not choch[1]
-reversal_signal = choch and (close>ta.highest(high,20)[1] or close<ta.lowest(low,20)[1])
+_rev_hi20       = ta.highest(high, 20)
+_rev_lo20       = ta.lowest(low,  20)
+reversal_signal = choch and (close>_rev_hi20[1] or close<_rev_lo20[1])
 
 range_h  = ta.highest(high,50)
 range_l  = ta.lowest(low, 50)
@@ -423,10 +425,14 @@ ict_quality_color = ict_quality>=80?col_elite:ict_quality>=60?col_long:ict_quali
 
 _ph=ta.highest(high,14)
 _pl=ta.lowest(low,14)
-bear_div_rsi  = high>=_ph and rsi<ta.highest(rsi,14)[1] and bull
-bull_div_rsi  = low<=_pl  and rsi>ta.lowest(rsi,14)[1]  and bear
-bear_div_macd = high>=_ph and macd_hist<ta.highest(macd_hist,14)[1] and bull
-bull_div_macd = low<=_pl  and macd_hist>ta.lowest(macd_hist,14)[1]  and bear
+_rsi_hi14  = ta.highest(rsi, 14)
+_rsi_lo14  = ta.lowest(rsi,  14)
+_macd_hi14 = ta.highest(macd_hist, 14)
+_macd_lo14 = ta.lowest(macd_hist,  14)
+bear_div_rsi  = high>=_ph and rsi<_rsi_hi14[1] and bull
+bull_div_rsi  = low<=_pl  and rsi>_rsi_lo14[1]  and bear
+bear_div_macd = high>=_ph and macd_hist<_macd_hi14[1] and bull
+bull_div_macd = low<=_pl  and macd_hist>_macd_lo14[1]  and bear
 double_div_bear=bear_div_rsi and bear_div_macd
 double_div_bull=bull_div_rsi and bull_div_macd
 stoch_ob=stoch_k>80 and stoch_d>80
@@ -613,7 +619,7 @@ f_strat(_tk, _tf_m) =>
     if str.contains(_tk,"BNB") and _tf_m==15
         _r := "consecutive_wick"
     if str.contains(_tk,"BNB") and _tf_m==60
-        _r := "mfi_reversal"
+        _r := "squeeze_expand_long"
     if str.contains(_tk,"BNB") and _tf_m==240
         _r := "breakout"
     if str.contains(_tk,"BTC") and _tf_m==15
@@ -627,11 +633,13 @@ f_strat(_tk, _tf_m) =>
     if str.contains(_tk,"ETH") and _tf_m==15
         _r := "volatility_breakout"
     if str.contains(_tk,"ETH") and _tf_m==60
-        _r := "breakout"
+        _r := "lower_high_structure_short"
     if str.contains(_tk,"ETH") and _tf_m==240
         _r := "tma_bands"
     if str.contains(_tk,"ETH") and _tf_m==5
         _r := "volatility_breakout"
+    if str.contains(_tk,"HG") and _tf_m==1440
+        _r := "pin_bar"
     if str.contains(_tk,"HG") and _tf_m==60
         _r := "lower_lows"
     if str.contains(_tk,"LTC") and _tf_m==15
@@ -640,14 +648,20 @@ f_strat(_tk, _tf_m) =>
         _r := "williams_r"
     if str.contains(_tk,"LTC") and _tf_m==240
         _r := "bearish_rsi_divergence"
+    if str.contains(_tk,"NG") and _tf_m==1440
+        _r := "energy_seasonal_short"
+    if str.contains(_tk,"NG") and _tf_m==60
+        _r := "tma_bands"
     if str.contains(_tk,"SOL") and _tf_m==15
-        _r := "roc_negative_short"
+        _r := "lower_high_structure_short"
     if str.contains(_tk,"SOL") and _tf_m==60
-        _r := "breakdown"
+        _r := "engulfing_short"
     if str.contains(_tk,"SOL") and _tf_m==240
         _r := "supply_zone_rejection"
     if str.contains(_tk,"SOL") and _tf_m==5
         _r := "roc_negative_short"
+    if str.contains(_tk,"XAU") and _tf_m==1440
+        _r := "lower_lows"
     if str.contains(_tk,"XAU") and _tf_m==60
         _r := "regime_adaptive"
     _r
@@ -678,12 +692,13 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,4.0)
         array.set(_p,2,10.0)
         array.set(_p,3,62.0)
-    // BNB/USDT 1h mfi_reversal CAGR:+11.5% WR:82% Grade:B
+    // BNB/USDT 1h squeeze_expand_long CAGR:+17.9% WR:82% Grade:B
     if str.contains(_tk,"BNB") and _tf_m==60
-        array.set(_p,0,3.5)
-        array.set(_p,1,1.6)
-        array.set(_p,2,13.0)
-        array.set(_p,3,49.0)
+        array.set(_p,0,3.0)
+        array.set(_p,1,1.5)
+        array.set(_p,2,14.0)
+        array.set(_p,3,50.0)
+        array.set(_p,5,2.0)
     // BNB/USDT 4h breakout CAGR:+29.0% WR:78% Grade:A
     if str.contains(_tk,"BNB") and _tf_m==240
         array.set(_p,0,3.0)
@@ -692,7 +707,7 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,3,62.0)
         array.set(_p,4,48.0)
         array.set(_p,5,1.2)
-    // BTC/USDT 15m dmi_bear CAGR:+43.3% WR:63% Grade:B
+    // BTC/USDT 15m dmi_bear CAGR:+40.4% WR:65% Grade:B
     if str.contains(_tk,"BTC") and _tf_m==15
         array.set(_p,0,3.5)
         array.set(_p,1,3.2)
@@ -726,14 +741,12 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,2.8)
         array.set(_p,2,4.0)
         array.set(_p,3,44.0)
-    // ETH/USDT 1h breakout CAGR:+43.7% WR:85% Grade:A
+    // ETH/USDT 1h lower_high_structure_short CAGR:+226.6% WR:75% Grade:A+
     if str.contains(_tk,"ETH") and _tf_m==60
-        array.set(_p,0,1.7)
-        array.set(_p,1,2.5)
-        array.set(_p,2,3.0)
-        array.set(_p,3,51.0)
-        array.set(_p,4,66.0)
-        array.set(_p,5,3.5)
+        array.set(_p,0,1.5)
+        array.set(_p,1,1.5)
+        array.set(_p,2,7.0)
+        array.set(_p,3,54.0)
     // ETH/USDT 4h tma_bands CAGR:+19.8% WR:78% Grade:B
     if str.contains(_tk,"ETH") and _tf_m==240
         array.set(_p,0,3.0)
@@ -748,6 +761,12 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,3.5)
         array.set(_p,2,3.0)
         array.set(_p,3,61.0)
+    // HG/USD 1d pin_bar CAGR:+3.2% WR:75% Grade:D
+    if str.contains(_tk,"HG") and _tf_m==1440
+        array.set(_p,0,3.4)
+        array.set(_p,1,2.5)
+        array.set(_p,2,5.0)
+        array.set(_p,3,45.0)
     // HG/USD 1h lower_lows CAGR:+64.0% WR:58% Grade:A
     if str.contains(_tk,"HG") and _tf_m==60
         array.set(_p,0,2.4)
@@ -773,20 +792,32 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,2,8.0)
         array.set(_p,3,53.0)
         array.set(_p,4,17.0)
-    // SOL/USDT 15m roc_negative_short CAGR:+35.7% WR:63% Grade:B
-    if str.contains(_tk,"SOL") and _tf_m==15
-        array.set(_p,0,3.2)
-        array.set(_p,1,3.2)
+    // NG/USD 1d energy_seasonal_short CAGR:+3.9% WR:69% Grade:D
+    if str.contains(_tk,"NG") and _tf_m==1440
+        array.set(_p,0,1.5)
+        array.set(_p,1,1.5)
         array.set(_p,2,3.0)
-        array.set(_p,3,44.0)
-    // SOL/USDT 1h breakdown CAGR:+36.9% WR:75% Grade:A
-    if str.contains(_tk,"SOL") and _tf_m==60
-        array.set(_p,0,2.0)
-        array.set(_p,1,1.6)
-        array.set(_p,2,12.0)
         array.set(_p,3,47.0)
-        array.set(_p,4,53.0)
-        array.set(_p,5,3.2)
+    // NG/USD 1h tma_bands CAGR:+18.5% WR:74% Grade:B
+    if str.contains(_tk,"NG") and _tf_m==60
+        array.set(_p,0,3.5)
+        array.set(_p,1,2.2)
+        array.set(_p,2,11.0)
+        array.set(_p,3,61.0)
+        array.set(_p,6,17.0)
+        array.set(_p,7,2.0)
+    // SOL/USDT 15m lower_high_structure_short CAGR:+74.8% WR:81% Grade:A+
+    if str.contains(_tk,"SOL") and _tf_m==15
+        array.set(_p,0,3.5)
+        array.set(_p,1,1.7)
+        array.set(_p,2,5.0)
+        array.set(_p,3,51.0)
+    // SOL/USDT 1h engulfing_short CAGR:+104.8% WR:51% Grade:A
+    if str.contains(_tk,"SOL") and _tf_m==60
+        array.set(_p,0,1.7)
+        array.set(_p,1,2.5)
+        array.set(_p,2,12.0)
+        array.set(_p,3,62.0)
     // SOL/USDT 4h supply_zone_rejection CAGR:+28.3% WR:70% Grade:A
     if str.contains(_tk,"SOL") and _tf_m==240
         array.set(_p,0,3.2)
@@ -801,6 +832,12 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,4.0)
         array.set(_p,2,3.0)
         array.set(_p,3,62.0)
+    // XAU/USD 1d lower_lows CAGR:+28.7% WR:79% Grade:B
+    if str.contains(_tk,"XAU") and _tf_m==1440
+        array.set(_p,0,3.4)
+        array.set(_p,1,2.3)
+        array.set(_p,2,5.0)
+        array.set(_p,3,46.0)
     // XAU/USD 1h regime_adaptive CAGR:+205.1% WR:70% Grade:A+
     if str.contains(_tk,"XAU") and _tf_m==60
         array.set(_p,0,1.6)
@@ -819,11 +856,11 @@ f_meta(_tk, _tf_m) =>
     if str.contains(_tk,"BNB") and _tf_m==15
         _r := "C|0|61|FAIL"
     if str.contains(_tk,"BNB") and _tf_m==60
-        _r := "B|0|82|OK"
+        _r := "B|0|82|--"
     if str.contains(_tk,"BNB") and _tf_m==240
         _r := "A|0|78|OK"
     if str.contains(_tk,"BTC") and _tf_m==15
-        _r := "B|0|63|OK"
+        _r := "B|0|65|OK"
     if str.contains(_tk,"BTC") and _tf_m==60
         _r := "B|0|58|OK"
     if str.contains(_tk,"BTC") and _tf_m==240
@@ -833,11 +870,13 @@ f_meta(_tk, _tf_m) =>
     if str.contains(_tk,"ETH") and _tf_m==15
         _r := "A|0|73|OK"
     if str.contains(_tk,"ETH") and _tf_m==60
-        _r := "A|0|85|OK"
+        _r := "A+|0|75|--"
     if str.contains(_tk,"ETH") and _tf_m==240
         _r := "B|0|78|OK"
     if str.contains(_tk,"ETH") and _tf_m==5
         _r := "C|0|73|FAIL"
+    if str.contains(_tk,"HG") and _tf_m==1440
+        _r := "D|0|75|--"
     if str.contains(_tk,"HG") and _tf_m==60
         _r := "A|0|58|--"
     if str.contains(_tk,"LTC") and _tf_m==15
@@ -846,14 +885,20 @@ f_meta(_tk, _tf_m) =>
         _r := "A+|0|56|OK"
     if str.contains(_tk,"LTC") and _tf_m==240
         _r := "B|0|73|OK"
+    if str.contains(_tk,"NG") and _tf_m==1440
+        _r := "D|0|69|--"
+    if str.contains(_tk,"NG") and _tf_m==60
+        _r := "B|0|74|--"
     if str.contains(_tk,"SOL") and _tf_m==15
-        _r := "B|0|63|OK"
+        _r := "A+|0|81|--"
     if str.contains(_tk,"SOL") and _tf_m==60
-        _r := "A|0|75|FAIL"
+        _r := "A|0|51|--"
     if str.contains(_tk,"SOL") and _tf_m==240
         _r := "A|0|70|OK"
     if str.contains(_tk,"SOL") and _tf_m==5
         _r := "C|0|46|OK"
+    if str.contains(_tk,"XAU") and _tf_m==1440
+        _r := "B|0|79|--"
     if str.contains(_tk,"XAU") and _tf_m==60
         _r := "A+|0|70|--"
     _r
@@ -905,8 +950,9 @@ m_ema_pd = m_ema_type == 50 ? _ema50 : m_ema_type == 34 ? _ema34 : _ema21
 // ── TMA Bands — pre-calculada para cada período posible
 // [SIGMA-GEN-INDICATORS-START]
 _tl14 = ta.sma(ta.sma(close, 14), 14)
+_tl17 = ta.sma(ta.sma(close, 17), 17)
 _tl19 = ta.sma(ta.sma(close, 19), 19)
-m_tma_line  = m_tma_per==14?_tl14 : m_tma_per==19?_tl19 : _tl19
+m_tma_line  = m_tma_per==14?_tl14 : m_tma_per==17?_tl17 : m_tma_per==19?_tl19 : _tl17
 m_tma_lower = m_tma_line - atr * m_atr_mult
 m_tma_upper = m_tma_line + atr * m_atr_mult
 
@@ -916,18 +962,14 @@ _hi23 = ta.highest(high, 23)
 _hi29 = ta.highest(high, 29)
 _hi30 = ta.highest(high, 30)
 _hi48 = ta.highest(high, 48)
-_hi53 = ta.highest(high, 53)
-_hi66 = ta.highest(high, 66)
 _lo17 = ta.lowest(low,   17)
 _lo21 = ta.lowest(low,   21)
 _lo23 = ta.lowest(low,   23)
 _lo29 = ta.lowest(low,   29)
 _lo30 = ta.lowest(low,   30)
 _lo48 = ta.lowest(low,   48)
-_lo53 = ta.lowest(low,   53)
-_lo66 = ta.lowest(low,   66)
-_m_hi = m_lookback==17?_hi17 : m_lookback==21?_hi21 : m_lookback==23?_hi23 : m_lookback==29?_hi29 : m_lookback==30?_hi30 : m_lookback==48?_hi48 : m_lookback==53?_hi53 : m_lookback==66?_hi66 : _hi30
-_m_lo = m_lookback==17?_lo17 : m_lookback==21?_lo21 : m_lookback==23?_lo23 : m_lookback==29?_lo29 : m_lookback==30?_lo30 : m_lookback==48?_lo48 : m_lookback==53?_lo53 : m_lookback==66?_lo66 : _lo30
+_m_hi = m_lookback==17?_hi17 : m_lookback==21?_hi21 : m_lookback==23?_hi23 : m_lookback==29?_hi29 : m_lookback==30?_hi30 : m_lookback==48?_hi48 : _hi30
+_m_lo = m_lookback==17?_lo17 : m_lookback==21?_lo21 : m_lookback==23?_lo23 : m_lookback==29?_lo29 : m_lookback==30?_lo30 : m_lookback==48?_lo48 : _lo30
 // [SIGMA-GEN-INDICATORS-END]
 
 // ── Señales por estrategia (una línea cada una — Pine v6) ────────────────────
@@ -951,15 +993,19 @@ sig_adapt_s     = strat_name == "regime_adaptive" and not m_in_cd and not _adapt
 // ── Estrategias agregadas 2026-05-14 (champions del sprint shorts expansion) ──
 // break_of_structure — ruptura de swing high/low con volumen confirmando
 _bos_period = math.max(5, math.round(m_lookback))
-_bos_l = close > ta.highest(high, _bos_period)[1] and volume > vol_ma_20 * m_vol_mult
-_bos_s = close < ta.lowest(low,  _bos_period)[1] and volume > vol_ma_20 * m_vol_mult
+_bos_hi = ta.highest(high, _bos_period)
+_bos_lo = ta.lowest(low,   _bos_period)
+_bos_l = close > _bos_hi[1] and volume > vol_ma_20 * m_vol_mult
+_bos_s = close < _bos_lo[1] and volume > vol_ma_20 * m_vol_mult
 sig_bos_l = strat_name == "break_of_structure" and not m_in_cd and m_t_long  and _bos_l and rsi_w > 50
 sig_bos_s = strat_name == "break_of_structure" and not m_in_cd and m_t_short and _bos_s and rsi_w < 50
 
 // volatility_breakout — expansión de ATR + ruptura direccional
 _vb_atr_ratio = atr / atr[20]
-_volb_l = _vb_atr_ratio > 1.3 and close > ta.highest(high, 10)[1] and volume > vol_ma_20 * 1.2
-_volb_s = _vb_atr_ratio > 1.3 and close < ta.lowest(low, 10)[1]  and volume > vol_ma_20 * 1.2
+_vb_hi10 = ta.highest(high, 10)
+_vb_lo10 = ta.lowest(low,  10)
+_volb_l = _vb_atr_ratio > 1.3 and close > _vb_hi10[1] and volume > vol_ma_20 * 1.2
+_volb_s = _vb_atr_ratio > 1.3 and close < _vb_lo10[1]  and volume > vol_ma_20 * 1.2
 sig_volb_l = strat_name == "volatility_breakout" and not m_in_cd and m_t_long  and _volb_l
 sig_volb_s = strat_name == "volatility_breakout" and not m_in_cd and m_t_short and _volb_s
 
@@ -967,9 +1013,30 @@ sig_volb_s = strat_name == "volatility_breakout" and not m_in_cd and m_t_short a
 _macdzd = macd_line[1] >= 0 and macd_line < 0 and signal_line < 0 and close < ema200 and rsi > 25
 sig_macdzd_s = strat_name == "macd_zero_cross_down" and not m_in_cd and m_t_short and _macdzd and rsi_w < 55
 
+// williams_r: %R extremo como reversal
+_wr14     = ta.wpr(14)
+sig_willy_l = strat_name == "williams_r" and not m_in_cd and m_t_long  and _wr14 < -80 and close > ema200 and rsi_w > 45
+sig_willy_s = strat_name == "williams_r" and not m_in_cd and m_t_short and _wr14 > -20 and close < ema200 and rsi_w < 55
+
+// wedge_breakdown_short: highs declinando + lows planos + ruptura de soporte
+_wbd_lb   = math.max(5, int(m_lookback))
+_wbd_hh   = ta.highest(high, _wbd_lb)
+_wbd_hs   = _wbd_hh < _wbd_hh[_wbd_lb]
+_wbd_supp = ta.lowest(low, _wbd_lb)
+_wbd_lrng = (ta.highest(low, _wbd_lb) - ta.lowest(low, _wbd_lb)) / close < 0.03
+_wbd_brk  = close < _wbd_supp[1]
+sig_wedge_s = strat_name == "wedge_breakdown_short" and not m_in_cd and m_t_short and _wbd_hs and _wbd_lrng and _wbd_brk and rsi_w < m_rsi_w_thr
+
+// dmi_bear: -DI > +DI con ADX fuerte debajo de EMA200
+[_dmi_p, _dmi_m, _dmi_adx] = ta.dmi(14, 14)
+sig_dmi_s = strat_name == "dmi_bear" and not m_in_cd and m_t_short and _dmi_m > _dmi_p and _dmi_adx > 20 and close < ema200 and rsi_w < m_rsi_w_thr
+
+// roc_negative_short: ROC negativo (momentum bajista) con volumen
+_roc10  = (close - close[10]) / close[10] * 100
+sig_roc_s = strat_name == "roc_negative_short" and not m_in_cd and m_t_short and _roc10 < -1.5 and close < ema200 and volume > vol_ma_20 * m_vol_mult and rsi_w < m_rsi_w_thr
 // ── Señal activa resultante ───────────────────────────────────────────────────
 smart_long  = sig_breakout_l or sig_pullback_l or sig_tma_l or sig_mom_l or sig_mr_l or sig_adapt_l or sig_bos_l or sig_volb_l or sig_willy_l
-smart_short = sig_breakdown_s or sig_pullback_s or sig_mom_s or sig_adapt_s or sig_bos_s or sig_volb_s or sig_macdzd_s or sig_wedge_s or sig_dmi_s or sig_roc_s
+smart_short = sig_breakdown_s or sig_pullback_s or sig_mom_s or sig_adapt_s or sig_bos_s or sig_volb_s or sig_macdzd_s or sig_wedge_s or sig_dmi_s or sig_roc_s or sig_willy_s
 m_has_signal   = smart_long or smart_short
 m_direction    = smart_long ? "LONG" : smart_short ? "SHORT" : "—"
 m_is_short_str = str.contains(strat_name,"short") or str.contains(strat_name,"breakdown")
@@ -1442,7 +1509,7 @@ if tt_in and barstate.isconfirmed
                 tt_partial:=tt_rr*0.5
                 tt_result:="TP1_PARTIAL"
                 if _ht2
-                    _cpnl=tt_partial+tt_rr*1.5*0.5
+                    _cpnl:=tt_partial+tt_rr*1.5*0.5
                     tt_result:="WIN_TP2_BE"
                     tt_wins+=1
                     tt_gross_win+=_cpnl
@@ -1459,20 +1526,20 @@ if tt_in and barstate.isconfirmed
                 _closed:=true
         else
             if _ht2
-                _cpnl=tt_partial+tt_rr*1.5*0.5
+                _cpnl:=tt_partial+tt_rr*1.5*0.5
                 tt_result:="WIN_TP2_BE"
                 tt_wins+=1
                 tt_gross_win+=_cpnl
                 _closed:=true
             else if _hsl
-                _cpnl=tt_partial
+                _cpnl:=tt_partial
                 tt_result:="WIN_PARTIAL_BE"
                 tt_wins+=1
                 tt_gross_win+=_cpnl
                 _closed:=true
             else if _to
                 _rp=tt_long?(close-tt_entry)/math.abs(tt_entry-tt_sl):(tt_entry-close)/math.abs(tt_entry-tt_sl)
-                _cpnl=tt_partial+_rp*0.5
+                _cpnl:=tt_partial+_rp*0.5
                 tt_result:=math.abs(_cpnl-tt_partial)<0.05?"BE_NEUTRAL":"WIN_TIMEOUT_BE"
                 if _cpnl>0
                     tt_wins+=1

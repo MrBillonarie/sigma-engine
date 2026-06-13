@@ -1,10 +1,10 @@
 {
-  "computed_at": "2026-06-09 04:05",
-  "n_trades": 21,
+  "computed_at": "2026-06-13 04:05",
+  "n_trades": 24,
   "portfolio": {
-    "equity": 11488.46,
+    "equity": 11422.53,
     "initial": 10000,
-    "return_pct": 14.88,
+    "return_pct": 14.23,
     "var_95_pct": -3.5549,
     "cvar_95_pct": -5.2339,
     "var_99_pct": -5.2339,
@@ -12,42 +12,56 @@
     "max_losing_streak": 3
   },
   "concentration": {
-    "hhi": 0.4286,
-    "n_effective_assets": 2.33,
+    "hhi": 0.3785,
+    "n_effective_assets": 2.64,
     "ok": false,
     "assets": {
       "SOL": {
-        "n": 11,
-        "weight_pct": 52.4,
-        "wr": 63.6,
-        "total_pnl": 6.3,
-        "avg_pnl": 0.57,
+        "n": 12,
+        "weight_pct": 50.0,
+        "wr": 66.7,
+        "total_pnl": 6.94,
+        "avg_pnl": 0.58,
         "var_95": -5.2339
       },
       "BTC": {
         "n": 8,
-        "weight_pct": 38.1,
+        "weight_pct": 33.3,
         "wr": 75.0,
         "total_pnl": 2.98,
         "avg_pnl": 0.37,
         "var_95": -3.5549
       },
       "ETH": {
-        "n": 2,
-        "weight_pct": 9.5,
+        "n": 3,
+        "weight_pct": 12.5,
+        "wr": 66.7,
+        "total_pnl": 6.12,
+        "avg_pnl": 2.04,
+        "var_95": -1.0745
+      },
+      "HG": {
+        "n": 1,
+        "weight_pct": 4.2,
         "wr": 100.0,
-        "total_pnl": 7.19,
-        "avg_pnl": 3.6,
-        "var_95": 3.2033
+        "total_pnl": 0.95,
+        "avg_pnl": 0.95,
+        "var_95": 0.9462
       }
     }
   },
   "direction_split": {
     "short": {
       "n": 21,
-      "weight_pct": 100.0,
+      "weight_pct": 87.5,
       "wr": 71.4,
       "total_pnl": 16.47
+    },
+    "long": {
+      "n": 3,
+      "weight_pct": 12.5,
+      "wr": 66.7,
+      "total_pnl": 0.51
     }
   },
   "correlations": {
@@ -65,6 +79,13 @@
     "n_high": 1
   },
   "alpha_per_strategy": {
+    "SOL/1h/breakdown": {
+      "n": 6,
+      "avg_pnl": 0.197,
+      "dir_avg": 0.171,
+      "alpha": 0.025,
+      "positive_alpha": true
+    },
     "BTC/1h/momentum_short": {
       "n": 4,
       "avg_pnl": 0.02,

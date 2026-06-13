@@ -33,7 +33,7 @@ def _log(msg):
         pass
 
 def _cache_key(signal):
-    return f"{signal.get('sym')}_{signal.get('tf')}_{signal.get('type','long')}"
+    return f"{signal.get('sym')}_{signal.get('tf')}_{signal.get('type','long')}_{signal.get('strategy','')}"
 
 def _from_cache(signal):
     key   = _cache_key(signal)
@@ -73,6 +73,14 @@ def analyze(signal: dict, regime: str, open_trades: list) -> dict:
     wr    = float(signal.get('wr', 0) or 0)
     cagr  = float(signal.get('cagr', 0) or 0)
     rr    = float(signal.get('rr_ratio', 0) or 0)
+    if rr == 0:  # calcular desde sl/tp si no viene en el signal
+        try:
+            _p  = float(signal.get('price', 0) or 0)
+            _sl = float(signal.get('sl', 0) or 0)
+            _tp = float(signal.get('tp', 0) or 0)
+            if _p > 0 and _sl > 0 and _tp > 0 and _p != _sl:
+                rr = abs(_tp - _p) / abs(_p - _sl)
+        except: pass
     ev    = float(signal.get('ev', 0) or 0)
     kelly = float(signal.get('eff_risk_pct', 3.3) or 3.3)
     conf  = signal.get('val_confidence', '')
@@ -108,11 +116,13 @@ def analyze(signal: dict, regime: str, open_trades: list) -> dict:
     if ev < -1.0:
         blocks.append(f"EV neto negativo ({ev:+.1f}%)")
 
-    # Regimen fuertemente adverso
-    if regime == 'BEAR' and direc == 'long' and ens < 2:
-        blocks.append(f"BEAR + LONG sin ensemble minimo (E{ens})")
-    if regime == 'BULL' and direc == 'short' and ens < 2:
-        blocks.append(f"BULL + SHORT sin ensemble minimo (E{ens})")
+    # Regimen fuertemente adverso — solo para live; paper tiene su propia gate en web_server
+    paper_mode = bool(signal.get('paper_mode', False))
+    if not paper_mode:
+        if regime == 'BEAR' and direc == 'long' and ens < 2:
+            blocks.append(f"BEAR + LONG sin ensemble minimo (E{ens})")
+        if regime == 'BULL' and direc == 'short' and ens < 2:
+            blocks.append(f"BULL + SHORT sin ensemble minimo (E{ens})")
 
     # Decay activo con DD alto
     if decay and dd_k <= 0.7:
@@ -204,7 +214,7 @@ def analyze(signal: dict, regime: str, open_trades: list) -> dict:
         ok     = True
     elif score >= 45:
         action = 'ESPERAR'
-        ok     = False
+        ok     = paper_mode  # paper: ESPERAR = ENTRAR para maxima validacion
         warns.append(f"score borderline {score}/100")
     else:
         action = 'NO_ENTRAR'

@@ -29,10 +29,10 @@ def log(msg):
     except: pass
 
 # Config
-MIN_RAM_FREE_MB = 800   # no lanzar si free < 800MB
-MAX_PARALLEL = 9  # 2026-06-07: 8c headroom real (60% CPU, 11.6GB RAM libre)
-TRIALS_BY_TF = {'5m': 150, '15m': 200, '1h': 250, '4h': 250}  # per-TF: 5m menor (noisier pero rapido), 1h/4h mayor calidad
-TRIALS_PER_SLOT = 200  # fallback
+MIN_RAM_FREE_MB = 4000  # 4GB avail minimo
+MAX_PARALLEL = 9  # 8 master_pipeline + 1 extra gap job
+TRIALS_BY_TF = {'5m': 80, '15m': 120, '1h': 150, '4h': 150}  # per-TF: 5m menor (noisier pero rapido), 1h/4h mayor calidad
+TRIALS_PER_SLOT = 150  # fallback
 CSV_PATHS = {
     'XAU': '/opt/sigma/models/data_XAU_{tf}_max.csv',
 }
@@ -115,7 +115,7 @@ def _gap_priority(sym, tf, direction, regime):
     else:
         dir_score = 10  # RANGE: neutral
     # TF menor = más señales por dia = mayor urgencia para llenar
-    tf_score = {'5m': 12, '15m': 9, '1h': 6, '4h': 3}.get(tf, 5)
+    tf_score = {'5m': 80, '15m': 120, '1h': 150, '4h': 150}.get(tf, 5)
     return dir_score + tf_score
 
 _regime = _get_regime()

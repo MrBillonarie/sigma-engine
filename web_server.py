@@ -26,6 +26,28 @@ BASE = Path('/opt/sigma')
 
 PORT = 8080
 
+# M2 prices cache — actualiza cada 30s, endpoint responde instantaneo
+_M2_PRICES_CACHE = {}
+_M2_MAP_GLOBAL = {'XAU':'GC=F','XAG':'SI=F','HG':'HG=F','NG':'NG=F','WTI':'CL=F','PL':'PL=F'}
+def _refresh_m2_prices():
+    import yfinance as _yf_m2
+    while True:
+        try:
+            tmp = {s: float(_yf_m2.Ticker(t).fast_info.last_price) for s,t in _M2_MAP_GLOBAL.items()}
+            if tmp: _M2_PRICES_CACHE.update(tmp)
+        except Exception:
+            pass
+        time.sleep(30)
+threading.Thread(target=_refresh_m2_prices, daemon=True, name='m2-prices').start()
+
+# ── Live execution switch ────────────────────────────────────────────────────
+# False = paper trading seguro (default)
+# True  = ordenes reales Binance Futures via engine/live/live_executor.py
+# Para activar: (1) API keys en engine/config/secrets.json
+#               (2) LIVE_MODE=True en engine/live/live_executor.py
+#               (3) cambiar esta linea a True + restart sigma-web
+LIVE_EXECUTION = False
+
 DB   = BASE / 'models' / 'sigma.db'
 
 
@@ -64,6 +86,81 @@ except ImportError:
 
     _TZ_CL = _tz_fb(_td_fb(hours=-4))  # CLT fallback
 
+
+
+
+# === SIGMA_AGENTS_HELPERS ===
+import math as _math_ag
+def _read_exposure_gate():
+    try:
+        import json; from pathlib import Path; from datetime import datetime, timezone
+        d = json.loads(Path('/opt/sigma/results/reports/exposure_gate.json').read_text())
+        raw_ts = d['computed_at'].replace('Z','+00:00')
+        try:
+            age_min = (datetime.now(timezone.utc) - datetime.fromisoformat(raw_ts).astimezone(timezone.utc)).total_seconds()/60
+        except:
+            age_min = 0
+        if age_min > 120: return 1.0, 'STALE'
+        return float(d.get('kelly_multiplier',1.0)), d.get('status','NORMAL')
+    except: return 1.0, 'UNAVAIL'
+def _read_hrp_kelly(slot):
+    try:
+        import json; from pathlib import Path
+        d = json.loads(Path('/opt/sigma/results/reports/kelly_weights.json').read_text())
+        v = float(d.get('weights',{}).get(slot,0))
+        return v if v > 0 else None
+    except: return None
+def _read_regime_mult(asset):
+    try:
+        import json; from pathlib import Path; from datetime import datetime, timezone
+        d = json.loads(Path('/opt/sigma/results/reports/regime_matrix.json').read_text())
+        raw_ts = d['computed_at'].replace('Z','+00:00')
+        try:
+            age_min = (datetime.now(timezone.utc) - datetime.fromisoformat(raw_ts).astimezone(timezone.utc)).total_seconds()/60
+        except:
+            age_min = 0
+        if age_min > 30: return 1.0
+        return float(d.get('assets',{}).get(asset,{}).get('kelly_mult',1.0))
+    except: return 1.0
+
+
+def _read_vol_mult():
+    try:
+        import json; from pathlib import Path as _P
+        d = json.loads(_P('/opt/sigma/results/reports/vol_target.json').read_text())
+        return max(0.5, min(1.3, float(d.get('vol_mult', 1.0))))
+    except: return 1.0
+
+_M2_ASSETS_SET = frozenset({'XAU','XAG','WTI','HG','NG','PL'})
+
+def _check_model_cb(slot):
+    try:
+        import json; from pathlib import Path as _P; from datetime import datetime, timezone
+        ts = json.loads(_P('/opt/sigma/results/trade_state.json').read_text())
+        sup = ts.get('model_suspensions', {}).get(slot, {})
+        until_str = sup.get('suspended_until', '')
+        if not until_str: return False
+        until = datetime.fromisoformat(until_str)
+        return datetime.now(timezone.utc) < until.astimezone(timezone.utc)
+    except: return False
+
+def _update_model_cb(slot, pnl):
+    try:
+        import json; from pathlib import Path as _P; from datetime import datetime, timezone, timedelta
+        ts_path = _P('/opt/sigma/results/trade_state.json')
+        ts = json.loads(ts_path.read_text())
+        sups = ts.setdefault('model_suspensions', {})
+        sd   = sups.setdefault(slot, {'streak': 0, 'suspended_until': None})
+        if float(pnl or 0) > 0:
+            sd['streak'] = 0; sd['suspended_until'] = None
+        else:
+            sd['streak'] = sd.get('streak', 0) + 1
+            if sd['streak'] >= 3:
+                sd['suspended_until'] = (datetime.now(timezone.utc) + timedelta(hours=48)).isoformat()
+                print(f'[MODEL_CB] {slot} SUSPENDIDO 48h (streak={sd["streak"]})', flush=True)
+        ts_path.write_text(json.dumps(ts, indent=2))
+    except Exception as e:
+        print(f'[MODEL_CB] error: {e}', flush=True)
 
 
 def _strftime_chile(fmt="%H:%M"):
@@ -364,7 +461,17 @@ def _calc_readiness(history, model_perf, port):
 
         checks.append({'name': 'Circuit Breaker', 'ok': False, 'val': 'ACTIVO', 'pts': 0})
 
-    level = ('LISTO' if score >= 85 else 'CASI' if score >= 60 else 'BUILDING' if score >= 30 else 'EARLY')
+    # 6. Diversidad de regimen (informativo, no suma pts pero bloquea LISTO)
+    _regimes_seen = set(t.get('regime_at_close','BEAR') for t in history if t.get('regime_at_close'))
+    if not _regimes_seen: _regimes_seen = {'BEAR'}  # trades legacy
+    _reg_div_ok = len(_regimes_seen) >= 2
+    checks.append({'name': 'Diversidad regimen', 'ok': _reg_div_ok,
+                   'val': (', '.join(sorted(_regimes_seen))+' — necesita 2+ regimenes') if not _reg_div_ok
+                           else ', '.join(sorted(_regimes_seen))+' ✓', 'pts': 0})
+    level = ('LISTO' if score >= 85 and _reg_div_ok
+             else 'CASI_SIN_REGIMEN' if score >= 85
+             else 'CASI' if score >= 60
+             else 'BUILDING' if score >= 30 else 'EARLY')
 
     return {'score': score, 'level': level, 'checks': checks, 'trades_done': n}
 
@@ -594,7 +701,7 @@ def _get_trade_summary_impl():
 
     ror = None
 
-    kelly_avg = round(sum(t.get('kelly_pct', 3.3) for t in all_hist) / max(n, 1), 2)
+    kelly_avg = round(sum(t.get('kelly_pct', 2.2) for t in all_hist) / max(n, 1), 2)
 
     if n >= 5:
 
@@ -698,29 +805,43 @@ def regen_dashboard():
 
 
 
+# Background thread para get_live_stats — evita bloquear el servidor HTTP
+import threading as _thr
+_live_stats_cache = {"total": 0, "rate_hr": 0, "optuna_rate_hr": 0, "by_tf": {}}
+
+def _refresh_live_stats():
+    import glob as _g, datetime as _d, time as _tm
+    while True:
+        try:
+            # sigma.db — queries simples, con índices será rápido
+            runs_total = 0; runs_rate = 0; by_tf = {}
+            try:
+                conn = sqlite3.connect(str(DB), timeout=5)
+                runs_total = conn.execute('SELECT COUNT(*) FROM runs').fetchone()[0]
+                runs_rate  = conn.execute("SELECT COUNT(*) FROM runs WHERE ts > datetime('now','-1 hours')").fetchone()[0]
+                by_tf = {_r[0]: _r[1] for _r in conn.execute('SELECT tf,COUNT(*) FROM runs GROUP BY tf')}
+                conn.close()
+            except: pass
+            # Optuna per-study — timeout 0.05s por archivo
+            optuna_rate = 0
+            try:
+                _cut = (_d.datetime.now() - _d.timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
+                for _db in _g.glob(str(BASE / 'models' / 'optuna_per_study' / '*.db')):
+                    try:
+                        _cx = sqlite3.connect(_db, timeout=0.05)
+                        optuna_rate += _cx.execute("SELECT count(*) FROM trials WHERE state='COMPLETE' AND datetime_complete >= ?", (_cut,)).fetchone()[0]
+                        _cx.close()
+                    except: pass
+            except: pass
+            _live_stats_cache.update({"total": runs_total, "rate_hr": runs_rate, "optuna_rate_hr": optuna_rate, "by_tf": by_tf})
+        except: pass
+        _tm.sleep(60)
+
+_stats_thread = _thr.Thread(target=_refresh_live_stats, daemon=True, name='live-stats')
+_stats_thread.start()
+
 def get_live_stats():
-
-    try:
-
-        conn  = sqlite3.connect(str(DB))
-
-        total = conn.execute('SELECT COUNT(*) FROM runs').fetchone()[0]
-
-        rate  = conn.execute(
-
-            "SELECT COUNT(*) FROM runs WHERE ts > datetime('now','-1 hours')"
-
-        ).fetchone()[0]
-
-        by_tf = {r[0]: r[1] for r in conn.execute('SELECT tf,COUNT(*) FROM runs GROUP BY tf')}
-
-        conn.close()
-
-        return {'total': total, 'rate_hr': rate, 'by_tf': by_tf}
-
-    except:
-
-        return {'total': 0, 'rate_hr': 0, 'by_tf': {}}
+    return dict(_live_stats_cache)
 
 
 
@@ -779,6 +900,14 @@ def _refresh_regime():
             _regime_cache = new
 
             _regime_ts    = time.time()
+            try:
+                import json as _json_rc
+                from pathlib import Path as _Path_rc
+                _rc_path = '/opt/sigma/results/regime_cache.json'
+                _Path_rc(_rc_path).parent.mkdir(parents=True, exist_ok=True)
+                _json_rc.dump(new, open(_rc_path, 'w'), indent=2, default=str)
+            except Exception:
+                pass
 
         except:
 
@@ -915,6 +1044,30 @@ def _compute_regime():
             except:
 
                 result[asset] = {'regime': 'UNKNOWN', 'rsi_w': 50, 'price': 0, 'ema200': 0}
+
+
+        # M2 commodities: regimen individual via yfinance
+        _M2_RF = {'HG':'HG=F','NG':'NG=F','WTI':'CL=F','PL':'PL=F','XAG':'SI=F'}
+        import yfinance as _yf_m2r
+        for _m2a, _m2t in _M2_RF.items():
+            try:
+                _tk = _yf_m2r.Ticker(_m2t)
+                _hw = _tk.history(period='2y', interval='1wk')
+                _hd = _tk.history(period='1y', interval='1d')
+                if len(_hw) < 15 or len(_hd) < 50:
+                    result[_m2a] = {'regime': 'UNKNOWN', 'rsi_w': 50, 'price': 0, 'ema200': 0}
+                    continue
+                _c2 = _hw['Close']
+                _d2 = _c2.diff()
+                _g2 = _d2.clip(lower=0).ewm(alpha=1/14, adjust=False).mean()
+                _l2 = (-_d2.clip(upper=0)).ewm(alpha=1/14, adjust=False).mean()
+                _rsi2 = float((100 - 100/(1 + _g2/(_l2+1e-9))).iloc[-1])
+                _p2   = float(_hd['Close'].iloc[-1])
+                _e2   = float(_hd['Close'].ewm(span=200, adjust=False).mean().iloc[-1])
+                _rg2  = 'BULL' if (_rsi2 > 55 and _p2 > _e2) else ('BEAR' if (_rsi2 < 40 or _p2 < _e2*0.97) else 'RANGE')
+                result[_m2a] = {'regime': _rg2, 'rsi_w': round(_rsi2,1), 'price': round(_p2,4), 'ema200': round(_e2,4), 'pct_vs_ema': round((_p2/_e2-1)*100,1)}
+            except Exception:
+                result[_m2a] = {'regime': 'UNKNOWN', 'rsi_w': 50, 'price': 0, 'ema200': 0}
 
         return result
 
@@ -1186,7 +1339,7 @@ def _get_vol_factor():
 
 
 
-PAPER_SLIPPAGE_BPS = 1.0  # 1bp per side = 2bp round-trip drag on PnL
+PAPER_SLIPPAGE_BPS = 7  # 7bp por lado = 14bp round-trip (~0.14%)  # 1bp per side = 2bp round-trip drag on PnL
 
 # ── Vol-targeting: per-asset realized vol cache ───────────────────────────────
 _asset_vol_cache = {}   # {sym: (ts, daily_vol_pct)}
@@ -1245,9 +1398,26 @@ def _vol_targeted_kelly(sym, kelly_base, regime="NEUTRAL"):
         return kelly_base, BASE_VOLS_PCT.get(sym, 3.0), 1.0
 
 
+def _execute_trade(sym, tf, direction, price, sl, tp,
+                   strategy='', grade='B', wr=50.0, cagr=0.0, kelly_pct=2.2):
+    """Wrapper paper/live segun LIVE_EXECUTION. SL/TP como ordenes reales cuando LIVE_MODE=True."""
+    if LIVE_EXECUTION:
+        try:
+            import sys as _sys
+            _sys.path.insert(0, str(BASE))
+            from engine.live.live_executor import execute_entry as _live_fn
+            return _live_fn(sym, tf, direction, price, sl, tp,
+                           strategy=strategy, grade=grade, wr=wr,
+                           cagr=cagr, kelly_pct=kelly_pct, paper=False)
+        except Exception as _le:
+            print(f'[LIVE_EXECUTOR ERROR] {_le} -- fallback paper', flush=True)
+    return open_trade(sym, tf, direction, price, sl, tp, strategy,
+                      paper=True, grade=grade, wr=wr, cagr=cagr, kelly_pct=kelly_pct)
+
+
 def open_trade(sym, tf, direction, price, sl, tp, strategy='',
 
-               paper=False, grade='B', wr=50.0, cagr=0.0, kelly_pct=3.3):
+               paper=False, grade='B', wr=50.0, cagr=0.0, kelly_pct=2.2):
 
     """Abre un nuevo trade y aplica guardas de riesgo."""
 
@@ -1276,6 +1446,19 @@ def open_trade(sym, tf, direction, price, sl, tp, strategy='',
     except Exception as _e_vol:
         print(f'[SILENT_BUG open_trade vol_target] {type(_e_vol).__name__}: {_e_vol}', flush=True)
 
+    # Regime history guard: reducir kelly en regimenes sin historial live
+    try:
+        _curr_reg = _regime_cache.get('BTC', {}).get('regime', 'BEAR') if _regime_cache else 'BEAR'
+        _hist_reg = state.get('history', [])
+        _reg_n = sum(1 for _t in _hist_reg if _t.get('regime_at_close','BEAR') == _curr_reg)
+        if _reg_n < 10:
+            _rg_mult = 0.5
+            print(f'[REGIME-KELLY] {sym} regime={_curr_reg} n={_reg_n} -> kelly x{_rg_mult} ({kelly_pct}% -> {kelly_pct*_rg_mult:.2f}%)', flush=True)
+            kelly_pct = round(kelly_pct * _rg_mult, 2)
+        elif _reg_n < 30:
+            kelly_pct = round(kelly_pct * 0.75, 2)
+    except Exception as _e_rg:
+        pass
     # sl_dist_pct_at_open: clave para sizing tipo backtest (no se afecta por trailing)
 
     sl_dist_pct_at_open = round(abs(sl - price) / price * 100, 4) if price > 0 else 0.0
@@ -1336,7 +1519,7 @@ def close_trade(sym, tf, exit_price, reason='MANUAL'):
 
     direction = trade.get('direction', 'long')
 
-    kelly_pct = trade.get('kelly_pct', 3.3)
+    kelly_pct = trade.get('kelly_pct', 2.2)
 
 
 
@@ -1457,7 +1640,9 @@ def close_trade(sym, tf, exit_price, reason='MANUAL'):
 
               'commission': commission, 'funding': funding,
 
-              'equity_after': eq_after}
+              'equity_after': eq_after,
+              'regime_at_close': (_regime_cache.get('BTC', {}).get('regime', 'UNKNOWN')
+                                  if _regime_cache else 'UNKNOWN')}
 
 
 
@@ -1487,6 +1672,10 @@ def close_trade(sym, tf, exit_price, reason='MANUAL'):
 
     trade['cooldown_until'] = time.time() + _cd_seconds
 
+    trade['pnl_pct']        = pnl_pct        # para display en dashboard durante cooldown
+
+    trade['exit_price']     = exit_price
+
     closed['cooldown_seconds'] = _cd_seconds
 
 
@@ -1497,7 +1686,25 @@ def close_trade(sym, tf, exit_price, reason='MANUAL'):
 
         recent = [h for h in state.get('history', [])][-3:]
 
-        consec_losses = sum(1 for h in recent if h.get('pnl_pct', 0) < 0) == 3 and len(recent) == 3
+        # CUSUM estadistico: WR cae >2 sigmas en ventana 15 trades (no racha de 3 sola)
+        try:
+            _cusum_h = [h for h in state.get('history', [])
+                        if h.get('status') in ('TP_HIT','SL_HIT','TRAIL_HIT','CLOSED','MANUAL_CLOSE')]
+            _cn = min(15, len(_cusum_h))
+            if _cn >= 10:
+                _w   = _cusum_h[-_cn:]
+                _ew  = 0.65
+                _obs = sum(1 for h in _w if (h.get('pnl_pct') or 0) > 0)
+                _exp = _cn * _ew
+                _std = max((_cn * _ew * (1 - _ew)) ** 0.5, 0.1)
+                _z   = (_obs - _exp) / _std
+                consec_losses = _z < -2.0
+            else:
+                consec_losses = (sum(1 for h in recent if h.get('pnl_pct', 0) < 0) == 3
+                                 and len(recent) == 3)
+        except Exception:
+            consec_losses = (sum(1 for h in recent if h.get('pnl_pct', 0) < 0) == 3
+                             and len(recent) == 3)
 
         _eq_now   = eq_after
         _peak_now = port.get('peak_equity', _eq_now)
@@ -1529,6 +1736,9 @@ def close_trade(sym, tf, exit_price, reason='MANUAL'):
     _save_trades(state)
 
     _update_live_stats(closed)
+    _track_btc_cold_storage(
+        closed.get('pnl_dollar', 0), closed.get('sym', ''),
+        closed.get('tf', ''), reason, exit_price)
 
     return closed
 
@@ -1606,7 +1816,85 @@ _PER_MODEL_TG_TOKEN  = _sigma_get_tg_token()
 
 _PER_MODEL_TG_CHAT   = "-1003787411069"
 
-_PER_MODEL_TG_ENABLED = False  # 2026-05-31: silenciado del grupo publico (solo dashboard feed)
+_PER_MODEL_TG_ENABLED = True  # 2026-06-12: M2 activo — notificaciones reactivadas para trades reales
+
+# -- BTC Cold Storage Auto-Tracker (15% per profit) --
+_BTC_CS_ALLOC_PCT = 0.15
+_BTC_PRICE_CACHE  = {'price': 0.0, 'ts': 0.0}
+_CS_FILE          = Path('/opt/sigma/results/reports/btc_cold_storage.json')
+
+def _get_btc_price_fast():
+    import time as _t_cs
+    now = _t_cs.time()
+    if now - _BTC_PRICE_CACHE['ts'] < 60 and _BTC_PRICE_CACHE['price'] > 0:
+        return _BTC_PRICE_CACHE['price']
+    try:
+        import urllib.request as _ur_cs, json as _j_cs
+        url = 'https://fapi.binance.com/fapi/v1/ticker/price?symbol=BTCUSDT'
+        p = float(_j_cs.loads(_ur_cs.urlopen(url, timeout=4).read())['price'])
+        _BTC_PRICE_CACHE['price'] = p
+        _BTC_PRICE_CACHE['ts']    = now
+        return p
+    except Exception:
+        return _BTC_PRICE_CACHE.get('price', 0.0)
+
+
+def _track_btc_cold_storage(pnl_dollar, sym, tf, reason, exit_price=0):
+    """Registra 15% del profit en btc_cold_storage.json y notifica Telegram."""
+    if pnl_dollar <= 0:
+        return
+    try:
+        import json as _j_cs2
+        alloc_usd  = round(pnl_dollar * _BTC_CS_ALLOC_PCT, 4)
+        btc_price  = exit_price if (sym == 'BTC' and exit_price > 0) else _get_btc_price_fast()
+        btc_amount = round(alloc_usd / btc_price, 8) if btc_price > 0 else 0.0
+        sats       = int(btc_amount * 1e8)
+        cs = {'entries': [], 'total_btc': 0.0, 'total_usd': 0.0, 'goal_btc': 1.0}
+        if _CS_FILE.exists():
+            try:
+                cs = _j_cs2.loads(_CS_FILE.read_text())
+            except Exception:
+                pass
+        entry = {
+            'date': _strftime_chile('%Y-%m-%d %H:%M:%S'),
+            'trade': f'{sym}_{tf}',
+            'reason': reason,
+            'pnl_usd': round(pnl_dollar, 2),
+            'alloc_usd': alloc_usd,
+            'btc_price': round(btc_price, 2),
+            'btc': btc_amount,
+            'sats': sats,
+        }
+        cs.setdefault('entries', []).append(entry)
+        cs['total_btc'] = round(sum(e.get('btc', 0) for e in cs['entries']), 8)
+        cs['total_usd'] = round(sum(e.get('alloc_usd', 0) for e in cs['entries']), 4)
+        _CS_FILE.parent.mkdir(parents=True, exist_ok=True)
+        _CS_FILE.write_text(_j_cs2.dumps(cs, indent=2))
+        pct_goal = round(cs['total_btc'] / max(cs.get('goal_btc', 1.0), 1e-10) * 100, 4)
+        msg = (
+            f"\U0001fa99 <b>BTC Cold Storage +{sats:,} sats</b>\n"
+            f"Trade: {sym}_{tf} | {reason}\n"
+            f"Profit: +${pnl_dollar:.2f} -> 15% = ${alloc_usd:.2f}\n"
+            f"BTC precio: ${btc_price:,.0f}\n"
+            f"<b>Total acumulado: {cs['total_btc']:.8f} BTC</b>\n"
+            f"Meta 1.0 BTC: {pct_goal:.4f}% completado"
+        )
+        try:
+            import urllib.request as _ur_tg, urllib.parse as _up_tg
+            url_tg = f"https://api.telegram.org/bot{_PER_MODEL_TG_TOKEN}/sendMessage"
+            data_tg = _up_tg.urlencode({
+                'chat_id': _PER_MODEL_TG_CHAT,
+                'text': msg,
+                'parse_mode': 'HTML',
+                'disable_web_page_preview': 'true',
+            }).encode()
+            _ur_tg.urlopen(_ur_tg.Request(url_tg, data=data_tg), timeout=5)
+        except Exception as _et_cs:
+            print(f'[COLD STORAGE TG ERROR] {_et_cs}', flush=True)
+    except Exception as _ecs:
+        print(f'[COLD STORAGE ERROR] {_ecs}', flush=True)
+
+# -- fin BTC Cold Storage --
 
 _NOTIF_FEED_FILE = Path('/opt/sigma/results/notifications.jsonl')
 
@@ -2364,63 +2652,65 @@ def get_per_model_stats():
 
 
 def check_auto_close(sym, tf, current_price):
-
-    """Verifica si SL o TP fue tocado y cierra el trade automaticamente."""
-
+    """Verifica si SL o TP fue tocado. Incluye trailing stop activo."""
     state = _load_trades()
-
     key   = f'{sym}_{tf}'
-
     trade = state.get('open', {}).get(key)
-
     if not trade or trade.get('status') != 'open':
-
         return None
-
-
 
     entry     = trade.get('entry', 0)
-
     sl        = trade.get('sl', 0)
-
     tp        = trade.get('tp', 0)
-
     direction = trade.get('direction', 'long')
 
-
-
     if not (entry and sl and tp and current_price):
-
         return None
 
-
+    # Trailing stop: activa tras 1xR favorable, sigue a 0.5xR del watermark
+    TRAIL_ACTIVATE = 1.0   # multiplicador de sl_dist para activar
+    TRAIL_KEEP     = 0.5   # multiplicador de sl_dist para la distancia de trail
+    sl_dist_pct = float(trade.get('sl_dist_pct_at_open') or 0)
+    _trail_updated = False
+    if sl_dist_pct > 0.1:
+        if direction == 'long':
+            unrealized = (current_price - entry) / entry * 100
+            if unrealized >= TRAIL_ACTIVATE * sl_dist_pct:
+                hw = max(float(trade.get('trail_high_water') or entry), current_price)
+                trail_sl = round(hw * (1.0 - TRAIL_KEEP * sl_dist_pct / 100.0), 4)
+                if trail_sl > sl:
+                    state['open'][key]['sl']               = trail_sl
+                    state['open'][key]['trail_high_water'] = hw
+                    state['open'][key]['trail_active']     = True
+                    sl = trail_sl
+                    _trail_updated = True
+        else:
+            unrealized = (entry - current_price) / entry * 100
+            if unrealized >= TRAIL_ACTIVATE * sl_dist_pct:
+                lw = min(float(trade.get('trail_low_water') or entry), current_price)
+                trail_sl = round(lw * (1.0 + TRAIL_KEEP * sl_dist_pct / 100.0), 4)
+                if trail_sl < sl:
+                    state['open'][key]['sl']              = trail_sl
+                    state['open'][key]['trail_low_water'] = lw
+                    state['open'][key]['trail_active']    = True
+                    sl = trail_sl
+                    _trail_updated = True
+    if _trail_updated:
+        _save_trades(state)
+        print(f'[TRAIL] {sym}/{tf} {direction} trail_sl={sl:.4f}', flush=True)
 
     hit = None
-
     if direction == 'long':
-
         if current_price <= sl:    hit = 'SL_HIT'
-
         elif current_price >= tp:  hit = 'TP_HIT'
-
     else:
-
         if current_price >= sl:    hit = 'SL_HIT'
-
         elif current_price <= tp:  hit = 'TP_HIT'
 
-
-
     if hit:
-
-        return close_trade(sym, tf, current_price, hit)
-
+        reason = 'TRAIL_HIT' if trade.get('trail_active') else hit
+        return close_trade(sym, tf, current_price, reason)
     return None
-
-
-
-
-
 def is_blocked(sym, tf):
 
     """True si hay trade abierto o cooldown activo para este sym/tf."""
@@ -2937,11 +3227,17 @@ def _compute_signals():
 
         if _wr > 0 and _wr < 42:            return 'NO_ACTIVAR', f'WR {_wr:.0f}% muy bajo'
 
-        if _dd < -35:                        return 'NO_ACTIVAR', f'DD {_dd:.0f}% excesivo'
+        # 2026-06-11: umbrales DD TF-aware (15m opera mas frecuente = DD estructuralmente mayor)
+        _tf_raw   = m.get('_tf', '')
+        _is_15m   = '15m' in str(_tf_raw)
+        _no_act_dd = -50.0 if _is_15m else -35.0
+        _cond_dd   = -35.0 if _is_15m else -25.0
+
+        if _dd < _no_act_dd:                 return 'NO_ACTIVAR', f'DD {_dd:.0f}% excesivo'
 
         if _g == 'C':                        return 'CONDICIONAL', 'Grade C'
 
-        if _dd < -25:                        return 'CONDICIONAL', f'DD {_dd:.0f}% alto'
+        if _dd < _cond_dd:                   return 'CONDICIONAL', f'DD {_dd:.0f}% alto'
 
         if _ty > 0 and _ty < 4:             return 'CONDICIONAL', f'{_ty:.0f} trades/ano — pocas senales'
 
@@ -3583,16 +3879,22 @@ def _compute_signals():
 
     # Build data_cache from persistent OHLCV cache (skip stale entries)
     global _ohlcv_cache
-    _TF_TTL = {'5m': 240, '15m': 600, '1h': 2700, '4h': 10800}
+    _TF_TTL     = {'5m': 240, '15m': 600, '1h': 300, '4h': 1200}   # 5min / 20min ? deteccion rapida Motor 1
+    _TF_TTL_CSV = {'1d': 43200, '5m': 240, '15m': 600, '1h': 1200, '4h': 3600}  # 1d=12h
+    _CSV_SYMS   = {'XAU', 'XAG', 'WTI', 'HG', 'NG', 'PL'}
     _now_cs = time.time()
-    data_cache = {k: df for k, (ts, df) in _ohlcv_cache.items()
-                  if _now_cs - ts < _TF_TTL.get(k[1], 600)}
+    data_cache = {}
+    for _k, (_ts, _df) in _ohlcv_cache.items():
+        _sym_k = _k[0].upper().split('/')[0]
+        _ttl = _TF_TTL_CSV.get(_k[1], 600) if _sym_k in _CSV_SYMS else _TF_TTL.get(_k[1], 600)
+        if _now_cs - _ts < _ttl:
+            data_cache[_k] = _df
 
     results = []
 
     _paper_candidates = {}  # paper trades a abrir tras slot assignment
 
-    tf_alias = {'15m':'15min','5m':'5min','1m':'1min'}
+    tf_alias = {}  # 2026-06-11 fix: Binance usdm ya usa '15m','5m','1m' directamente; '15min'/'5min' causan BadRequest -1120
 
 
 
@@ -3604,7 +3906,7 @@ def _compute_signals():
 
         tf = tf_dir.name
 
-        if tf not in {'4h','1h','15m','5m','1m'}:
+        if tf not in {'1d','4h','1h','15m','5m','1m'}:
 
             continue  # ignorar TFs no estandar (2h, 3h, etc)
 
@@ -3698,7 +4000,7 @@ def _compute_signals():
 
                         tf_ccxt = tf_alias.get(tf, tf)
 
-                        if sym in ('XAU', 'XAG'):
+                        if sym in _CSV_SYMS:  # 2026-06-11: HG/NG/WTI/PL tambien usan CSV
 
                             try:
 
@@ -3842,7 +4144,7 @@ def _compute_signals():
 
                         'grade':gr,'wr':m.get('wr',0),'cagr':m.get('cagr',0),
 
-                        'kelly_pct': round(sc * 3.3, 2),
+                        'kelly_pct': round(sc * 2.2, 2),
 
                     }
 
@@ -4094,13 +4396,29 @@ def _compute_signals():
 
                     r['has_open_trade'] = False
 
+                # Cooldown: propagar info al model dict para display en dashboard
+
+                if _ot2.get('status') == 'cooldown':
+
+                    r['cooldown_active'] = True
+
+                    r['cooldown_until']  = _ot2.get('cooldown_until', 0)
+
+                    _cd_pnl = _ot2.get('pnl_pct')
+
+                    if _cd_pnl is not None:
+
+                        r['live_pnl_pct'] = round(float(_cd_pnl), 4)  # ultimo trade cerrado
+
             except Exception:
 
                 pass
 
 
 
-        if r['recommendation'] == 'ACTIVAR' and r['regime_ok']:
+        # Paper mode: si el modelo tiene entrada valida en _paper_candidates, dar slot
+        _paper_slot_ok = not LIVE_EXECUTION and (r.get('sym','')+'_'+r.get('tf','')) in _paper_candidates
+        if r['recommendation'] in ('ACTIVAR','CONDICIONAL') and (r['regime_ok'] or _paper_slot_ok):
 
             _bear_slot2_ok = not (slot_n >= 1 and r.get('cagr', 0) < 15)
 
@@ -4194,7 +4512,8 @@ def _compute_signals():
 
             # Strict para ACTIVAR (live). Paper (CONDICIONAL) puede operar — Kelly cap 1.5% limita riesgo
 
-            if rec_lb == 'ACTIVAR' and (ens_c < 2 or mc_c < 70):
+            # En BEAR los shorts son favorecidos — no silenciar su señal
+            if rec_lb == 'ACTIVAR' and (ens_c < 2 or mc_c < 70) and r.get('type') != 'short':
 
                 r['signal']         = False
 
@@ -4286,11 +4605,55 @@ def _compute_signals():
 
         # Quarter-Kelly nominal (~10% base) — 2026-05-12. Safeguards: CB auto DD<-5%, 3-loss, dd_kelly_mult, conf_mult BEAR 0.5
 
-        base_risk  = 5.0 * _dd_kelly_mult  # 2026-05-31: 10->5%
+        # HRP Kelly: peso del portafolio por slot (1.5-8.0%) vs flat 5%
+        _hrp_sym = r.get('sym', 'BTC').split('/')[0].upper() if isinstance(r, dict) else 'BTC'
+        _hrp_tf  = r.get('tf', '15m') if isinstance(r, dict) else '15m'
+        _hrp_base_risk = _read_hrp_kelly(f'{_hrp_sym}|{_hrp_tf}')
+        # Stress Kelly: reduce gradual basado en deterioro reciente (independiente del DD)
+        # Factores: caida de WR en ultimos 5 trades + dias sin ganar
+        # Rango: 1.0 (normal) -> 0.5 (estres alto). Floor 0.5 para no duplicar efecto del DD.
+        _stress_mult = 1.0
+        try:
+            _sh = state.get('history', [])
+            _sc = [t for t in _sh if t.get('status') in ('TP_HIT','SL_HIT','TRAIL_HIT','CLOSED','MANUAL_CLOSE')]
+            _r5 = _sc[-5:]
+            if len(_r5) >= 3:
+                _rwr  = sum(1 for t in _r5 if (t.get('pnl_pct') or 0) > 0) / len(_r5)
+                _gwr  = sum(1 for t in _sc if (t.get('pnl_pct') or 0) > 0) / max(len(_sc), 1)
+                _wrd  = _rwr - _gwr
+                _lwd  = 999
+                for _t in reversed(_sc):
+                    if (_t.get('pnl_pct') or 0) > 0:
+                        try:
+                            _lwd = (datetime.now() - datetime.fromisoformat(str(_t.get('closed_at',''))[:19])).days
+                        except Exception:
+                            pass
+                        break
+                _wr_stress      = max(0.0, -_wrd * 2.0)
+                _drought_stress = min(1.0, max(0.0, (_lwd - 3) / 10.0))
+                _sidx           = _wr_stress * 0.6 + _drought_stress * 0.4
+                _stress_mult    = max(0.5, 1.0 - _sidx * 0.5)
+        except Exception:
+            _stress_mult = 1.0
+        base_risk  = (_hrp_base_risk if _hrp_base_risk else 5.0) * _dd_kelly_mult * _stress_mult  # stress+dd scaling
+        # Exposure Guardian + Regime Multi (agentes 2+4)
+        _exposure_mult, _exp_status = _read_exposure_gate()
+        _asset_str = r.get('sym', 'BTC').split('/')[0].upper() if isinstance(r, dict) else 'BTC'
+        _regime_mult = _read_regime_mult(_asset_str)
+        base_risk = base_risk * _exposure_mult * _regime_mult * _read_vol_mult()
 
         r['eff_risk_pct'] = round(min(base_risk * conf_mult * ens_mult * funding_kelly_mult, 5.0), 2)
 
         r['dd_kelly_mult'] = _dd_kelly_mult
+        r['stress_mult']   = _stress_mult
+        r['_kelly_ledger'] = {
+            'base_pct':      round(_hrp_base_risk if _hrp_base_risk else 5.0, 3),
+            'dd_mult':       _dd_kelly_mult,
+            'stress_mult':   _stress_mult,
+            'exposure_mult': round(_exposure_mult, 3),
+            'regime_mult':   round(_regime_mult, 3),
+            'eff_risk_pct':  r.get('eff_risk_pct', 0),
+        }
 
         r['conf_mult']    = conf_mult
 
@@ -4572,7 +4935,8 @@ def _compute_signals():
 
         if _k not in _paper_candidates or _k in _state['open']: continue
 
-        if _open_n >= 3: break  # MAX_OPEN_SLOTS (matches live_executor.py, subido a 3 el 2026-05-12)
+        _max_open = 3 if LIVE_EXECUTION else 5  # live=3 conservador / paper=5 para acelerar validacion
+        if _open_n >= _max_open: break
 
         _c = _paper_candidates[_k]
 
@@ -4596,7 +4960,13 @@ def _compute_signals():
 
             _sig_data  = next((r for r in results
 
-                               if r.get('sym') == _c['sym'] and r.get('tf') == _c['tf']), {})
+                               if r.get('sym') == _c['sym'] and r.get('tf') == _c['tf']
+
+                               and r.get('strategy') == _c.get('strat')), {})
+
+            if not LIVE_EXECUTION:
+
+                _sig_data = {**_sig_data, 'paper_mode': True}
 
             _ai_ok, _ai_reason = _ai_should_enter(_sig_data, regime, _open_list)
 
@@ -4614,9 +4984,9 @@ def _compute_signals():
 
 
 
-        open_trade(_c['sym'],_c['tf'],_c['dir'],_c['price'],_c['sl'],_c['tp'],
-
-                   _c['strat'],paper=True,grade=_c['grade'],wr=_c['wr'],cagr=_c['cagr'])
+        _execute_trade(_c['sym'],_c['tf'],_c['dir'],_c['price'],_c['sl'],_c['tp'],
+                       strategy=_c['strat'],grade=_c['grade'],wr=_c['wr'],cagr=_c['cagr'],
+                       kelly_pct=_c.get('kelly_pct', 2.2))
 
         _open_n += 1
 
@@ -5047,6 +5417,27 @@ def _compute_signals():
                         _rmodel['slot'] = 0  # reset slot tras promote — sera elegible en siguiente loop de slot assignment
 
                         _rmodel['reason'] = ('ACTIVAR promoted (PASS_LIVE rob + DD ' + ('%.1f' % _dd_val) + '% manejable) | ' + _orig_reason)[:200]
+
+                # 2026-06-11 FIX C: 15m orgánico CONDICIONAL por DD + PASS_LIVE → ACTIVAR
+                # Con umbrales TF-aware, el path rob-upgrade ya no aplica para DD -35 a -50.
+                # Si tiene PASS_LIVE + CAGR/grade ok + DD en rango 15m → promover directamente.
+                if (_r['action'] == 'PASS_LIVE'
+                    and _rmodel.get('recommendation') == 'CONDICIONAL'
+                    and not _rmodel.get('recommendation_upgraded_by_robustness')
+                    and not _rmodel.get('recommendation_promoted_to_activar')):
+                    _tf_c  = str(_rmodel.get('tf', ''))
+                    _dd_c  = float(_rmodel.get('dd', 0) or 0)
+                    _cg_c  = float(_rmodel.get('cagr', 0) or 0)
+                    _gr_c  = _rmodel.get('grade', 'D')
+                    _rs_c  = _rmodel.get('reason', '')
+                    if (_tf_c == '15m'
+                        and 'DD' in _rs_c
+                        and -50 <= _dd_c < -25
+                        and _cg_c >= 12
+                        and _gr_c in ('A+', 'A', 'B')):
+                        _rmodel['recommendation'] = 'ACTIVAR'
+                        _rmodel['recommendation_promoted_to_activar'] = True
+                        _rmodel['reason'] = ('ACTIVAR promoted (PASS_LIVE+15m DD ' + ('%.1f' % _dd_c) + '% TF-aware) | ' + _rs_c)[:200]
 
             except Exception as _e_rb_inner:
 
@@ -5656,13 +6047,13 @@ body{background:radial-gradient(ellipse at top,#11161f 0%,#0a0d12 60%) fixed;col
     </div>
     <div id="motor2-card" style="background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <span style="color:#ffa657;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase">Motor 2 — Commodities</span>
+        <span style="color:#ffa657;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase">SIGMA MACRO — Metals &amp; Energy</span>
         <span id="m2-pct" style="font-family:monospace;font-size:13px;font-weight:700;color:#e6edf3">-</span>
       </div>
       <div id="m2-bar" style="height:4px;background:#21262d;border-radius:2px;margin-bottom:10px;overflow:hidden">
         <div id="m2-bar-fill" style="height:100%;background:linear-gradient(90deg,#ffa657,#ff7b72);border-radius:2px;width:0%;transition:width .6s"></div>
       </div>
-      <div id="m2-grid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:4px;font-family:monospace;font-size:10px"></div>
+      <div id="m2-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;font-family:monospace;font-size:10px"></div>
     </div>
   </div>
   <script>
@@ -6624,7 +7015,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         # Path siempre permitidos (sin auth): login y archivos estáticos del browser
 
-        if self.path.startswith('/login') or self.path == '/favicon.ico':
+        if self.path.startswith('/login') or self.path == '/favicon.ico' or self.path.startswith('/api/public'):
 
             return True
 
@@ -6654,6 +7045,49 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
 
+        # ── Public endpoint (no auth) — for SIGMA FIRE mobile app ─────────────────
+        if self.path == '/api/public':
+            try:
+                import json as _j, pathlib as _pl
+                _cache_p = _pl.Path('/opt/sigma/results/signals_cache.json')
+                _cache = _j.loads(_cache_p.read_text()) if _cache_p.exists() else {}
+                _signals = [m for m in _cache.get('models', []) if m.get('signal')]
+                _ts_p = _pl.Path('/opt/sigma/results/trade_state.json')
+                _open_trades = []
+                _history = []
+                _port = {}
+                if _ts_p.exists():
+                    _ts = _j.loads(_ts_p.read_text())
+                    _open_trades = [v for v in _ts.get('open', {}).values() if v.get('status') == 'open']
+                    _history = _ts.get('history', [])[-20:]
+                    _port = _ts.get('portfolio', {})
+                _perf_p = _pl.Path('/opt/sigma/results/reports/performance_tracker.json')
+                if _perf_p.exists() and not _port:
+                    _port = _j.loads(_perf_p.read_text()).get('portfolio', {})
+                _top_models = sorted(
+                    [m for m in _cache.get('models', []) if m.get('grade') in ('A+', 'A')],
+                    key=lambda x: x.get('score', 0), reverse=True
+                )[:12]
+                _return_pct = round((_port.get('equity', 10000) / _port.get('initial_capital', 10000) - 1) * 100, 2) if _port.get('initial_capital') else 0
+                _body = _j.dumps({
+                    'regime': _cache.get('regime', 'UNKNOWN'),
+                    'signals': _signals,
+                    'top_models': _top_models,
+                    'portfolio': {**_port, 'return_pct': _return_pct},
+                    'open_trades': _open_trades,
+                    'history': _history,
+                    'updated': _cache.get('updated', ''),
+                }, ensure_ascii=False).encode('utf-8')
+            except Exception as _e:
+                _body = ('{"error":"' + str(_e)[:100] + '"}').encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', len(_body))
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(_body)
+            return
+
         if not self._gate(): return
 
         if self.path == '/api/regime':
@@ -6682,7 +7116,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
                 n_models_total = 0
 
-                for _tf in ['5m','15m','1h','4h']:
+                for _tf in ['1d','5m','15m','1h','4h']:
 
                     _p = _Path('/opt/sigma/models/' + _tf)
 
@@ -7358,13 +7792,19 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
                 except: rate_hr = 0
 
-                _send_json(self, {'lines': recent, 'db_total': db_total, 'rate_hr': rate_hr})
+                # Leer optuna_rate desde el cache compartido (background thread — no bloquea)
+                optuna_rate = _live_stats_cache.get('optuna_rate_hr', 0)
+
+                _send_json(self, {'lines': recent, 'db_total': db_total, 'rate_hr': rate_hr, 'optuna_rate_hr': optuna_rate})
 
             except Exception as e:
 
                 _send_json(self, {'lines': [str(e)], 'db_total': 0, 'rate_hr': 0})
 
 
+
+        elif self.path == '/api/m2_prices':
+            _send_json(self, _M2_PRICES_CACHE)
 
         elif self.path == '/api/signals':
 
@@ -7631,14 +8071,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     return total, filled
 
                 m1_t, m1_f = _motor_coverage(['BTC','ETH','SOL','BNB','LTC'], ['5m','15m','1h','4h'])
-                m2_t, m2_f = _motor_coverage(['XAU','XAG'], ['1h','4h'])
+                m2_t, m2_f = _motor_coverage(['XAU','XAG','WTI','HG','NG','PL'], ['1d','4h','1h','15m'])
                 _send_json(self, {
                     'motor1': {'name':'Crypto','assets':['BTC','ETH','SOL','BNB','LTC'],
                                'timeframes':['5m','15m','1h','4h'],
                                'total_slots':m1_t,'filled_slots':m1_f,
                                'coverage_pct':round(100*m1_f/m1_t,1) if m1_t else 0},
-                    'motor2': {'name':'Commodities','assets':['XAU','XAG'],
-                               'timeframes':['1h','4h'],
+                    'motor2': {'name':'SIGMA MACRO','assets':['XAU','XAG','WTI','HG','NG','PL'],
+                               'timeframes':['1d','4h','1h','15m'],
                                'total_slots':m2_t,'filled_slots':m2_f,
                                'coverage_pct':round(100*m2_f/m2_t,1) if m2_t else 0},
                     'total': {'slots':m1_t+m2_t,'filled':m1_f+m2_f,
@@ -8205,7 +8645,7 @@ def _htf_confirms(sym, tf, direction, ex, data_cache):
 
     try:
 
-        tf_alias  = {'15m':'15min','5m':'5min'}
+        tf_alias  = {}  # 2026-06-11 fix: Binance usdm usa '15m','5m' directamente
 
         tf_ccxt   = tf_alias.get(parent_tf, parent_tf)
 
@@ -8421,11 +8861,13 @@ def _watch_open_trades():
 
                 try:
 
-                    if sym in ('XAU', 'XAG'):
+                    _M2_YF = {'XAU':'GC=F','XAG':'SI=F','HG':'HG=F','NG':'NG=F','WTI':'CL=F','PL':'PL=F'}
+
+                    if sym in _M2_YF:
 
                         import yfinance as _yf_w
 
-                        cp = float(_yf_w.Ticker('GC=F').fast_info.last_price)
+                        cp = float(_yf_w.Ticker(_M2_YF[sym]).fast_info.last_price)
 
                     else:
 
@@ -8446,6 +8888,7 @@ def _watch_open_trades():
                         reason = result.get('reason', '?')
 
                         pnl    = result.get('pnl_pct', 0)
+                        _update_model_cb(f'{sym}|{tf}', pnl)  # model-CB-update
 
                         print(f'[WATCHER] {sym}/{tf} {reason} @ {cp:.4f} P&L={pnl:+.2f}%', flush=True)
 
@@ -8491,15 +8934,24 @@ def _watch_open_trades():
 
                 # Solo los que NO tiene macro (los del macro ya se chequearon arriba)
 
+                _PM_YF_MAP = {'XAU':'GC=F','XAG':'SI=F','HG':'HG=F','WTI':'CL=F','NG':'NG=F','PL':'PL=F'}
                 for sym_tf in pm_sym_tfs - macro_sym_tfs:
 
                     sym, tf = sym_tf.split('_', 1)
 
                     try:
 
-                        url = f'https://fapi.binance.com/fapi/v1/ticker/price?symbol={sym}USDT'
+                        if sym in _PM_YF_MAP:
 
-                        cp  = float(_jw.loads(_ur.urlopen(url, timeout=5).read())['price'])
+                            import yfinance as _yf_pmw
+
+                            cp = round(float(_yf_pmw.Ticker(_PM_YF_MAP[sym]).fast_info.last_price), 4)
+
+                        else:
+
+                            url = f'https://fapi.binance.com/fapi/v1/ticker/price?symbol={sym}USDT'
+
+                            cp  = float(_jw.loads(_ur.urlopen(url, timeout=5).read())['price'])
 
                         closed = check_auto_close_per_model(sym, tf, cp)
 
@@ -8670,6 +9122,7 @@ def _proactive_trade_opener():
                 if sig.get('has_open_trade'): continue  # evitar SL trailed
 
                 if sig.get('recommendation') not in ('ACTIVAR', 'CONDICIONAL'): continue
+                if _check_model_cb(sig.get('sym','?') + '|' + sig.get('tf','?')): continue  # model-CB
 
                 sl_b = sig.get('sl', 0); tp_b = sig.get('tp', 0); bar_p = sig.get('price', 0)
 
@@ -8704,6 +9157,36 @@ def _proactive_trade_opener():
                 if sig.get('slot', 0) <= 0: continue
 
                 if sig.get('recommendation') not in ('ACTIVAR',): continue
+
+                # ?? CHAMPION GATE: MACRO solo abre el champion del slot ??????????
+                # Los modelos no-champion van al per-model (sub-pagina testing)
+                try:
+                    import json as _jcg
+                    _cg_snap = _jcg.loads(open('/opt/sigma/results/reports/port_snapshot.json').read())
+                    _cg_champs = _cg_snap.get('champions', {})
+                    _cg_sym = sig.get('sym','').replace('/USDT','').replace('/USD','').upper()
+                    _cg_key = f"{_cg_sym}|{sig.get('tf','?')}"
+                    _cg_champ = _cg_champs.get(_cg_key, '')
+                    if _cg_champ and sig.get('strategy','?') != _cg_champ.split('|')[0]:
+                        continue  # no es el champion: solo per-model testing
+                except Exception:
+                    continue  # fallo lectura port_snapshot: NO abrir (fail-safe)
+
+                # CONGELADO gate: champion observando en paper, no abre MACRO
+                try:
+                    _cg_frozen = _cg_snap.get('frozen_champions', {})
+                    if _cg_key in _cg_frozen:
+                        continue  # slot congelado: paper-only hasta recuperacion
+                except Exception:
+                    pass
+
+                if _check_model_cb(sig.get('sym','?') + '|' + sig.get('tf','?')): continue  # model-CB-macro
+                # Cross-motor gate: reduce Kelly si hay trade del otro motor en misma direccion
+                _xm_a = sig.get('sym','BTC').split('/')[0].upper()
+                _xm_d = sig.get('type','long')
+                if any((t.get('direction','') == _xm_d and (t.get('sym','').split('/')[0].upper() in _M2_ASSETS_SET) != (_xm_a in _M2_ASSETS_SET))
+                       for t in open_trades.values() if t.get('status')=='open'):
+                    sig['eff_risk_pct'] = round(sig.get('eff_risk_pct', 3.3) * 0.60, 2)  # cross-motor
 
 
 

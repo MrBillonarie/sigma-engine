@@ -1447,7 +1447,7 @@ async function loadTrades() {
     const d   = await res.json();
     const open  = d.open  || [];
     const cds   = d.cooldowns || [];
-    const hist  = d.history || [];
+    const hist  = (d.history || []).filter(t => t.source !== "per_model") || [];
     const st    = d.stats   || {};
     const port  = d.portfolio || {};
     const mperf = d.model_performance || {};
@@ -1562,14 +1562,14 @@ async function loadTrades() {
 
     // Cooldowns
     cds.forEach(c => {
-      const col=c.reason==='SL_HIT'?'#f44336':c.reason==='TP_HIT'?'#00c853':'#555';
+      const col=c.reason==='SL_HIT'?'#f44336':c.reason==='TP_HIT'?'#00c853':c.reason==='TRAIL_HIT'?'#00bcd4':c.reason==='REGIME_EXIT'||c.reason==='REGIME_CHANGE'?'#9c27b0':c.reason==='MANUAL_CLOSE'||c.reason==='MANUAL'?'#757575':'#555';
       openHTML += `<tr style="opacity:0.4;border-left:3px solid ${col}"><td style="${TD};color:${col}">⏸</td><td style="${TD}"><b style="color:#555">${c.sym}</b></td><td style="${TD};color:#444">${c.tf?.toUpperCase()}</td><td colspan="11" style="${TD};color:#333">cooldown hasta ${c.until?.substring(11,16)||'—'} (${c.reason})</td></tr>`;
     });
 
     // Historial
     const histHTML = [...hist].slice(0,15).map(t => {
       const pnl=t.pnl_pct||0; const pc=pnl>=0?'#00e676':'#f44336';
-      const icon=t.reason==='TP_HIT'?'✓ TP':t.reason==='SL_HIT'?'✗ SL':t.reason==='REGIME_CHANGE'?'↻ RG':'○';
+      const icon=t.reason==='TP_HIT'?'✓ TP':t.reason==='SL_HIT'?'✗ SL':t.reason==='TRAIL_HIT'?'⟳ TRAIL':t.reason==='REGIME_CHANGE'?'↻ RG':'○';
       const comm=t.commission?`<span style="color:#333;font-size:9px"> -${t.commission.toFixed(2)}$ fee</span>`:'';
       const fund=t.funding&&t.funding>0?`<span style="color:#3fb950;font-size:9px"> +${t.funding.toFixed(2)}$ fund</span>`:'';
       const hrs=t.hours_open?`<span style="color:#333;font-size:9px"> ${t.hours_open}h</span>`:'';

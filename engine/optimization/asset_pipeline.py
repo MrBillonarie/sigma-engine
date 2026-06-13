@@ -37,6 +37,10 @@ import sys, os, argparse, time, json, fcntl
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import numpy as np, pandas as pd, optuna
+try:
+    import numba as _numba; _HAS_NUMBA = True
+except ImportError:
+    _HAS_NUMBA = False; _numba = None
 import warnings; warnings.filterwarnings('ignore')
 from pathlib import Path
 from datetime import datetime, timezone
@@ -88,7 +92,8 @@ def load_asset_csv(path):
     for col in needed:
         if col not in df.columns:
             df[col] = 0.0
-    df = df[needed]
+    extra = [col for col in ['dxy', 'yield_10y'] if col in df.columns]
+    df = df[needed + extra]
     df = df[~df.index.duplicated(keep='last')].sort_index()
     df.index.name = 'timestamp'
     df = df.dropna(subset=['close'])
@@ -1707,12 +1712,74 @@ def kelly_risk(recent_trades, base_risk, min_r=0.5, max_r=2.0):
     return mult
 
 
+if _HAS_NUMBA:
+    @_numba.jit(nopython=True, cache=True)
+    def _bt_core(c, h, lo, sa, sla, tpa, fr, risk_pct_f, cost_f, capital_f):
+        n = len(c)
+        max_t = n // 2 + 1
+        pnl_out = np.zeros(max_t)
+        n_t = 0
+        eq = np.zeros(n)
+        cap = capital_f; eq[0] = cap
+        pos = 0; ep = 0.0; slv = 0.0; tpv = 0.0; sz = 0.0
+        rpnl = np.zeros(20); ri = 0; rc = 0
+        for i in range(1, n):
+            pr = c[i]
+            if pos != 0:
+                if fr[i] != 0.0:
+                    cap -= pos * sz * c[i] * fr[i]
+                pnl = 0.0; closed = False
+                if pos == 1:
+                    if lo[i] <= slv:
+                        pnl = sz*(slv-ep) - sz*(ep+slv)*cost_f; closed = True
+                    elif h[i] >= tpv:
+                        pnl = sz*(tpv-ep) - sz*(ep+tpv)*cost_f; closed = True
+                else:
+                    if h[i] >= slv:
+                        pnl = sz*(ep-slv) - sz*(ep+slv)*cost_f; closed = True
+                    elif lo[i] <= tpv:
+                        pnl = sz*(ep-tpv) - sz*(ep+tpv)*cost_f; closed = True
+                if closed:
+                    cap += pnl; pnl_out[n_t] = pnl; n_t += 1
+                    rpnl[ri % 20] = pnl; ri += 1
+                    if rc < 20: rc += 1
+                    pos = 0
+            if pos == 0 and sa[i-1] != 0 and sla[i-1] > 0.0 and cap > 50.0:
+                rsl = abs(pr - sla[i-1])
+                if rsl > 0.0:
+                    km = 1.0
+                    if rc >= 10:
+                        wins = 0; tw = 0.0; tl = 0.0
+                        for j in range(rc):
+                            p = rpnl[j]
+                            if p > 0.0: wins += 1; tw += p
+                            else: tl -= p
+                        lss = rc - wins
+                        if wins > 0 and lss > 0 and tw > 0.0 and tl > 0.0:
+                            wr_k = wins / rc
+                            rk = wr_k - (1.0-wr_k)*(tl/lss)/(tw/wins)
+                            km = max(0.5, min(2.0, rk*2.0+1.0))
+                    er = risk_pct_f * km
+                    sz = (cap * er / 100.0) / rsl
+                    pos = sa[i-1]; ep = pr; slv = sla[i-1]; tpv = tpa[i-1]
+            eq[i] = cap
+        return pnl_out[:n_t], eq
+else:
+    _bt_core = None
+
+
 def backtest(df, sig, sl_s, tp_s, risk_pct, use_kelly=True):
     c=df['close'].to_numpy(); h=df['high'].to_numpy(); lo=df['low'].to_numpy()
     sa=sig.to_numpy(); sla=sl_s.to_numpy(); tpa=tp_s.to_numpy()
     # Funding rate por barra (0.0 si no está disponible)
     fr = df['funding_rate'].to_numpy() if 'funding_rate' in df.columns else np.zeros(len(df))
     COST = COMMISSION + SLIPPAGE  # costo total por lado (comisión + slippage)
+    # Numba fast path: 50-100x mas rapido que el loop Python
+    if _HAS_NUMBA and _bt_core is not None:
+        try:
+            _p,_e = _bt_core(c,h,lo,sa,sla,tpa,fr,float(risk_pct),float(COST),float(CAPITAL))
+            return pd.DataFrame([{"pnl":float(x)} for x in _p]), pd.Series(_e[:len(df)],index=df.index[:len(_e)])
+        except Exception: pass
     cap=CAPITAL; eq=[cap]; pos=0; entry_p=slv=tpv=sz=0.0; trades=[]
     recent_pnl = []
     for i in range(1, len(c)):
@@ -2137,7 +2204,8 @@ def optimize_strategy(df_is, strategy, n_trials, days_is, symbol='?', tf='?'):
     if not sig_fn:
         return {}, 3.3, -9999
 
-    _cleanup_optuna_storage()
+    # per_study DBs son pequeños (100-200KB) y no necesitan cleanup central
+    # _cleanup_optuna_storage()  # disabled: lee 19GB shared DB en cada ciclo
 
     best_score = [-9999]
 
@@ -2147,10 +2215,49 @@ def optimize_strategy(df_is, strategy, n_trials, days_is, symbol='?', tf='?'):
         try:
             sig, sl, tp = sig_fn(df_is, p)
             if (sig != 0).sum() < 20: return -9999
+            # Pruning: evalua primer 33% IS (activa MedianPruner)
+            try:
+                _n3 = max(len(df_is)//3, 200)
+                _df3 = df_is.iloc[:_n3]
+                _days3 = max((_df3.index[-1] - _df3.index[0]).days, 1)
+                _sig3 = sig.iloc[:_n3]; _sl3 = sl.iloc[:_n3]; _tp3 = tp.iloc[:_n3]
+                if (_sig3 != 0).sum() >= 5:
+                    _dt3, _eq3 = backtest(_df3, _sig3, _sl3, _tp3, rp)
+                    _m3 = metrics(_dt3, _eq3, _days3, min_t=3)
+                    _s3 = float(score(_m3)) if _m3 else -9999
+                    trial.report(_s3, step=0)
+                    if trial.should_prune():
+                        raise optuna.TrialPruned()
+            except optuna.TrialPruned:
+                raise
+            except: pass
+            # Pruning paso 2: evalua 66% IS (step=1 -> poda antes del backtest completo)
+            try:
+                _n6 = max(len(df_is)*2//3, 400)
+                _df6 = df_is.iloc[:_n6]
+                _days6 = max((_df6.index[-1] - _df6.index[0]).days, 1)
+                _sig6 = sig.iloc[:_n6]; _sl6 = sl.iloc[:_n6]; _tp6 = tp.iloc[:_n6]
+                if (_sig6 != 0).sum() >= 8:
+                    _dt6, _eq6 = backtest(_df6, _sig6, _sl6, _tp6, rp)
+                    _m6 = metrics(_dt6, _eq6, _days6, min_t=5)
+                    _s6 = float(score(_m6)) if _m6 else -9999
+                    trial.report(_s6, step=1)
+                    if trial.should_prune():
+                        raise optuna.TrialPruned()
+            except optuna.TrialPruned:
+                raise
+            except: pass
             dt, eq = backtest(df_is, sig, sl, tp, rp)
             m = metrics(dt, eq, days_is)
             s = float(score(m)) if m else -9999
-            if _db_ok and m and m['trades'] >= 10:
+            # 2026-06-11: penalizacion DD para 15m — guia Optuna hacia soluciones mas limpias
+            # Penalty crece de 0% (DD 25%) a 30% (DD 50%+). No afecta otros TFs.
+            if s > -9999 and m and tf == '15m':
+                _dd_val = abs(m.get('dd', 0) or 0)
+                if _dd_val > 25:
+                    _dd_pen = min((_dd_val - 25) / 25 * 0.30, 0.30)
+                    s = round(s * (1 - _dd_pen), 4)
+            if _db_ok and m and m['trades'] >= 10 and s >= best_score[0] - 0.03:
                 try: save_run(tf, strategy, p, m, s, symbol=symbol)
                 except: pass
             if s > best_score[0]:
@@ -2164,12 +2271,25 @@ def optimize_strategy(df_is, strategy, n_trials, days_is, symbol='?', tf='?'):
         if trial.number > 0 and trial.number % 30 == 0:
             best = study.best_value if study.best_value and study.best_value > -9999 else 0
             print(f'    [{symbol} {tf}] T{trial.number}/{n_trials} | mejor score={best:.3f}', flush=True)
+        if trial.number >= 60 and trial.number % 5 == 0:
+            _rv = [t.value for t in study.trials[-55:] if t.value is not None and t.value > -9999]
+            if len(_rv) >= 50 and max(_rv) < study.best_value - 0.0005: study.stop()
 
     # Storage persistente: cada (symbol, tf, strategy) acumula conocimiento entre ciclos
     sym_clean   = (symbol or '').replace('/USDT','').replace('/','').lower()
     study_name  = f"{sym_clean}_{tf}_{strategy}"
-    storage_path = str(OUTPUT_DIR / 'models' / 'optuna_studies.db')
+    # SQLite por estudio: elimina lock contention entre workers paralelos
+    _optuna_dir = OUTPUT_DIR / 'models' / 'optuna_per_study'
+    _optuna_dir.mkdir(parents=True, exist_ok=True)
+    storage_path = str(_optuna_dir / f'{sym_clean}_{tf}_{strategy}.db')
     storage_url  = f"sqlite:///{storage_path}?timeout=30"
+    # WAL: reduce write contention con workers paralelos
+    try:
+        import sqlite3 as _s3
+        _wc = _s3.connect(storage_path, timeout=10)
+        _wc.execute("PRAGMA journal_mode=WAL")
+        _wc.close()
+    except: pass
 
     try:
         study = optuna.create_study(
@@ -2177,8 +2297,8 @@ def optimize_strategy(df_is, strategy, n_trials, days_is, symbol='?', tf='?'):
             study_name    = study_name,
             storage       = storage_url,
             load_if_exists= True,
-            sampler       = optuna.samplers.TPESampler(seed=42, n_startup_trials=20),
-            pruner        = optuna.pruners.MedianPruner(n_startup_trials=10, n_warmup_steps=5),
+            sampler       = (optuna.samplers.CmaEsSampler(seed=42, restart_strategy="ipop") if strategy in {"regime_adaptive"} else optuna.samplers.TPESampler(seed=42, n_startup_trials=20)),
+            pruner        = optuna.pruners.MedianPruner(n_startup_trials=5, n_warmup_steps=0),
         )
     except Exception:
         # Fallback in-memory si SQLite falla (permisos, disco lleno, etc.)
@@ -2194,6 +2314,14 @@ def optimize_strategy(df_is, strategy, n_trials, days_is, symbol='?', tf='?'):
             top = get_top_runs_by_strategy(tf, strategy, n=10, min_trades=10)
             if len(top) < 5:
                 top += get_top_runs(tf, n=8, min_trades=10)
+            # Cross-TF warm-start: misma estrategia en otros timeframes
+            if len(top) < 8:
+                try:
+                    for _alt_tf in ['1h', '4h', '15m', '1d', '5m']:
+                        if _alt_tf != tf and len(top) < 10:
+                            top += get_top_runs_by_strategy(_alt_tf, strategy, n=4, min_trades=10)
+                except:
+                    pass
             enqueued = 0
             for run in top:
                 try:
@@ -2208,7 +2336,11 @@ def optimize_strategy(df_is, strategy, n_trials, days_is, symbol='?', tf='?'):
         except:
             pass
 
-    study.optimize(objective, n_trials=n_trials, callbacks=[cb], show_progress_bar=False)
+    import gc as _gc; _gc.disable()
+    try:
+        study.optimize(objective, n_trials=n_trials, callbacks=[cb], show_progress_bar=False, n_jobs=2)
+    finally:
+        _gc.enable(); _gc.collect()
 
     bp = {k: v for k, v in study.best_params.items() if k != 'risk_pct'}
     rp = study.best_params.get('risk_pct', 3.3)
@@ -2288,7 +2420,7 @@ def _read_prev_cagr(symbol, tf, strategy):
     """Lee el CAGR del modelo anterior (si existe) antes de sobrescribir."""
     try:
         from pathlib import Path as _P
-        sym_clean = symbol.replace('/', '').replace('USDT', '').lower()
+        sym_clean = symbol.replace('/', '').replace('USDT', '').replace('USD', '').lower()
         out_dir   = OUTPUT_DIR / 'models' / tf
         fname     = f'{sym_clean}_{strategy}.json'
         p = out_dir / fname
@@ -2543,6 +2675,11 @@ def run_pipeline(symbol, tf, n_trials=350, loop=False, max_cycles=99, csv_path=N
     df = add_features(df_raw)
     n  = len(df); split = int(n * 0.80)
     df_is  = df.iloc[:split]
+    # Pre-cast a float64 una vez: evita conversiones repetidas en cada trial
+    for _col in ("close","high","low","open","volume"):
+        if _col in df_is.columns and df_is[_col].dtype != __import__("numpy").float64:
+            df_is = df_is.copy(); df_is[_col] = df_is[_col].astype(__import__("numpy").float64); break
+    df_is = df_is.astype({c: __import__("numpy").float64 for c in ("close","high","low","open","volume") if c in df_is.columns})
     df_oos = df.iloc[split:]
     days_is  = (df_is.index[-1] - df_is.index[0]).days
     days_oos = (df_oos.index[-1] - df_oos.index[0]).days
@@ -2653,7 +2790,7 @@ def run_pipeline(symbol, tf, n_trials=350, loop=False, max_cycles=99, csv_path=N
                     continue
                 # Gate: CAGR extremo requiere validacion MC robusta
                 if cagr_oos > 150:
-                    mc_data = champ_mc.get((asset, tf, strategy), {})
+                    mc_data = (champ_mc.get((asset, tf, strategy), {}) if 'champ_mc' in vars() or 'champ_mc' in globals() else {})
                     mc_p = mc_data.get('p_pos', 100) if mc_data else 100
                     try:
                         from engine.analysis.auto_validator import quick_mc
@@ -2762,10 +2899,55 @@ def run_pipeline(symbol, tf, n_trials=350, loop=False, max_cycles=99, csv_path=N
     print(f'{"="*65}\n')
 
 
+# ==============================================================================
+# Commodity strategies: 38 estrategias (19L+19S) con routing por activo
+# XAU/XAG/PL -> precious_metals | WTI/NG -> energy | HG -> industrial
+# Cada familia recibe 28 estrategias relevantes, no las 38 totales.
+# Para escalar CPU: aumentar M2_PARALLEL en pipeline.py. No tocar aqui.
+# ==============================================================================
+try:
+    _comm_opt_path = '/opt/sigma/engine/optimization'
+    if _comm_opt_path not in sys.path:
+        sys.path.insert(0, _comm_opt_path)
+    import commodity_strategies as _comm_strats_mod
+    _comm_strats_mod._bind(sys.modules[__name__])
+
+    # Routing: estrategias especificas para este activo
+    _sym_idx  = next((i+1 for i, a in enumerate(sys.argv) if a == '--symbol'), None)
+    _sym_raw  = sys.argv[_sym_idx] if _sym_idx else ''
+    _asset_cd = _sym_raw.split('/')[0].upper()
+    _routed   = _comm_strats_mod.get_strategies_for(_asset_cd)
+
+    # Registrar TODAS las funciones en globals
+    for _fn_name in _comm_strats_mod.COMMODITY_STRATEGIES:
+        _fn = getattr(_comm_strats_mod, 'sig_' + _fn_name, None)
+        if _fn is not None:
+            globals()['sig_' + _fn_name] = _fn
+
+    # Solo agregar al pipeline las del routing del activo actual
+    _comm_longs  = [n for n in _routed if not n.endswith('_short')]
+    _comm_shorts = [n for n in _routed if n.endswith('_short')]
+
+    for _fn_name in _comm_longs:
+        if 'sig_' + _fn_name in globals():
+            SIG_FN[_fn_name] = globals()['sig_' + _fn_name]
+            if _fn_name not in STRATEGIES:
+                STRATEGIES.append(_fn_name)
+    for _fn_name in _comm_shorts:
+        if 'sig_' + _fn_name in globals():
+            SIG_FN_SHORT[_fn_name] = globals()['sig_' + _fn_name]
+            if _fn_name not in STRATEGIES_SHORT:
+                STRATEGIES_SHORT.append(_fn_name)
+
+    print('[commodity_strategies] ' + _asset_cd + ': ' + str(len(_routed)) + ' estrategias (' + str(len(_comm_longs)) + 'L/' + str(len(_comm_shorts)) + 'S)', flush=True)
+
+except Exception as _e_comm:
+    print('[commodity_strategies] load error: ' + str(_e_comm), flush=True)
+
 if __name__ == '__main__':
     p = argparse.ArgumentParser()
     p.add_argument('--symbol',  default='XRP/USDT')
-    p.add_argument('--tf',      default='1h', choices=['4h','1h','15m','5m'])
+    p.add_argument('--tf',      default='1h', choices=['4h','1h','15m','5m','1d'])
     p.add_argument('--trials',  type=int, default=350)
     p.add_argument('--loop',    action='store_true', help='Corre indefinidamente')
     p.add_argument('--focus',   choices=['long','short','both','all'], default='both', help='Direction filter (all accepted as compatibility)')

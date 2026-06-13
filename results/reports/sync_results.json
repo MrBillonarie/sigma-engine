@@ -1,9 +1,17 @@
 {
-  "timestamp": "2026-06-09T04:00:01.552079",
+  "timestamp": "2026-06-13T04:00:01.708154",
   "models": {
     "1h": [
       {
-        "file": "xauusd_regime_adaptive.json",
+        "file": "eth_lower_high_structure_short.json",
+        "strategy": "lower_high_structure_short",
+        "cagr_oos": 226.6,
+        "wr_oos": 75.3,
+        "dd_oos": -29.8,
+        "trades_oos": 93
+      },
+      {
+        "file": "xau_regime_adaptive.json",
         "strategy": "regime_adaptive",
         "cagr_oos": 205.1,
         "wr_oos": 70.0,
@@ -19,7 +27,31 @@
         "trades_oos": 32
       },
       {
-        "file": "hgusd_lower_lows.json",
+        "file": "xauusd_tema_cross.json",
+        "strategy": "tema_cross",
+        "cagr_oos": 116.9,
+        "wr_oos": 54.2,
+        "dd_oos": -31.0,
+        "trades_oos": 24
+      },
+      {
+        "file": "sol_engulfing_short.json",
+        "strategy": "engulfing_short",
+        "cagr_oos": 104.8,
+        "wr_oos": 50.7,
+        "dd_oos": -40.4,
+        "trades_oos": 71
+      },
+      {
+        "file": "eth_lower_high_break_short.json",
+        "strategy": "lower_high_break_short",
+        "cagr_oos": 80.3,
+        "wr_oos": 46.2,
+        "dd_oos": -41.1,
+        "trades_oos": 80
+      },
+      {
+        "file": "hg_lower_lows.json",
         "strategy": "lower_lows",
         "cagr_oos": 64.0,
         "wr_oos": 58.1,
@@ -33,6 +65,14 @@
         "wr_oos": 68.4,
         "dd_oos": -22.2,
         "trades_oos": 38
+      },
+      {
+        "file": "xauusd_dmi_trend.json",
+        "strategy": "dmi_trend",
+        "cagr_oos": 44.0,
+        "wr_oos": 66.7,
+        "dd_oos": -9.8,
+        "trades_oos": 30
       },
       {
         "file": "eth_breakout.json",
@@ -75,12 +115,44 @@
         "trades_oos": 50
       },
       {
+        "file": "eth_tma_bands.json",
+        "strategy": "tma_bands",
+        "cagr_oos": 27.0,
+        "wr_oos": 69.0,
+        "dd_oos": -34.0,
+        "trades_oos": 71
+      },
+      {
         "file": "bnb_break_of_structure.json",
         "strategy": "break_of_structure",
         "cagr_oos": 19.5,
         "wr_oos": 52.9,
         "dd_oos": -23.6,
         "trades_oos": 51
+      },
+      {
+        "file": "ngusd_tma_bands.json",
+        "strategy": "tma_bands",
+        "cagr_oos": 18.5,
+        "wr_oos": 73.7,
+        "dd_oos": -5.3,
+        "trades_oos": 19
+      },
+      {
+        "file": "bnb_squeeze_expand_long.json",
+        "strategy": "squeeze_expand_long",
+        "cagr_oos": 17.9,
+        "wr_oos": 82.1,
+        "dd_oos": -15.6,
+        "trades_oos": 28
+      },
+      {
+        "file": "ngusd_volume_climax_top.json",
+        "strategy": "volume_climax_top",
+        "cagr_oos": 14.1,
+        "wr_oos": 36.4,
+        "dd_oos": -16.1,
+        "trades_oos": 22
       },
       {
         "file": "bnb_ichimoku.json",
@@ -91,7 +163,7 @@
         "trades_oos": 50
       },
       {
-        "file": "hgusd_mean_rev.json",
+        "file": "hg_mean_rev.json",
         "strategy": "mean_rev",
         "cagr_oos": 12.0,
         "wr_oos": 70.8,
@@ -213,6 +285,14 @@
         "trades_oos": 27
       },
       {
+        "file": "eth_lower_high_structure_short.json",
+        "strategy": "lower_high_structure_short",
+        "cagr_oos": 19.4,
+        "wr_oos": 82.1,
+        "dd_oos": -12.7,
+        "trades_oos": 28
+      },
+      {
         "file": "btc_psar_flip.json",
         "strategy": "psar_flip",
         "cagr_oos": 17.1,
@@ -255,6 +335,14 @@
     ],
     "15m": [
       {
+        "file": "eth_lower_high_structure_short.json",
+        "strategy": "lower_high_structure_short",
+        "cagr_oos": 115.7,
+        "wr_oos": 73.1,
+        "dd_oos": -46.3,
+        "trades_oos": 290
+      },
+      {
         "file": "eth_volatility_breakout.json",
         "strategy": "volatility_breakout",
         "cagr_oos": 77.6,
@@ -271,11 +359,19 @@
         "trades_oos": 127
       },
       {
+        "file": "sol_lower_high_structure_short.json",
+        "strategy": "lower_high_structure_short",
+        "cagr_oos": 74.8,
+        "wr_oos": 81.0,
+        "dd_oos": -24.6,
+        "trades_oos": 269
+      },
+      {
         "file": "btc_dmi_bear.json",
         "strategy": "dmi_bear",
-        "cagr_oos": 43.3,
-        "wr_oos": 63.1,
-        "dd_oos": -39.9,
+        "cagr_oos": 40.4,
+        "wr_oos": 64.8,
+        "dd_oos": -43.3,
         "trades_oos": 122
       },
       {

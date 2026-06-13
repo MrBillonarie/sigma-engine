@@ -331,6 +331,79 @@ def derivados_snapshot():
     return lineas
 
 
+
+
+def _build_m2_section(models):
+    """Seccion Motor 2 — top commodities para morning news."""
+    M2_SYMS = {'XAU', 'XAG', 'WTI', 'HG', 'NG', 'PL'}
+    M2_NAME = {'XAU': 'Oro', 'XAG': 'Plata', 'WTI': 'Petroleo', 'HG': 'Cobre', 'NG': 'Gas Nat.', 'PL': 'Platino'}
+    m2 = [m for m in models if m.get('sym') in M2_SYMS]
+    if not m2:
+        return []
+    activar = [m for m in m2 if m.get('recommendation') == 'ACTIVAR']
+    condicional = [m for m in m2 if m.get('recommendation') == 'CONDICIONAL']
+    lines = ["⚙ <b>Motor 2 — Commodities</b>"]
+    show = activar[:3] if activar else condicional[:2]
+    for m in sorted(show, key=lambda x: -x.get('cagr', 0)):
+        sym = m.get('sym', '?')
+        cagr = m.get('cagr', 0)
+        grade = m.get('grade', '?')
+        tf = m.get('tf', '?').upper()
+        rec = m.get('recommendation', '?')
+        label = M2_NAME.get(sym, sym)
+        tag = 'ACTIVAR' if rec == 'ACTIVAR' else 'COND.'
+        lines.append(f"  {label} ({sym}) {tf}: <b>{cagr:+.1f}%</b> [{grade}] {tag}")
+    n_m2_act = len(activar)
+    n_m2_tot = len(set(m.get('sym') for m in m2))
+    lines.append(f"  {n_m2_act} ACTIVAR en {n_m2_tot} commodities activos")
+    return lines
+
+
+def _build_dca_health_section():
+    """Seccion diaria: paper trading vs BTC DCA + cold storage progress."""
+    try:
+        import json, urllib.request as _ur
+        ts = json.load(open('/opt/sigma/results/trade_state.json'))
+        bl = json.load(open('/opt/sigma/results/reports/btc_dca_baseline.json'))
+        port     = ts.get('portfolio', {})
+        equity   = float(port.get('equity', 10000))
+        initial  = float(port.get('initial_capital', 10000))
+        paper_ret = (equity - initial) / initial * 100
+        start_btc = float(bl.get('start_btc_price', 82177.7))
+        _resp    = json.loads(_ur.urlopen('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT', timeout=4).read())
+        btc_now  = float(_resp['price'])
+        dca_ret  = (btc_now - start_btc) / start_btc * 100
+        alpha    = paper_ret - dca_ret
+        hist     = ts.get('history', [])
+        n_trades = len(hist)
+        wins     = sum(1 for x in hist if float(x.get('pnl_pct', 0)) > 0)
+        wr_live  = wins / n_trades * 100 if n_trades > 0 else 0
+        conf_str = ("n={} — sin poder estadistico aun".format(n_trades)
+                    if n_trades < 30 else
+                    "n={} — estadisticamente valido".format(n_trades))
+        # Cold storage
+        cs = json.load(open('/opt/sigma/results/reports/btc_cold_storage.json'))
+        total_btc = float(cs.get('total_btc', 0))
+        goal_btc  = float(cs.get('goal_btc', 1.0))
+        pct_btc   = total_btc / goal_btc * 100 if goal_btc > 0 else 0
+        alpha_sign = "+" if alpha >= 0 else ""
+        pr_sign    = "+" if paper_ret >= 0 else ""
+        dr_sign    = "+" if dca_ret >= 0 else ""
+        lines = [
+            "<b>Rendimiento vs BTC DCA</b>",
+            "SIGMA paper:  <b>{}{:.1f}%</b>  (${:,.0f})".format(pr_sign, paper_ret, equity),
+            "BTC DCA:      {}{:.1f}%  (${:,.0f}/BTC)".format(dr_sign, dca_ret, btc_now),
+            "Alpha real:   <b>{}{:.1f}pp</b>".format(alpha_sign, alpha),
+            "Confianza:    {}".format(conf_str),
+            "WR live:      {:.1f}% ({} trades)".format(wr_live, n_trades),
+            "",
+            "<b>Mision BTC Cold Storage</b>",
+            "Acumulado: {:.6f} / {:.2f} BTC ({:.1f}%)".format(total_btc, goal_btc, pct_btc),
+        ]
+        return lines
+    except Exception as _e:
+        return []
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
@@ -402,6 +475,17 @@ def main():
     partes.append("<b>Regimen actual</b>")
     partes.append(f"{n_bear} BEAR - {n_range} RANGE - {n_bull} BULL{highlight}")
     partes.append("")
+
+    # --- Motor 2 commodities ---
+    try:
+        m2_lines = _build_m2_section(models)
+    except Exception:
+        m2_lines = []
+    if m2_lines:
+        for _l in m2_lines:
+            partes.append(_l)
+        partes.append("")
+
     # --- Derivados snapshot (OI + F&G + LSR) ---
     try:
         deriv_lineas = derivados_snapshot()
@@ -416,6 +500,12 @@ def main():
         partes.append("- SIGMA 24/7")
 
     _pf_sec = _build_performance_section()
+    # Health: paper vs DCA + cold storage
+    _hlth = _build_dca_health_section()
+    if _hlth:
+        partes.append("")
+        for _hl in _hlth:
+            partes.append(_hl)
     if _pf_sec:
         partes.append("")
         partes.append(_pf_sec)

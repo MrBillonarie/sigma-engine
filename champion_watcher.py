@@ -277,6 +277,13 @@ def _regen_snapshot():
             existing = json.loads(SNAPSHOT_PATH.read_text()) or {}
     except Exception:
         existing = {}
+    # Preservar champions del snapshot previo para slots que el scan no encontró
+    # (protege contra race condition: pipeline escribe JSON mientras watcher lee)
+    if existing and 'champions' in existing:
+        for _slot, _val in existing['champions'].items():
+            if _slot not in champions:
+                champions[_slot] = _val
+
     snap = dict(existing)
     snap['champions'] = champions
     snap['snapshot_at'] = datetime.now(timezone.utc).replace(tzinfo=None).isoformat() + 'Z'

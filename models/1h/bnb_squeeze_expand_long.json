@@ -1,0 +1,87 @@
+{
+  "symbol": "BNB/USDT",
+  "tf": "1h",
+  "strategy": "squeeze_expand_long",
+  "params": {
+    "sl_mult": 3.0,
+    "tp_mult": 1.5,
+    "cooldown": 14,
+    "rsi_w_thr": 50,
+    "bb_period": 29,
+    "bb_k": 2.3305152612834164,
+    "squeeze_bars": 4,
+    "vol_mult": 2.0038330414728374
+  },
+  "risk_pct": 4.4,
+  "metrics_is": {
+    "trades": 108,
+    "wr": 75.9,
+    "cagr": 11.5,
+    "dd": -18.0,
+    "pf": 1.53,
+    "trades_year": 15.7
+  },
+  "metrics_oos": {
+    "trades": 28,
+    "wr": 82.1,
+    "cagr": 17.9,
+    "dd": -15.6,
+    "pf": 1.94,
+    "trades_year": 16.3
+  },
+  "oos_days": 626,
+  "saved_at": "2026-06-09 06:47:21.736788",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 90.8,
+      "median": 80.2,
+      "ic95_lo": -31.0,
+      "ic95_hi": 210.1,
+      "ic80_lo": 4.7,
+      "ic80_hi": 162.6,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 20,
+      "positive": 13,
+      "pct_positive": 65.0,
+      "avg_cagr": 28.1,
+      "passed": true
+    },
+    "cross_asset": {
+      "tested": 2,
+      "positive": 1,
+      "positive_assets": [
+        "BTC/USDT"
+      ],
+      "results": [
+        {
+          "symbol": "BTC/USDT",
+          "cagr": 1.1,
+          "wr": 71.4,
+          "trades": 21
+        },
+        {
+          "symbol": "ETH/USDT",
+          "cagr": -11.0,
+          "wr": 56.8,
+          "trades": 37
+        }
+      ],
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "passed_steps": 3,
+    "max_steps": 3,
+    "validated_at": "2026-06-09 06:49:31.509322"
+  },
+  "mc": {
+    "mc_cagr_p05": -0.5,
+    "mc_cagr_p50": 50.1,
+    "mc_cagr_p95": 126.4,
+    "mc_dd_p50": -24.7,
+    "mc_dd_p95": -13.2,
+    "mc_confidence": 94.5,
+    "mc_sims": 1000
+  }
+}

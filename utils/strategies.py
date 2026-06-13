@@ -7,7 +7,7 @@ Creado 2026-05-14 tras detectar SHORT_STRATEGIES hardcoded en 5+ lugares.
 SHORT_STRATEGIES = frozenset([
     "breakdown", "pullback_short", "momentum_short",
     "rsi_overbought_short", "death_cross_short", "ema200_rejection_short",
-    "macd_bear_cross", "lower_high_break_short",
+    "macd_bear_cross", "lower_high_break_short", "lower_high_structure_short",
     "wedge_breakdown_short", "supply_zone_rejection", "bearish_rsi_divergence",
     "volume_climax_top", "range_break_down", "macd_zero_cross_down",
     "stoch_rsi_short", "williams_r_short", "cci_reversal_short",
@@ -23,7 +23,7 @@ SHORT_STRATEGIES = frozenset([
 
 NEW_2026_05_14 = frozenset([
     "rsi_overbought_short", "death_cross_short", "ema200_rejection_short",
-    "macd_bear_cross", "lower_high_break_short",
+    "macd_bear_cross", "lower_high_break_short", "lower_high_structure_short",
     "wedge_breakdown_short", "supply_zone_rejection", "bearish_rsi_divergence",
     "volume_climax_top", "range_break_down", "macd_zero_cross_down",
     "stoch_rsi_short", "williams_r_short", "cci_reversal_short",

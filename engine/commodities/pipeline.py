@@ -13,9 +13,17 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 # ── Config ────────────────────────────────────────────────────────────────────
-ASSETS   = ['XAU', 'XAG', 'WTI', 'HG', 'NG', 'PL']
-TFS      = ['4h', '1h', '15m', '5m']
-MAX_PARALLEL = 2
+ASSET_TFS = {
+    'XAU': ['1d', '4h', '1h', '15m'],  # 26y diario + 2yr intraday (Dukascopy 4h/1h)
+    'XAG': ['1d', '4h', '1h', '15m'],  # 26y diario + 2yr 4h/1h + 90d 15m
+    'WTI': ['1d', '4h', '1h', '15m'],  # 26y diario + 2yr 4h/1h + 90d 15m
+    'NG':  ['1d', '4h', '1h', '15m'],  # 26y diario + 2yr 4h/1h + 90d 15m
+    'PL':  ['1d', '4h', '1h', '15m'],  # 26y diario + 2yr 4h/1h + 90d 15m
+    'HG':  ['1d', '4h', '1h', '15m'],  # 26y diario + 2yr 4h/1h + 90d 15m
+}
+ASSETS = list(ASSET_TFS.keys())
+TFS    = ['4h', '1h', '1d']
+MAX_PARALLEL = int(os.getenv("M2_PARALLEL", "2"))  # 2 workers M2: balance M1/M2 (load control)
 
 SYMBOL_MAP = {
     'XAU': 'XAU/USD',
@@ -44,10 +52,9 @@ OUTPUT_DIR       = Path('/opt/sigma')
 def log(msg):
     ts = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
     line = f"[{ts}] [MOTOR2] {msg}"
-    print(line, flush=True)
     LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     with open(LOG_FILE, 'a') as f:
-        print(line, file=f)
+        print(line, file=f, flush=True)
 
 
 def get_best_model(asset, tf):
@@ -57,10 +64,11 @@ def get_best_model(asset, tf):
         return None, 0
     sym = asset.lower()
     best_cagr, best_age = None, 0
-    for f in tf_dir.glob(f'{sym}_*.json'):
+    for f in list(tf_dir.glob(f'{sym}_*.json')) + list(tf_dir.glob(f'{sym}usd_*.json')):
         try:
             d = json.loads(f.read_text())
-            cagr = d.get('oos_cagr') or d.get('cagr') or d.get('annual_return')
+            m_oos = d.get('metrics_oos') or {}
+            cagr = m_oos.get('cagr') or d.get('oos_cagr') or d.get('cagr') or d.get('annual_return')
             if cagr is not None:
                 ts_raw = d.get('timestamp') or d.get('created_at', '')
                 try:
@@ -77,8 +85,8 @@ def get_best_model(asset, tf):
 def build_queue():
     """Todos los slots, ordenados por prioridad (peor primero)."""
     slots = []
-    for asset in ASSETS:
-        for tf in TFS:
+    for asset, _tfs in ASSET_TFS.items():
+        for tf in _tfs:
             csv = CSV_PATHS[asset].format(tf=tf)
             if not Path(csv).exists():
                 log(f'[SKIP] {asset} {tf}: CSV no existe ({csv})')
@@ -131,14 +139,19 @@ def run():
             log(f'[START] {asset} {tf} ({status})')
 
             cmd = [
+                'nice', '-n', '5',   # prioridad menor que Motor1 (nice 0)
                 PYTHON, ASSET_PIPELINE,
                 '--symbol', sym,
                 '--tf',     tf,
-                '--trials', '600',
+                '--trials', '200',  # M2: 50 trials anti-OOM (menos datos disponibles)
                 '--csv_path', csv,
             ]
             log_f = LOG_FILE.parent / f'commodities_{asset}_{tf}.log'
             with open(log_f, 'a') as lf:
+                # prlimit: cap 3.5GB virtual para evitar OOM
+
+                if isinstance(cmd, list): cmd = ["prlimit", "--as=3758096384", "--"] + cmd
+
                 proc = subprocess.Popen(
                     cmd, stdout=lf, stderr=lf,
                     cwd=str(OUTPUT_DIR)
@@ -149,4 +162,20 @@ def run():
 
 
 if __name__ == '__main__':
-    run()
+    # PID lock — evita instancias duplicadas
+    PID_FILE = Path('/tmp/motor2_pipeline.pid')
+    if PID_FILE.exists():
+        try:
+            old_pid = int(PID_FILE.read_text().strip())
+            import os as _os
+            _os.kill(old_pid, 0)  # si no lanza, el proceso sigue vivo
+            print(f'[MOTOR2] Ya corre instancia PID {old_pid}. Saliendo.', flush=True)
+            import sys as _sys; _sys.exit(0)
+        except (ProcessLookupError, ValueError):
+            pass  # proceso muerto, continuar
+    import os as _os
+    PID_FILE.write_text(str(_os.getpid()))
+    try:
+        run()
+    finally:
+        PID_FILE.unlink(missing_ok=True)

@@ -1,0 +1,126 @@
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 18 champs | min=1.5% max=8.0% avg=5.9% | hrp_live
+  LTC|4h: 8.00%
+  SOL|15m: 8.00%
+  BTC|5m: 7.90%
+  BNB|4h: 7.50%
+  BTC|15m: 7.50%
+  ETH|4h: 7.22%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 18 champs | min=1.5% max=8.0% avg=5.9% | hrp_live
+  LTC|4h: 8.00%
+  SOL|15m: 8.00%
+  BTC|5m: 7.90%
+  BNB|4h: 7.50%
+  BTC|15m: 7.50%
+  ETH|4h: 7.22%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 18 champs | min=1.5% max=8.0% avg=5.9% | hrp_live
+  LTC|4h: 8.00%
+  SOL|15m: 8.00%
+  BTC|5m: 7.90%
+  BNB|4h: 7.50%
+  BTC|15m: 7.50%
+  ETH|4h: 7.22%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 18 champs | min=1.5% max=8.0% avg=5.9% | hrp_live
+  LTC|4h: 8.00%
+  SOL|15m: 8.00%
+  BTC|5m: 7.90%
+  BNB|4h: 7.50%
+  BTC|15m: 7.50%
+  ETH|4h: 7.22%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 18 champs | min=1.5% max=8.0% avg=5.9% | hrp_live
+  LTC|4h: 8.00%
+  SOL|15m: 8.00%
+  BTC|5m: 7.90%
+  BNB|4h: 7.50%
+  BTC|15m: 7.50%
+  ETH|4h: 7.22%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 18 champs | min=1.5% max=8.0% avg=5.9% | hrp_live
+  LTC|4h: 8.00%
+  SOL|15m: 8.00%
+  BTC|5m: 7.90%
+  BNB|4h: 7.50%
+  BTC|15m: 7.50%
+  ETH|4h: 7.22%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 18 champs | min=1.5% max=8.0% avg=5.9% | hrp_live
+  LTC|4h: 8.00%
+  SOL|15m: 8.00%
+  BTC|5m: 7.90%
+  BNB|4h: 7.50%
+  BTC|15m: 7.50%
+  ETH|4h: 7.22%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 18 champs | min=1.5% max=8.0% avg=5.9% | hrp_live
+  LTC|4h: 8.00%
+  SOL|15m: 8.00%
+  BTC|5m: 7.90%
+  BNB|4h: 7.50%
+  BTC|15m: 7.50%
+  ETH|4h: 7.22%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 18 champs | min=1.5% max=8.0% avg=5.9% | hrp_live
+  LTC|4h: 8.00%
+  SOL|15m: 8.00%
+  BTC|5m: 7.90%
+  BNB|4h: 7.50%
+  BTC|15m: 7.50%
+  ETH|4h: 7.22%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 20 champs | min=1.5% max=8.0% avg=3.6% | hrp_live
+  ETH|5m: 8.00%
+  HG|1h: 8.00%
+  BNB|4h: 5.33%
+  LTC|15m: 4.59%
+  BTC|4h: 4.50%
+  BTC|5m: 4.50%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 20 champs | min=1.5% max=8.0% avg=3.6% | hrp_live
+  ETH|5m: 8.00%
+  HG|1h: 8.00%
+  BNB|4h: 5.33%
+  LTC|15m: 4.59%
+  BTC|4h: 4.50%
+  BTC|5m: 4.50%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 20 champs | min=1.5% max=8.0% avg=3.6% | hrp_live
+  ETH|5m: 8.00%
+  HG|1h: 8.00%
+  BNB|4h: 5.33%
+  LTC|15m: 4.59%
+  BTC|4h: 4.50%
+  BTC|5m: 4.50%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 18 champs | min=1.5% max=8.0% avg=5.9% | hrp_live
+  LTC|4h: 8.00%
+  SOL|15m: 8.00%
+  BTC|5m: 7.90%
+  BNB|4h: 7.50%
+  BTC|15m: 7.50%
+  ETH|4h: 7.22%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 18 champs | min=1.5% max=8.0% avg=5.9% | hrp_live
+  LTC|4h: 8.00%
+  SOL|15m: 8.00%
+  BTC|5m: 7.90%
+  BNB|4h: 7.50%
+  BTC|15m: 7.50%
+  ETH|4h: 7.22%

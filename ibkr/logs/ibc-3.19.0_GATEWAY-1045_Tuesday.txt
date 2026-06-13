@@ -1,0 +1,1905 @@
+
+================================================================================
+
+Starting IBC version 3.19.0 on 2026-06-09 at 12:00:01
+
+Operating system: Linux Sigmaterminal 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+Arguments:
+
+TWS version = 1045
+Program = Gateway
+Entry point = ibcalpha.ibc.IbcGateway
+--tws-path = /root/Jts
+--tws-settings-path = 
+--ibc-path = /opt/sigma/ibkr/ibc
+--ibc-ini = /opt/sigma/ibkr/ibc/config.ini
+--mode = live
+--java-path = 
+--user =
+--pw =
+--fix-user =
+--fix-pw =
+
+
+=========================== An error has occurred =============================
+
+
+
+Error: Offline TWS/Gateway version 1045 is not installed: can't find jars folder
+       Make sure you install the offline version of TWS/Gateway
+       IBC does not work with the auto-updating TWS/Gateway
+
+================================================================================
+
+Starting IBC version 3.19.0 on 2026-06-09 at 12:01:06
+
+Operating system: Linux Sigmaterminal 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+Arguments:
+
+TWS version = 1045
+Program = Gateway
+Entry point = ibcalpha.ibc.IbcGateway
+--tws-path = /root/Jts
+--tws-settings-path = 
+--ibc-path = /opt/sigma/ibkr/ibc
+--ibc-ini = /opt/sigma/ibkr/ibc/config.ini
+--mode = live
+--java-path = 
+--user =
+--pw =
+--fix-user =
+--fix-pw =
+
+
+=========================== An error has occurred =============================
+
+
+
+Error: Offline TWS/Gateway version 1045 is not installed: can't find jars folder
+       Make sure you install the offline version of TWS/Gateway
+       IBC does not work with the auto-updating TWS/Gateway
+
+================================================================================
+
+Starting IBC version 3.19.0 on 2026-06-09 at 12:01:36
+
+Operating system: Linux Sigmaterminal 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+Arguments:
+
+TWS version = 1045
+Program = Gateway
+Entry point = ibcalpha.ibc.IbcGateway
+--tws-path = /root/Jts
+--tws-settings-path = 
+--ibc-path = /opt/sigma/ibkr/ibc
+--ibc-ini = /opt/sigma/ibkr/ibc/config.ini
+--mode = live
+--java-path = 
+--user =
+--pw =
+--fix-user =
+--fix-pw =
+
+
+=========================== An error has occurred =============================
+
+
+
+Error: Offline TWS/Gateway version 1045 is not installed: can't find jars folder
+       Make sure you install the offline version of TWS/Gateway
+       IBC does not work with the auto-updating TWS/Gateway
+
+================================================================================
+
+Starting IBC version 3.19.0 on 2026-06-09 at 12:01:58
+
+Operating system: Linux Sigmaterminal 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+Arguments:
+
+TWS version = 1045
+Program = Gateway
+Entry point = ibcalpha.ibc.IbcGateway
+--tws-path = /root/Jts
+--tws-settings-path = 
+--ibc-path = /opt/sigma/ibkr/ibc
+--ibc-ini = /opt/sigma/ibkr/ibc/config.ini
+--mode = live
+--java-path = 
+--user =
+--pw =
+--fix-user =
+--fix-pw =
+
+
+=========================== An error has occurred =============================
+
+
+
+Error: Offline TWS/Gateway version 1045 is not installed: can't find jars folder
+       Make sure you install the offline version of TWS/Gateway
+       IBC does not work with the auto-updating TWS/Gateway
+
+================================================================================
+
+Starting IBC version 3.19.0 on 2026-06-09 at 12:02:38
+
+Operating system: Linux Sigmaterminal 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+Arguments:
+
+TWS version = 1045
+Program = Gateway
+Entry point = ibcalpha.ibc.IbcGateway
+--tws-path = /root/Jts
+--tws-settings-path = 
+--ibc-path = /opt/sigma/ibkr/ibc
+--ibc-ini = /opt/sigma/ibkr/ibc/config.ini
+--mode = live
+--java-path = 
+--user =
+--pw =
+--fix-user =
+--fix-pw =
+
+
+=========================== An error has occurred =============================
+
+
+
+Error: Offline TWS/Gateway version 1045 is not installed: can't find jars folder
+       Make sure you install the offline version of TWS/Gateway
+       IBC does not work with the auto-updating TWS/Gateway
+
+================================================================================
+
+Starting IBC version 3.19.0 on 2026-06-09 at 12:04:32
+
+Operating system: Linux Sigmaterminal 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+Arguments:
+
+TWS version = 1045
+Program = Gateway
+Entry point = ibcalpha.ibc.IbcGateway
+--tws-path = /root/Jts
+--tws-settings-path = 
+--ibc-path = /opt/sigma/ibkr/ibc
+--ibc-ini = /opt/sigma/ibkr/ibc/config.ini
+--mode = live
+--java-path = 
+--user =
+--pw =
+--fix-user =
+--fix-pw =
+
+
+=========================== An error has occurred =============================
+
+
+
+Error: Offline TWS/Gateway version 1045 is not installed: can't find jars folder
+       Make sure you install the offline version of TWS/Gateway
+       IBC does not work with the auto-updating TWS/Gateway
+
+================================================================================
+
+Starting IBC version 3.19.0 on 2026-06-09 at 12:09:20
+
+Operating system: Linux Sigmaterminal 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+Arguments:
+
+TWS version = 1045
+Program = Gateway
+Entry point = ibcalpha.ibc.IbcGateway
+--tws-path = /opt/sigma/ibkr/gateway
+--tws-settings-path = /root/Jts
+--ibc-path = /opt/sigma/ibkr/ibc
+--ibc-ini = /opt/sigma/ibkr/ibc/config.ini
+--mode = live
+--java-path = 
+--user =
+--pw =
+--fix-user =
+--fix-pw =
+
+
+=========================== An error has occurred =============================
+
+
+
+Error: Offline TWS/Gateway version 1045 is not installed: can't find jars folder
+       Make sure you install the offline version of TWS/Gateway
+       IBC does not work with the auto-updating TWS/Gateway
+
+================================================================================
+
+Starting IBC version 3.19.0 on 2026-06-09 at 12:13:03
+
+Operating system: Linux Sigmaterminal 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+Arguments:
+
+TWS version = 1045
+Program = Gateway
+Entry point = ibcalpha.ibc.IbcGateway
+--tws-path = /opt/sigma/ibkr
+--tws-settings-path = /root/Jts
+--ibc-path = /opt/sigma/ibkr/ibc
+--ibc-ini = /opt/sigma/ibkr/ibc/config.ini
+--mode = live
+--java-path = 
+--user =
+--pw =
+--fix-user =
+--fix-pw =
+
+=================================
+Generating the classpath
+Classpath=/opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar
+
+Generating the JAVA VM options
+autorestart file not found
+
+Java VM Options=-Xmx768m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=20 -XX:ConcGCThreads=5 -XX:InitiatingHeapOccupancyPercent=70 -Dtwslaunch.autoupdate.serviceImpl=com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService -Dchannel=latest -Dexe4j.isInstall4j=true -Dinstall4jType=standalone -DjtsConfigDir=/root/Jts -Dibcsessionid=x7e4z1j3
+
+Determining the location of java executable
+Location of java executable=/opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/bin
+
+Renaming IB's TWS or Gateway start script to prevent restart without IBC
+
+Starting Gateway with this command:
+"/opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/bin/java" -cp "/opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar" -Xmx768m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=20 -XX:ConcGCThreads=5 -XX:InitiatingHeapOccupancyPercent=70 -Dtwslaunch.autoupdate.serviceImpl=com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService -Dchannel=latest -Dexe4j.isInstall4j=true -Dinstall4jType=standalone -DjtsConfigDir=/root/Jts -Dibcsessionid=x7e4z1j3 ibcalpha.ibc.IbcGateway "/opt/sigma/ibkr/ibc/config.ini"  live
+
+IBC Settings:
+    AcceptBidAskLastSizeDisplayUpdateNotification=yes
+    AcceptNonBrokerageAccountWarning=yes
+    AllowBlindTrading=no
+    CloseModalDialogsAutomatically=yes
+    DismissNSEComplianceNotice=yes
+    DismissPasswordExpiryWarning=yes
+    EnableBidAskLast=no
+    ExistingSessionDetectedAction=secondary
+    FIXLoginId=***
+    FIXPassword=***
+    ForceTwsApiPort=4001
+    GetNextOrderId=yes
+    IbAutoClosedown=yes
+    IbControllerHeartbeatRate=10
+    IbLoginId=***
+    IbOrderRolloverTime=1700
+    IbPassword=***
+    IbTimeZone=
+    LogComponents=never
+    MinimizeMainWindow=yes
+    OverrideTwsApiPort=4001
+    ReadOnlyLogin=yes
+    ReloginAfterSecondFactorAuthenticationTimeout=yes
+    SendTWSLogsToIBC=no
+    StoreSettingsOnServer=no
+    TradingMode=live
+    [IBC]=
+End IBC Settings
+
+2026-06-09 16:13:04:319 IBC: version: 3.19.0
+System Properties
+------------------------------------------------------------
+java.specification.version = 17
+sun.jnu.encoding = UTF-8
+channel = latest
+java.class.path = /opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar
+java.vm.vendor = Azul Systems, Inc.
+ibcsessionid = x7e4z1j3
+sun.arch.data.model = 64
+java.vendor.url = http://www.azul.com/
+user.timezone = Etc/UTC
+java.vm.specification.version = 17
+os.name = Linux
+sun.java.launcher = SUN_STANDARD
+user.country = US
+sun.boot.library.path = /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib
+sun.java.command = ibcalpha.ibc.IbcGateway /opt/sigma/ibkr/ibc/config.ini live
+jdk.debug = release
+sun.cpu.endian = little
+user.home = /root
+user.language = en
+java.specification.vendor = Oracle Corporation
+java.version.date = 2025-10-21
+java.home = /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu
+jtsConfigDir = /root/Jts
+file.separator = /
+java.vm.compressedOopsMode = 32-bit
+line.separator = 
+
+java.vm.specification.vendor = Oracle Corporation
+twslaunch.autoupdate.serviceImpl = com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService
+java.specification.name = Java Platform API Specification
+install4jType = standalone
+sun.management.compiler = HotSpot 64-Bit Tiered Compilers
+exe4j.isInstall4j = true
+java.runtime.version = 17.0.16.0.101+1-LTS
+user.name = root
+path.separator = :
+os.version = 6.8.0-124-generic
+java.runtime.name = OpenJDK Runtime Environment
+file.encoding = UTF-8
+java.vm.name = OpenJDK 64-Bit Server VM
+java.vendor.version = Zulu17.61+12-SA
+java.vendor.url.bug = http://www.azul.com/support/
+java.io.tmpdir = /tmp
+java.version = 17.0.16.0.101
+user.dir = /root/Jts
+os.arch = amd64
+java.vm.specification.name = Java Virtual Machine Specification
+native.encoding = UTF-8
+java.library.path = /usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib
+java.vm.info = mixed mode
+java.vendor = Azul Systems, Inc.
+java.vm.version = 17.0.16.0.101+1-LTS
+java.specification.maintenance.version = 1
+sun.io.unicode.encoding = UnicodeLittle
+java.class.version = 61.0
+------------------------------------------------------------
+2026-06-09 16:13:04:322 IBC: using default settings provider: ini file is /opt/sigma/ibkr/ibc/config.ini
+2026-06-09 16:13:04:323 IBC: using default login manager: will get username and password from settings; FIX username and password (if required) from settings
+2026-06-09 16:13:04:323 IBC: using default main window manager
+2026-06-09 16:13:04:323 IBC: using default trading mode manager: constructor parameter args: tradingMode=live
+2026-06-09 16:13:04:324 IBC: using default config dialog manager
+2026-06-09 16:13:04:331 IBC: CommandServer is not started because the port is not configured
+2026-06-09 16:13:04:556 IBC: TWS Settings directory is: /root/Jts
+2026-06-09 16:13:04:557 IBC: Starting session: will exit if login dialog is not displayed within 60 seconds
+2026-06-09 16:13:04:572 IBC: Ensuring /root/Jts/jts.ini contains required minimal lines
+2026-06-09 16:13:04:572 IBC: Found setting: [Logon]/s3store=true
+2026-06-09 16:13:04:572 IBC: Found setting: [Logon]/Locale=en
+2026-06-09 16:13:04:572 IBC: Can't find setting: [Logon]/displayedproxymsg=1
+2026-06-09 16:13:04:575 IBC: Found setting: [Logon]/UseSSL=true
+2026-06-09 16:13:04:575 IBC: Found setting: [IBGateway]/ApiOnly=true
+2026-06-09 16:13:04:575 IBC: Found setting: [IBGateway]/TrustedIPs=127.0.0.1
+2026-06-09 16:13:04:575 IBC: Missing lines in /root/Jts/jts.ini
+2026-06-09 16:13:04:576 IBC: Rewriting existing /root/Jts/jts.ini
+2026-06-09 16:13:04:576 IBC:     jts.ini: [IBGateway]
+2026-06-09 16:13:04:576 IBC:     jts.ini: WriteDebug=false
+2026-06-09 16:13:04:576 IBC:     jts.ini: TrustedIPs=127.0.0.1
+2026-06-09 16:13:04:576 IBC:     jts.ini: RemoteHostOrderRouting=ndc1.ibllc.com
+2026-06-09 16:13:04:577 IBC:     jts.ini: MainWindow.Height=550
+2026-06-09 16:13:04:577 IBC:     jts.ini: RemotePortOrderRouting=4001
+2026-06-09 16:13:04:577 IBC:     jts.ini: LocalServerPort=4000
+2026-06-09 16:13:04:577 IBC:     jts.ini: ApiOnly=true
+2026-06-09 16:13:04:577 IBC:     jts.ini: MainWindow.Width=700
+2026-06-09 16:13:04:577 IBC:     jts.ini: 
+2026-06-09 16:13:04:577 IBC:     jts.ini: [Logon]
+2026-06-09 16:13:04:577 IBC:     jts.ini: useRemoteSettings=false
+2026-06-09 16:13:04:577 IBC:     jts.ini: UserNameToDirectory=oofpjfidhokddmlgdjfbgoklmnkigcaebgnmonfg,jkcjjffgeohemfebkkghkbninhdohbpeanekhbba
+2026-06-09 16:13:04:577 IBC:     jts.ini: TimeZone=Etc/UTC
+2026-06-09 16:13:04:577 IBC:     jts.ini: tradingMode=l
+2026-06-09 16:13:04:577 IBC:     jts.ini: colorPalletName=dark
+2026-06-09 16:13:04:577 IBC:     jts.ini: Steps=13
+2026-06-09 16:13:04:577 IBC:     jts.ini: Locale=en
+2026-06-09 16:13:04:577 IBC:     jts.ini: os_titlebar=false
+2026-06-09 16:13:04:577 IBC:     jts.ini: UseSSL=true
+2026-06-09 16:13:04:577 IBC:     jts.ini: SupportsSSL=ndc1.ibllc.com:4000,true,20260521,false
+2026-06-09 16:13:04:577 IBC:     jts.ini: screenHeight=800
+2026-06-09 16:13:04:577 IBC:     jts.ini: s3store=true
+2026-06-09 16:13:04:577 IBC:     jts.ini: ibkrBranding=pro
+2026-06-09 16:13:04:578 IBC:     jts.ini: 
+2026-06-09 16:13:04:578 IBC:     jts.ini: displayedproxymsg=1
+2026-06-09 16:13:04:578 IBC:     jts.ini: [Communication]
+2026-06-09 16:13:04:578 IBC:     jts.ini: Peer=ndc1.ibllc.com:4001
+2026-06-09 16:13:04:578 IBC:     jts.ini: Region=us
+2026-06-09 16:13:04:578 IBC:     jts.ini: 
+2026-06-09 16:13:04:586 IBC: Starting Gateway
+2026-06-09T16:13:05.049928156Z main INFO Starting configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@5f20155b...
+2026-06-09T16:13:05.051277550Z main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@5f20155b started.
+2026-06-09T16:13:05.057142298Z main INFO Stopping configuration org.apache.logging.log4j.core.config.DefaultConfiguration@51e69659...
+2026-06-09T16:13:05.057447749Z main INFO Configuration org.apache.logging.log4j.core.config.DefaultConfiguration@51e69659 stopped.
+java.lang.reflect.InaccessibleObjectException: Unable to make private static javax.swing.UIManager$LAFState javax.swing.UIManager.getLAFState() accessible: module java.desktop does not "opens javax.swing" to unnamed module @4b741d6d
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:354)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:297)
+	at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:200)
+	at java.base/java.lang.reflect.Method.setAccessible(Method.java:194)
+	at feature.search.recorder.JtsMultiLookAndFeel.a(JtsMultiLookAndFeel.java:107)
+	at twslaunch.jclient.login.b.d(b.java:446)
+	at jclient.login.ai.g(ai.java:91)
+	at ibgateway.GWClient.a(Unknown Source)
+	at ibgateway.GWClient.main(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startTwsOrGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.load(Unknown Source)
+	at ibcalpha.ibc.IbcGateway.main(Unknown Source)
+java.lang.reflect.InaccessibleObjectException: Unable to make private static javax.swing.UIManager$LAFState javax.swing.UIManager.getLAFState() accessible: module java.desktop does not "opens javax.swing" to unnamed module @4b741d6d
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:354)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:297)
+	at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:200)
+	at java.base/java.lang.reflect.Method.setAccessible(Method.java:194)
+	at feature.search.recorder.JtsMultiLookAndFeel.a(JtsMultiLookAndFeel.java:107)
+	at jclient.login.ai.g(ai.java:92)
+	at ibgateway.GWClient.a(Unknown Source)
+	at ibgateway.GWClient.main(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startTwsOrGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.load(Unknown Source)
+	at ibcalpha.ibc.IbcGateway.main(Unknown Source)
+2026-06-09T16:13:05.105617978Z JTS-Main INFO Starting configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@61eaec38...
+2026-06-09T16:13:05.105778398Z JTS-Main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@61eaec38 started.
+2026-06-09T16:13:05.109174898Z JTS-Main INFO Stopping configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@5f20155b...
+2026-06-09T16:13:05.109450570Z JTS-Main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@5f20155b stopped.
+2026-06-09 16:13:06:598 IBC: Getting config dialog
+2026-06-09 16:13:06:598 IBC: Creating config dialog future
+2026-06-09 16:13:06:600 IBC: Getting main window
+2026-06-09 16:13:06:600 IBC: Creating main window future
+2026-06-09 16:13:08:101 IBC: detected frame entitled: IBKR Gateway; event=Opened
+2026-06-09 16:13:08:102 IBC: Login dialog WINDOW_OPENED: LoginState is LOGGED_OUT
+2026-06-09 16:13:08:104 IBC: Setting Trading mode = live
+2026-06-09 16:13:08:217 IBC: Setting user name
+2026-06-09 16:13:08:217 IBC: Setting password
+2026-06-09 16:13:08:220 IBC: Login attempt: 1
+2026-06-09 16:13:08:221 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-09 16:13:08:224 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-09 16:13:08:265 IBC: Click button: Log In
+
+(java:337829): dbind-WARNING **: 12:13:08.288: AT-SPI: Error retrieving accessibility bus address: org.freedesktop.DBus.Error.ServiceUnknown: The name org.a11y.Bus was not provided by any .service files
+2026-06-09 16:13:08:794 IBC: Button now disabled: Log In
+2026-06-09 16:13:08:819 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-09 16:13:08:819 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-09 16:13:08:820 IBC: detected frame entitled: IBKR Gateway; event=Opened
+2026-06-09 16:13:08:820 IBC: Found Gateway main window
+2026-06-09 16:13:08:820 IBC: Minimizing main window
+2026-06-09 16:13:08:820 IBC: Got main window from future
+2026-06-09 16:13:08:820 IBC: Invoking config dialog menu
+2026-06-09 16:13:08:822 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-09 16:13:08:829 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-09 16:13:09:263 IBC: detected frame entitled: Authenticating...; event=Opened
+2026-06-09 16:13:09:288 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-09 16:13:09:288 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-09 16:13:09:289 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-09 16:13:09:289 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-09 16:13:09:607 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:13:09:607 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:13:09:608 IBC: Second Factor Authentication initiated
+2026-06-09 16:13:09:608 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-09 16:13:09:608 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-09 16:13:09:608 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-09 16:13:09:608 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-09 16:16:56:116 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-09 16:16:56:116 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-09 16:16:56:116 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:16:56:116 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:16:56:116 IBC: Duration since login: 227 seconds
+2026-06-09 16:16:56:116 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-09 16:16:56:294 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-09 16:16:56:295 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-09 16:16:56:295 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-09 16:16:56:295 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-09 16:16:56:295 IBC: detected dialog entitled: Gateway; event=Activated
+2026-06-09 16:16:56:309 IBC: detected dialog entitled: Gateway; event=Focused
+2026-06-09 16:16:56:311 IBC: detected dialog entitled: Gateway; event=Opened
+2026-06-09 16:17:01:117 IBC: Setting Trading mode = live
+2026-06-09 16:17:01:223 IBC: Setting user name
+2026-06-09 16:17:01:223 IBC: Setting password
+2026-06-09 16:17:01:224 IBC: Login attempt: 2
+2026-06-09 16:17:01:249 IBC: Click button: Log In
+2026-06-09 16:17:01:351 IBC: Button now disabled: Log In
+2026-06-09 16:17:02:158 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:17:02:158 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:17:02:158 IBC: Second Factor Authentication initiated
+2026-06-09 16:17:02:158 IBC: detected dialog entitled: Gateway; event=Lost focus
+2026-06-09 16:17:02:159 IBC: detected dialog entitled: Gateway; event=Deactivated
+2026-06-09 16:17:02:159 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-09 16:17:02:159 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-09 16:17:24:425 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:17:24:425 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:17:24:425 IBC: Duration since login: 23 seconds
+2026-06-09 16:17:24:425 IBC: If login has not completed, IBC will exit in 60 seconds
+2026-06-09 16:17:24:655 IBC: detected dialog entitled: Gateway; event=Opened
+2026-06-09 16:17:24:657 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-09 16:17:24:657 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-09 16:17:24:657 IBC: detected dialog entitled: Gateway; event=Activated
+2026-06-09 16:17:24:659 IBC: detected dialog entitled: Gateway; event=Focused
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:18:24:426 IBC: IBC closing because login has not completed after Second Factor Authentication
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:18:24:426 IBC: Exiting with exit code=1111
+2026-06-09T16:18:24.429895134Z pool-3-thread-1 INFO Stopping configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@61eaec38...
+2026-06-09T16:18:24.430412336Z pool-3-thread-1 INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@61eaec38 stopped.
+IBC returned exit status 87
+autorestart file not found
+
+IBC will restart shortly
+sleep 2
+Starting Gateway with this command:
+"/opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/bin/java" -cp "/opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar" -Xmx768m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=20 -XX:ConcGCThreads=5 -XX:InitiatingHeapOccupancyPercent=70 -Dtwslaunch.autoupdate.serviceImpl=com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService -Dchannel=latest -Dexe4j.isInstall4j=true -Dinstall4jType=standalone -DjtsConfigDir=/root/Jts -Dibcsessionid=x7e4z1j3 ibcalpha.ibc.IbcGateway "/opt/sigma/ibkr/ibc/config.ini"  live
+
+IBC Settings:
+    AcceptBidAskLastSizeDisplayUpdateNotification=yes
+    AcceptNonBrokerageAccountWarning=yes
+    AllowBlindTrading=no
+    CloseModalDialogsAutomatically=yes
+    DismissNSEComplianceNotice=yes
+    DismissPasswordExpiryWarning=yes
+    EnableBidAskLast=no
+    ExistingSessionDetectedAction=secondary
+    FIXLoginId=***
+    FIXPassword=***
+    ForceTwsApiPort=4001
+    GetNextOrderId=yes
+    IbAutoClosedown=yes
+    IbControllerHeartbeatRate=10
+    IbLoginId=***
+    IbOrderRolloverTime=1700
+    IbPassword=***
+    IbTimeZone=
+    LogComponents=never
+    MinimizeMainWindow=yes
+    OverrideTwsApiPort=4001
+    ReadOnlyLogin=yes
+    ReloginAfterSecondFactorAuthenticationTimeout=yes
+    SendTWSLogsToIBC=no
+    StoreSettingsOnServer=no
+    TradingMode=live
+    [IBC]=
+End IBC Settings
+
+2026-06-09 16:18:25:228 IBC: version: 3.19.0
+System Properties
+------------------------------------------------------------
+java.specification.version = 17
+sun.jnu.encoding = UTF-8
+channel = latest
+java.class.path = /opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar
+java.vm.vendor = Azul Systems, Inc.
+ibcsessionid = x7e4z1j3
+sun.arch.data.model = 64
+java.vendor.url = http://www.azul.com/
+user.timezone = Etc/UTC
+java.vm.specification.version = 17
+os.name = Linux
+sun.java.launcher = SUN_STANDARD
+user.country = US
+sun.boot.library.path = /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib
+sun.java.command = ibcalpha.ibc.IbcGateway /opt/sigma/ibkr/ibc/config.ini live
+jdk.debug = release
+sun.cpu.endian = little
+user.home = /root
+user.language = en
+java.specification.vendor = Oracle Corporation
+java.version.date = 2025-10-21
+java.home = /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu
+jtsConfigDir = /root/Jts
+file.separator = /
+java.vm.compressedOopsMode = 32-bit
+line.separator = 
+
+java.vm.specification.vendor = Oracle Corporation
+twslaunch.autoupdate.serviceImpl = com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService
+java.specification.name = Java Platform API Specification
+install4jType = standalone
+sun.management.compiler = HotSpot 64-Bit Tiered Compilers
+exe4j.isInstall4j = true
+java.runtime.version = 17.0.16.0.101+1-LTS
+user.name = root
+path.separator = :
+os.version = 6.8.0-124-generic
+java.runtime.name = OpenJDK Runtime Environment
+file.encoding = UTF-8
+java.vm.name = OpenJDK 64-Bit Server VM
+java.vendor.version = Zulu17.61+12-SA
+java.vendor.url.bug = http://www.azul.com/support/
+java.io.tmpdir = /tmp
+java.version = 17.0.16.0.101
+user.dir = /root/Jts
+os.arch = amd64
+java.vm.specification.name = Java Virtual Machine Specification
+native.encoding = UTF-8
+java.library.path = /usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib
+java.vm.info = mixed mode
+java.vendor = Azul Systems, Inc.
+java.vm.version = 17.0.16.0.101+1-LTS
+java.specification.maintenance.version = 1
+sun.io.unicode.encoding = UnicodeLittle
+java.class.version = 61.0
+------------------------------------------------------------
+2026-06-09 16:18:25:231 IBC: using default settings provider: ini file is /opt/sigma/ibkr/ibc/config.ini
+2026-06-09 16:18:25:231 IBC: using default login manager: will get username and password from settings; FIX username and password (if required) from settings
+2026-06-09 16:18:25:231 IBC: using default main window manager
+2026-06-09 16:18:25:231 IBC: using default trading mode manager: constructor parameter args: tradingMode=live
+2026-06-09 16:18:25:232 IBC: using default config dialog manager
+2026-06-09 16:18:25:238 IBC: CommandServer is not started because the port is not configured
+2026-06-09 16:18:25:381 IBC: TWS Settings directory is: /root/Jts
+2026-06-09 16:18:25:381 IBC: Starting session: will exit if login dialog is not displayed within 60 seconds
+2026-06-09 16:18:25:390 IBC: Ensuring /root/Jts/jts.ini contains required minimal lines
+2026-06-09 16:18:25:390 IBC: Found setting: [Logon]/s3store=true
+2026-06-09 16:18:25:390 IBC: Found setting: [Logon]/Locale=en
+2026-06-09 16:18:25:390 IBC: Found setting: [Logon]/displayedproxymsg=1
+2026-06-09 16:18:25:390 IBC: Found setting: [Logon]/UseSSL=true
+2026-06-09 16:18:25:390 IBC: Found setting: [IBGateway]/ApiOnly=true
+2026-06-09 16:18:25:390 IBC: Found setting: [IBGateway]/TrustedIPs=127.0.0.1
+2026-06-09 16:18:25:390 IBC: Confirmed /root/Jts/jts.ini contains required minimal lines
+2026-06-09 16:18:25:390 IBC: Starting Gateway
+2026-06-09T16:18:25.674154443Z main INFO Starting configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60...
+2026-06-09T16:18:25.674954097Z main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60 started.
+2026-06-09T16:18:25.677288844Z main INFO Stopping configuration org.apache.logging.log4j.core.config.DefaultConfiguration@67f639d3...
+2026-06-09T16:18:25.677539165Z main INFO Configuration org.apache.logging.log4j.core.config.DefaultConfiguration@67f639d3 stopped.
+java.lang.reflect.InaccessibleObjectException: Unable to make private static javax.swing.UIManager$LAFState javax.swing.UIManager.getLAFState() accessible: module java.desktop does not "opens javax.swing" to unnamed module @449a4f23
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:354)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:297)
+	at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:200)
+	at java.base/java.lang.reflect.Method.setAccessible(Method.java:194)
+	at feature.search.recorder.JtsMultiLookAndFeel.a(JtsMultiLookAndFeel.java:107)
+	at twslaunch.jclient.login.b.d(b.java:446)
+	at jclient.login.ai.g(ai.java:91)
+	at ibgateway.GWClient.a(Unknown Source)
+	at ibgateway.GWClient.main(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startTwsOrGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.load(Unknown Source)
+	at ibcalpha.ibc.IbcGateway.main(Unknown Source)
+java.lang.reflect.InaccessibleObjectException: Unable to make private static javax.swing.UIManager$LAFState javax.swing.UIManager.getLAFState() accessible: module java.desktop does not "opens javax.swing" to unnamed module @449a4f23
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:354)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:297)
+	at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:200)
+	at java.base/java.lang.reflect.Method.setAccessible(Method.java:194)
+	at feature.search.recorder.JtsMultiLookAndFeel.a(JtsMultiLookAndFeel.java:107)
+	at jclient.login.ai.g(ai.java:92)
+	at ibgateway.GWClient.a(Unknown Source)
+	at ibgateway.GWClient.main(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startTwsOrGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.load(Unknown Source)
+	at ibcalpha.ibc.IbcGateway.main(Unknown Source)
+2026-06-09T16:18:25.703763596Z JTS-Main INFO Starting configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@2049a9c1...
+2026-06-09T16:18:25.703888997Z JTS-Main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@2049a9c1 started.
+2026-06-09T16:18:25.704928390Z JTS-Main INFO Stopping configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60...
+2026-06-09T16:18:25.705172621Z JTS-Main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60 stopped.
+2026-06-09 16:18:27:018 IBC: Getting config dialog
+2026-06-09 16:18:27:018 IBC: Creating config dialog future
+2026-06-09 16:18:27:019 IBC: Getting main window
+2026-06-09 16:18:27:020 IBC: Creating main window future
+2026-06-09 16:18:28:069 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-09 16:18:28:155 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-09 16:18:28:157 IBC: detected frame entitled: IBKR Gateway; event=Opened
+2026-06-09 16:18:28:157 IBC: Login dialog WINDOW_OPENED: LoginState is LOGGED_OUT
+2026-06-09 16:18:28:158 IBC: Setting Trading mode = live
+2026-06-09 16:18:28:287 IBC: Setting user name
+2026-06-09 16:18:28:288 IBC: Setting password
+2026-06-09 16:18:28:288 IBC: Login attempt: 1
+2026-06-09 16:18:28:313 IBC: Click button: Log In
+
+(java:339252): dbind-WARNING **: 12:18:28.313: AT-SPI: Error retrieving accessibility bus address: org.freedesktop.DBus.Error.ServiceUnknown: The name org.a11y.Bus was not provided by any .service files
+2026-06-09 16:18:28:721 IBC: Button now disabled: Log In
+2026-06-09 16:18:28:746 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-09 16:18:28:746 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-09 16:18:28:765 IBC: detected frame entitled: IBKR Gateway; event=Opened
+2026-06-09 16:18:28:765 IBC: Found Gateway main window
+2026-06-09 16:18:28:765 IBC: Minimizing main window
+2026-06-09 16:18:28:766 IBC: Got main window from future
+2026-06-09 16:18:28:766 IBC: Invoking config dialog menu
+2026-06-09 16:18:28:769 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-09 16:18:28:781 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-09 16:18:29:196 IBC: detected frame entitled: Authenticating...; event=Opened
+2026-06-09 16:18:29:221 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-09 16:18:29:221 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-09 16:18:29:222 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-09 16:18:29:222 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-09 16:18:29:576 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:18:29:576 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:18:29:576 IBC: Second Factor Authentication initiated
+2026-06-09 16:18:29:576 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-09 16:18:29:576 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-09 16:18:29:577 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-09 16:18:29:577 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+IBC returned exit status 1
+autorestart file not found
+
+Gateway finished
+
+
+================================================================================
+
+Starting IBC version 3.19.0 on 2026-06-09 at 12:18:45
+
+Operating system: Linux Sigmaterminal 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+Arguments:
+
+TWS version = 1045
+Program = Gateway
+Entry point = ibcalpha.ibc.IbcGateway
+--tws-path = /opt/sigma/ibkr
+--tws-settings-path = /root/Jts
+--ibc-path = /opt/sigma/ibkr/ibc
+--ibc-ini = /opt/sigma/ibkr/ibc/config.ini
+--mode = live
+--java-path = 
+--user =
+--pw =
+--fix-user =
+--fix-pw =
+
+=================================
+Generating the classpath
+Classpath=/opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar
+
+Generating the JAVA VM options
+autorestart file not found
+
+Java VM Options=-Xmx768m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=20 -XX:ConcGCThreads=5 -XX:InitiatingHeapOccupancyPercent=70 -Dtwslaunch.autoupdate.serviceImpl=com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService -Dchannel=latest -Dexe4j.isInstall4j=true -Dinstall4jType=standalone -DjtsConfigDir=/root/Jts -Dibcsessionid=apvkOYkg
+
+Determining the location of java executable
+Location of java executable=/opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/bin
+
+Renaming IB's TWS or Gateway start script to prevent restart without IBC
+
+Starting Gateway with this command:
+"/opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/bin/java" -cp "/opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar" -Xmx768m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=20 -XX:ConcGCThreads=5 -XX:InitiatingHeapOccupancyPercent=70 -Dtwslaunch.autoupdate.serviceImpl=com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService -Dchannel=latest -Dexe4j.isInstall4j=true -Dinstall4jType=standalone -DjtsConfigDir=/root/Jts -Dibcsessionid=apvkOYkg ibcalpha.ibc.IbcGateway "/opt/sigma/ibkr/ibc/config.ini"  live
+
+IBC Settings:
+    AcceptBidAskLastSizeDisplayUpdateNotification=yes
+    AcceptNonBrokerageAccountWarning=yes
+    AllowBlindTrading=no
+    CloseModalDialogsAutomatically=yes
+    DismissNSEComplianceNotice=yes
+    DismissPasswordExpiryWarning=yes
+    EnableBidAskLast=no
+    ExistingSessionDetectedAction=secondary
+    FIXLoginId=***
+    FIXPassword=***
+    ForceTwsApiPort=4001
+    GetNextOrderId=yes
+    IbAutoClosedown=yes
+    IbControllerHeartbeatRate=10
+    IbLoginId=***
+    IbOrderRolloverTime=1700
+    IbPassword=***
+    IbTimeZone=
+    LogComponents=never
+    MinimizeMainWindow=yes
+    OverrideTwsApiPort=4001
+    ReadOnlyLogin=yes
+    ReloginAfterSecondFactorAuthenticationTimeout=yes
+    SendTWSLogsToIBC=no
+    StoreSettingsOnServer=no
+    TradingMode=live
+    [IBC]=
+End IBC Settings
+
+2026-06-09 16:18:46:350 IBC: version: 3.19.0
+System Properties
+------------------------------------------------------------
+java.specification.version = 17
+sun.jnu.encoding = UTF-8
+channel = latest
+java.class.path = /opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar
+java.vm.vendor = Azul Systems, Inc.
+ibcsessionid = apvkOYkg
+sun.arch.data.model = 64
+java.vendor.url = http://www.azul.com/
+user.timezone = Etc/UTC
+java.vm.specification.version = 17
+os.name = Linux
+sun.java.launcher = SUN_STANDARD
+user.country = US
+sun.boot.library.path = /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib
+sun.java.command = ibcalpha.ibc.IbcGateway /opt/sigma/ibkr/ibc/config.ini live
+jdk.debug = release
+sun.cpu.endian = little
+user.home = /root
+user.language = en
+java.specification.vendor = Oracle Corporation
+java.version.date = 2025-10-21
+java.home = /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu
+jtsConfigDir = /root/Jts
+file.separator = /
+java.vm.compressedOopsMode = 32-bit
+line.separator = 
+
+java.vm.specification.vendor = Oracle Corporation
+twslaunch.autoupdate.serviceImpl = com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService
+java.specification.name = Java Platform API Specification
+install4jType = standalone
+sun.management.compiler = HotSpot 64-Bit Tiered Compilers
+exe4j.isInstall4j = true
+java.runtime.version = 17.0.16.0.101+1-LTS
+user.name = root
+path.separator = :
+os.version = 6.8.0-124-generic
+java.runtime.name = OpenJDK Runtime Environment
+file.encoding = UTF-8
+java.vm.name = OpenJDK 64-Bit Server VM
+java.vendor.version = Zulu17.61+12-SA
+java.vendor.url.bug = http://www.azul.com/support/
+java.io.tmpdir = /tmp
+java.version = 17.0.16.0.101
+user.dir = /root/Jts
+os.arch = amd64
+java.vm.specification.name = Java Virtual Machine Specification
+native.encoding = UTF-8
+java.library.path = /usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib
+java.vm.info = mixed mode
+java.vendor = Azul Systems, Inc.
+java.vm.version = 17.0.16.0.101+1-LTS
+java.specification.maintenance.version = 1
+sun.io.unicode.encoding = UnicodeLittle
+java.class.version = 61.0
+------------------------------------------------------------
+2026-06-09 16:18:46:353 IBC: using default settings provider: ini file is /opt/sigma/ibkr/ibc/config.ini
+2026-06-09 16:18:46:353 IBC: using default login manager: will get username and password from settings; FIX username and password (if required) from settings
+2026-06-09 16:18:46:353 IBC: using default main window manager
+2026-06-09 16:18:46:353 IBC: using default trading mode manager: constructor parameter args: tradingMode=live
+2026-06-09 16:18:46:354 IBC: using default config dialog manager
+2026-06-09 16:18:46:360 IBC: CommandServer is not started because the port is not configured
+2026-06-09 16:18:46:527 IBC: TWS Settings directory is: /root/Jts
+2026-06-09 16:18:46:527 IBC: Starting session: will exit if login dialog is not displayed within 60 seconds
+2026-06-09 16:18:46:538 IBC: Ensuring /root/Jts/jts.ini contains required minimal lines
+2026-06-09 16:18:46:538 IBC: Found setting: [Logon]/s3store=true
+2026-06-09 16:18:46:538 IBC: Found setting: [Logon]/Locale=en
+2026-06-09 16:18:46:538 IBC: Found setting: [Logon]/displayedproxymsg=1
+2026-06-09 16:18:46:539 IBC: Found setting: [Logon]/UseSSL=true
+2026-06-09 16:18:46:539 IBC: Found setting: [IBGateway]/ApiOnly=true
+2026-06-09 16:18:46:539 IBC: Found setting: [IBGateway]/TrustedIPs=127.0.0.1
+2026-06-09 16:18:46:539 IBC: Confirmed /root/Jts/jts.ini contains required minimal lines
+2026-06-09 16:18:46:539 IBC: Starting Gateway
+2026-06-09T16:18:46.835548846Z main INFO Starting configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60...
+2026-06-09T16:18:46.836360569Z main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60 started.
+2026-06-09T16:18:46.838544395Z main INFO Stopping configuration org.apache.logging.log4j.core.config.DefaultConfiguration@67f639d3...
+2026-06-09T16:18:46.838782036Z main INFO Configuration org.apache.logging.log4j.core.config.DefaultConfiguration@67f639d3 stopped.
+java.lang.reflect.InaccessibleObjectException: Unable to make private static javax.swing.UIManager$LAFState javax.swing.UIManager.getLAFState() accessible: module java.desktop does not "opens javax.swing" to unnamed module @449a4f23
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:354)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:297)
+	at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:200)
+	at java.base/java.lang.reflect.Method.setAccessible(Method.java:194)
+	at feature.search.recorder.JtsMultiLookAndFeel.a(JtsMultiLookAndFeel.java:107)
+	at twslaunch.jclient.login.b.d(b.java:446)
+	at jclient.login.ai.g(ai.java:91)
+	at ibgateway.GWClient.a(Unknown Source)
+	at ibgateway.GWClient.main(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startTwsOrGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.load(Unknown Source)
+	at ibcalpha.ibc.IbcGateway.main(Unknown Source)
+java.lang.reflect.InaccessibleObjectException: Unable to make private static javax.swing.UIManager$LAFState javax.swing.UIManager.getLAFState() accessible: module java.desktop does not "opens javax.swing" to unnamed module @449a4f23
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:354)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:297)
+	at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:200)
+	at java.base/java.lang.reflect.Method.setAccessible(Method.java:194)
+	at feature.search.recorder.JtsMultiLookAndFeel.a(JtsMultiLookAndFeel.java:107)
+	at jclient.login.ai.g(ai.java:92)
+	at ibgateway.GWClient.a(Unknown Source)
+	at ibgateway.GWClient.main(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startTwsOrGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.load(Unknown Source)
+	at ibcalpha.ibc.IbcGateway.main(Unknown Source)
+2026-06-09T16:18:46.864451936Z JTS-Main INFO Starting configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@2049a9c1...
+2026-06-09T16:18:46.864577417Z JTS-Main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@2049a9c1 started.
+2026-06-09T16:18:46.865543280Z JTS-Main INFO Stopping configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60...
+2026-06-09T16:18:46.865780450Z JTS-Main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60 stopped.
+2026-06-09 16:18:48:099 IBC: Getting config dialog
+2026-06-09 16:18:48:099 IBC: Creating config dialog future
+2026-06-09 16:18:48:100 IBC: Getting main window
+2026-06-09 16:18:48:100 IBC: Creating main window future
+2026-06-09 16:18:49:113 IBC: detected frame entitled: IBKR Gateway; event=Opened
+2026-06-09 16:18:49:114 IBC: Login dialog WINDOW_OPENED: LoginState is LOGGED_OUT
+2026-06-09 16:18:49:115 IBC: Setting Trading mode = live
+
+(java:339511): dbind-WARNING **: 12:18:49.200: AT-SPI: Error retrieving accessibility bus address: org.freedesktop.DBus.Error.ServiceUnknown: The name org.a11y.Bus was not provided by any .service files
+2026-06-09 16:18:49:220 IBC: Setting user name
+2026-06-09 16:18:49:220 IBC: Setting password
+2026-06-09 16:18:49:221 IBC: Login attempt: 1
+2026-06-09 16:18:49:221 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-09 16:18:49:224 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-09 16:18:49:249 IBC: Click button: Log In
+2026-06-09 16:18:49:822 IBC: Button now disabled: Log In
+2026-06-09 16:18:49:847 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-09 16:18:49:847 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-09 16:18:49:848 IBC: detected frame entitled: IBKR Gateway; event=Opened
+2026-06-09 16:18:49:848 IBC: Found Gateway main window
+2026-06-09 16:18:49:848 IBC: Minimizing main window
+2026-06-09 16:18:49:848 IBC: Got main window from future
+2026-06-09 16:18:49:848 IBC: Invoking config dialog menu
+2026-06-09 16:18:49:849 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-09 16:18:49:854 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-09 16:18:50:307 IBC: detected frame entitled: Authenticating...; event=Opened
+2026-06-09 16:18:50:325 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-09 16:18:50:325 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-09 16:18:50:326 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-09 16:18:50:326 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-09 16:18:50:679 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:18:50:679 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:18:50:679 IBC: Second Factor Authentication initiated
+2026-06-09 16:18:50:679 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-09 16:18:50:679 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-09 16:18:50:679 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-09 16:18:50:680 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+IBC returned exit status 1
+autorestart file not found
+
+Gateway finished
+
+
+================================================================================
+
+Starting IBC version 3.19.0 on 2026-06-09 at 12:22:45
+
+Operating system: Linux Sigmaterminal 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+Arguments:
+
+TWS version = 1045
+Program = Gateway
+Entry point = ibcalpha.ibc.IbcGateway
+--tws-path = /opt/sigma/ibkr
+--tws-settings-path = /root/Jts
+--ibc-path = /opt/sigma/ibkr/ibc
+--ibc-ini = /opt/sigma/ibkr/ibc/config.ini
+--mode = live
+--java-path = 
+--user =
+--pw =
+--fix-user =
+--fix-pw =
+
+=================================
+Generating the classpath
+Classpath=/opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar
+
+Generating the JAVA VM options
+autorestart file not found
+
+Java VM Options=-Xmx768m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=20 -XX:ConcGCThreads=5 -XX:InitiatingHeapOccupancyPercent=70 -Dtwslaunch.autoupdate.serviceImpl=com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService -Dchannel=latest -Dexe4j.isInstall4j=true -Dinstall4jType=standalone -DjtsConfigDir=/root/Jts -Dibcsessionid=0RZpsmyO
+
+Determining the location of java executable
+Location of java executable=/opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/bin
+
+Renaming IB's TWS or Gateway start script to prevent restart without IBC
+
+Starting Gateway with this command:
+"/opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/bin/java" -cp "/opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar" -Xmx768m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=20 -XX:ConcGCThreads=5 -XX:InitiatingHeapOccupancyPercent=70 -Dtwslaunch.autoupdate.serviceImpl=com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService -Dchannel=latest -Dexe4j.isInstall4j=true -Dinstall4jType=standalone -DjtsConfigDir=/root/Jts -Dibcsessionid=0RZpsmyO ibcalpha.ibc.IbcGateway "/opt/sigma/ibkr/ibc/config.ini"  live
+
+IBC Settings:
+    AcceptBidAskLastSizeDisplayUpdateNotification=yes
+    AcceptNonBrokerageAccountWarning=yes
+    AllowBlindTrading=no
+    CloseModalDialogsAutomatically=yes
+    DismissNSEComplianceNotice=yes
+    DismissPasswordExpiryWarning=yes
+    EnableBidAskLast=no
+    ExistingSessionDetectedAction=secondary
+    FIXLoginId=***
+    FIXPassword=***
+    ForceTwsApiPort=4001
+    GetNextOrderId=yes
+    IbAutoClosedown=yes
+    IbControllerHeartbeatRate=10
+    IbLoginId=***
+    IbOrderRolloverTime=1700
+    IbPassword=***
+    IbTimeZone=
+    LogComponents=never
+    MinimizeMainWindow=yes
+    OverrideTwsApiPort=4001
+    ReadOnlyLogin=yes
+    ReloginAfterSecondFactorAuthenticationTimeout=yes
+    SendTWSLogsToIBC=no
+    StoreSettingsOnServer=no
+    TradingMode=live
+    [IBC]=
+End IBC Settings
+
+2026-06-09 16:22:46:222 IBC: version: 3.19.0
+System Properties
+------------------------------------------------------------
+java.specification.version = 17
+sun.jnu.encoding = UTF-8
+channel = latest
+java.class.path = /opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar
+java.vm.vendor = Azul Systems, Inc.
+ibcsessionid = 0RZpsmyO
+sun.arch.data.model = 64
+java.vendor.url = http://www.azul.com/
+user.timezone = Etc/UTC
+java.vm.specification.version = 17
+os.name = Linux
+sun.java.launcher = SUN_STANDARD
+user.country = US
+sun.boot.library.path = /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib
+sun.java.command = ibcalpha.ibc.IbcGateway /opt/sigma/ibkr/ibc/config.ini live
+jdk.debug = release
+sun.cpu.endian = little
+user.home = /root
+user.language = en
+java.specification.vendor = Oracle Corporation
+java.version.date = 2025-10-21
+java.home = /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu
+jtsConfigDir = /root/Jts
+file.separator = /
+java.vm.compressedOopsMode = 32-bit
+line.separator = 
+
+java.vm.specification.vendor = Oracle Corporation
+twslaunch.autoupdate.serviceImpl = com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService
+java.specification.name = Java Platform API Specification
+install4jType = standalone
+sun.management.compiler = HotSpot 64-Bit Tiered Compilers
+exe4j.isInstall4j = true
+java.runtime.version = 17.0.16.0.101+1-LTS
+user.name = root
+path.separator = :
+os.version = 6.8.0-124-generic
+java.runtime.name = OpenJDK Runtime Environment
+file.encoding = UTF-8
+java.vm.name = OpenJDK 64-Bit Server VM
+java.vendor.version = Zulu17.61+12-SA
+java.vendor.url.bug = http://www.azul.com/support/
+java.io.tmpdir = /tmp
+java.version = 17.0.16.0.101
+user.dir = /root/Jts
+os.arch = amd64
+java.vm.specification.name = Java Virtual Machine Specification
+native.encoding = UTF-8
+java.library.path = /usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib
+java.vm.info = mixed mode
+java.vendor = Azul Systems, Inc.
+java.vm.version = 17.0.16.0.101+1-LTS
+java.specification.maintenance.version = 1
+sun.io.unicode.encoding = UnicodeLittle
+java.class.version = 61.0
+------------------------------------------------------------
+2026-06-09 16:22:46:225 IBC: using default settings provider: ini file is /opt/sigma/ibkr/ibc/config.ini
+2026-06-09 16:22:46:226 IBC: using default login manager: will get username and password from settings; FIX username and password (if required) from settings
+2026-06-09 16:22:46:226 IBC: using default main window manager
+2026-06-09 16:22:46:226 IBC: using default trading mode manager: constructor parameter args: tradingMode=live
+2026-06-09 16:22:46:226 IBC: using default config dialog manager
+2026-06-09 16:22:46:233 IBC: CommandServer is not started because the port is not configured
+2026-06-09 16:22:46:385 IBC: TWS Settings directory is: /root/Jts
+2026-06-09 16:22:46:385 IBC: Starting session: will exit if login dialog is not displayed within 60 seconds
+2026-06-09 16:22:46:395 IBC: Ensuring /root/Jts/jts.ini contains required minimal lines
+2026-06-09 16:22:46:395 IBC: Found setting: [Logon]/s3store=true
+2026-06-09 16:22:46:395 IBC: Found setting: [Logon]/Locale=en
+2026-06-09 16:22:46:395 IBC: Found setting: [Logon]/displayedproxymsg=1
+2026-06-09 16:22:46:395 IBC: Found setting: [Logon]/UseSSL=true
+2026-06-09 16:22:46:395 IBC: Found setting: [IBGateway]/ApiOnly=true
+2026-06-09 16:22:46:395 IBC: Found setting: [IBGateway]/TrustedIPs=127.0.0.1
+2026-06-09 16:22:46:395 IBC: Confirmed /root/Jts/jts.ini contains required minimal lines
+2026-06-09 16:22:46:395 IBC: Starting Gateway
+2026-06-09T16:22:46.696945962Z main INFO Starting configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60...
+2026-06-09T16:22:46.697848935Z main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60 started.
+2026-06-09T16:22:46.700226072Z main INFO Stopping configuration org.apache.logging.log4j.core.config.DefaultConfiguration@67f639d3...
+2026-06-09T16:22:46.700457763Z main INFO Configuration org.apache.logging.log4j.core.config.DefaultConfiguration@67f639d3 stopped.
+java.lang.reflect.InaccessibleObjectException: Unable to make private static javax.swing.UIManager$LAFState javax.swing.UIManager.getLAFState() accessible: module java.desktop does not "opens javax.swing" to unnamed module @449a4f23
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:354)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:297)
+	at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:200)
+	at java.base/java.lang.reflect.Method.setAccessible(Method.java:194)
+	at feature.search.recorder.JtsMultiLookAndFeel.a(JtsMultiLookAndFeel.java:107)
+	at twslaunch.jclient.login.b.d(b.java:446)
+	at jclient.login.ai.g(ai.java:91)
+	at ibgateway.GWClient.a(Unknown Source)
+	at ibgateway.GWClient.main(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startTwsOrGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.load(Unknown Source)
+	at ibcalpha.ibc.IbcGateway.main(Unknown Source)
+java.lang.reflect.InaccessibleObjectException: Unable to make private static javax.swing.UIManager$LAFState javax.swing.UIManager.getLAFState() accessible: module java.desktop does not "opens javax.swing" to unnamed module @449a4f23
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:354)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:297)
+	at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:200)
+	at java.base/java.lang.reflect.Method.setAccessible(Method.java:194)
+	at feature.search.recorder.JtsMultiLookAndFeel.a(JtsMultiLookAndFeel.java:107)
+	at jclient.login.ai.g(ai.java:92)
+	at ibgateway.GWClient.a(Unknown Source)
+	at ibgateway.GWClient.main(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startTwsOrGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.load(Unknown Source)
+	at ibcalpha.ibc.IbcGateway.main(Unknown Source)
+2026-06-09T16:22:46.728061409Z JTS-Main INFO Starting configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@2049a9c1...
+2026-06-09T16:22:46.728188969Z JTS-Main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@2049a9c1 started.
+2026-06-09T16:22:46.729274243Z JTS-Main INFO Stopping configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60...
+2026-06-09T16:22:46.729494754Z JTS-Main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60 stopped.
+2026-06-09 16:22:48:126 IBC: Getting config dialog
+2026-06-09 16:22:48:126 IBC: Creating config dialog future
+2026-06-09 16:22:48:127 IBC: Getting main window
+2026-06-09 16:22:48:127 IBC: Creating main window future
+2026-06-09 16:22:49:442 IBC: detected frame entitled: IBKR Gateway; event=Opened
+2026-06-09 16:22:49:443 IBC: Login dialog WINDOW_OPENED: LoginState is LOGGED_OUT
+2026-06-09 16:22:49:443 IBC: Setting Trading mode = live
+
+(java:340781): dbind-WARNING **: 12:22:49.526: AT-SPI: Error retrieving accessibility bus address: org.freedesktop.DBus.Error.ServiceUnknown: The name org.a11y.Bus was not provided by any .service files
+2026-06-09 16:22:49:558 IBC: Setting user name
+2026-06-09 16:22:49:559 IBC: Setting password
+2026-06-09 16:22:49:561 IBC: Login attempt: 1
+2026-06-09 16:22:49:561 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-09 16:22:49:563 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-09 16:22:49:585 IBC: Click button: Log In
+2026-06-09 16:22:50:015 IBC: Button now disabled: Log In
+2026-06-09 16:22:50:042 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-09 16:22:50:042 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-09 16:22:50:057 IBC: detected frame entitled: IBKR Gateway; event=Opened
+2026-06-09 16:22:50:057 IBC: Found Gateway main window
+2026-06-09 16:22:50:057 IBC: Minimizing main window
+2026-06-09 16:22:50:058 IBC: Got main window from future
+2026-06-09 16:22:50:058 IBC: Invoking config dialog menu
+2026-06-09 16:22:50:060 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-09 16:22:50:066 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-09 16:22:50:490 IBC: detected frame entitled: Authenticating...; event=Opened
+2026-06-09 16:22:50:531 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-09 16:22:50:531 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-09 16:22:50:532 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-09 16:22:50:532 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-09 16:22:50:871 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:22:50:871 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:22:50:871 IBC: Second Factor Authentication initiated
+2026-06-09 16:22:50:871 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-09 16:22:50:871 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-09 16:22:50:871 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-09 16:22:50:871 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+IBC returned exit status 1
+autorestart file not found
+
+Gateway finished
+
+
+================================================================================
+
+Starting IBC version 3.19.0 on 2026-06-09 at 12:24:23
+
+Operating system: Linux Sigmaterminal 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+Arguments:
+
+TWS version = 1045
+Program = Gateway
+Entry point = ibcalpha.ibc.IbcGateway
+--tws-path = /opt/sigma/ibkr
+--tws-settings-path = /root/Jts
+--ibc-path = /opt/sigma/ibkr/ibc
+--ibc-ini = /opt/sigma/ibkr/ibc/config.ini
+--mode = live
+--java-path = 
+--user =
+--pw =
+--fix-user =
+--fix-pw =
+
+=================================
+Generating the classpath
+Classpath=/opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar
+
+Generating the JAVA VM options
+autorestart file not found
+
+Java VM Options=-Xmx768m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=20 -XX:ConcGCThreads=5 -XX:InitiatingHeapOccupancyPercent=70 -Dtwslaunch.autoupdate.serviceImpl=com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService -Dchannel=latest -Dexe4j.isInstall4j=true -Dinstall4jType=standalone -DjtsConfigDir=/root/Jts -Dibcsessionid=6xpwbGBU
+
+Determining the location of java executable
+Location of java executable=/opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/bin
+
+Renaming IB's TWS or Gateway start script to prevent restart without IBC
+
+Starting Gateway with this command:
+"/opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/bin/java" -cp "/opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar" -Xmx768m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=20 -XX:ConcGCThreads=5 -XX:InitiatingHeapOccupancyPercent=70 -Dtwslaunch.autoupdate.serviceImpl=com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService -Dchannel=latest -Dexe4j.isInstall4j=true -Dinstall4jType=standalone -DjtsConfigDir=/root/Jts -Dibcsessionid=6xpwbGBU ibcalpha.ibc.IbcGateway "/opt/sigma/ibkr/ibc/config.ini"  live
+
+IBC Settings:
+    AcceptBidAskLastSizeDisplayUpdateNotification=yes
+    AcceptNonBrokerageAccountWarning=yes
+    AllowBlindTrading=no
+    CloseModalDialogsAutomatically=yes
+    DismissNSEComplianceNotice=yes
+    DismissPasswordExpiryWarning=yes
+    EnableBidAskLast=no
+    ExistingSessionDetectedAction=secondary
+    FIXLoginId=***
+    FIXPassword=***
+    ForceTwsApiPort=4001
+    GetNextOrderId=yes
+    IbAutoClosedown=yes
+    IbControllerHeartbeatRate=10
+    IbLoginId=***
+    IbOrderRolloverTime=1700
+    IbPassword=***
+    IbTimeZone=
+    LogComponents=never
+    MinimizeMainWindow=yes
+    OverrideTwsApiPort=4001
+    ReadOnlyLogin=yes
+    ReloginAfterSecondFactorAuthenticationTimeout=yes
+    SendTWSLogsToIBC=no
+    StoreSettingsOnServer=no
+    TradingMode=live
+    [IBC]=
+End IBC Settings
+
+2026-06-09 16:24:24:212 IBC: version: 3.19.0
+System Properties
+------------------------------------------------------------
+java.specification.version = 17
+sun.jnu.encoding = UTF-8
+channel = latest
+java.class.path = /opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar
+java.vm.vendor = Azul Systems, Inc.
+ibcsessionid = 6xpwbGBU
+sun.arch.data.model = 64
+java.vendor.url = http://www.azul.com/
+user.timezone = Etc/UTC
+java.vm.specification.version = 17
+os.name = Linux
+sun.java.launcher = SUN_STANDARD
+user.country = US
+sun.boot.library.path = /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib
+sun.java.command = ibcalpha.ibc.IbcGateway /opt/sigma/ibkr/ibc/config.ini live
+jdk.debug = release
+sun.cpu.endian = little
+user.home = /root
+user.language = en
+java.specification.vendor = Oracle Corporation
+java.version.date = 2025-10-21
+java.home = /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu
+jtsConfigDir = /root/Jts
+file.separator = /
+java.vm.compressedOopsMode = 32-bit
+line.separator = 
+
+java.vm.specification.vendor = Oracle Corporation
+twslaunch.autoupdate.serviceImpl = com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService
+java.specification.name = Java Platform API Specification
+install4jType = standalone
+sun.management.compiler = HotSpot 64-Bit Tiered Compilers
+exe4j.isInstall4j = true
+java.runtime.version = 17.0.16.0.101+1-LTS
+user.name = root
+path.separator = :
+os.version = 6.8.0-124-generic
+java.runtime.name = OpenJDK Runtime Environment
+file.encoding = UTF-8
+java.vm.name = OpenJDK 64-Bit Server VM
+java.vendor.version = Zulu17.61+12-SA
+java.vendor.url.bug = http://www.azul.com/support/
+java.io.tmpdir = /tmp
+java.version = 17.0.16.0.101
+user.dir = /root/Jts
+os.arch = amd64
+java.vm.specification.name = Java Virtual Machine Specification
+native.encoding = UTF-8
+java.library.path = /usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib
+java.vm.info = mixed mode
+java.vendor = Azul Systems, Inc.
+java.vm.version = 17.0.16.0.101+1-LTS
+java.specification.maintenance.version = 1
+sun.io.unicode.encoding = UnicodeLittle
+java.class.version = 61.0
+------------------------------------------------------------
+2026-06-09 16:24:24:215 IBC: using default settings provider: ini file is /opt/sigma/ibkr/ibc/config.ini
+2026-06-09 16:24:24:215 IBC: using default login manager: will get username and password from settings; FIX username and password (if required) from settings
+2026-06-09 16:24:24:215 IBC: using default main window manager
+2026-06-09 16:24:24:215 IBC: using default trading mode manager: constructor parameter args: tradingMode=live
+2026-06-09 16:24:24:216 IBC: using default config dialog manager
+2026-06-09 16:24:24:223 IBC: CommandServer is not started because the port is not configured
+2026-06-09 16:24:24:403 IBC: TWS Settings directory is: /root/Jts
+2026-06-09 16:24:24:403 IBC: Starting session: will exit if login dialog is not displayed within 60 seconds
+2026-06-09 16:24:24:415 IBC: Ensuring /root/Jts/jts.ini contains required minimal lines
+2026-06-09 16:24:24:415 IBC: Found setting: [Logon]/s3store=true
+2026-06-09 16:24:24:415 IBC: Found setting: [Logon]/Locale=en
+2026-06-09 16:24:24:415 IBC: Found setting: [Logon]/displayedproxymsg=1
+2026-06-09 16:24:24:415 IBC: Found setting: [Logon]/UseSSL=true
+2026-06-09 16:24:24:415 IBC: Found setting: [IBGateway]/ApiOnly=true
+2026-06-09 16:24:24:415 IBC: Found setting: [IBGateway]/TrustedIPs=127.0.0.1
+2026-06-09 16:24:24:415 IBC: Confirmed /root/Jts/jts.ini contains required minimal lines
+2026-06-09 16:24:24:415 IBC: Starting Gateway
+2026-06-09T16:24:24.845108095Z main INFO Starting configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60...
+2026-06-09T16:24:24.847635523Z main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60 started.
+2026-06-09T16:24:24.850967743Z main INFO Stopping configuration org.apache.logging.log4j.core.config.DefaultConfiguration@67f639d3...
+2026-06-09T16:24:24.851368734Z main INFO Configuration org.apache.logging.log4j.core.config.DefaultConfiguration@67f639d3 stopped.
+java.lang.reflect.InaccessibleObjectException: Unable to make private static javax.swing.UIManager$LAFState javax.swing.UIManager.getLAFState() accessible: module java.desktop does not "opens javax.swing" to unnamed module @449a4f23
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:354)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:297)
+	at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:200)
+	at java.base/java.lang.reflect.Method.setAccessible(Method.java:194)
+	at feature.search.recorder.JtsMultiLookAndFeel.a(JtsMultiLookAndFeel.java:107)
+	at twslaunch.jclient.login.b.d(b.java:446)
+	at jclient.login.ai.g(ai.java:91)
+	at ibgateway.GWClient.a(Unknown Source)
+	at ibgateway.GWClient.main(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startTwsOrGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.load(Unknown Source)
+	at ibcalpha.ibc.IbcGateway.main(Unknown Source)
+java.lang.reflect.InaccessibleObjectException: Unable to make private static javax.swing.UIManager$LAFState javax.swing.UIManager.getLAFState() accessible: module java.desktop does not "opens javax.swing" to unnamed module @449a4f23
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:354)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:297)
+	at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:200)
+	at java.base/java.lang.reflect.Method.setAccessible(Method.java:194)
+	at feature.search.recorder.JtsMultiLookAndFeel.a(JtsMultiLookAndFeel.java:107)
+	at jclient.login.ai.g(ai.java:92)
+	at ibgateway.GWClient.a(Unknown Source)
+	at ibgateway.GWClient.main(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startTwsOrGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.load(Unknown Source)
+	at ibcalpha.ibc.IbcGateway.main(Unknown Source)
+2026-06-09T16:24:24.886365704Z JTS-Main INFO Starting configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@2049a9c1...
+2026-06-09T16:24:24.886511244Z JTS-Main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@2049a9c1 started.
+2026-06-09T16:24:24.887522978Z JTS-Main INFO Stopping configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60...
+2026-06-09T16:24:24.887769699Z JTS-Main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60 stopped.
+2026-06-09 16:24:26:159 IBC: Getting config dialog
+2026-06-09 16:24:26:160 IBC: Creating config dialog future
+2026-06-09 16:24:26:161 IBC: Getting main window
+2026-06-09 16:24:26:161 IBC: Creating main window future
+2026-06-09 16:24:27:180 IBC: detected frame entitled: IBKR Gateway; event=Opened
+2026-06-09 16:24:27:181 IBC: Login dialog WINDOW_OPENED: LoginState is LOGGED_OUT
+2026-06-09 16:24:27:181 IBC: Setting Trading mode = live
+2026-06-09 16:24:27:284 IBC: Setting user name
+2026-06-09 16:24:27:285 IBC: Setting password
+2026-06-09 16:24:27:285 IBC: Login attempt: 1
+2026-06-09 16:24:27:286 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-09 16:24:27:314 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-09 16:24:27:339 IBC: Click button: Log In
+
+(java:341279): dbind-WARNING **: 12:24:27.464: AT-SPI: Error retrieving accessibility bus address: org.freedesktop.DBus.Error.ServiceUnknown: The name org.a11y.Bus was not provided by any .service files
+2026-06-09 16:24:27:718 IBC: Button now disabled: Log In
+2026-06-09 16:24:27:740 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-09 16:24:27:743 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-09 16:24:27:743 IBC: detected frame entitled: IBKR Gateway; event=Opened
+2026-06-09 16:24:27:744 IBC: Found Gateway main window
+2026-06-09 16:24:27:744 IBC: Minimizing main window
+2026-06-09 16:24:27:744 IBC: Got main window from future
+2026-06-09 16:24:27:744 IBC: Invoking config dialog menu
+2026-06-09 16:24:27:745 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-09 16:24:27:748 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-09 16:24:28:230 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-09 16:24:28:230 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-09 16:24:28:230 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-09 16:24:28:231 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-09 16:24:28:231 IBC: detected frame entitled: Authenticating...; event=Opened
+2026-06-09 16:24:28:760 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:24:28:761 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:24:28:761 IBC: Second Factor Authentication initiated
+2026-06-09 16:24:28:761 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-09 16:24:28:761 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-09 16:24:28:761 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-09 16:24:28:761 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-09 16:29:52:791 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-09 16:29:52:792 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-09 16:29:52:793 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-09 16:29:52:793 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-09 16:29:52:793 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:29:52:794 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:29:52:794 IBC: Duration since login: 325 seconds
+2026-06-09 16:29:52:794 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-09 16:29:57:795 IBC: Setting Trading mode = live
+2026-06-09 16:29:57:891 IBC: Setting user name
+2026-06-09 16:29:57:891 IBC: Setting password
+2026-06-09 16:29:57:892 IBC: Login attempt: 2
+2026-06-09 16:29:57:911 IBC: Click button: Log In
+2026-06-09 16:29:58:018 IBC: Button now disabled: Log In
+2026-06-09 16:29:58:034 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-09 16:29:58:035 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-09 16:29:58:523 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-09 16:29:58:523 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-09 16:29:58:847 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:29:58:847 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:29:58:847 IBC: Second Factor Authentication initiated
+2026-06-09 16:29:58:847 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-09 16:29:58:847 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-09 16:29:58:848 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-09 16:29:58:848 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-09 16:38:18:410 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:38:18:410 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:38:18:410 IBC: Duration since login: 500 seconds
+2026-06-09 16:38:18:410 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-09 16:38:18:582 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-09 16:38:18:582 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-09 16:38:18:582 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-09 16:38:18:582 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-09 16:38:18:583 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-09 16:38:18:583 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-09 16:38:18:583 IBC: detected dialog entitled: Gateway; event=Activated
+2026-06-09 16:38:18:615 IBC: detected dialog entitled: Gateway; event=Focused
+2026-06-09 16:38:18:616 IBC: detected dialog entitled: Gateway; event=Opened
+2026-06-09 16:38:23:412 IBC: Setting Trading mode = live
+2026-06-09 16:38:23:494 IBC: Setting user name
+2026-06-09 16:38:23:494 IBC: Setting password
+2026-06-09 16:38:23:494 IBC: Login attempt: 3
+2026-06-09 16:38:23:511 IBC: Click button: Log In
+2026-06-09 16:38:23:647 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-09 16:38:23:654 IBC: Too many failed login attempts. Please wait 55 seconds before attempting to re-login again.
+2026-06-09 16:38:23:655 IBC: Will re-login at 2026-06-09 16:39:21:655; login number: 4
+2026-06-09 16:38:23:655 IBC: Click button: OK
+2026-06-09 16:38:23:726 IBC: Button now disabled: Log In
+2026-06-09 16:38:23:729 IBC: detected dialog entitled: Gateway; event=Lost focus
+2026-06-09 16:38:23:731 IBC: detected dialog entitled: Gateway; event=Deactivated
+2026-06-09 16:38:23:731 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-09 16:38:23:731 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-09 16:38:23:734 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-09 16:38:23:734 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-09 16:38:23:734 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-09 16:38:23:734 IBC: detected dialog entitled: Gateway; event=Activated
+2026-06-09 16:38:23:735 IBC: detected dialog entitled: Gateway; event=Focused
+2026-06-09 16:39:21:656 IBC: Setting Trading mode = live
+2026-06-09 16:39:21:743 IBC: Setting user name
+2026-06-09 16:39:21:743 IBC: Setting password
+2026-06-09 16:39:21:744 IBC: Login attempt: 4
+2026-06-09 16:39:21:757 IBC: Click button: Log In
+2026-06-09 16:39:21:850 IBC: Button now disabled: Log In
+2026-06-09 16:39:22:939 IBC: detected dialog entitled: Gateway; event=Lost focus
+2026-06-09 16:39:22:939 IBC: detected dialog entitled: Gateway; event=Deactivated
+2026-06-09 16:39:22:939 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-09 16:39:22:939 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-09 16:39:22:940 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:39:22:941 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:39:22:941 IBC: Second Factor Authentication initiated
+2026-06-09 16:42:44:798 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:42:44:799 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:42:44:799 IBC: Duration since login: 261 seconds
+2026-06-09 16:42:44:799 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-09 16:42:44:946 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-09 16:42:44:946 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-09 16:42:44:946 IBC: detected dialog entitled: Gateway; event=Activated
+2026-06-09 16:42:44:946 IBC: detected dialog entitled: Gateway; event=Focused
+2026-06-09 16:42:44:950 IBC: detected dialog entitled: Gateway; event=Opened
+2026-06-09 16:42:49:799 IBC: Setting Trading mode = live
+2026-06-09 16:42:49:904 IBC: Setting user name
+2026-06-09 16:42:49:904 IBC: Setting password
+2026-06-09 16:42:49:904 IBC: Login attempt: 5
+2026-06-09 16:42:49:920 IBC: Click button: Log In
+2026-06-09 16:42:50:054 IBC: detected dialog entitled: Gateway; event=Lost focus
+2026-06-09 16:42:50:054 IBC: detected dialog entitled: Gateway; event=Deactivated
+2026-06-09 16:42:50:055 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-09 16:42:50:055 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-09 16:42:50:056 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-09 16:42:50:056 IBC: Too many failed login attempts. Please wait 55 seconds before attempting to re-login again.
+2026-06-09 16:42:50:056 IBC: Will re-login at 2026-06-09 16:43:48:056; login number: 6
+2026-06-09 16:42:50:056 IBC: Click button: OK
+2026-06-09 16:42:50:126 IBC: Button now disabled: Log In
+2026-06-09 16:42:50:127 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-09 16:42:50:127 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-09 16:42:50:127 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-09 16:43:48:056 IBC: Setting Trading mode = live
+2026-06-09 16:43:48:146 IBC: Setting user name
+2026-06-09 16:43:48:148 IBC: Setting password
+2026-06-09 16:43:48:149 IBC: Login attempt: 6
+2026-06-09 16:43:48:161 IBC: Click button: Log In
+2026-06-09 16:43:48:257 IBC: Button now disabled: Log In
+2026-06-09 16:43:49:077 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:43:49:077 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:43:49:077 IBC: Second Factor Authentication initiated
+2026-06-09 16:43:49:077 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-09 16:43:49:077 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+IBC returned exit status 1
+autorestart file not found
+
+Gateway finished
+
+
+================================================================================
+
+Starting IBC version 3.19.0 on 2026-06-09 at 12:58:39
+
+Operating system: Linux Sigmaterminal 6.8.0-124-generic #124-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 13:00:45 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+Arguments:
+
+TWS version = 1045
+Program = Gateway
+Entry point = ibcalpha.ibc.IbcGateway
+--tws-path = /opt/sigma/ibkr
+--tws-settings-path = /root/Jts
+--ibc-path = /opt/sigma/ibkr/ibc
+--ibc-ini = /opt/sigma/ibkr/ibc/config.ini
+--mode = live
+--java-path = 
+--user =
+--pw =
+--fix-user =
+--fix-pw =
+
+=================================
+Generating the classpath
+Classpath=/opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar
+
+Generating the JAVA VM options
+autorestart file not found
+
+Java VM Options=-Xmx768m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=20 -XX:ConcGCThreads=5 -XX:InitiatingHeapOccupancyPercent=70 -Dtwslaunch.autoupdate.serviceImpl=com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService -Dchannel=latest -Dexe4j.isInstall4j=true -Dinstall4jType=standalone -DjtsConfigDir=/root/Jts -Dibcsessionid=YDS2wkTF
+
+Determining the location of java executable
+Location of java executable=/opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/bin
+
+Renaming IB's TWS or Gateway start script to prevent restart without IBC
+
+Starting Gateway with this command:
+"/opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/bin/java" -cp "/opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar" -Xmx768m -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:ParallelGCThreads=20 -XX:ConcGCThreads=5 -XX:InitiatingHeapOccupancyPercent=70 -Dtwslaunch.autoupdate.serviceImpl=com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService -Dchannel=latest -Dexe4j.isInstall4j=true -Dinstall4jType=standalone -DjtsConfigDir=/root/Jts -Dibcsessionid=YDS2wkTF ibcalpha.ibc.IbcGateway "/opt/sigma/ibkr/ibc/config.ini"  live
+
+IBC Settings:
+    AcceptBidAskLastSizeDisplayUpdateNotification=yes
+    AcceptNonBrokerageAccountWarning=yes
+    AllowBlindTrading=no
+    CloseModalDialogsAutomatically=yes
+    DismissNSEComplianceNotice=yes
+    DismissPasswordExpiryWarning=yes
+    EnableBidAskLast=no
+    ExistingSessionDetectedAction=secondary
+    FIXLoginId=***
+    FIXPassword=***
+    ForceTwsApiPort=4001
+    GetNextOrderId=yes
+    IbAutoClosedown=yes
+    IbControllerHeartbeatRate=10
+    IbLoginId=***
+    IbOrderRolloverTime=1700
+    IbPassword=***
+    IbTimeZone=
+    LogComponents=never
+    MinimizeMainWindow=yes
+    OverrideTwsApiPort=4001
+    ReadOnlyLogin=yes
+    ReloginAfterSecondFactorAuthenticationTimeout=yes
+    SendTWSLogsToIBC=no
+    StoreSettingsOnServer=no
+    TradingMode=live
+    [IBC]=
+End IBC Settings
+
+2026-06-09 16:58:39:994 IBC: version: 3.19.0
+System Properties
+------------------------------------------------------------
+java.specification.version = 17
+sun.jnu.encoding = UTF-8
+channel = latest
+java.class.path = /opt/sigma/ibkr/ibgateway/1045/jars/batik-all-1.16.jar:/opt/sigma/ibkr/ibgateway/1045/jars/commons-io-2.11.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/core-3.5.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/fop-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-annotations-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-core-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jackson-databind-2.12.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/Java-WebSocket-1.6.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jlayer-1.0.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jna-platform-5.16.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jts4launch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-linux64-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/jxbrowser-swing-8.9.4.jar:/opt/sigma/ibkr/ibgateway/1045/jars/locales.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-api-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-core-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/log4j-slf4j2-impl-2.25.3.jar:/opt/sigma/ibkr/ibgateway/1045/jars/oshi-core-6.7.0.jar:/opt/sigma/ibkr/ibgateway/1045/jars/protobuf-java-3.25.6.jar:/opt/sigma/ibkr/ibgateway/1045/jars/slf4j-api-2.0.17.jar:/opt/sigma/ibkr/ibgateway/1045/jars/total-2024.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-1045.jar:/opt/sigma/ibkr/ibgateway/1045/jars/twslaunch-install4j-1.12.jar:/opt/sigma/ibkr/ibgateway/1045/jars/xmlgraphics-commons-2.8.jar:/opt/sigma/ibkr/ibgateway/1045/.install4j/i4jruntime.jar:/opt/sigma/ibkr/ibc/IBC.jar
+java.vm.vendor = Azul Systems, Inc.
+ibcsessionid = YDS2wkTF
+sun.arch.data.model = 64
+java.vendor.url = http://www.azul.com/
+user.timezone = Etc/UTC
+java.vm.specification.version = 17
+os.name = Linux
+sun.java.launcher = SUN_STANDARD
+user.country = US
+sun.boot.library.path = /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu/lib
+sun.java.command = ibcalpha.ibc.IbcGateway /opt/sigma/ibkr/ibc/config.ini live
+jdk.debug = release
+sun.cpu.endian = little
+user.home = /root
+user.language = en
+java.specification.vendor = Oracle Corporation
+java.version.date = 2025-10-21
+java.home = /opt/i4j_jres/Oda-jK0QgTEmVssfllLP/17.0.16.0.101-zulu
+jtsConfigDir = /root/Jts
+file.separator = /
+java.vm.compressedOopsMode = 32-bit
+line.separator = 
+
+java.vm.specification.vendor = Oracle Corporation
+twslaunch.autoupdate.serviceImpl = com.ib.tws.twslaunch.install4j.Install4jAutoUpdateService
+java.specification.name = Java Platform API Specification
+install4jType = standalone
+sun.management.compiler = HotSpot 64-Bit Tiered Compilers
+exe4j.isInstall4j = true
+java.runtime.version = 17.0.16.0.101+1-LTS
+user.name = root
+path.separator = :
+os.version = 6.8.0-124-generic
+java.runtime.name = OpenJDK Runtime Environment
+file.encoding = UTF-8
+java.vm.name = OpenJDK 64-Bit Server VM
+java.vendor.version = Zulu17.61+12-SA
+java.vendor.url.bug = http://www.azul.com/support/
+java.io.tmpdir = /tmp
+java.version = 17.0.16.0.101
+user.dir = /root/Jts
+os.arch = amd64
+java.vm.specification.name = Java Virtual Machine Specification
+native.encoding = UTF-8
+java.library.path = /usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib
+java.vm.info = mixed mode
+java.vendor = Azul Systems, Inc.
+java.vm.version = 17.0.16.0.101+1-LTS
+java.specification.maintenance.version = 1
+sun.io.unicode.encoding = UnicodeLittle
+java.class.version = 61.0
+------------------------------------------------------------
+2026-06-09 16:58:39:997 IBC: using default settings provider: ini file is /opt/sigma/ibkr/ibc/config.ini
+2026-06-09 16:58:39:997 IBC: using default login manager: will get username and password from settings; FIX username and password (if required) from settings
+2026-06-09 16:58:39:997 IBC: using default main window manager
+2026-06-09 16:58:39:997 IBC: using default trading mode manager: constructor parameter args: tradingMode=live
+2026-06-09 16:58:39:998 IBC: using default config dialog manager
+2026-06-09 16:58:40:006 IBC: CommandServer is not started because the port is not configured
+2026-06-09 16:58:40:173 IBC: TWS Settings directory is: /root/Jts
+2026-06-09 16:58:40:174 IBC: Starting session: will exit if login dialog is not displayed within 60 seconds
+2026-06-09 16:58:40:185 IBC: Ensuring /root/Jts/jts.ini contains required minimal lines
+2026-06-09 16:58:40:185 IBC: Found setting: [Logon]/s3store=true
+2026-06-09 16:58:40:185 IBC: Found setting: [Logon]/Locale=en
+2026-06-09 16:58:40:186 IBC: Found setting: [Logon]/displayedproxymsg=1
+2026-06-09 16:58:40:186 IBC: Found setting: [Logon]/UseSSL=true
+2026-06-09 16:58:40:186 IBC: Found setting: [IBGateway]/ApiOnly=true
+2026-06-09 16:58:40:186 IBC: Found setting: [IBGateway]/TrustedIPs=127.0.0.1
+2026-06-09 16:58:40:186 IBC: Confirmed /root/Jts/jts.ini contains required minimal lines
+2026-06-09 16:58:40:186 IBC: Starting Gateway
+2026-06-09T16:58:40.530092928Z main INFO Starting configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60...
+2026-06-09T16:58:40.531005660Z main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60 started.
+2026-06-09T16:58:40.533694810Z main INFO Stopping configuration org.apache.logging.log4j.core.config.DefaultConfiguration@67f639d3...
+2026-06-09T16:58:40.533954680Z main INFO Configuration org.apache.logging.log4j.core.config.DefaultConfiguration@67f639d3 stopped.
+java.lang.reflect.InaccessibleObjectException: Unable to make private static javax.swing.UIManager$LAFState javax.swing.UIManager.getLAFState() accessible: module java.desktop does not "opens javax.swing" to unnamed module @449a4f23
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:354)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:297)
+	at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:200)
+	at java.base/java.lang.reflect.Method.setAccessible(Method.java:194)
+	at feature.search.recorder.JtsMultiLookAndFeel.a(JtsMultiLookAndFeel.java:107)
+	at twslaunch.jclient.login.b.d(b.java:446)
+	at jclient.login.ai.g(ai.java:91)
+	at ibgateway.GWClient.a(Unknown Source)
+	at ibgateway.GWClient.main(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startTwsOrGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.load(Unknown Source)
+	at ibcalpha.ibc.IbcGateway.main(Unknown Source)
+java.lang.reflect.InaccessibleObjectException: Unable to make private static javax.swing.UIManager$LAFState javax.swing.UIManager.getLAFState() accessible: module java.desktop does not "opens javax.swing" to unnamed module @449a4f23
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:354)
+	at java.base/java.lang.reflect.AccessibleObject.checkCanSetAccessible(AccessibleObject.java:297)
+	at java.base/java.lang.reflect.Method.checkCanSetAccessible(Method.java:200)
+	at java.base/java.lang.reflect.Method.setAccessible(Method.java:194)
+	at feature.search.recorder.JtsMultiLookAndFeel.a(JtsMultiLookAndFeel.java:107)
+	at jclient.login.ai.g(ai.java:92)
+	at ibgateway.GWClient.a(Unknown Source)
+	at ibgateway.GWClient.main(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.startTwsOrGateway(Unknown Source)
+	at ibcalpha.ibc.IbcTws.load(Unknown Source)
+	at ibcalpha.ibc.IbcGateway.main(Unknown Source)
+2026-06-09T16:58:40.562220921Z JTS-Main INFO Starting configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@2049a9c1...
+2026-06-09T16:58:40.562390511Z JTS-Main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@2049a9c1 started.
+2026-06-09T16:58:40.563878256Z JTS-Main INFO Stopping configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60...
+2026-06-09T16:58:40.564147016Z JTS-Main INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@39b43d60 stopped.
+2026-06-09 16:58:41:938 IBC: Getting config dialog
+2026-06-09 16:58:41:938 IBC: Creating config dialog future
+2026-06-09 16:58:41:939 IBC: Getting main window
+2026-06-09 16:58:41:939 IBC: Creating main window future
+2026-06-09 16:58:43:214 IBC: detected frame entitled: IBKR Gateway; event=Opened
+2026-06-09 16:58:43:215 IBC: Login dialog WINDOW_OPENED: LoginState is LOGGED_OUT
+2026-06-09 16:58:43:216 IBC: Setting Trading mode = live
+
+(java:349502): dbind-WARNING **: 12:58:43.242: AT-SPI: Error retrieving accessibility bus address: org.freedesktop.DBus.Error.ServiceUnknown: The name org.a11y.Bus was not provided by any .service files
+2026-06-09 16:58:43:329 IBC: Setting user name
+2026-06-09 16:58:43:330 IBC: Setting password
+2026-06-09 16:58:43:330 IBC: Login attempt: 1
+2026-06-09 16:58:43:335 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-09 16:58:43:338 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-09 16:58:43:376 IBC: Click button: Log In
+2026-06-09 16:58:44:026 IBC: Button now disabled: Log In
+2026-06-09 16:58:44:044 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-09 16:58:44:044 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-09 16:58:44:045 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-09 16:58:44:050 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-09 16:58:44:050 IBC: detected frame entitled: IBKR Gateway; event=Opened
+2026-06-09 16:58:44:050 IBC: Found Gateway main window
+2026-06-09 16:58:44:050 IBC: Minimizing main window
+2026-06-09 16:58:44:051 IBC: Got main window from future
+2026-06-09 16:58:44:051 IBC: Invoking config dialog menu
+2026-06-09 16:58:44:519 IBC: detected frame entitled: Authenticating...; event=Opened
+2026-06-09 16:58:44:632 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-09 16:58:44:633 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-09 16:58:44:633 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-09 16:58:44:633 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-09 16:58:45:122 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:58:45:122 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 16:58:45:122 IBC: Second Factor Authentication initiated
+2026-06-09 16:58:45:122 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-09 16:58:45:122 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-09 16:58:45:122 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-09 16:58:45:123 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-09 17:10:16:398 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-09 17:10:16:399 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-09 17:10:16:399 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 17:10:16:399 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 17:10:16:400 IBC: Duration since login: 693 seconds
+2026-06-09 17:10:16:400 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-09 17:10:16:643 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-09 17:10:16:644 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-09 17:10:16:644 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-09 17:10:16:644 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-09 17:10:16:644 IBC: detected dialog entitled: Gateway; event=Activated
+2026-06-09 17:10:16:658 IBC: detected dialog entitled: Gateway; event=Focused
+2026-06-09 17:10:16:659 IBC: detected dialog entitled: Gateway; event=Opened
+2026-06-09 17:10:21:403 IBC: Setting Trading mode = live
+2026-06-09 17:10:21:504 IBC: Setting user name
+2026-06-09 17:10:21:504 IBC: Setting password
+2026-06-09 17:10:21:505 IBC: Login attempt: 2
+2026-06-09 17:10:21:524 IBC: Click button: Log In
+2026-06-09 17:10:21:654 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-09 17:10:21:657 IBC: Too many failed login attempts. Please wait 55 seconds before attempting to re-login again.
+2026-06-09 17:10:21:658 IBC: Will re-login at 2026-06-09 17:11:19:658; login number: 3
+2026-06-09 17:10:21:658 IBC: Click button: OK
+2026-06-09 17:10:21:731 IBC: Button now disabled: Log In
+2026-06-09 17:10:21:734 IBC: detected dialog entitled: Gateway; event=Lost focus
+2026-06-09 17:10:21:734 IBC: detected dialog entitled: Gateway; event=Deactivated
+2026-06-09 17:10:21:735 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-09 17:10:21:735 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-09 17:10:21:738 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-09 17:10:21:738 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-09 17:10:21:738 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-09 17:10:21:738 IBC: detected dialog entitled: Gateway; event=Activated
+2026-06-09 17:10:21:739 IBC: detected dialog entitled: Gateway; event=Focused
+2026-06-09 17:11:19:659 IBC: Setting Trading mode = live
+2026-06-09 17:11:19:771 IBC: Setting user name
+2026-06-09 17:11:19:771 IBC: Setting password
+2026-06-09 17:11:19:771 IBC: Login attempt: 3
+2026-06-09 17:11:19:809 IBC: Click button: Log In
+2026-06-09 17:11:19:917 IBC: Button now disabled: Log In
+2026-06-09 17:11:20:727 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 17:11:20:727 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 17:11:20:727 IBC: Second Factor Authentication initiated
+2026-06-09 17:11:20:727 IBC: detected dialog entitled: Gateway; event=Lost focus
+2026-06-09 17:11:20:728 IBC: detected dialog entitled: Gateway; event=Deactivated
+2026-06-09 17:11:20:729 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-09 17:11:20:729 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-09 17:14:06:959 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-09 17:14:06:959 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-09 17:14:06:960 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 17:14:06:960 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 17:14:06:960 IBC: Duration since login: 225 seconds
+2026-06-09 17:14:06:960 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-09 17:14:07:095 IBC: detected dialog entitled: Gateway; event=Opened
+2026-06-09 17:14:07:096 IBC: detected dialog entitled: Gateway; event=Activated
+2026-06-09 17:14:07:097 IBC: detected dialog entitled: Gateway; event=Focused
+2026-06-09 17:14:11:960 IBC: Setting Trading mode = live
+2026-06-09 17:14:12:077 IBC: Setting user name
+2026-06-09 17:14:12:078 IBC: Setting password
+2026-06-09 17:14:12:079 IBC: Login attempt: 4
+2026-06-09 17:14:12:108 IBC: Click button: Log In
+2026-06-09 17:14:12:240 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-09 17:14:12:240 IBC: Too many failed login attempts. Please wait 55 seconds before attempting to re-login again.
+2026-06-09 17:14:12:240 IBC: Will re-login at 2026-06-09 17:15:10:240; login number: 5
+2026-06-09 17:14:12:240 IBC: Click button: OK
+2026-06-09 17:14:12:312 IBC: Button now disabled: Log In
+2026-06-09 17:14:12:315 IBC: detected dialog entitled: Gateway; event=Lost focus
+2026-06-09 17:14:12:316 IBC: detected dialog entitled: Gateway; event=Deactivated
+2026-06-09 17:14:12:316 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-09 17:14:12:316 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-09 17:14:12:318 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-09 17:14:12:318 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-09 17:14:12:318 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-09 17:14:12:318 IBC: detected dialog entitled: Gateway; event=Activated
+2026-06-09 17:14:12:319 IBC: detected dialog entitled: Gateway; event=Focused
+2026-06-09 17:15:10:242 IBC: Setting Trading mode = live
+2026-06-09 17:15:10:334 IBC: Setting user name
+2026-06-09 17:15:10:335 IBC: Setting password
+2026-06-09 17:15:10:335 IBC: Login attempt: 5
+2026-06-09 17:15:10:345 IBC: Click button: Log In
+2026-06-09 17:15:10:432 IBC: Button now disabled: Log In
+2026-06-09 17:15:11:247 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 17:15:11:247 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 17:15:11:247 IBC: Second Factor Authentication initiated
+2026-06-09 17:15:11:247 IBC: detected dialog entitled: Gateway; event=Lost focus
+2026-06-09 17:15:11:248 IBC: detected dialog entitled: Gateway; event=Deactivated
+2026-06-09 17:15:11:249 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-09 17:15:11:249 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-09 17:18:15:070 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 17:18:15:071 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 17:18:15:071 IBC: Duration since login: 242 seconds
+2026-06-09 17:18:15:071 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-09 17:18:15:244 IBC: detected dialog entitled: Gateway; event=Opened
+2026-06-09 17:18:15:244 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-09 17:18:15:244 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-09 17:18:15:244 IBC: detected dialog entitled: Gateway; event=Activated
+2026-06-09 17:18:15:245 IBC: detected dialog entitled: Gateway; event=Focused
+2026-06-09 17:18:20:071 IBC: Setting Trading mode = live
+2026-06-09 17:18:20:166 IBC: Setting user name
+2026-06-09 17:18:20:167 IBC: Setting password
+2026-06-09 17:18:20:167 IBC: Login attempt: 6
+2026-06-09 17:18:20:180 IBC: Click button: Log In
+2026-06-09 17:18:20:285 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-09 17:18:20:285 IBC: Too many failed login attempts. Please wait 55 seconds before attempting to re-login again.
+2026-06-09 17:18:20:285 IBC: Will re-login at 2026-06-09 17:19:18:285; login number: 7
+2026-06-09 17:18:20:285 IBC: Click button: OK
+2026-06-09 17:18:20:356 IBC: Button now disabled: Log In
+2026-06-09 17:18:20:358 IBC: detected dialog entitled: Gateway; event=Lost focus
+2026-06-09 17:18:20:358 IBC: detected dialog entitled: Gateway; event=Deactivated
+2026-06-09 17:18:20:358 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-09 17:18:20:359 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-09 17:18:20:359 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-09 17:18:20:360 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-09 17:18:20:360 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-09 17:18:20:373 IBC: detected dialog entitled: Gateway; event=Activated
+2026-06-09 17:18:20:374 IBC: detected dialog entitled: Gateway; event=Focused
+2026-06-09 17:19:18:286 IBC: Setting Trading mode = live
+2026-06-09 17:19:18:382 IBC: Setting user name
+2026-06-09 17:19:18:382 IBC: Setting password
+2026-06-09 17:19:18:384 IBC: Login attempt: 7
+2026-06-09 17:19:18:420 IBC: Click button: Log In
+2026-06-09 17:19:18:561 IBC: Button now disabled: Log In
+2026-06-09 17:19:19:369 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 17:19:19:369 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 17:19:19:369 IBC: Second Factor Authentication initiated
+2026-06-09 17:19:19:369 IBC: detected dialog entitled: Gateway; event=Lost focus
+2026-06-09 17:19:19:370 IBC: detected dialog entitled: Gateway; event=Deactivated
+2026-06-09 17:19:19:370 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-09 17:19:19:370 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-09 17:30:02:971 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-09 17:30:02:974 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-09 17:30:02:974 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 17:30:02:974 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 17:30:02:974 IBC: Duration since login: 702 seconds
+2026-06-09 17:30:02:974 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-09 17:30:07:974 IBC: Setting Trading mode = live
+2026-06-09 17:30:08:061 IBC: Setting user name
+2026-06-09 17:30:08:062 IBC: Setting password
+2026-06-09 17:30:08:062 IBC: Login attempt: 8
+2026-06-09 17:30:08:087 IBC: Click button: Log In
+2026-06-09 17:30:08:264 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-09 17:30:08:264 IBC: Too many failed login attempts. Please wait 3 minutes & 35 seconds before attempting to re-login
+again.
+2026-06-09 17:30:08:265 IBC: Will re-login at 2026-06-09 17:33:46:265; login number: 9
+2026-06-09 17:30:08:265 IBC: Click button: OK
+2026-06-09 17:30:08:336 IBC: Button now disabled: Log In
+2026-06-09 17:30:08:337 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-09 17:30:08:338 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-09 17:30:08:338 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-09 17:30:08:338 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-09 17:30:08:339 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-09 17:33:46:265 IBC: Setting Trading mode = live
+2026-06-09 17:33:46:356 IBC: Setting user name
+2026-06-09 17:33:46:356 IBC: Setting password
+2026-06-09 17:33:46:358 IBC: Login attempt: 9
+2026-06-09 17:33:46:385 IBC: Click button: Log In
+2026-06-09 17:33:46:496 IBC: Button now disabled: Log In
+2026-06-09 17:33:47:314 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 17:33:47:314 IBC: Read-only login not supported by Gateway
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+2026-06-09 17:33:47:314 IBC: Second Factor Authentication initiated
+2026-06-09 17:33:47:314 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-09 17:33:47:314 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-09T17:45:13.126241787Z pool-3-thread-1 INFO Stopping configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@2049a9c1...
+2026-06-09T17:45:13.131722824Z pool-3-thread-1 INFO Configuration org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration@2049a9c1 stopped.
+IBC returned exit status 143
+autorestart file not found
+
+Gateway finished
+

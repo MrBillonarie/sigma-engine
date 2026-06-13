@@ -1,0 +1,178 @@
+#!/usr/bin/env python3
+'''gap_auto_launcher.py — auto-lanza trials para GAPS direccionales cuando RAM disponible.
+
+Corre como cron */15min. Idempotente: no relanza si ya hay trial activo para ese slot.
+'''
+import json, os, subprocess, time, sys
+from pathlib import Path
+
+# --- SIGMA VITRINA gap hook ---
+def _vitrina_log_gap(sym, tf, direction, strategy=None):
+    try:
+        from utils.decisions import log_decision
+        log_decision(kind='gap_closed', slot=f'{sym}|{tf}',
+                     payload={'sym': sym, 'tf': tf, 'direction': direction, 'new_strategy': strategy},
+                     meta={'source': 'gap_auto_launcher'})
+    except Exception:
+        pass
+
+sys.path.insert(0, '/opt/sigma')
+
+LOG = '/opt/sigma/results/reports/gap_auto_launcher.log'
+def log(msg):
+    ts = time.strftime('%Y-%m-%d %H:%M:%S')
+    line = '[' + ts + '] ' + msg
+    print(line)
+    try:
+        with open(LOG, 'a') as f:
+            f.write(line + chr(10))
+    except: pass
+
+# Config
+MIN_RAM_FREE_MB = 800   # no lanzar si free < 800MB
+MAX_PARALLEL = 9  # 2026-06-07: 8c headroom real (60% CPU, 11.6GB RAM libre)
+TRIALS_BY_TF = {'5m': 150, '15m': 250, '1h': 350, '4h': 350}  # per-TF: 5m menor (noisier pero rapido), 1h/4h mayor calidad
+TRIALS_PER_SLOT = 200  # fallback
+CSV_PATHS = {
+    'XAU': '/opt/sigma/models/data_XAU_{tf}_max.csv',
+}
+SYM_MAP = {
+    'XAU': 'XAU/USD',
+}
+
+try:
+    from utils.strategies import SHORT_STRATEGIES
+except Exception as e:
+    log('FATAL importing SHORT_STRATEGIES: ' + str(e))
+    sys.exit(1)
+
+SYMS = ['BTC','ETH','SOL','BNB','LTC','XAU']
+TFS = ['5m','15m','1h','4h']  # 2026-05-20: incluye 5m para llegar a 40 sub-portafolios
+DIRS = ['long','short']
+
+# 1. Calcular GAPS
+covered = set()
+for tf in TFS:
+    for fp in Path('/opt/sigma/models/' + tf).glob('*.json'):
+        try:
+            d = json.load(open(fp))
+            m = d.get('metrics_oos') or {}
+            if (m.get('cagr',0) or 0) <= 0: continue
+            sym = (d.get('symbol','') or '').replace('/USDT','').replace('/USD','').upper()
+            strat = d.get('strategy','')
+            if not (sym and strat): continue
+            direction = 'short' if strat in SHORT_STRATEGIES else 'long'
+            covered.add((sym, tf, direction))
+        except: pass
+
+gaps = [(s,t,d) for s in SYMS for t in TFS for d in DIRS if (s,t,d) not in covered]
+log('GAPS detectados: ' + str(len(gaps)) + ' (' + ', '.join([g[0]+g[1][:2]+g[2][:1].upper() for g in gaps]) + ')')
+
+if not gaps:
+    log('OK: cobertura completa, nada que lanzar')
+    sys.exit(0)
+
+# 2. Ver trials activos
+r = subprocess.run(['ps','-eo','pid,cmd'], capture_output=True, text=True)
+active_slots = set()
+n_active = 0
+for line in r.stdout.split(chr(10)):
+    if 'asset_pipeline.py' not in line or 'grep' in line: continue
+    n_active += 1
+    ts = line.split()
+    sym = tf = focus = None
+    for i,t in enumerate(ts):
+        if t == '--symbol' and i+1 < len(ts): sym = ts[i+1].replace('/USDT','')
+        if t == '--tf' and i+1 < len(ts): tf = ts[i+1]
+        if t == '--focus' and i+1 < len(ts): focus = ts[i+1]
+    if sym and tf and focus and focus in ('long','short'):
+        active_slots.add((sym, tf, focus))
+
+log('Trials activos: ' + str(n_active) + ' / max ' + str(MAX_PARALLEL))
+log('  Slots cubiertos por trials: ' + str(sorted(active_slots)))
+
+# 3. RAM check
+r = subprocess.run(['free','-m'], capture_output=True, text=True)
+mem_line = r.stdout.split(chr(10))[1].split()
+free_mb = int(mem_line[3])
+avail_mb = int(mem_line[6])
+log('RAM free=' + str(free_mb) + 'MB avail=' + str(avail_mb) + 'MB')
+
+# 4. Filtrar GAPS no en trial activo + ordenar por régimen
+def _get_regime():
+    try:
+        sc = json.load(open('/opt/sigma/results/signals_cache.json'))
+        return sc.get('regime', 'UNKNOWN')
+    except:
+        return 'UNKNOWN'
+
+def _gap_priority(sym, tf, direction, regime):
+    # Dirección alineada con régimen = urgente
+    if regime == 'BEAR':
+        dir_score = 20 if direction == 'short' else 0
+    elif regime == 'BULL':
+        dir_score = 20 if direction == 'long' else 0
+    else:
+        dir_score = 10  # RANGE: neutral
+    # TF menor = más señales por dia = mayor urgencia para llenar
+    tf_score = {'5m': 12, '15m': 9, '1h': 6, '4h': 3}.get(tf, 5)
+    return dir_score + tf_score
+
+_regime = _get_regime()
+log('Regime actual: ' + _regime)
+todo = sorted(
+    [g for g in gaps if g not in active_slots],
+    key=lambda g: -_gap_priority(g[0], g[1], g[2], _regime)
+)
+log('GAPS sin trial activo: ' + str(len(todo)))
+
+if not todo:
+    log('OK: todos los GAPS estan siendo atacados')
+    sys.exit(0)
+
+# 5. Lanzar
+slots_to_launch = MAX_PARALLEL - n_active
+if avail_mb < MIN_RAM_FREE_MB:
+    log('STOP: RAM insuficiente (avail ' + str(avail_mb) + 'MB < ' + str(MIN_RAM_FREE_MB) + 'MB)')
+    sys.exit(0)
+
+if slots_to_launch <= 0:
+    log('STOP: ya estamos en max parallel')
+    sys.exit(0)
+
+launched = 0
+for sym, tf, direction in todo[:slots_to_launch]:
+    log_path = '/tmp/sprint_' + sym + '_' + tf + '_' + direction + '.log'
+    full_sym = SYM_MAP.get(sym, sym + '/USDT')
+    csv_arg = ''
+    if sym in CSV_PATHS:
+        csv_arg = '--csv_path ' + CSV_PATHS[sym].replace('{tf}', tf) + ' '
+    cmd = (
+        'cd /opt/sigma && (nohup prlimit --as=2400000000 /opt/sigma_env/bin/python -u '
+        '/opt/sigma/engine/optimization/asset_pipeline.py '
+        '--symbol ' + full_sym + ' --tf ' + tf + ' --focus ' + direction + ' '
+        '--trials ' + str(TRIALS_BY_TF.get(tf, TRIALS_PER_SLOT)) + ' '
+        + csv_arg +
+        '> ' + log_path + ' 2>&1 & )'
+    )
+    rc = subprocess.run(['bash','-c', cmd], capture_output=True, text=True)
+    if rc.returncode == 0:
+        log('  LAUNCHED ' + sym + ' ' + tf + ' ' + direction + ' -> ' + log_path)
+        try:
+            from utils.decisions import log_decision
+            log_decision(kind='push_started', slot=f'{sym}|{tf}',
+                payload={'sym': sym, 'tf': tf, 'direction': direction, 'trials': TRIALS_PER_SLOT, 'attack_type': 'gap'},
+                meta={'source': 'gap_auto_launcher'})  # --- VITRINA gap_attack call ---
+        except Exception: pass
+        launched += 1
+        time.sleep(3)
+        # Re-check RAM antes de proximo
+        r = subprocess.run(['free','-m'], capture_output=True, text=True)
+        avail_mb = int(r.stdout.split(chr(10))[1].split()[6])
+        if avail_mb < MIN_RAM_FREE_MB:
+            log('  STOP intra-loop: avail ' + str(avail_mb) + 'MB')
+            break
+    else:
+        log('  FAIL ' + sym + ' ' + tf + ' ' + direction + ': ' + rc.stderr[:200])
+
+log('TICK end — lanzados=' + str(launched) + ' GAPS pendientes=' + str(len(todo)-launched))

@@ -1,0 +1,61 @@
+{
+  "symbol": "HG/USD",
+  "tf": "1d",
+  "strategy": "pin_bar",
+  "params": {
+    "sl_mult": 3.4000000000000004,
+    "tp_mult": 2.5,
+    "cooldown": 5,
+    "rsi_w_thr": 45
+  },
+  "risk_pct": 3.4000000000000004,
+  "metrics_is": {
+    "trades": 82,
+    "wr": 63.4,
+    "cagr": 0.3,
+    "dd": -23.6,
+    "pf": 1.05,
+    "trades_year": 3.7
+  },
+  "metrics_oos": {
+    "trades": 16,
+    "wr": 75.0,
+    "cagr": 3.2,
+    "dd": -11.2,
+    "pf": 1.6,
+    "trades_year": 4.5
+  },
+  "oos_days": 1305,
+  "saved_at": "2026-06-11 12:15:06.232600",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 79.5,
+      "median": 26.1,
+      "ic95_lo": -30.4,
+      "ic95_hi": 85.0,
+      "ic80_lo": -13.2,
+      "ic80_hi": 65.8,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 18,
+      "positive": 13,
+      "pct_positive": 72.2,
+      "avg_cagr": 4.2,
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "passed_steps": 2,
+    "max_steps": 2,
+    "validated_at": "2026-06-11 12:15:06.903238"
+  },
+  "mc": {
+    "mc_cagr_p05": -4.1,
+    "mc_cagr_p50": 17.7,
+    "mc_cagr_p95": 44.4,
+    "mc_dd_p50": -11.6,
+    "mc_dd_p95": 0.0,
+    "mc_confidence": 82.9,
+    "mc_sims": 1000
+  }
+}

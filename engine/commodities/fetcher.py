@@ -33,7 +33,7 @@ TIMEFRAMES_DOWNLOAD = {
     '15m': {'interval': '15m', 'period': '60d',   'start': None},
     '1h':  {'interval': '1h',  'period': '729d',  'start': None},
     '4h':  {'interval': '1h',  'period': '729d',  'start': None},
-    '1d':  {'interval': '1d',  'period': None,    'start': '2015-01-01'},
+    '1d':  {'interval': '1d',  'period': 'max',   'start': None},        # hasta 28 años para GC=F/PL
 }
 
 
@@ -113,8 +113,23 @@ def update_all(syms=None):
                 if df is None:
                     continue
                 out = OUTPUT_DIR / f'data_{sym}_{tf}_max.csv'
-                df.to_csv(out)
-                log(f'  {sym} {tf}: {len(df):,} filas | ultimo={df.index[-1].strftime("%Y-%m-%d")} OK')
+                # Acumular historico: merge con CSV existente para no perder datos antiguos
+                df_save = df
+                if out.exists():
+                    try:
+                        df_old = pd.read_csv(out, index_col=0, parse_dates=True)
+                        df_old.index = pd.to_datetime(df_old.index, utc=True)
+                        base_cols = [c for c in ['open','high','low','close','volume'] if c in df_old.columns]
+                        df_base_old = df_old[base_cols]
+                        df_combined = pd.concat([df_base_old, df_save]).sort_index()
+                        # Eliminar duplicados: en caso de overlap, priorizar datos nuevos
+                        df_combined = df_combined[~df_combined.index.duplicated(keep='last')]
+                        df_save = df_combined
+                        log(f'  {sym} {tf}: acumulado {len(df_old):,}->{len(df_save):,} filas')
+                    except Exception as _em:
+                        log(f'  {sym} {tf}: merge WARN {_em}')
+                df_save.to_csv(out)
+                log(f'  {sym} {tf}: {len(df_save):,} filas | ultimo={df_save.index[-1].strftime("%Y-%m-%d")} OK')
             except Exception as e:
                 log(f'  {sym} {tf}: ERROR {e}')
     # Merge macro features (DXY + 10Y) into commodity CSVs

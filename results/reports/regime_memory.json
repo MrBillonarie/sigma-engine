@@ -1,0 +1,130 @@
+{
+  "updated_at": "2026-06-12 06:00:01",
+  "n_trades_used": 22,
+  "n_models_tracked": 8,
+  "current_regime": "BEAR",
+  "leaderboard": [
+    {
+      "model": "SOL_4h_momentum_short",
+      "regime": "BEAR",
+      "wr": 50.0,
+      "avg_pnl": 1.2701,
+      "n": 4,
+      "score": 4.264
+    },
+    {
+      "model": "BTC_4h_three_candles_short",
+      "regime": "BEAR",
+      "wr": 100.0,
+      "avg_pnl": 0.725,
+      "n": 4,
+      "score": 2.64
+    },
+    {
+      "model": "SOL_1h_breakdown",
+      "regime": "BEAR",
+      "wr": 66.7,
+      "avg_pnl": 0.1968,
+      "n": 6,
+      "score": 1.305
+    },
+    {
+      "model": "BTC_1h_momentum_short",
+      "regime": "BEAR",
+      "wr": 50.0,
+      "avg_pnl": 0.0198,
+      "n": 4,
+      "score": 0.263
+    }
+  ],
+  "memory": {
+    "SOL_1h_breakdown": {
+      "BEAR": {
+        "n": 6,
+        "wr": 66.7,
+        "avg_pnl": 0.1968,
+        "last_seen": "2026-06-05 18:00:00.000000",
+        "score": 1.305
+      },
+      "_best_regime": "BEAR",
+      "_best_score": 1.305
+    },
+    "BTC_1h_momentum_short": {
+      "BEAR": {
+        "n": 4,
+        "wr": 50.0,
+        "avg_pnl": 0.0198,
+        "last_seen": "2026-05-31 19:03:39.984041",
+        "score": 0.263
+      },
+      "_best_regime": "BEAR",
+      "_best_score": 0.263
+    },
+    "ETH_1h_momentum_short": {
+      "BEAR": {
+        "n": 1,
+        "wr": 100.0,
+        "avg_pnl": 3.9909,
+        "last_seen": "2026-05-10 20:48:22.383216",
+        "score": 3.273
+      },
+      "_best_regime": "BEAR",
+      "_best_score": 3.273
+    },
+    "SOL_4h_momentum_short": {
+      "BEAR": {
+        "n": 4,
+        "wr": 50.0,
+        "avg_pnl": 1.2701,
+        "last_seen": "2026-06-02 15:00:00.000000",
+        "score": 4.264
+      },
+      "_best_regime": "BEAR",
+      "_best_score": 4.264
+    },
+    "ETH_4h_momentum_short": {
+      "BEAR": {
+        "n": 1,
+        "wr": 100.0,
+        "avg_pnl": 3.2033,
+        "last_seen": "2026-05-12 09:58:47.996202",
+        "score": 2.643
+      },
+      "_best_regime": "BEAR",
+      "_best_score": 2.643
+    },
+    "SOL_4h_supply_zone_rejection": {
+      "BEAR": {
+        "n": 1,
+        "wr": 100.0,
+        "avg_pnl": 0.0353,
+        "last_seen": "2026-05-24 22:07:50.065692",
+        "score": 0.108
+      },
+      "_best_regime": "BEAR",
+      "_best_score": 0.108
+    },
+    "BTC_4h_three_candles_short": {
+      "BEAR": {
+        "n": 4,
+        "wr": 100.0,
+        "avg_pnl": 0.725,
+        "last_seen": "2026-06-06 23:19:58.903319",
+        "score": 2.64
+      },
+      "_best_regime": "BEAR",
+      "_best_score": 2.64
+    },
+    "SOL_15m_regime_adaptive": {
+      "BEAR": {
+        "n": 1,
+        "wr": 0.0,
+        "avg_pnl": -0.9633,
+        "last_seen": "2026-06-12 02:37:34.947037",
+        "score": -0.751
+      },
+      "_best_regime": "BEAR",
+      "_best_score": -0.751
+    }
+  }
+}

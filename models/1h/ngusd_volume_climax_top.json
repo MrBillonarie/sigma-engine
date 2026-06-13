@@ -1,0 +1,75 @@
+{
+  "symbol": "NG/USD",
+  "tf": "1h",
+  "strategy": "volume_climax_top",
+  "params": {
+    "sl_mult": 1.5,
+    "tp_mult": 4.0,
+    "cooldown": 13,
+    "rsi_w_thr": 55,
+    "lookback": 13,
+    "climax_mult": 2.5
+  },
+  "risk_pct": 4.300000000000001,
+  "metrics_is": {
+    "trades": 22,
+    "wr": 45.5,
+    "cagr": 11.8,
+    "dd": -18.3,
+    "pf": 1.35,
+    "trades_year": 11.5
+  },
+  "metrics_oos": {
+    "trades": 22,
+    "wr": 36.4,
+    "cagr": 14.1,
+    "dd": -16.1,
+    "pf": 1.09,
+    "trades_year": 46.2
+  },
+  "oos_days": 174,
+  "saved_at": "2026-06-10 18:24:36.830271",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 56.0,
+      "median": 9.8,
+      "ic95_lo": -88.5,
+      "ic95_hi": 256.2,
+      "ic80_lo": -67.1,
+      "ic80_hi": 144.7,
+      "passed": false
+    },
+    "walk_forward": {
+      "windows": 13,
+      "positive": 8,
+      "pct_positive": 61.5,
+      "avg_cagr": 170.4,
+      "passed": true
+    },
+    "cross_asset": {
+      "positive": 0,
+      "passed": false,
+      "note": "sin datos"
+    },
+    "confidence": "BAJA",
+    "passed_steps": 1,
+    "max_steps": 3,
+    "validated_at": "2026-06-10 18:24:37.295407"
+  },
+  "m2_validation": {
+    "status": "WARN",
+    "reasons": [
+      "[WARN] FEW_TRADES: 22 trades OOS (estadistica debil)"
+    ],
+    "validated_at": "2026-06-12T19:00:01.571471-04:00"
+  },
+  "mc": {
+    "mc_cagr_p05": -12.8,
+    "mc_cagr_p50": 91.9,
+    "mc_cagr_p95": 372.8,
+    "mc_dd_p50": -49.5,
+    "mc_dd_p95": -33.0,
+    "mc_confidence": 89.9,
+    "mc_sims": 1000
+  }
+}

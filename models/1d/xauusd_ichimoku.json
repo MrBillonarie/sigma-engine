@@ -1,0 +1,64 @@
+{
+  "symbol": "XAU/USD",
+  "tf": "1d",
+  "strategy": "ichimoku",
+  "params": {
+    "sl_mult": 2.6,
+    "tp_mult": 1.9,
+    "cooldown": 4,
+    "rsi_w_thr": 52,
+    "tenkan": 11,
+    "kijun": 20,
+    "senkou": 58
+  },
+  "risk_pct": 4.800000000000001,
+  "metrics_is": {
+    "trades": 273,
+    "wr": 63.7,
+    "cagr": 10.3,
+    "dd": -41.1,
+    "pf": 1.25,
+    "trades_year": 12.3
+  },
+  "metrics_oos": {
+    "trades": 69,
+    "wr": 78.3,
+    "cagr": 47.6,
+    "dd": -27.0,
+    "pf": 1.77,
+    "trades_year": 19.3
+  },
+  "oos_days": 1307,
+  "saved_at": "2026-06-11 11:38:33.770785",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 98.6,
+      "median": 211.8,
+      "ic95_lo": 21.2,
+      "ic95_hi": 382.5,
+      "ic80_lo": 85.6,
+      "ic80_hi": 324.2,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 27,
+      "positive": 16,
+      "pct_positive": 59.3,
+      "avg_cagr": 14.4,
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "passed_steps": 2,
+    "max_steps": 2,
+    "validated_at": "2026-06-11 11:38:35.412920"
+  },
+  "mc": {
+    "mc_cagr_p05": 25.2,
+    "mc_cagr_p50": 117.3,
+    "mc_cagr_p95": 237.7,
+    "mc_dd_p50": -26.8,
+    "mc_dd_p95": -12.5,
+    "mc_confidence": 99.5,
+    "mc_sims": 1000
+  }
+}

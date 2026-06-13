@@ -1540,6 +1540,8 @@ def _rich_trade_card(t, port):
             icon = '🔴'; title = 'STOP LOSS'
         elif reason == 'MANUAL':
             icon = '🔵'; title = 'CIERRE MANUAL'
+        elif reason == 'TRAIL_HIT':
+            icon = '✅'; title = 'TRAILING STOP PROFIT'
         else:
             icon = '⬜'; title = reason or 'CERRADO'
 
@@ -1879,7 +1881,7 @@ def main():
                 try:
                     _card = _rich_trade_card(t, port)
                     if _card:
-                        send(_card, silent=(reason != "TP_HIT"))
+                        send(_card, silent=(reason not in ("TP_HIT", "TRAIL_HIT")))
                 except Exception:
                     pass
                 if False:  # desactivado: sustituido por _rich_trade_card

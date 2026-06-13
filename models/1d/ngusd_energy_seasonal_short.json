@@ -1,0 +1,61 @@
+{
+  "symbol": "NG/USD",
+  "tf": "1d",
+  "strategy": "energy_seasonal_short",
+  "params": {
+    "sl_mult": 1.5,
+    "tp_mult": 1.5,
+    "cooldown": 3,
+    "rsi_w_thr": 47
+  },
+  "risk_pct": 2.5,
+  "metrics_is": {
+    "trades": 81,
+    "wr": 60.5,
+    "cagr": 0.4,
+    "dd": -18.0,
+    "pf": 1.09,
+    "trades_year": 3.6
+  },
+  "metrics_oos": {
+    "trades": 16,
+    "wr": 68.8,
+    "cagr": 3.9,
+    "dd": -6.6,
+    "pf": 1.94,
+    "trades_year": 4.5
+  },
+  "oos_days": 1307,
+  "saved_at": "2026-06-11 17:34:31.715724",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 89.5,
+      "median": 33.5,
+      "ic95_lo": -16.6,
+      "ic95_hi": 83.5,
+      "ic80_lo": -0.7,
+      "ic80_hi": 65.3,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 16,
+      "positive": 12,
+      "pct_positive": 75.0,
+      "avg_cagr": 4.4,
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "passed_steps": 2,
+    "max_steps": 2,
+    "validated_at": "2026-06-11 17:34:32.158419"
+  },
+  "mc": {
+    "mc_cagr_p05": -2.2,
+    "mc_cagr_p50": 5.5,
+    "mc_cagr_p95": 13.7,
+    "mc_dd_p50": -4.2,
+    "mc_dd_p95": -3.7,
+    "mc_confidence": 88.8,
+    "mc_sims": 1000
+  }
+}

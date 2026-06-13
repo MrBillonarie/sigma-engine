@@ -46,10 +46,8 @@ def run_checklist():
         ts = json.loads((BASE / 'results/trade_state.json').read_text())
     except: pass
 
-    st     = ts.get('stats', {})
     port   = ts.get('portfolio', {})
     hist   = ts.get('history', [])
-    lr     = ts.get('live_readiness', {}) or {}
     sec    = {}
     try:
         sec = json.loads((BASE / 'engine/config/secrets.json').read_text())
@@ -59,12 +57,25 @@ def run_checklist():
     models  = signals.get('models', [])
     cb      = signals.get('circuit_breaker', False)
 
-    trades  = st.get('total', 0)
-    wr      = st.get('win_rate', 0)
-    pf      = st.get('profit_factor', 0)
-    maxdd   = abs(port.get('max_dd', 0))
-    ret     = port.get('return_pct', 0)
-    score   = lr.get('score', 0)
+    # Compute live stats from history (trade_state.json has no 'stats' key)
+    trades = len(hist)
+    _wins   = [t for t in hist if (t.get('pnl_pct') or 0) > 0]
+    _losses = [t for t in hist if (t.get('pnl_pct') or 0) <= 0]
+    wr      = round(len(_wins) / trades * 100, 1) if trades else 0.0
+    _gp     = sum(t.get('pnl_pct', 0) or 0 for t in _wins)
+    _gl     = abs(sum(t.get('pnl_pct', 0) or 0 for t in _losses))
+    pf      = round(_gp / _gl, 2) if _gl else (999.0 if _gp > 0 else 0.0)
+    maxdd   = abs(port.get('max_dd_pct', port.get('max_dd', 0)) or 0)
+    _equity = port.get('equity', 10000)
+    _init   = port.get('initial_capital', 10000)
+    ret     = round((_equity - _init) / _init * 100, 2) if _init else 0.0
+    # Gate: portfolio CAGR from port_snapshot (backtest weighted average)
+    _snap = {}
+    try:
+        _snap = json.loads((BASE / 'results/reports/port_snapshot.json').read_text())
+    except: pass
+    port_cagr  = _snap.get('port_cagr_operational', _snap.get('port_cagr', 0)) or 0
+    score      = int(port_cagr)  # used as proxy for gate score check below
 
     grade_a = [m for m in models if m.get('grade') in ('A+', 'A')]
     wft_ok  = [m for m in models if m.get('wft_pass_rate') and m.get('wft_pass_rate') >= 55]
@@ -104,8 +115,8 @@ def run_checklist():
     add('A', 'Retorno paper > 0%',       ret > 0,       f"{ret:+.2f}%",         4)
 
     # ── B. CALIDAD DE MODELOS (20 pts) ───────────────────────────────────────
-    add('B', 'Gate score >= 80/100',     score >= 80,   f"{score}/100",         8,
-        8 if score >= 85 else 5 if score >= 80 else 0)
+    add('B', 'Portfolio CAGR >= 20%',    port_cagr >= 20, f"{port_cagr:.1f}%",   8,
+        8 if port_cagr >= 30 else 5 if port_cagr >= 20 else 0)
     add('B', 'Modelos Grade A+/A >= 4',  len(grade_a) >= 4, f"{len(grade_a)} modelos", 5)
     add('B', 'Walk-Forward OK >= 3',     len(wft_ok) >= 3,  f"{len(wft_ok)} modelos",  4)
     add('B', 'Sin decay warnings',       len(decay_w) == 0,  f"{len(decay_w)} activos", 3)

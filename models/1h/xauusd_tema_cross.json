@@ -1,0 +1,74 @@
+{
+  "symbol": "XAU/USD",
+  "tf": "1h",
+  "strategy": "tema_cross",
+  "params": {
+    "sl_mult": 3.2,
+    "tp_mult": 4.0,
+    "cooldown": 7,
+    "rsi_w_thr": 60,
+    "tema_period": 14
+  },
+  "risk_pct": 3.4000000000000004,
+  "metrics_is": {
+    "trades": 132,
+    "wr": 56.1,
+    "cagr": 32.0,
+    "dd": -32.5,
+    "pf": 1.16,
+    "trades_year": 69.2
+  },
+  "metrics_oos": {
+    "trades": 24,
+    "wr": 54.2,
+    "cagr": 116.9,
+    "dd": -31.0,
+    "pf": 1.45,
+    "trades_year": 49.5
+  },
+  "oos_days": 177,
+  "saved_at": "2026-06-11 03:42:21.428227",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 76.1,
+      "median": 112.3,
+      "ic95_lo": -90.3,
+      "ic95_hi": 674.0,
+      "ic80_lo": -53.9,
+      "ic80_hi": 444.5,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 22,
+      "positive": 11,
+      "pct_positive": 50.0,
+      "avg_cagr": 29488.8,
+      "passed": false
+    },
+    "cross_asset": {
+      "positive": 0,
+      "passed": false,
+      "note": "sin datos"
+    },
+    "confidence": "BAJA",
+    "passed_steps": 1,
+    "max_steps": 3,
+    "validated_at": "2026-06-11 03:42:22.311725"
+  },
+  "m2_validation": {
+    "status": "WARN",
+    "reasons": [
+      "[WARN] FEW_TRADES: 24 trades OOS (estadistica debil)"
+    ],
+    "validated_at": "2026-06-13T04:00:01.904065-04:00"
+  },
+  "mc": {
+    "mc_cagr_p05": -11.3,
+    "mc_cagr_p50": 134.2,
+    "mc_cagr_p95": 447.7,
+    "mc_dd_p50": -55.5,
+    "mc_dd_p95": -36.9,
+    "mc_confidence": 94.0,
+    "mc_sims": 1000
+  }
+}

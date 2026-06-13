@@ -20,13 +20,13 @@ OUTPUT_DIR = Path(__file__).parent.parent.parent
 
 ASSETS    = ['BTC','ETH','LTC','SOL','BNB','XAU','XAG']
 ASSETS_M1 = ['BTC','ETH','LTC','SOL','BNB']          # Motor 1: Crypto
-ASSETS_M2 = ['XAU','XAG','WTI','HG','NG','PL']         # Motor 2: Commodities
-TIMEFRAMES_M2 = ['4h','1h','15m','5m']               # Motor 2 mismos TFs que Motor 1
+ASSETS_M2 = ['XAU','XAG','WTI','HG','NG','PL']         # Motor 2: 6 Commodities
+TIMEFRAMES_M2 = ['1d','4h','1h','15m']               # Motor 2: 1d/4h/1h/15m
 ASSET_EMOJI = {'BTC':'&#8383;','ETH':'&#926;','LTC':'&#321;','SOL':'&#9678;','BNB':'&#11042;','XAU':'Au','XAG':'Ag','WTI':'&#9651;','HG':'Cu','NG':'&#9650;','PL':'Pt'}
 ASSET_COLOR = {'BTC':'#f7931a','ETH':'#627eea','LTC':'#345d9d','SOL':'#9945ff','BNB':'#f3ba2f','XAU':'#FFD700','XAG':'#C0C0C0','WTI':'#4a90d9','HG':'#B87333','NG':'#e67e22','PL':'#7ec8e3'}
 TIMEFRAMES  = ['4h','1h','15m','5m']
-TF_LABEL    = {'4h':'4H','1h':'1H','15m':'15m','5m':'5m'}
-TF_COLORS_H = {'4h':'#2ecc71','1h':'#58a6ff','15m':'#f1c40f','5m':'#e67e22'}
+TF_LABEL    = {'1d':'1D','4h':'4H','1h':'1H','15m':'15m','5m':'5m'}
+TF_COLORS_H = {'1d':'#e0bb3a','4h':'#2ecc71','1h':'#c9a227','15m':'#f1c40f','5m':'#e67e22'}
 
 
 # ── SNAPSHOT del ponderado ────────────────────────────────────────────────────
@@ -186,7 +186,7 @@ def render_calendar_heatmap(hist, days=30):
         d = end - timedelta(days=days-1-i)
         pnl = daily.get(d, None)
         if pnl is None:
-            color = "#1c2128"
+            color = "#141b38"
             tip = str(d) + ": sin trades"
         elif pnl > 1.0: color = "#00c853"; tip = str(d) + ": +" + str(round(pnl,2)) + "%"
         elif pnl > 0.2: color = "#43a047"; tip = str(d) + ": +" + str(round(pnl,2)) + "%"
@@ -210,7 +210,7 @@ def render_donut_exposure(open_trades):
         sym = t.get("sym", "?")
         by_ticker[sym] = by_ticker.get(sym, 0) + 1
     if not by_ticker:
-        return '<div style="color:#6e7681;font-size:11px;padding:12px;text-align:center">Sin exposicion activa</div>'
+        return '<div style="color:#4e5f90;font-size:11px;padding:12px;text-align:center">Sin exposicion activa</div>'
     total = sum(by_ticker.values())
     svg = '<svg viewBox="0 0 100 100" width="100" height="100" style="vertical-align:middle">'
     offset = 0
@@ -224,11 +224,11 @@ def render_donut_exposure(open_trades):
         svg += '<circle cx="50" cy="50" r="40" fill="transparent" stroke="' + color + '" stroke-width="16" stroke-dasharray="' + str(round(dash,2)) + ' ' + str(round(circumference,2)) + '" stroke-dashoffset="-' + str(offset_d) + '" transform="rotate(-90 50 50)"/>'
         offset += pct
         items.append((sym, count, color))
-    svg += '<text x="50" y="50" text-anchor="middle" dy=".35em" fill="#e6edf3" font-family="JetBrains Mono" font-size="16" font-weight="700">' + str(total) + '</text>'
+    svg += '<text x="50" y="50" text-anchor="middle" dy=".35em" fill="#dde3f5" font-family="IBM Plex Mono" font-size="16" font-weight="700">' + str(total) + '</text>'
     svg += '</svg>'
     legend = ''
     for sym, count, color in items:
-        legend += '<div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#8b949e;margin:2px 0"><span style="width:10px;height:10px;background:' + color + ';border-radius:2px;display:inline-block"></span>' + sym + ' (' + str(count) + ')</div>'
+        legend += '<div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#7a8db5;margin:2px 0"><span style="width:10px;height:10px;background:' + color + ';border-radius:2px;display:inline-block"></span>' + sym + ' (' + str(count) + ')</div>'
     return '<div style="display:flex;align-items:center;gap:16px">' + svg + '<div>' + legend + '</div></div>'
 
 
@@ -264,6 +264,9 @@ def load_model(asset, tf, direction='long'):
 
     if direction == 'short':
         candidates = [f'{sym}_{s}.json' for s in _SIGMA_SHORTS]  # centralizado utils.strategies (2026-05-14)
+        _COM_PFX_S = {'XAU':'xauusd','XAG':'xagusd','WTI':'wtiusd','HG':'hgusd','NG':'ngusd','PL':'plusd'}
+        if asset in _COM_PFX_S:
+            candidates += [f"{_COM_PFX_S[asset]}_{s}.json" for s in _SIGMA_SHORTS]
     else:
         long_strats = [
             # STRATEGIES — originales core
@@ -290,9 +293,14 @@ def load_model(asset, tf, direction='long'):
                 'best_bull_breakout.json', 'best_bull_tma_bands.json',
                 'best_bull_pullback.json', 'best_validated.json',
             ]
-        if asset == 'XAU':
-            # Optuna puede generar con prefijo xauusd_ en lugar de xau_
-            candidates += [f'xauusd_{s}.json' for s in long_strats]
+        # Fallback: Optuna generaba con prefijo {sym}usd_ para commodities (antes del fix)
+        _COMMODITY_PREFIXES = {
+            'XAU': 'xauusd', 'XAG': 'xagusd', 'WTI': 'wtiusd',
+            'HG':  'hgusd',  'NG':  'ngusd',   'PL':  'plusd',
+        }
+        if asset in _COMMODITY_PREFIXES:
+            _pfx = _COMMODITY_PREFIXES[asset]
+            candidates += [f'{_pfx}_{s}.json' for s in long_strats]
 
     best_dict = None
     best_cagr = 0.0  # solo guardamos modelos con CAGR > 0
@@ -361,11 +369,16 @@ def load_model(asset, tf, direction='long'):
 def is_running(asset, tf):
     """Devuelve True si el optimizador para asset+tf fue modificado recientemente."""
     name = f'{asset.lower()}_{tf}'
-    lp   = OUTPUT_DIR / 'results' / 'reports' / f'{name}.log'
-    if not lp.exists():
-        return False
-    age_min = (time.time() - lp.stat().st_mtime) / 60
-    return age_min < 10  # activo si log cambio en <10 min
+    candidates_log = [
+        OUTPUT_DIR / 'results' / 'reports' / f'{name}.log',
+        OUTPUT_DIR / 'results' / 'reports' / f'commodities_{asset}_{tf}.log',
+    ]
+    for lp in candidates_log:
+        if lp.exists():
+            age_min = (time.time() - lp.stat().st_mtime) / 60
+            if age_min < 10:
+                return True
+    return False
 
 
 def load_events(n=30):
@@ -434,7 +447,19 @@ def get_db_stats():
                     "SELECT COUNT(*) FROM runs WHERE ts > datetime('now','-1 hours')"
                  ).fetchone()[0]
         conn.close()
-        return {'total': total, 'by_tf': by_tf, 'top3': top3, 'rate_hr': rate}
+        # Optuna per-study: throughput real
+        import glob as _g, datetime as _d
+        optuna_rate = 0
+        try:
+            _cut = (_d.datetime.now() - _d.timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
+            for _db in _g.glob(str(OUTPUT_DIR / 'models' / 'optuna_per_study' / '*.db')):
+                try:
+                    _cx = sqlite3.connect(_db, timeout=1)
+                    optuna_rate += _cx.execute("SELECT count(*) FROM trials WHERE state='COMPLETE' AND datetime_complete >= ?", (_cut,)).fetchone()[0]
+                    _cx.close()
+                except: pass
+        except: pass
+        return {'total': total, 'by_tf': by_tf, 'top3': top3, 'rate_hr': rate, 'optuna_rate_hr': optuna_rate}
     except:
         return {'total': 0, 'by_tf': {}, 'top3': []}
 
@@ -528,7 +553,7 @@ def _row_model(m, direction):
     """HTML de una fila LONG o SHORT dentro de la celda."""
     arrow  = '&#9650;' if direction == 'long' else '&#9660;'
     col    = '#2ecc71' if direction == 'long' else '#e74c3c'
-    empty  = f'<div style="color:#30363d;font-size:9px;padding:2px 0">{arrow} <span style="color:#30363d">pendiente</span></div>'
+    empty  = f'<div style="color:#242f55;font-size:9px;padding:2px 0">{arrow} <span style="color:#242f55">pendiente</span></div>'
     if not m:
         return empty
     cagr  = float(m.get('cagr', 0) or 0)
@@ -545,13 +570,13 @@ def _row_model(m, direction):
         f'</div>'
         f'<div style="display:flex;justify-content:space-between;font-size:9px;padding-bottom:1px">'
         f'<span style="color:{cc}">{conf}&nbsp;{grade_badge}{_red_flags_badge(m)}</span>'
-        f'<span style="color:#8b949e">WR {wr:.0f}% {t}T</span>'
+        f'<span style="color:#7a8db5">WR {wr:.0f}% {t}T</span>'
         f'</div>'
     )
 
 def _combined_row(ml, ms, ma):
     """HTML fila COMBINED — usa adaptive si existe, sino estima."""
-    sep = '<div style="border-top:1px solid #1c2128;margin:2px 0"></div>'
+    sep = '<div style="border-top:1px solid #141b38;margin:2px 0"></div>'
     if ma:
         # Adaptive ya es el combined real backtestado
         cagr = ma['cagr']; wr = ma['wr']; t = ma['trades']
@@ -561,12 +586,12 @@ def _combined_row(ml, ms, ma):
             sep +
             f'<div style="background:rgba(88,166,255,.08);border-radius:3px;padding:2px 3px;margin-top:1px">'
             f'<div style="display:flex;justify-content:space-between;align-items:center">'
-            f'<span style="color:#58a6ff;font-size:9px;font-weight:700">&#9670; ADAPTIVE</span>'
+            f'<span style="color:#c9a227;font-size:9px;font-weight:700">&#9670; ADAPTIVE</span>'
             f'<span style="font-family:monospace;color:{c_cagr(cagr)};font-weight:700;font-size:11px">{cagr:+.1f}%</span>'
             f'</div>'
             f'<div style="display:flex;justify-content:space-between;font-size:9px">'
             f'<span style="color:{cc}">{conf}</span>'
-            f'<span style="color:#8b949e">WR {wr:.0f}% {t}T</span>'
+            f'<span style="color:#7a8db5">WR {wr:.0f}% {t}T</span>'
             f'</div>'
             f'</div>'
         )
@@ -577,7 +602,7 @@ def _combined_row(ml, ms, ma):
             sep +
             f'<div style="background:rgba(88,166,255,.05);border-radius:3px;padding:2px 3px;margin-top:1px">'
             f'<div style="display:flex;justify-content:space-between;align-items:center">'
-            f'<span style="color:#58a6ff;font-size:9px">&#9670; COMBINED ~</span>'
+            f'<span style="color:#c9a227;font-size:9px">&#9670; COMBINED ~</span>'
             f'<span style="font-family:monospace;color:{c_cagr(est)};font-weight:700;font-size:11px">{est:+.1f}%</span>'
             f'</div>'
             f'<div style="font-size:9px;color:#555">estimado (40% bull + 35% bear)</div>'
@@ -603,7 +628,7 @@ def cell_html(asset, tf):
 
         if ma and not ml and not ms:
             # Solo adaptive — mostrar compacto
-            _sep_div = '<div style="border-top:1px solid #1c2128;margin:2px 0"></div>'
+            _sep_div = '<div style="border-top:1px solid #141b38;margin:2px 0"></div>'
             _adp = comb_row.replace('margin-top:1px', 'margin-top:6px').replace(_sep_div, '', 1)
             return (
                 f'<td class="cell-ok" style="background:linear-gradient(180deg,rgba(88,166,255,.07),rgba(88,166,255,.01))">'
@@ -614,7 +639,7 @@ def cell_html(asset, tf):
         return (
             f'<td class="cell-ok">'
             f'{long_row}'
-            f'<div style="border-top:1px solid #1c2128;margin:2px 0"></div>'
+            f'<div style="border-top:1px solid #141b38;margin:2px 0"></div>'
             f'{short_row}'
             f'{comb_row}'
             f'</td>'
@@ -637,6 +662,205 @@ def cell_html(asset, tf):
 
 
 # ── MAIN HTML ─────────────────────────────────────────────────────────────────
+
+
+
+def _dca_benchmark():
+    """Compara paper trading vs BTC DCA desde el inicio."""
+    try:
+        BASE2 = Path('/opt/sigma')
+        ts_f = BASE2 / 'results' / 'trade_state.json'
+        bl_f = BASE2 / 'results' / 'reports' / 'btc_dca_baseline.json'
+        if not ts_f.exists() or not bl_f.exists():
+            return None
+        ts = json.loads(ts_f.read_text())
+        bl = json.loads(bl_f.read_text())
+        port     = ts.get('portfolio', {})
+        equity   = float(port.get('equity', 10000))
+        initial  = float(port.get('initial_capital', 10000))
+        start_dt = port.get('start_date', bl.get('start_date', ''))
+        start_btc = float(bl.get('start_btc_price', 0))
+        if start_btc <= 0:
+            return None
+        paper_ret = (equity - initial) / initial * 100
+        import urllib.request as _ur
+        _resp = json.loads(_ur.urlopen('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT', timeout=3).read())
+        btc_now = float(_resp['price'])
+        dca_ret = (btc_now - start_btc) / start_btc * 100
+        alpha   = paper_ret - dca_ret
+        return {
+            'paper_ret': paper_ret, 'dca_ret': dca_ret, 'alpha': alpha,
+            'equity': equity, 'btc_now': btc_now, 'btc_start': start_btc,
+            'start_date': start_dt, 'n_trades': len(ts.get('history', []))
+        }
+    except:
+        return None
+
+
+def _dca_benchmark_widget():
+    """HTML: paper trading vs BTC DCA comparison."""
+    dca = _dca_benchmark()
+    if not dca:
+        return ''
+    pr   = dca['paper_ret']
+    dr   = dca['dca_ret']
+    alph = dca['alpha']
+    eq   = dca['equity']
+    btcn = dca['btc_now']
+    n    = dca['n_trades']
+    sd   = dca.get('start_date', '')[:10]
+    pc   = '#2ecc71' if pr > 0 else '#e74c3c'
+    dc   = '#2ecc71' if dr > 0 else '#e74c3c'
+    ac   = '#2ecc71' if alph > 0 else '#e74c3c'
+    cf   = ('#f1c40f', f'n={n} sin poder estadistico') if n < 30 else ('#2ecc71', f'n={n} valido')
+    mono = 'IBM Plex Mono,monospace'
+    h  = '<div style="background:#07091c;border:1px solid #1a2240;border-radius:10px;padding:14px 18px;margin-bottom:14px">'
+    h += '<div style="font-size:9px;color:#7a8db5;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">'
+    h += f'Paper Trading vs BTC DCA desde {sd} '
+    h += f'<span style="color:{cf[0]};font-size:9px">{cf[1]}</span></div>'
+    h += '<div style="display:flex;gap:10px">'
+    h += '<div style="flex:1;background:#0d1428;border-radius:8px;padding:10px;text-align:center">'
+    h += '<div style="font-size:9px;color:#7a8db5;margin-bottom:4px">SIGMA Paper</div>'
+    h += f'<div style="font-size:20px;font-weight:800;color:{pc};font-family:{mono}">{pr:+.1f}%</div>'
+    h += f'<div style="font-size:9px;color:#7a8db5">${eq:,.0f}</div>'
+    h += '</div>'
+    h += '<div style="flex:1;background:#0d1428;border-radius:8px;padding:10px;text-align:center">'
+    h += '<div style="font-size:9px;color:#7a8db5;margin-bottom:4px">BTC DCA</div>'
+    h += f'<div style="font-size:20px;font-weight:800;color:{dc};font-family:{mono}">{dr:+.1f}%</div>'
+    h += f'<div style="font-size:9px;color:#7a8db5">${btcn:,.0f}/BTC</div>'
+    h += '</div>'
+    h += '<div style="flex:1;background:rgba(46,204,113,.06);border:1px solid rgba(46,204,113,.2);border-radius:8px;padding:10px;text-align:center">'
+    h += '<div style="font-size:9px;color:#7a8db5;margin-bottom:4px">Alpha real</div>'
+    h += f'<div style="font-size:20px;font-weight:800;color:{ac};font-family:{mono}">{alph:+.1f}pp</div>'
+    h += '<div style="font-size:9px;color:#7a8db5">ventaja</div>'
+    h += '</div>'
+    h += '</div>'
+    h += '</div>'
+    return h
+
+def _btc_cold_storage_widget():
+    """HTML: progreso BTC cold storage hacia la meta."""
+    try:
+        cs_f = Path('/opt/sigma/results/reports/btc_cold_storage.json')
+        if not cs_f.exists():
+            return ''
+        cs    = json.loads(cs_f.read_text())
+        total = float(cs.get('total_btc', 0))
+        goal  = float(cs.get('goal_btc', 1.0))
+        pct   = min(100, total / goal * 100) if goal > 0 else 0
+        btc_usd = 0
+        try:
+            import urllib.request as _ur3
+            _r3 = json.loads(_ur3.urlopen('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT', timeout=2).read())
+            btc_usd = float(_r3['price'])
+        except:
+            pass
+        value_usd = total * btc_usd
+        pc2 = '#2ecc71' if pct >= 50 else ('#f1c40f' if pct >= 20 else '#e74c3c')
+        mono = 'IBM Plex Mono,monospace'
+        entries  = cs.get('entries', [])
+        last_str = ''
+        if entries:
+            le = entries[-1]
+            last_str = (f'<div style="font-size:9px;color:#7a8db5;margin-top:4px">'
+                        f'Ultimo: {le.get("btc",0):.6f} BTC @ ${le.get("price_usd",0):,.0f}</div>')
+        h  = '<div style="background:#07091c;border:1px solid #1a2240;border-radius:10px;padding:14px 18px;margin-bottom:14px">'
+        h += '<div style="font-size:9px;color:#f7931a;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">BTC Cold Storage</div>'
+        h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'
+        h += f'<span style="color:#f7931a;font-size:22px;font-weight:800;font-family:{mono}">{total:.6f} BTC</span>'
+        h += f'<span style="font-size:11px;color:#7a8db5">${value_usd:,.0f} USD</span>'
+        h += '</div>'
+        h += '<div style="background:#1a2240;border-radius:4px;height:6px;overflow:hidden;margin-bottom:5px">'
+        h += f'<div style="background:{pc2};width:{pct:.1f}%;height:100%;border-radius:4px"></div>'
+        h += '</div>'
+        h += f'<div style="display:flex;justify-content:space-between;font-size:9px;color:#7a8db5">'
+        h += f'<span>{pct:.1f}% hacia {goal:.2f} BTC</span>'
+        h += '<span>Not your keys, not your coins.</span>'
+        h += '</div>'
+        h += last_str
+        h += '</div>'
+        return h
+    except:
+        return ''
+
+
+
+def _executor_gate_widget():
+    """HTML: progreso del gate multi-factor hacia activacion del executor."""
+    try:
+        import urllib.request as _ur4
+        ts_f = Path('/opt/sigma/results/trade_state.json')
+        if not ts_f.exists():
+            return ''
+        ts   = json.loads(ts_f.read_text())
+        hist = ts.get('history', [])
+        port = ts.get('portfolio', {})
+        n    = len(hist)
+        # Criterio 1: n >= 30
+        c1_ok  = n >= 30
+        c1_val = f"{n}/30 trades"
+        # Criterio 2: WR live >= 55%
+        wins  = sum(1 for t in hist if float(t.get('pnl_pct',0)) > 0)
+        wr    = wins/n*100 if n > 0 else 0
+        c2_ok  = n >= 15 and wr >= 55
+        c2_val = f"WR {wr:.1f}%" + (" ✓" if c2_ok else " (min 55%, necesita 15+ trades)")
+        # Criterio 3: PF >= 1.3
+        wl = [t.get('pnl_pct',0) for t in hist if float(t.get('pnl_pct',0)) > 0]
+        ll = [t.get('pnl_pct',0) for t in hist if float(t.get('pnl_pct',0)) < 0]
+        pf = sum(wl)/max(abs(sum(ll)),0.01) if ll else 9.9
+        c3_ok  = n >= 10 and pf >= 1.3
+        c3_val = f"PF {pf:.2f}" + (" ✓" if c3_ok else " (min 1.3)")
+        # Criterio 4: Diversidad de regimen >= 2
+        regimes = set(t.get('regime_at_close','BEAR') for t in hist if t.get('regime_at_close'))
+        if not regimes: regimes = {'BEAR'}
+        c4_ok  = len(regimes) >= 2
+        c4_val = ', '.join(sorted(regimes)) + (" ✓" if c4_ok else " — falta BULL o RANGE")
+        # Criterio 5: Duracion >= 6 semanas
+        from datetime import datetime as _dt
+        start_str = port.get('start_date','')
+        try:
+            start_dt = _dt.strptime(start_str[:10],'%Y-%m-%d')
+            weeks = (_dt.now() - start_dt).days / 7
+        except:
+            weeks = 0
+        c5_ok  = weeks >= 6
+        c5_val = f"{weeks:.1f} semanas" + (" ✓" if c5_ok else f" (min 6)")
+        # Score
+        criteria = [c1_ok, c2_ok, c3_ok, c4_ok, c5_ok]
+        n_ok = sum(criteria)
+        pct  = n_ok / len(criteria) * 100
+        bar_color = '#2ecc71' if n_ok == 5 else ('#f1c40f' if n_ok >= 3 else '#e74c3c')
+        level_text = 'LISTO' if n_ok == 5 else ('CASI' if n_ok >= 4 else ('BUILDING' if n_ok >= 2 else 'EARLY'))
+        level_color = {'LISTO':'#2ecc71','CASI':'#f1c40f','BUILDING':'#e67e22','EARLY':'#e74c3c'}.get(level_text,'#7a8db5')
+        rows = ''
+        for ok, val, name in [
+            (c1_ok, c1_val, 'Trades suficientes (≥30)'),
+            (c2_ok, c2_val, 'WR live vs benchmark (≥55%)'),
+            (c3_ok, c3_val, 'Profit Factor (≥1.3)'),
+            (c4_ok, c4_val, 'Diversidad de regimen (≥2)'),
+            (c5_ok, c5_val, 'Duracion validacion (≥6 sem)'),
+        ]:
+            ic = '#2ecc71' if ok else '#e74c3c'
+            sym_i = '✅' if ok else '❌'
+            rows += (f'<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #141b38">'
+                     f'<span style="font-size:10px;color:#b8c5e0">{sym_i} {name}</span>'
+                     f'<span style="font-size:10px;color:{ic};font-family:IBM Plex Mono,monospace">{val}</span>'
+                     f'</div>')
+        mono = 'IBM Plex Mono,monospace'
+        h  = '<div style="background:#07091c;border:1px solid #1a2240;border-radius:10px;padding:14px 18px;margin-bottom:14px">'
+        h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px">'
+        h += '<div style="font-size:9px;color:#7a8db5;letter-spacing:1px;text-transform:uppercase">Executor Gate — Criterios de Activacion</div>'
+        h += f'<div style="font-size:13px;font-weight:800;color:{level_color}">{level_text} {n_ok}/5</div>'
+        h += '</div>'
+        h += '<div style="background:#1a2240;border-radius:4px;height:5px;overflow:hidden;margin-bottom:12px">'
+        h += f'<div style="background:{bar_color};width:{pct:.0f}%;height:100%;border-radius:4px;transition:width .3s"></div>'
+        h += '</div>'
+        h += rows
+        h += '</div>'
+        return h
+    except:
+        return ''
+
 
 def generate_html():
     now = datetime.now().strftime('%Y-%m-%d %H:%M')
@@ -690,7 +914,11 @@ def generate_html():
 
     # Count total ready
     n_ready   = sum(1 for c,a,t,m in all_m)
-    n_total   = len(ASSETS_M1) * len(TIMEFRAMES) + len(ASSETS_M2) * len(TIMEFRAMES_M2)  # M1: 5x4=20 + M2: 2x2=4 = 24
+    n_total   = len(ASSETS_M1) * len(TIMEFRAMES)  # M1 only
+    # Pre-computar widgets para inyectar en f-string
+    _dca_html  = _dca_benchmark_widget()
+    _cs_html   = _btc_cold_storage_widget()
+    _gate_html = _executor_gate_widget()
 
     # Walk-forward stats
     wft_done = len(wft)
@@ -793,14 +1021,14 @@ def generate_html():
             avg_c  = sum(cagrs) / len(cagrs)
             all_cagrs.extend(cagrs); all_wrs.extend(wrs); all_trades_sum += total_t
             summary_cells += (
-                f'<td style="text-align:center;border-top:2px solid #30363d;padding:7px 4px">'
-                f'<div style="color:{c_cagr(avg_c)};font-family:\'JetBrains Mono\',monospace;font-size:12px;font-weight:700">{avg_c:+.1f}%</div>'
+                f'<td style="text-align:center;border-top:2px solid #242f55;padding:7px 4px">'
+                f'<div style="color:{c_cagr(avg_c)};font-family:\'IBM Plex Mono\',monospace;font-size:12px;font-weight:700">{avg_c:+.1f}%</div>'
                 f'<div style="font-size:10px;color:{c_wr(w_wr)}">WR {w_wr:.0f}%</div>'
-                f'<div style="font-size:10px;color:#8b949e">{total_t}T</div>'
+                f'<div style="font-size:10px;color:#7a8db5">{total_t}T</div>'
                 f'</td>'
             )
         else:
-            summary_cells += '<td style="border-top:2px solid #30363d;text-align:center;color:#30363d">—</td>'
+            summary_cells += '<td style="border-top:2px solid #242f55;text-align:center;color:#242f55">—</td>'
 
     # Overall portfolio — promedio simple de TODOS los slots activos (best por sym+tf)
     # Cada slot cuenta igual: 1 voto cada uno. Se auto-actualiza al agregar nuevos champions.
@@ -1020,10 +1248,10 @@ def generate_html():
         _grid_lines = ''
         for _g in range(1, 5):
             _gy = _pad + (_h - 2*_pad) * _g / 5
-            _grid_lines += '<line x1="' + str(_pad) + '" y1="' + str(round(_gy,1)) + '" x2="' + str(_w-_pad) + '" y2="' + str(round(_gy,1)) + '" stroke="#1c2128" stroke-width="1"/>'
+            _grid_lines += '<line x1="' + str(_pad) + '" y1="' + str(round(_gy,1)) + '" x2="' + str(_w-_pad) + '" y2="' + str(round(_gy,1)) + '" stroke="#141b38" stroke-width="1"/>'
 
         equity_svg = (
-            '<svg width="' + str(_w) + '" height="' + str(_h) + '" style="background:linear-gradient(180deg,#0d1117 0%,#0a0d12 100%);border:1px solid #1c2128;border-radius:8px;display:block">'
+            '<svg width="' + str(_w) + '" height="' + str(_h) + '" style="background:linear-gradient(180deg,#07091c 0%,#050914 100%);border:1px solid #141b38;border-radius:8px;display:block">'
             '<defs>'
             '<linearGradient id="eqGrad" x1="0" y1="0" x2="0" y2="1">'
             '<stop offset="0%" stop-color="' + _line_color + '" stop-opacity="0.35"/>'
@@ -1039,23 +1267,23 @@ def generate_html():
             + _grid_lines +
             # Linea de referencia $10,000 (capital inicial)
             '<line x1="' + str(_pad) + '" y1="' + str(_ref_y) + '" x2="' + str(_w-_pad) + '" y2="' + str(_ref_y) + '" stroke="#444" stroke-width="1" stroke-dasharray="4,4" opacity="0.6"/>'
-            '<text x="' + str(_w-_pad-3) + '" y="' + str(_ref_y-3) + '" fill="#666" font-size="9" text-anchor="end" font-family="JetBrains Mono,monospace">$10,000</text>'
+            '<text x="' + str(_w-_pad-3) + '" y="' + str(_ref_y-3) + '" fill="#666" font-size="9" text-anchor="end" font-family="IBM Plex Mono,monospace">$10,000</text>'
             # Area con gradiente
             '<path d="' + _area_path + '" fill="url(#eqGrad)"/>'
             # Linea principal con glow
             '<path d="' + _path + '" stroke="' + _line_color + '" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#eqGlow)"/>'
             # Punto final con halo
             '<circle cx="' + str(_last_x) + '" cy="' + str(_last_y) + '" r="6" fill="' + _glow_color + '" opacity="0.3"/>'
-            '<circle cx="' + str(_last_x) + '" cy="' + str(_last_y) + '" r="3" fill="' + _line_color + '" stroke="#0d1117" stroke-width="1.5"/>'
+            '<circle cx="' + str(_last_x) + '" cy="' + str(_last_y) + '" r="3" fill="' + _line_color + '" stroke="#07091c" stroke-width="1.5"/>'
             # Labels
-            '<text x="' + str(_w-_pad) + '" y="' + str(_pad+12) + '" fill="' + _line_color + '" font-size="14" text-anchor="end" font-family="JetBrains Mono,monospace" font-weight="700">$' + ('%.2f' % eqs[-1]) + '</text>'
-            '<text x="' + str(_w-_pad) + '" y="' + str(_pad+26) + '" fill="' + _line_color + '" font-size="11" text-anchor="end" font-family="JetBrains Mono,monospace" font-weight="600" opacity="0.85">' + ('%+.2f' % _delta_pct) + '%</text>'
-            '<text x="' + str(_pad) + '" y="' + str(_pad+12) + '" fill="#8b949e" font-size="10" font-family="JetBrains Mono,monospace" font-weight="600" letter-spacing="1">EQUITY</text>'
-            '<text x="' + str(_pad) + '" y="' + str(_pad+24) + '" fill="#6e7681" font-size="9" font-family="JetBrains Mono,monospace">' + str(_n) + ' puntos · min $' + ('%.0f' % _mn_raw) + ' · max $' + ('%.0f' % _mx_raw) + '</text>'
+            '<text x="' + str(_w-_pad) + '" y="' + str(_pad+12) + '" fill="' + _line_color + '" font-size="14" text-anchor="end" font-family="IBM Plex Mono,monospace" font-weight="700">$' + ('%.2f' % eqs[-1]) + '</text>'
+            '<text x="' + str(_w-_pad) + '" y="' + str(_pad+26) + '" fill="' + _line_color + '" font-size="11" text-anchor="end" font-family="IBM Plex Mono,monospace" font-weight="600" opacity="0.85">' + ('%+.2f' % _delta_pct) + '%</text>'
+            '<text x="' + str(_pad) + '" y="' + str(_pad+12) + '" fill="#7a8db5" font-size="10" font-family="IBM Plex Mono,monospace" font-weight="600" letter-spacing="1">EQUITY</text>'
+            '<text x="' + str(_pad) + '" y="' + str(_pad+24) + '" fill="#4e5f90" font-size="9" font-family="IBM Plex Mono,monospace">' + str(_n) + ' puntos · min $' + ('%.0f' % _mn_raw) + ' · max $' + ('%.0f' % _mx_raw) + '</text>'
             '</svg>'
         )
     else:
-        equity_svg = '<div style="font-size:11px;color:#6e7681;padding:14px;font-family:monospace;background:#0d1117;border:1px solid #1c2128;border-radius:8px;text-align:center">Equity curve aparecera tras 1+ trade cerrado</div>'
+        equity_svg = '<div style="font-size:11px;color:#4e5f90;padding:14px;font-family:monospace;background:#07091c;border:1px solid #141b38;border-radius:8px;text-align:center">Equity curve aparecera tras 1+ trade cerrado</div>'
 
     # Delta vs último campeón
     delta_cagr = port_cagr - snap_cagr
@@ -1083,49 +1311,49 @@ def generate_html():
         snap_age_txt = f'{snap_age_min // 1440}d {(snap_age_min % 1440) // 60}h'
 
     matrix_rows += f'''
-        <tr style="background:#0d1117">
-          <td style="border-top:2px solid #30363d;padding:7px 8px">
-            <span style="font-size:10px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:.05em">Ponderado</span>
+        <tr style="background:#07091c">
+          <td style="border-top:2px solid #242f55;padding:7px 8px">
+            <span style="font-size:10px;font-weight:700;color:#7a8db5;text-transform:uppercase;letter-spacing:.05em">Ponderado</span>
           </td>
           {summary_cells}
         </tr>
-        <tr style="background:#0a1628">
-          <td colspan="6" style="padding:8px 10px;border-top:1px solid #1c2128">
-            <span style="font-size:11px;color:#8b949e">Portafolio operable (CAGR &ge; 12%): &nbsp;</span>
-            <span style="font-family:\'JetBrains Mono\',monospace;color:{c_cagr(port_cagr)};font-weight:700;font-size:14px">{port_cagr:+.1f}%</span>
-            <span style="font-family:\'JetBrains Mono\',monospace;color:#8b949e;font-size:11px"> &plusmn;{port_cagr_std:.1f}%</span>
-            <span style="font-size:11px;color:#a78bfa;font-weight:700"> +Kelly </span>
-            <span style="font-family:'JetBrains Mono',monospace;color:#a78bfa;font-weight:700;font-size:12px">+{port_kelly_boost:.2f}pp</span>
+        <tr style="background:#060d20">
+          <td colspan="6" style="padding:8px 10px;border-top:1px solid #141b38">
+            <span style="font-size:11px;color:#7a8db5">Portafolio operable (CAGR &ge; 12%): &nbsp;</span>
+            <span style="font-family:\'IBM Plex Mono\',monospace;color:{c_cagr(port_cagr)};font-weight:700;font-size:14px">{port_cagr:+.1f}%</span>
+            <span style="font-family:\'IBM Plex Mono\',monospace;color:#7a8db5;font-size:11px"> &plusmn;{port_cagr_std:.1f}%</span>
+            <span style="font-size:11px;color:#e0bb3a;font-weight:700"> +Kelly </span>
+            <span style="font-family:'IBM Plex Mono',monospace;color:#e0bb3a;font-weight:700;font-size:12px">+{port_kelly_boost:.2f}pp</span>
             <span style="font-size:11px;color:#69f0ae;font-weight:700"> = </span>
-            <span style="font-family:'JetBrains Mono',monospace;color:#69f0ae;font-weight:700;font-size:14px">{port_cagr_with_kelly:+.2f}%</span>
-            <span style="font-size:11px;color:#8b949e"> CAGR estimado anual &nbsp;|&nbsp; WR: </span>
-            <span style="font-family:\'JetBrains Mono\',monospace;color:{c_wr(port_wr)};font-weight:700;font-size:13px">{port_wr:.1f}%</span>
-            <span style="font-size:11px;color:#8b949e"> &nbsp;|&nbsp; DD avg: </span>
-            <span style="font-family:\'JetBrains Mono\',monospace;color:{"#f85149" if port_dd<-20 else "#ff9800" if port_dd<-10 else "#e6edf3"};font-weight:700;font-size:13px">{port_dd:.1f}%</span>
-            <span style="font-size:11px;color:#8b949e"> &nbsp;|&nbsp; DD peor: </span>
-            <span style="font-family:\'JetBrains Mono\',monospace;color:{"#f85149" if port_dd_worst<-20 else "#ff9800" if port_dd_worst<-10 else "#e6edf3"};font-weight:700;font-size:13px">{port_dd_worst:.1f}%</span>
-            <span style="font-size:11px;color:#8b949e"> &nbsp;|&nbsp; PF: </span>
-            <span style="font-family:\'JetBrains Mono\',monospace;color:{"#00e676" if port_pf>=2 else "#69f0ae" if port_pf>=1.5 else "#ff9800"};font-weight:700;font-size:13px">{port_pf:.2f}</span>
-            <span style="font-size:11px;color:#8b949e"> &nbsp;|&nbsp; Calmar: </span>
-            <span style="font-family:\'JetBrains Mono\',monospace;color:{"#00e676" if port_calmar>=2 else "#69f0ae" if port_calmar>=1 else "#ff9800"};font-weight:700;font-size:13px">{port_calmar:.2f}</span>
-            <span style="font-size:11px;color:#8b949e"> &nbsp;|&nbsp; RR: </span>
-            <span style="font-family:\'JetBrains Mono\',monospace;color:{"#00e676" if port_rr>=1.5 else "#69f0ae" if port_rr>=1 else "#ff9800"};font-weight:700;font-size:13px">{port_rr:.2f}</span>
-            <span style="font-size:11px;color:#8b949e"> &nbsp;|&nbsp; EV: </span>
-            <span style="font-family:\'JetBrains Mono\',monospace;color:{"#00e676" if port_ev_r>=0.3 else "#69f0ae" if port_ev_r>=0.1 else "#ff9800" if port_ev_r>=0 else "#f85149"};font-weight:700;font-size:13px">{port_ev_r:+.2f}R</span>
-            <span style="font-size:11px;color:#8b949e"> &nbsp;|&nbsp; Trades OOS: </span>
-            <span style="font-family:\'JetBrains Mono\',monospace;color:#e6edf3;font-size:12px">{tot_t}</span>
-            <span style="font-size:11px;color:#8b949e"> &nbsp;|&nbsp; Activos: </span>
-            <span style="font-family:\'JetBrains Mono\',monospace;color:#58a6ff;font-size:12px">{n_ready}/{n_total}</span>
-            <span style="font-size:11px;color:#8b949e"> &nbsp;|&nbsp; Grado A+/A: </span>
-            <span style="font-family:\'JetBrains Mono\',monospace;color:#69f0ae;font-size:13px;font-weight:700">{n_grade_a}</span>
+            <span style="font-family:'IBM Plex Mono',monospace;color:#69f0ae;font-weight:700;font-size:14px">{port_cagr_with_kelly:+.2f}%</span>
+            <span style="font-size:11px;color:#7a8db5"> CAGR estimado anual &nbsp;|&nbsp; WR: </span>
+            <span style="font-family:\'IBM Plex Mono\',monospace;color:{c_wr(port_wr)};font-weight:700;font-size:13px">{port_wr:.1f}%</span>
+            <span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; DD avg: </span>
+            <span style="font-family:\'IBM Plex Mono\',monospace;color:{"#f85149" if port_dd<-20 else "#ff9800" if port_dd<-10 else "#dde3f5"};font-weight:700;font-size:13px">{port_dd:.1f}%</span>
+            <span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; DD peor: </span>
+            <span style="font-family:\'IBM Plex Mono\',monospace;color:{"#f85149" if port_dd_worst<-20 else "#ff9800" if port_dd_worst<-10 else "#dde3f5"};font-weight:700;font-size:13px">{port_dd_worst:.1f}%</span>
+            <span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; PF: </span>
+            <span style="font-family:\'IBM Plex Mono\',monospace;color:{"#00e676" if port_pf>=2 else "#69f0ae" if port_pf>=1.5 else "#ff9800"};font-weight:700;font-size:13px">{port_pf:.2f}</span>
+            <span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; Calmar: </span>
+            <span style="font-family:\'IBM Plex Mono\',monospace;color:{"#00e676" if port_calmar>=2 else "#69f0ae" if port_calmar>=1 else "#ff9800"};font-weight:700;font-size:13px">{port_calmar:.2f}</span>
+            <span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; RR: </span>
+            <span style="font-family:\'IBM Plex Mono\',monospace;color:{"#00e676" if port_rr>=1.5 else "#69f0ae" if port_rr>=1 else "#ff9800"};font-weight:700;font-size:13px">{port_rr:.2f}</span>
+            <span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; EV: </span>
+            <span style="font-family:\'IBM Plex Mono\',monospace;color:{"#00e676" if port_ev_r>=0.3 else "#69f0ae" if port_ev_r>=0.1 else "#ff9800" if port_ev_r>=0 else "#f85149"};font-weight:700;font-size:13px">{port_ev_r:+.2f}R</span>
+            <span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; Trades OOS: </span>
+            <span style="font-family:\'IBM Plex Mono\',monospace;color:#dde3f5;font-size:12px">{tot_t}</span>
+            <span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; Activos: </span>
+            <span style="font-family:\'IBM Plex Mono\',monospace;color:#c9a227;font-size:12px">{n_ready}/{n_total}</span>
+            <span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; Grado A+/A: </span>
+            <span style="font-family:\'IBM Plex Mono\',monospace;color:#69f0ae;font-size:13px;font-weight:700">{n_grade_a}</span>
           </td>
         </tr>
-        <tr style="background:#0a1628">
-          <td colspan="6" style="padding:4px 10px 8px;font-size:10px;color:#6e7681;border-top:1px dashed #1c2128;font-family:\'JetBrains Mono\',monospace">
+        <tr style="background:#060d20">
+          <td colspan="6" style="padding:4px 10px 8px;font-size:10px;color:#4e5f90;border-top:1px dashed #141b38;font-family:\'IBM Plex Mono\',monospace">
             CAGR ponderado vivo · Δ desde último cambio de campeón:
-            <span style="color:{"#69f0ae" if delta_cagr>0 else "#f85149" if delta_cagr<0 else "#8b949e"};font-weight:700">{delta_cagr:+.2f}%</span>
-            (hace <span style="color:#8b949e">{snap_age_txt}</span>) ·
-            último trigger: <span style="color:#8b949e">{snap_trigger or "—"}</span>
+            <span style="color:{"#69f0ae" if delta_cagr>0 else "#f85149" if delta_cagr<0 else "#7a8db5"};font-weight:700">{delta_cagr:+.2f}%</span>
+            (hace <span style="color:#7a8db5">{snap_age_txt}</span>) ·
+            último trigger: <span style="color:#7a8db5">{snap_trigger or "—"}</span>
           </td>
         </tr>
 '''
@@ -1133,7 +1361,7 @@ def generate_html():
     if concentration_warn:
         matrix_rows += f'''
         <tr style="background:#1c1410">
-          <td colspan="6" style="padding:4px 10px 8px;font-size:10px;color:#ffab40;border-top:1px dashed #2a1f10;font-family:'JetBrains Mono',monospace">
+          <td colspan="6" style="padding:4px 10px 8px;font-size:10px;color:#ffab40;border-top:1px dashed #2a1f10;font-family:'IBM Plex Mono',monospace">
             {concentration_warn}
           </td>
         </tr>'''
@@ -1199,6 +1427,7 @@ def generate_html():
                     float(_m2b.get('score', -9999) or -9999),
                     float(_m2b.get('dd', 0) or 0),
                     float(_m2b.get('pf', 0) or 0),
+                    float(_m2b.get('rr', 0) or 0),
                 ))
 
     # Ponderado row (same style as M1)
@@ -1216,26 +1445,64 @@ def generate_html():
             _m2_all_dd.extend(_d2); _m2_all_t += _tot2
             _m2_sum_cells += (
                 f'<td style="text-align:center;border-top:2px solid #FFD70033;padding:7px 4px">'
-                f'<div style="color:{c_cagr(_avg2)};font-family:\'JetBrains Mono\',monospace;font-size:12px;font-weight:700">{_avg2:+.1f}%</div>'
+                f'<div style="color:{c_cagr(_avg2)};font-family:\'IBM Plex Mono\',monospace;font-size:12px;font-weight:700">{_avg2:+.1f}%</div>'
                 f'<div style="font-size:10px;color:{c_wr(_wwr2)}">WR {_wwr2:.0f}%</div>'
-                f'<div style="font-size:10px;color:#8b949e">{_tot2}T</div>'
+                f'<div style="font-size:10px;color:#7a8db5">{_tot2}T</div>'
                 f'</td>'
             )
         else:
-            _m2_sum_cells += '<td style="border-top:2px solid #FFD70033;text-align:center;color:#30363d">--</td>'
+            _m2_sum_cells += '<td style="border-top:2px solid #FFD70033;text-align:center;color:#242f55">--</td>'
     matrix_rows_m2 += (
-        f'<tr style="background:#0d1117">'
+        f'<tr style="background:#07091c">'
         f'<td style="border-top:2px solid #FFD70033;padding:7px 8px">'
         f'<span style="font-size:10px;font-weight:700;color:#FFD700;text-transform:uppercase;letter-spacing:.05em">Ponderado</span>'
         f'</td>{_m2_sum_cells}</tr>'
     )
 
-    # Stats row (colspan across all cols)
-    _m2pc  = round(sum(_m2_all_c)/len(_m2_all_c),1) if _m2_all_c else 0.0
-    _m2wr  = round(sum(_m2_all_wr)/len(_m2_all_wr),1) if _m2_all_wr else 0.0
-    _m2dd  = round(sum(_m2_all_dd)/len(_m2_all_dd),1) if _m2_all_dd else 0.0
+    # ── Motor 2 comprehensive portfolio stats ───────────────────────────────────
+    _m2_all_ms = []
+    for _tf2x in TIMEFRAMES_M2:
+        _m2_all_ms.extend(m2_tf_models[_tf2x])
+
+    def _m2_calc_port(ms):
+        if not ms:
+            return dict(cagr=0, wr=0, dd=0, dd_worst=0, pf=0, rr=0, ev_r=0, calmar=0, std=0, n=0)
+        n = len(ms)
+        weights = [max(m[2] if len(m) > 2 else 1, 1) for m in ms]
+        total_w = sum(weights)
+        cagr = sum(m[0] * w for m, w in zip(ms, weights)) / total_w if total_w > 0 else 0
+        wr   = sum(m[1] * w for m, w in zip(ms, weights)) / total_w if total_w > 0 else 0
+        dd_v = [m[4] for m in ms if len(m) > 4]
+        dd_w = [max(m[2] if len(m) > 2 else 1, 1) for m in ms if len(m) > 4]
+        dd_avg   = sum(d * w for d, w in zip(dd_v, dd_w)) / sum(dd_w) if dd_w else 0
+        dd_worst = min(dd_v) if dd_v else 0
+        pf_v = [m[5] for m in ms if len(m) > 5 and m[5] > 0]
+        pf   = sum(pf_v) / max(len(pf_v), 1)
+        rr_v = [m[6] for m in ms if len(m) > 6 and m[6] > 0]
+        rr   = sum(rr_v) / len(rr_v) if rr_v else 0
+        wr_d = wr / 100 if wr else 0
+        ev_r = wr_d * rr - (1 - wr_d) if rr > 0 else 0
+        std  = (sum((m[0] - cagr) ** 2 for m in ms) / n) ** 0.5 if n > 1 else 0
+        calmar = round(cagr / abs(dd_worst), 2) if dd_worst < 0 else 0
+        return dict(cagr=cagr, wr=wr, dd=dd_avg, dd_worst=dd_worst, pf=pf, rr=rr, ev_r=ev_r, calmar=calmar, std=std, n=n)
+
+    _m2op  = _m2_calc_port([m for m in _m2_all_ms if m[0] >= 12.0])
     _m2_ns = len(_m2_all_c)
     _m2_nt = len(ASSETS_M2) * len(TIMEFRAMES_M2)
+    _m2pc          = round(_m2op['cagr'], 1)
+    _m2wr          = round(_m2op['wr'], 1)
+    _m2dd          = round(_m2op['dd'], 1)
+    _m2dd_worst    = round(_m2op['dd_worst'], 1)
+    _m2pf          = round(_m2op['pf'], 2)
+    _m2calmar      = round(_m2op['calmar'], 2)
+    _m2rr          = round(_m2op['rr'], 2)
+    _m2ev_r        = round(_m2op['ev_r'], 2)
+    _m2cagr_std    = round(_m2op['std'], 1)
+    _m2_grade_a    = sum(1 for m in _m2_all_ms if len(m) > 3 and m[3] >= 0.55)
+    _m2_all_t      = sum(m[2] for m in _m2_all_ms)
+    _m2_operable_n = _m2op['n']
+
+    # Macro context (DXY / US10Y) — relevant for metals
     _m2_dxy = _m2_y10 = 0.0
     try:
         import pandas as _mpd
@@ -1249,29 +1516,50 @@ def generate_html():
                 _s = _m2_df['yield_10y'].dropna()
                 if len(_s): _m2_y10 = float(_s.iloc[-1])
     except Exception: pass
-    _m2_dxy_col  = '#f85149' if _m2_dxy > 104 else '#ff9800' if _m2_dxy > 101 else '#2ecc71' if _m2_dxy > 0 else '#8b949e'
-    _m2_y10_col  = '#f85149' if _m2_y10 > 4.5 else '#ff9800' if _m2_y10 > 4.0 else '#2ecc71' if _m2_y10 > 0 else '#8b949e'
-    _m2_dd_col   = '#f85149' if _m2dd < -25 else '#ff9800' if _m2dd < -15 else '#e6edf3'
-    _m2_slots_col= '#2ecc71' if _m2_ns == _m2_nt else '#f1c40f' if _m2_ns > 0 else '#555'
-    _m2_dxy_str  = f'<span style="color:{_m2_dxy_col};font-family:monospace;font-weight:700">{_m2_dxy:.1f}</span>' if _m2_dxy else '<span style="color:#555">--</span>'
-    _m2_y10_str  = f'<span style="color:{_m2_y10_col};font-family:monospace;font-weight:700">{_m2_y10:.2f}%</span>' if _m2_y10 else '<span style="color:#555">--</span>'
+    _m2_dxy_col  = '#f85149' if _m2_dxy > 104 else '#ff9800' if _m2_dxy > 101 else '#2ecc71' if _m2_dxy > 0 else '#7a8db5'
+    _m2_y10_col  = '#f85149' if _m2_y10 > 4.5 else '#ff9800' if _m2_y10 > 4.0 else '#2ecc71' if _m2_y10 > 0 else '#7a8db5'
+    _m2_dxy_str  = f'DXY <span style="color:{_m2_dxy_col};font-family:monospace;font-weight:700">{_m2_dxy:.1f}</span>' if _m2_dxy else 'DXY <span style="color:#555">--</span>'
+    _m2_y10_str  = f'US10Y <span style="color:{_m2_y10_col};font-family:monospace;font-weight:700">{_m2_y10:.2f}%</span>' if _m2_y10 else 'US10Y <span style="color:#555">--</span>'
+    _m2_slots_col = '#2ecc71' if _m2_ns == _m2_nt else '#f1c40f' if _m2_ns > 0 else '#555'
     _m2_ncols = 1 + len(TIMEFRAMES_M2)
-    matrix_rows_m2 += (
-        f'<tr style="background:#070d17">'
-        f'<td colspan="{_m2_ncols}" style="padding:8px 10px;border-top:1px solid #21262d">'
-        f'<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px 8px;text-align:center">'
-        f'<div><div style="color:#8b949e;font-size:9px;text-transform:uppercase">CAGR</div>'
-        f'<div style="font-family:\'JetBrains Mono\',monospace;color:{c_cagr(_m2pc)};font-weight:700;font-size:14px">{_m2pc:+.1f}%</div></div>'
-        f'<div><div style="color:#8b949e;font-size:9px;text-transform:uppercase">Win Rate</div>'
-        f'<div style="font-family:\'JetBrains Mono\',monospace;color:{c_wr(_m2wr)};font-weight:700;font-size:14px">{_m2wr:.1f}%</div></div>'
-        f'<div><div style="color:#8b949e;font-size:9px;text-transform:uppercase">Max DD</div>'
-        f'<div style="font-family:\'JetBrains Mono\',monospace;color:{_m2_dd_col};font-weight:700;font-size:13px">{_m2dd:.1f}%</div></div>'
-        f'<div><div style="color:#8b949e;font-size:9px">DXY</div><div style="font-size:11px">{_m2_dxy_str}</div></div>'
-        f'<div><div style="color:#8b949e;font-size:9px">US10Y</div><div style="font-size:11px">{_m2_y10_str}</div></div>'
-        f'<div><div style="color:#8b949e;font-size:9px">Slots</div>'
-        f'<div style="color:{_m2_slots_col};font-weight:600;font-size:12px">{_m2_ns}/{_m2_nt} &bull; {_m2_all_t}T</div></div>'
-        f'</div></td></tr>'
-    )
+
+    if _m2_all_ms:
+        matrix_rows_m2 += (
+            f'<tr style="background:#060d20">'
+            f'<td colspan="{_m2_ncols}" style="padding:8px 10px;border-top:1px solid #141b38">'
+            f'<span style="font-size:11px;color:#7a8db5">Portafolio operable (CAGR &ge; 12%): &nbsp;</span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:{c_cagr(_m2pc)};font-weight:700;font-size:14px">{_m2pc:+.1f}%</span>'
+            f' <span style="font-family:\'IBM Plex Mono\',monospace;color:#7a8db5;font-size:11px">&plusmn;{_m2cagr_std:.1f}%</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; WR: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:{c_wr(_m2wr)};font-weight:700;font-size:13px">{_m2wr:.1f}%</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; DD avg: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:{"#f85149" if _m2dd<-20 else "#ff9800" if _m2dd<-10 else "#dde3f5"};font-weight:700;font-size:13px">{_m2dd:.1f}%</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; DD peor: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:{"#f85149" if _m2dd_worst<-20 else "#ff9800" if _m2dd_worst<-10 else "#dde3f5"};font-weight:700;font-size:13px">{_m2dd_worst:.1f}%</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; PF: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:{"#00e676" if _m2pf>=2 else "#69f0ae" if _m2pf>=1.5 else "#ff9800"};font-weight:700;font-size:13px">{_m2pf:.2f}</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; Calmar: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:{"#00e676" if _m2calmar>=2 else "#69f0ae" if _m2calmar>=1 else "#ff9800"};font-weight:700;font-size:13px">{_m2calmar:.2f}</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; RR: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:{"#00e676" if _m2rr>=1.5 else "#69f0ae" if _m2rr>=1 else "#ff9800"};font-weight:700;font-size:13px">{_m2rr:.2f}</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; EV: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:{"#00e676" if _m2ev_r>=0.3 else "#69f0ae" if _m2ev_r>=0.1 else "#ff9800" if _m2ev_r>=0 else "#f85149"};font-weight:700;font-size:13px">{_m2ev_r:+.2f}R</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; Trades OOS: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:#dde3f5;font-size:12px">{_m2_all_t}</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; Activos: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:#FFD700;font-size:12px">{_m2_ns}/{_m2_nt}</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; Grado A+/A: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:#69f0ae;font-size:13px;font-weight:700">{_m2_grade_a}</span>'
+            f'</td></tr>'
+        )
+        matrix_rows_m2 += (
+            f'<tr style="background:#060d20">'
+            f'<td colspan="{_m2_ncols}" style="padding:4px 10px 8px;font-size:10px;color:#4e5f90;border-top:1px dashed #141b38;font-family:\'IBM Plex Mono\',monospace">'
+            f'Macro contexto: {_m2_dxy_str} &nbsp;&middot;&nbsp; {_m2_y10_str}'
+            f' &nbsp;&middot;&nbsp; <span style="color:#555">Slots activos: <span style="color:{_m2_slots_col};font-weight:700">{_m2_ns}/{_m2_nt}</span> &bull; {_m2_all_t}T OOS</span>'
+            f'</td></tr>'
+        )
+
     #  end Motor 2 matrix
 
     # WFT table (last 15 windows)
@@ -1324,7 +1612,7 @@ def generate_html():
         cagr    = ev.get('cagr_oos')
         ts      = ev.get('ts','')
         t_oos   = ev.get('trades_oos')
-        a_color = ASSET_COLOR.get(asset, '#e6edf3')
+        a_color = ASSET_COLOR.get(asset, '#dde3f5')
         # Display honesto: si N OOS < 20, marcamos como low-N (solo visual, no afecta logica)
         _lowN = (t_oos is not None and t_oos < 20)
         _lowN_suf = f' <span style="color:#e67e22;font-size:10px" title="muestra chica (N OOS &lt; 20)">[N={t_oos}]</span>' if _lowN else ''
@@ -1348,19 +1636,19 @@ def generate_html():
         if isinstance(r, dict) and 'cagr' in r:
             cag = r.get('cagr', 0)
             ca_cards_html += (
-                f'<div style="background:#21262d;border-radius:6px;padding:10px 14px;min-width:90px;text-align:center">'
-                f'<div style="font-size:10px;color:#8b949e;margin-bottom:4px">{a}</div>'
+                f'<div style="background:#1a2240;border-radius:6px;padding:10px 14px;min-width:90px;text-align:center">'
+                f'<div style="font-size:10px;color:#7a8db5;margin-bottom:4px">{a}</div>'
                 f'<div style="font-size:18px;font-weight:700;color:{c_cagr(cag)}">{cag:+.1f}%</div>'
-                f'<div style="font-size:10px;color:#8b949e">{r.get("trades","-")}T</div></div>'
+                f'<div style="font-size:10px;color:#7a8db5">{r.get("trades","-")}T</div></div>'
             )
 
     # TF counter pills for banner (solo TFs activos en TIMEFRAMES, ignora 1m/2h deprecated)
-    TF_COLORS = {'1h':'#58a6ff','4h':'#2ecc71','15m':'#f1c40f','5m':'#e67e22'}
+    TF_COLORS = {'1d':'#e0bb3a','1h':'#c9a227','4h':'#2ecc71','15m':'#f1c40f','5m':'#e67e22'}
     tf_counter_html = ''
     by_tf_active = {tf: db.get('by_tf', {}).get(tf, 0) for tf in TIMEFRAMES}
     for tf in TIMEFRAMES:
         cnt = by_tf_active.get(tf, 0)
-        col = TF_COLORS.get(tf, '#e6edf3')
+        col = TF_COLORS.get(tf, '#dde3f5')
         tf_counter_html += (
             f'<div class="counter-stat">'
             f'<div class="val" style="color:{col}" id="tf-{tf}">{cnt:,}</div>'
@@ -1369,12 +1657,12 @@ def generate_html():
         )
 
     top2_pills = ''.join(
-        f'<div class="pill" style="border-color:{ASSET_COLOR.get(a,"#58a6ff")}">'
-        f'<span style="color:{ASSET_COLOR.get(a,"#58a6ff")}">{ASSET_EMOJI.get(a,a)} {a}</span>'
+        f'<div class="pill" style="border-color:{ASSET_COLOR.get(a,"#c9a227")}">'
+        f'<span style="color:{ASSET_COLOR.get(a,"#c9a227")}">{ASSET_EMOJI.get(a,a)} {a}</span>'
         f'<span>{tf.upper()}</span>'
         f'<span style="color:{c_cagr(cagr)}">{cagr:+.1f}%</span></div>'
         for cagr, a, tf, m in top2
-    ) or '<span style="color:#8b949e">Sin modelos OOS positivos aun</span>'
+    ) or '<span style="color:#7a8db5">Sin modelos OOS positivos aun</span>'
 
     # Performance snapshot: heatmap + donut + rolling metrics
     try:
@@ -1390,32 +1678,32 @@ def generate_html():
     if rolling:
         sh_col = "#00e676" if rolling["sharpe"] >= 1 else "#ff9800" if rolling["sharpe"] >= 0 else "#f85149"
         rolling_html = (
-            '<div style="display:flex;gap:18px;font-family:JetBrains Mono,monospace;font-size:11px;flex-wrap:wrap;color:#8b949e;margin-top:12px;padding-top:12px;border-top:1px solid #21262d">'
-            '<span><span style="color:#6e7681;text-transform:uppercase;letter-spacing:0.5px;font-size:9px">SHARPE 30D</span> <b style="color:' + sh_col + '">' + ("{:+.2f}".format(rolling["sharpe"])) + '</b></span>'
-            '<span><span style="color:#6e7681;text-transform:uppercase;letter-spacing:0.5px;font-size:9px">STREAK</span> <b style="color:#e6edf3">' + str(rolling["streak"]) + 'd</b></span>'
-            '<span><span style="color:#6e7681;text-transform:uppercase;letter-spacing:0.5px;font-size:9px">DIAS GANADORES</span> <b style="color:#00e676">' + str(rolling["wins"]) + '</b><span style="color:#444">/</span><b style="color:#f85149">' + str(rolling["losses"]) + '</b></span>'
-            '<span><span style="color:#6e7681;text-transform:uppercase;letter-spacing:0.5px;font-size:9px">MEJOR DIA</span> <b style="color:#00e676">' + ("{:+.2f}".format(rolling["best"])) + '%</b></span>'
-            '<span><span style="color:#6e7681;text-transform:uppercase;letter-spacing:0.5px;font-size:9px">PEOR DIA</span> <b style="color:#f85149">' + ("{:+.2f}".format(rolling["worst"])) + '%</b></span>'
+            '<div style="display:flex;gap:18px;font-family:IBM Plex Mono,monospace;font-size:11px;flex-wrap:wrap;color:#7a8db5;margin-top:12px;padding-top:12px;border-top:1px solid #1a2240">'
+            '<span><span style="color:#4e5f90;text-transform:uppercase;letter-spacing:0.5px;font-size:9px">SHARPE 30D</span> <b style="color:' + sh_col + '">' + ("{:+.2f}".format(rolling["sharpe"])) + '</b></span>'
+            '<span><span style="color:#4e5f90;text-transform:uppercase;letter-spacing:0.5px;font-size:9px">STREAK</span> <b style="color:#dde3f5">' + str(rolling["streak"]) + 'd</b></span>'
+            '<span><span style="color:#4e5f90;text-transform:uppercase;letter-spacing:0.5px;font-size:9px">DIAS GANADORES</span> <b style="color:#00e676">' + str(rolling["wins"]) + '</b><span style="color:#444">/</span><b style="color:#f85149">' + str(rolling["losses"]) + '</b></span>'
+            '<span><span style="color:#4e5f90;text-transform:uppercase;letter-spacing:0.5px;font-size:9px">MEJOR DIA</span> <b style="color:#00e676">' + ("{:+.2f}".format(rolling["best"])) + '%</b></span>'
+            '<span><span style="color:#4e5f90;text-transform:uppercase;letter-spacing:0.5px;font-size:9px">PEOR DIA</span> <b style="color:#f85149">' + ("{:+.2f}".format(rolling["worst"])) + '%</b></span>'
             '</div>'
         )
     else:
-        rolling_html = '<div style="color:#6e7681;font-size:11px;margin-top:8px">Esperando trades para metricas rolling</div>'
+        rolling_html = '<div style="color:#4e5f90;font-size:11px;margin-top:8px">Esperando trades para metricas rolling</div>'
     performance_snapshot_html = (
-        '<div style="background:linear-gradient(180deg,#161b22,#13181f);border:1px solid #21262d;border-radius:12px;padding:16px;margin-bottom:18px;box-shadow:0 1px 0 rgba(255,255,255,0.03) inset,0 6px 20px -12px rgba(0,0,0,0.7)">'
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #21262d">'
-        '<div style="font-size:11px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:0.12em;display:flex;align-items:center;gap:8px">'
-        '<span style="display:inline-block;width:3px;height:14px;background:linear-gradient(180deg,#58a6ff,#a78bfa);border-radius:2px"></span>'
+        '<div class="card-purple" style="background:linear-gradient(180deg,#0d1428,#0a1020);border:1px solid #1a2240;border-radius:12px;padding:16px;margin-bottom:18px;box-shadow:0 1px 0 rgba(255,255,255,0.03) inset,0 6px 20px -12px rgba(0,0,0,0.7)">'
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #1a2240">'
+        '<div style="font-size:11px;font-weight:700;color:#7a8db5;text-transform:uppercase;letter-spacing:0.12em;display:flex;align-items:center;gap:8px">'
+        '<span style="display:inline-block;width:3px;height:14px;background:linear-gradient(180deg,#c9a227,#f0d060);border-radius:2px"></span>'
         'Performance Snapshot'
         '</div>'
-        '<span style="font-size:10px;color:#6e7681">ultimos 30 dias</span>'
+        '<span style="font-size:10px;color:#4e5f90">ultimos 30 dias</span>'
         '</div>'
-        '<div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">'
+        '<div class="perf-snap-cols" style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">'
         '<div style="flex:1;min-width:280px">'
-        '<div style="font-size:9px;color:#6e7681;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">P&amp;L Diario (heatmap)</div>'
-        '<div>' + heatmap_html + '</div>'
+        '<div style="font-size:9px;color:#4e5f90;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">P&amp;L Diario (heatmap)</div>'
+        '<div class="heatmap-wrap">' + heatmap_html + '</div>'
         '</div>'
         '<div>'
-        '<div style="font-size:9px;color:#6e7681;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Exposicion abierta</div>'
+        '<div style="font-size:9px;color:#4e5f90;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Exposicion abierta</div>'
         + donut_html +
         '</div>'
         '</div>'
@@ -1430,367 +1718,498 @@ def generate_html():
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <!-- Sin meta refresh — todo actualiza via JavaScript sin parpadeo -->
 <title>SIGMA ENGINE</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap');
+
 *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
-body{{background:radial-gradient(ellipse at top,#11161f 0%,#0a0d12 60%) fixed;color:#e6edf3;font-family:'Inter',sans-serif;font-size:14px;-webkit-font-smoothing:antialiased;font-feature-settings:"cv02","cv03","cv04","cv11"}}
-.mono{{font-family:'JetBrains Mono',monospace}}
-.container{{max-width:1100px;margin:0 auto;padding:24px 16px 32px}}
+:root{{
+  --gold:#c9a227;--gold-b:#e8c040;--gold-d:#8a6b15;
+  --n0:#020510;--n1:#060c1c;--n2:#080f22;--n3:#0c1330;
+  --bd-gold:rgba(201,162,39,.25);--bd-mid:#182040;--bd-dim:#0d1528;
+  --tx:#e2e8f8;--ts:#7a8db5;--td:#3a4d78;
+}}
+html{{scroll-behavior:smooth}}
+body{{
+  background:
+    radial-gradient(ellipse 75% 40% at 18% -8%,#0b1e55 0%,transparent 52%),
+    radial-gradient(ellipse 55% 35% at 88% 108%,#071540 0%,transparent 52%),
+    #020510;
+  background-attachment:fixed;
+  color:var(--tx);
+  font-family:'IBM Plex Sans',-apple-system,sans-serif;
+  font-size:13px;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}}
+body::after{{
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,rgba(0,0,12,.04) 0,rgba(0,0,12,.04) 1px,transparent 1px,transparent 4px);
+  pointer-events:none;z-index:9998;
+}}
+.mono{{font-family:'IBM Plex Mono',monospace;font-feature-settings:"tnum"}}
+.container{{max-width:1440px;margin:0 auto;padding:28px 24px 40px}}
 
-/* Header */
-.hdr{{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #21262d}}
-.hdr h1{{font-size:22px;font-weight:700;background:linear-gradient(90deg,#58a6ff,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.025em}}
-.hdr .meta{{font-size:11px;color:#8b949e;text-align:right;line-height:1.8}}
+.hdr{{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:28px;padding-bottom:18px;
+  border-bottom:1px solid var(--bd-gold);
+  position:relative;
+}}
+.hdr::after{{
+  content:'';position:absolute;bottom:-1px;left:0;width:100px;height:2px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+}}
+.hdr h1{{
+  font-size:20px;font-weight:700;
+  font-family:'IBM Plex Mono',monospace;
+  letter-spacing:4px;text-transform:uppercase;
+  color:var(--gold);
+  text-shadow:0 0 40px rgba(201,162,39,.35);
+}}
+.hdr .meta{{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;color:var(--ts);
+  text-align:right;line-height:2;letter-spacing:.05em;
+}}
 
-/* Cards */
-.card{{background:linear-gradient(180deg,#161b22 0%,#13181f 100%);border:1px solid #21262d;border-radius:12px;padding:18px 20px;margin-bottom:18px;box-shadow:0 1px 0 #ffffff05 inset,0 8px 24px -12px #00000060;transition:border-color .2s ease}}
-.card:hover{{border-color:#30363d}}
-.card-title{{font-size:11px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px;display:flex;align-items:center;gap:8px}}
-.card-title::before{{content:'';width:3px;height:14px;background:linear-gradient(180deg,#58a6ff,#a78bfa);border-radius:2px}}
+.card{{
+  background:linear-gradient(150deg,#08112a 0%,#050d1e 100%);
+  border:1px solid var(--bd-gold);
+  border-top:2px solid var(--gold);
+  border-radius:3px;
+  padding:20px 22px;margin-bottom:16px;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.55) inset,
+    0 20px 48px -20px rgba(0,0,0,.85),
+    0 1px 0 rgba(201,162,39,.07) inset;
+  transition:border-color .25s,transform .25s,box-shadow .25s;
+}}
+.card:hover{{
+  border-color:rgba(201,162,39,.5);
+  transform:translateY(-2px);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.55) inset,
+    0 32px 56px -20px rgba(0,0,0,.85),
+    0 0 48px -20px rgba(201,162,39,.1),
+    0 1px 0 rgba(201,162,39,.1) inset;
+}}
+.card-title{{
+  font-size:9px;font-weight:600;
+  font-family:'IBM Plex Mono',monospace;
+  color:var(--gold);
+  text-transform:uppercase;letter-spacing:5px;
+  margin-bottom:18px;padding-bottom:12px;
+  border-bottom:1px solid rgba(201,162,39,.12);
+  display:flex;align-items:center;gap:10px;
+}}
+.card-title::before{{
+  content:'';width:2px;height:12px;
+  background:var(--gold);
+  box-shadow:0 0 10px rgba(201,162,39,.7);
+  flex-shrink:0;
+}}
 
-/* Rule box */
-.rule{{background:linear-gradient(135deg,#161b22 0%,#13192a 100%);border:1px solid #58a6ff40;border-radius:12px;padding:16px 20px;margin-bottom:18px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;box-shadow:0 1px 0 #58a6ff10 inset,0 8px 24px -16px #58a6ff40}}
-.rule-title{{font-weight:700;color:#58a6ff;font-size:14px;letter-spacing:-.01em}}
-.rule-sub{{color:#8b949e;font-size:12px;margin-top:3px}}
-.pills{{display:flex;gap:8px;flex-wrap:wrap}}
-.pill{{display:inline-flex;gap:8px;align-items:center;background:#21262d;border:1px solid #30363d;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:500;transition:transform .15s ease,border-color .15s ease}}
-.pill:hover{{transform:translateY(-1px);border-color:#58a6ff60}}
+.rule{{
+  background:linear-gradient(135deg,#07102a 0%,#050d1e 100%);
+  border:1px solid rgba(201,162,39,.3);
+  border-radius:3px;padding:18px 22px;margin-bottom:16px;
+  display:flex;flex-wrap:wrap;gap:16px;align-items:center;
+  box-shadow:0 0 40px -20px rgba(201,162,39,.18),0 8px 24px -16px rgba(0,0,0,.7);
+}}
+.rule-title{{font-weight:700;color:var(--gold);font-size:13px;letter-spacing:.05em;font-family:'IBM Plex Mono',monospace}}
+.rule-sub{{color:var(--ts);font-size:11px;margin-top:3px}}
+.pills{{display:flex;gap:6px;flex-wrap:wrap}}
+.pill{{
+  display:inline-flex;gap:6px;align-items:center;
+  background:rgba(201,162,39,.06);
+  border:1px solid rgba(201,162,39,.18);
+  border-radius:2px;padding:4px 12px;
+  font-size:11px;font-weight:500;
+  font-family:'IBM Plex Mono',monospace;letter-spacing:.03em;
+  transition:all .15s;
+}}
+.pill:hover{{background:rgba(201,162,39,.12);border-color:rgba(201,162,39,.4);transform:translateY(-1px)}}
+.prog{{font-size:11px;color:var(--ts);margin-left:auto;white-space:nowrap}}
+.prog strong{{color:var(--tx)}}
 
-/* Progress badge */
-.prog{{font-size:12px;color:#8b949e;margin-left:auto;white-space:nowrap}}
-.prog strong{{color:#e6edf3}}
-
-/* MATRIX */
-.matrix-wrap{{overflow-x:auto;display:flex;justify-content:center;padding:4px}}
-.matrix{{width:100%;max-width:820px;border-collapse:separate;border-spacing:10px 6px;table-layout:fixed;margin:0 auto}}
-.matrix th{{padding:8px 12px 12px;font-size:11px;font-weight:600;color:#8b949e;text-align:center;width:22%;letter-spacing:.08em;text-transform:uppercase}}
+.matrix-wrap{{overflow-x:auto;-webkit-overflow-scrolling:touch;display:flex;justify-content:center;padding:4px}}
+.matrix{{width:100%;max-width:820px;min-width:660px;border-collapse:separate;border-spacing:8px 5px;table-layout:fixed;margin:0 auto}}
+.matrix th{{
+  padding:8px 12px 14px;
+  font-size:9px;font-weight:600;
+  font-family:'IBM Plex Mono',monospace;
+  color:var(--td);text-align:center;width:22%;
+  letter-spacing:4px;text-transform:uppercase;
+  border-bottom:1px solid rgba(201,162,39,.12);
+}}
 .matrix th.th-asset{{text-align:left;width:12%;padding-left:8px}}
-.matrix td{{padding:10px 12px;text-align:center;vertical-align:middle;height:66px;transition:transform .15s ease,box-shadow .15s ease}}
+.matrix td{{padding:10px 12px;text-align:center;vertical-align:middle;height:66px;transition:transform .15s,box-shadow .15s}}
 .matrix td:not(.asset-col):hover{{transform:translateY(-2px)}}
 .asset-col{{text-align:left!important;padding:6px 4px 6px 0!important}}
 .asset-box{{
-  display:flex;align-items:center;gap:8px;
-  padding:10px 12px;
-  background:linear-gradient(135deg,color-mix(in srgb, var(--asset-color) 14%, #161b22) 0%, color-mix(in srgb, var(--asset-color) 6%, #13181f) 100%);
-  border:1px solid color-mix(in srgb, var(--asset-color) 35%, #21262d);
-  border-radius:10px;
-  box-shadow:0 1px 0 color-mix(in srgb, var(--asset-color) 15%, transparent) inset,
-             0 4px 12px -8px color-mix(in srgb, var(--asset-color) 50%, transparent);
-  transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;
-  position:relative;
-  overflow:hidden;
+  display:flex;align-items:center;gap:8px;padding:10px 12px;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--asset-color) 12%,#08112a) 0%,color-mix(in srgb,var(--asset-color) 5%,#050d1e) 100%);
+  border:1px solid color-mix(in srgb,var(--asset-color) 28%,rgba(201,162,39,.08));
+  border-radius:2px;
+  box-shadow:0 1px 0 color-mix(in srgb,var(--asset-color) 10%,transparent) inset,0 4px 12px -8px color-mix(in srgb,var(--asset-color) 35%,transparent);
+  transition:transform .15s,border-color .15s;
+  position:relative;overflow:hidden;
 }}
 .asset-box::before{{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:var(--asset-color);
-  box-shadow:0 0 8px var(--asset-color);
+  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:var(--asset-color);box-shadow:0 0 6px var(--asset-color);
 }}
-.asset-box:hover{{
-  transform:translateY(-2px);
-  border-color:color-mix(in srgb, var(--asset-color) 60%, transparent);
-  box-shadow:0 1px 0 color-mix(in srgb, var(--asset-color) 25%, transparent) inset,
-             0 6px 16px -6px color-mix(in srgb, var(--asset-color) 60%, transparent);
-}}
-.asset-emoji{{font-size:18px;display:inline-block;vertical-align:middle;filter:drop-shadow(0 0 6px currentColor)}}
-.asset-name{{font-weight:700;font-size:14px;letter-spacing:-.01em;color:#e6edf3}}
+.asset-box:hover{{transform:translateY(-2px);border-color:color-mix(in srgb,var(--asset-color) 55%,transparent)}}
+.asset-emoji{{font-size:18px;display:inline-block;vertical-align:middle}}
+.asset-name{{font-weight:700;font-size:13px;letter-spacing:.05em;color:var(--tx)}}
 
-/* Cells */
-.cell-ok{{background:linear-gradient(180deg,#0e2419 0%,#0a1c14 100%);border:1px solid #2ecc7140;border-radius:8px;box-shadow:0 1px 0 #2ecc7115 inset,0 4px 12px -8px #2ecc7140}}
-.cell-ok:hover{{border-color:#2ecc7180;box-shadow:0 1px 0 #2ecc7125 inset,0 6px 16px -6px #2ecc7160}}
-.cell-run{{background:linear-gradient(180deg,#0d1f3a 0%,#0a1830 100%);border:1px solid #58a6ff40;border-radius:8px;color:#58a6ff;box-shadow:0 1px 0 #58a6ff15 inset}}
-.cell-neg{{background:linear-gradient(180deg,#1f0d0d 0%,#170a0a 100%);border:1px solid #e74c3c25;border-radius:8px;color:#e74c3c55}}
-.cell-pending{{color:#30363d;border:1px dashed #21262d;border-radius:8px}}
-.cell-na{{color:#21262d;font-size:18px}}
-.cell-cagr{{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;line-height:1.25;letter-spacing:-.02em}}
-.cell-sub{{font-size:10px;color:#8b949e;margin-top:3px;font-family:'JetBrains Mono',monospace}}
+.cell-ok{{background:linear-gradient(180deg,#091e14 0%,#061410 100%);border:1px solid rgba(0,230,118,.16);border-radius:2px;box-shadow:0 1px 0 rgba(0,230,118,.06) inset}}
+.cell-ok:hover{{border-color:rgba(0,230,118,.4);box-shadow:0 0 16px -4px rgba(0,230,118,.18)}}
+.cell-run{{background:linear-gradient(180deg,#08132a 0%,#060d20 100%);border:1px solid rgba(201,162,39,.3);border-radius:2px;color:var(--gold)}}
+.cell-neg{{background:linear-gradient(180deg,#180a0a 0%,#110707 100%);border:1px solid rgba(231,76,60,.12);border-radius:2px;color:rgba(231,76,60,.38)}}
+.cell-pending{{color:rgba(24,32,64,.8);border:1px dashed rgba(24,32,64,.5);border-radius:2px}}
+.cell-na{{color:var(--bd-mid);font-size:18px}}
+.cell-cagr{{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;line-height:1.25;letter-spacing:-.01em;font-feature-settings:"tnum"}}
+.cell-sub{{font-size:10px;color:var(--ts);margin-top:2px;font-family:'IBM Plex Mono',monospace;letter-spacing:.02em}}
 
 @keyframes spin{{to{{transform:rotate(360deg)}}}}
-@keyframes pulse{{0%,100%{{opacity:1;box-shadow:0 0 0 0 rgba(0,230,118,0.4)}}50%{{opacity:0.7;box-shadow:0 0 0 4px rgba(0,230,118,0)}}}}
+@keyframes pulse{{0%,100%{{opacity:1;box-shadow:0 0 0 0 rgba(0,230,118,.35)}}50%{{opacity:.7;box-shadow:0 0 0 4px rgba(0,230,118,0)}}}}
 @keyframes flashIn{{from{{opacity:0;transform:translateY(-10px)}}to{{opacity:1;transform:translateY(0)}}}}
+@keyframes pulse-dot{{0%,100%{{opacity:1}}50%{{opacity:.3}}}}
 .spin{{display:inline-block;animation:spin 1.5s linear infinite;font-size:14px}}
 
-/* Tables */
 table.t{{width:100%;border-collapse:collapse}}
-table.t th{{padding:7px 10px;font-size:11px;color:#8b949e;font-weight:600;border-bottom:1px solid #30363d;text-align:left}}
-table.t td{{padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:12px;border-bottom:1px solid #21262d}}
+table.t th{{
+  padding:7px 10px;font-size:9px;font-weight:600;
+  font-family:'IBM Plex Mono',monospace;color:var(--td);
+  border-bottom:1px solid var(--bd-gold);
+  text-align:left;letter-spacing:3px;text-transform:uppercase;
+}}
+table.t td{{
+  padding:8px 10px;
+  font-family:'IBM Plex Mono',monospace;font-size:11px;
+  border-bottom:1px solid var(--bd-dim);font-feature-settings:"tnum";
+}}
 table.t tr:last-child td{{border:none}}
-table.t tr:hover td{{background:#1c2128}}
+table.t tr:hover td{{background:rgba(201,162,39,.025)}}
 
-/* Badges */
-.badge{{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600}}
-.badge.green{{background:#2ecc7120;color:#2ecc71;border:1px solid #2ecc71}}
+.badge{{display:inline-block;padding:2px 7px;border-radius:2px;font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;font-family:'IBM Plex Mono',monospace}}
+.badge.green{{background:rgba(0,230,118,.08);color:#00e676;border:1px solid rgba(0,230,118,.28)}}
 
-/* WFT */
 .wft-stats{{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:12px}}
 .wft-num{{text-align:center}}
-.wft-num .n{{font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace}}
-.wft-num .l{{font-size:10px;color:#8b949e}}
-.progress{{background:#21262d;border-radius:4px;height:6px;margin-bottom:12px;overflow:hidden}}
-.progress-fill{{height:100%;background:linear-gradient(90deg,#58a6ff,#2ecc71);border-radius:4px}}
+.wft-num .n{{font-size:22px;font-weight:700;font-family:'IBM Plex Mono',monospace;font-feature-settings:"tnum"}}
+.wft-num .l{{font-size:10px;color:var(--ts);letter-spacing:2px;text-transform:uppercase;font-family:'IBM Plex Mono',monospace}}
+.progress{{background:var(--bd-dim);border-radius:2px;height:3px;margin-bottom:12px;overflow:hidden}}
+.progress-fill{{height:100%;background:linear-gradient(90deg,var(--gold),#2ecc71);border-radius:2px}}
 .wft-scroll{{max-height:200px;overflow-y:auto}}
 
-/* DB Pills */
-.tf-pills{{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}}
-.tf-pill{{background:#21262d;border:1px solid #30363d;border-radius:4px;padding:3px 10px;font-size:11px;font-family:'JetBrains Mono',monospace}}
+.tf-pills{{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}}
+.tf-pill{{background:rgba(201,162,39,.05);border:1px solid rgba(201,162,39,.16);border-radius:2px;padding:3px 10px;font-size:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:2px;text-transform:uppercase}}
+.phase{{display:inline-block;padding:2px 8px;border-radius:2px;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;font-family:'IBM Plex Mono',monospace}}
 
-/* Halving */
-.phase{{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600}}
-
-/* Command Center KPI Strip — estilo hedge fund */
 .kpi-strip{{
-  display:grid;
-  grid-template-columns:repeat(6, 1fr);
-  gap:10px;
-  margin-bottom:18px;
-  padding:14px;
-  background:linear-gradient(135deg, #0d1117 0%, #0a0d12 100%);
-  border:1px solid #21262d;
-  border-radius:12px;
-  box-shadow:0 1px 0 #ffffff05 inset, 0 6px 20px -12px #00000080;
-  position:relative;
-  overflow:hidden;
-}}
-.kpi-strip::before{{
-  content:'';position:absolute;left:0;top:0;right:0;height:2px;
-  background:linear-gradient(90deg,#58a6ff 0%,#a78bfa 25%,#00e676 50%,#f1c40f 75%,#f44336 100%);
-  opacity:0.4;
+  display:grid;grid-template-columns:repeat(6,1fr);
+  gap:0;margin-bottom:20px;
+  background:linear-gradient(180deg,#060f26 0%,#040a18 100%);
+  border:1px solid rgba(201,162,39,.22);
+  border-top:2px solid var(--gold);
+  border-radius:3px;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.55) inset,
+    0 12px 32px -16px rgba(0,0,0,.9),
+    0 0 60px -30px rgba(201,162,39,.12);
+  position:relative;overflow:hidden;
 }}
 .kpi-card{{
-  display:flex;flex-direction:column;
-  padding:8px 12px;
-  border-right:1px solid #1c2128;
-  min-width:0;
+  display:flex;flex-direction:column;padding:18px 20px;
+  border-right:1px solid rgba(201,162,39,.08);
+  min-width:0;position:relative;
 }}
 .kpi-card:last-child{{border-right:none}}
 .kpi-label{{
-  font-size:9px;font-weight:700;
-  color:#6e7681;
-  text-transform:uppercase;letter-spacing:0.12em;
-  margin-bottom:4px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font-size:8px;font-weight:600;
+  font-family:'IBM Plex Mono',monospace;color:var(--td);
+  text-transform:uppercase;letter-spacing:3px;margin-bottom:8px;
 }}
 .kpi-value{{
-  font-family:'JetBrains Mono',monospace;
-  font-size:18px;font-weight:700;
-  letter-spacing:-0.02em;
-  margin-bottom:2px;
-  line-height:1.1;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:28px;font-weight:700;
+  letter-spacing:-.04em;margin-bottom:4px;line-height:1;
+  font-feature-settings:"tnum";
 }}
 .kpi-sub{{
-  font-family:'JetBrains Mono',monospace;
-  font-size:10px;color:#8b949e;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:10px;color:var(--ts);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.03em;
 }}
-.kpi-pos{{color:#00e676}}
-.kpi-neg{{color:#f44336}}
-.kpi-warn{{color:#f1c40f}}
-.kpi-neutral{{color:#e6edf3}}
+.kpi-pos{{color:var(--gold);text-shadow:0 0 28px rgba(201,162,39,.55)}}
+.kpi-neg{{color:#f44336;text-shadow:0 0 20px rgba(244,67,54,.3)}}
+.kpi-warn{{color:#f59e0b}}
+.kpi-neutral{{color:var(--tx)}}
 .kpi-pill{{
-  display:inline-block;padding:1px 6px;
-  border-radius:8px;font-size:9px;font-weight:600;
-  background:#21262d;border:1px solid #30363d;
-  margin-left:4px;
-}}
-@media (max-width: 900px) {{
-  .kpi-strip{{grid-template-columns:repeat(3, 1fr)}}
-  .kpi-card{{border-right:none;border-bottom:1px solid #1c2128;padding-bottom:10px}}
+  display:inline-block;padding:1px 5px;border-radius:2px;
+  font-size:8px;font-weight:600;
+  background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.18);
+  margin-left:4px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;
+  font-family:'IBM Plex Mono',monospace;
 }}
 
-/* Risk metrics panel */
+@media(max-width:900px){{
+  .kpi-strip{{grid-template-columns:repeat(3,1fr)}}
+  .kpi-card{{border-right:none;border-bottom:1px solid rgba(201,162,39,.06);padding-bottom:14px}}
+}}
+
 .risk-panel{{
-  background:linear-gradient(180deg,#161b22 0%,#13181f 100%);
-  border:1px solid #21262d;border-radius:12px;
-  padding:14px 18px;margin-bottom:18px;
-  box-shadow:0 1px 0 #ffffff05 inset, 0 6px 20px -12px #00000070;
+  background:linear-gradient(150deg,#08112a 0%,#050d1e 100%);
+  border:1px solid var(--bd-gold);border-top:2px solid #f59e0b;
+  border-radius:3px;padding:18px 22px;margin-bottom:16px;
+  box-shadow:0 0 0 1px rgba(0,0,0,.55) inset,0 24px 48px -20px rgba(0,0,0,.8);
 }}
 .risk-header{{
   display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #21262d;
+  margin-bottom:14px;padding-bottom:12px;
+  border-bottom:1px solid rgba(201,162,39,.1);
 }}
 .risk-title{{
-  font-size:11px;font-weight:700;color:#8b949e;
-  text-transform:uppercase;letter-spacing:0.12em;
-  display:flex;align-items:center;gap:8px;
+  font-size:9px;font-weight:600;
+  font-family:'IBM Plex Mono',monospace;color:var(--gold);
+  text-transform:uppercase;letter-spacing:5px;
+  display:flex;align-items:center;gap:10px;
 }}
-.risk-title::before{{
-  content:'';width:3px;height:14px;
-  background:linear-gradient(180deg,#f1c40f,#e74c3c);border-radius:2px;
-}}
+.risk-title::before{{content:'';width:2px;height:12px;background:#f59e0b;box-shadow:0 0 8px rgba(245,158,11,.6);flex-shrink:0}}
 .risk-grid{{display:grid;grid-template-columns:repeat(7,1fr);gap:0}}
-.risk-cell{{
-  text-align:center;padding:4px 8px;
-  border-right:1px solid #1c2128;
-}}
+.risk-cell{{text-align:center;padding:8px 12px;border-right:1px solid rgba(201,162,39,.07)}}
 .risk-cell:last-child{{border-right:none}}
 .risk-cell-label{{
-  font-size:9px;font-weight:700;color:#6e7681;
-  text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;
+  font-size:8px;font-weight:600;
+  font-family:'IBM Plex Mono',monospace;color:var(--td);
+  text-transform:uppercase;letter-spacing:3px;margin-bottom:8px;
 }}
 .risk-cell-val{{
-  font-family:'JetBrains Mono',monospace;
-  font-size:16px;font-weight:700;
-  letter-spacing:-0.02em;line-height:1.1;margin-bottom:2px;
+  font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;
+  letter-spacing:-.02em;line-height:1.1;margin-bottom:2px;font-feature-settings:"tnum";
 }}
-.risk-cell-ctx{{
-  font-size:9px;color:#6e7681;
-  font-family:'JetBrains Mono',monospace;
-}}
-@media (max-width: 900px) {{
+.risk-cell-ctx{{font-size:9px;color:var(--td);font-family:'IBM Plex Mono',monospace;letter-spacing:1px;text-transform:uppercase}}
+@media(max-width:900px){{
   .risk-grid{{grid-template-columns:repeat(4,1fr)}}
-  .risk-cell{{border-right:none;border-bottom:1px solid #1c2128;padding:8px}}
+  .risk-cell{{border-right:none;border-bottom:1px solid rgba(201,162,39,.06);padding:10px}}
 }}
 
-/* Section divider */
-.section-divider{{
-  display:flex;align-items:center;gap:12px;
-  margin:24px 0 14px;
-}}
-.section-divider-line{{flex:1;height:1px;background:#21262d}}
+.section-divider{{display:flex;align-items:center;gap:16px;margin:28px 0 16px}}
+.section-divider-line{{flex:1;height:1px;background:linear-gradient(90deg,var(--bd-gold),transparent)}}
 .section-divider-text{{
-  font-size:10px;font-weight:700;color:#6e7681;
-  text-transform:uppercase;letter-spacing:0.15em;
+  font-size:8px;font-weight:600;
+  font-family:'IBM Plex Mono',monospace;color:var(--gold);
+  text-transform:uppercase;letter-spacing:5px;white-space:nowrap;
 }}
 
-/* Footer */
 .footer-pro{{
-  margin-top:32px;padding:18px 0 24px;
-  border-top:1px solid #21262d;
-  display:flex;justify-content:space-between;align-items:flex-start;
-  gap:24px;flex-wrap:wrap;
+  margin-top:36px;padding:20px 0 28px;
+  border-top:1px solid var(--bd-gold);
+  display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;
 }}
 .footer-col{{flex:1;min-width:200px}}
 .footer-title{{
-  font-size:10px;font-weight:700;color:#8b949e;
-  text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px;
+  font-size:8px;font-weight:600;
+  font-family:'IBM Plex Mono',monospace;color:var(--td);
+  text-transform:uppercase;letter-spacing:4px;margin-bottom:8px;
 }}
-.footer-text{{font-size:11px;color:#6e7681;line-height:1.6}}
+.footer-text{{font-size:11px;color:var(--td);line-height:1.8}}
 .footer-pill{{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:3px 10px;border-radius:12px;
-  background:#0d2016;border:1px solid #2ecc7140;
-  font-size:10px;font-weight:600;color:#2ecc71;
+  display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:2px;
+  background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.2);
+  font-size:10px;font-weight:600;color:#00e676;
+  font-family:'IBM Plex Mono',monospace;letter-spacing:2px;text-transform:uppercase;
 }}
 .footer-pill::before{{
-  content:'';width:6px;height:6px;border-radius:50%;
-  background:#2ecc71;box-shadow:0 0 8px #2ecc71;
-  animation:pulse-dot 2s ease-in-out infinite;
+  content:'';width:5px;height:5px;border-radius:50%;
+  background:#00e676;box-shadow:0 0 6px #00e676;animation:pulse-dot 2s ease-in-out infinite;
 }}
-@keyframes pulse-dot{{0%,100%{{opacity:1}}50%{{opacity:0.4}}}}
 
-/* Regime panel */
-.regime-grid{{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}}
-.regime-card{{background:linear-gradient(180deg,#161b22 0%,#13181f 100%);border:1px solid #21262d;border-radius:10px;padding:14px 16px;min-width:130px;flex:1;text-align:center;transition:transform .15s ease,border-color .15s ease;box-shadow:0 4px 12px -8px #00000080}}
-.regime-card:hover{{transform:translateY(-2px);border-color:#30363d}}
-.regime-asset{{font-weight:700;font-size:13px;margin-bottom:8px;letter-spacing:-.01em}}
-.regime-badge{{display:inline-block;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:700;margin-bottom:6px;letter-spacing:.05em}}
-.regime-bull  {{background:linear-gradient(135deg,#2ecc7125,#2ecc7115);color:#2ecc71;border:1px solid #2ecc7180;box-shadow:0 0 12px -4px #2ecc7140}}
-.regime-range {{background:linear-gradient(135deg,#f1c40f25,#f1c40f15);color:#f1c40f;border:1px solid #f1c40f80;box-shadow:0 0 12px -4px #f1c40f40}}
-.regime-bear  {{background:linear-gradient(135deg,#e74c3c25,#e74c3c15);color:#e74c3c;border:1px solid #e74c3c80;box-shadow:0 0 12px -4px #e74c3c40}}
-.regime-unk   {{background:#55555520;color:#888;border:1px solid #555}}
-.regime-rsi   {{font-size:11px;color:#8b949e;font-family:'JetBrains Mono',monospace}}
+.regime-grid{{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}}
+.regime-card{{
+  background:linear-gradient(150deg,#08112a 0%,#050d1e 100%);
+  border:1px solid var(--bd-gold);border-radius:2px;
+  padding:14px 16px;min-width:130px;flex:1;text-align:center;
+  transition:transform .15s,border-color .15s;
+  box-shadow:0 4px 16px -8px rgba(0,0,0,.7);
+}}
+.regime-card:hover{{transform:translateY(-2px);border-color:rgba(201,162,39,.35)}}
+.regime-asset{{font-weight:700;font-size:11px;margin-bottom:8px;letter-spacing:4px;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;color:var(--ts)}}
+.regime-badge{{
+  display:inline-block;padding:4px 14px;border-radius:2px;
+  font-size:10px;font-weight:700;margin-bottom:6px;letter-spacing:4px;
+  text-transform:uppercase;font-family:'IBM Plex Mono',monospace;
+}}
+.regime-bull{{background:rgba(0,230,118,.08);color:#00e676;border:1px solid rgba(0,230,118,.38)}}
+.regime-range{{background:rgba(245,158,11,.08);color:#f59e0b;border:1px solid rgba(245,158,11,.38)}}
+.regime-bear{{background:rgba(244,67,54,.08);color:#f44336;border:1px solid rgba(244,67,54,.38)}}
+.regime-unk{{background:rgba(100,100,100,.08);color:#666;border:1px solid rgba(100,100,100,.18)}}
+.regime-rsi{{font-size:10px;color:var(--ts);font-family:'IBM Plex Mono',monospace;letter-spacing:2px}}
 
-/* Activity feed */
-.feed{{background:linear-gradient(180deg,#161b22 0%,#13181f 100%);border:1px solid #21262d;border-radius:12px;padding:16px 18px;margin-bottom:18px;box-shadow:0 1px 0 #ffffff05 inset,0 8px 24px -12px #00000060}}
-.feed-title{{font-size:11px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}}
-.feed-list{{max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:5px}}
-.feed-list::-webkit-scrollbar{{width:6px}}
-.feed-list::-webkit-scrollbar-track{{background:#0d1117;border-radius:3px}}
-.feed-list::-webkit-scrollbar-thumb{{background:#30363d;border-radius:3px}}
-.feed-list::-webkit-scrollbar-thumb:hover{{background:#484f58}}
-.feed-item{{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:7px;font-size:12px;background:#0d1117;border-left:3px solid #30363d;transition:transform .12s ease,background .12s ease}}
-.feed-item:hover{{transform:translateX(2px);background:#0f141d}}
-.feed-item.rec  {{border-left-color:#2ecc71;background:#0d2016}}
-.feed-item.neg  {{border-left-color:#e74c3c;background:#1a0d0d}}
-.feed-item.pos  {{border-left-color:#f1c40f;background:#1a1800}}
-.feed-item.skip {{border-left-color:#555;opacity:.7}}
-.feed-ts  {{color:#555;font-family:'JetBrains Mono',monospace;font-size:10px;min-width:38px}}
-.feed-asset{{font-weight:700;min-width:52px}}
-.feed-strat{{color:#8b949e;min-width:80px}}
-.feed-note {{color:#8b949e;flex:1;font-size:11px}}
-.feed-cagr {{font-family:'JetBrains Mono',monospace;font-weight:600;min-width:55px;text-align:right}}
+.feed{{
+  background:linear-gradient(150deg,#08112a 0%,#050d1e 100%);
+  border:1px solid var(--bd-gold);border-radius:3px;
+  padding:18px 20px;margin-bottom:16px;
+  box-shadow:0 0 0 1px rgba(0,0,0,.55) inset,0 24px 48px -20px rgba(0,0,0,.8);
+}}
+.feed-title{{
+  font-size:9px;font-weight:600;
+  font-family:'IBM Plex Mono',monospace;color:var(--gold);
+  text-transform:uppercase;letter-spacing:5px;
+  margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;
+}}
+.feed-list{{max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:3px}}
+.feed-list::-webkit-scrollbar{{width:4px}}
+.feed-list::-webkit-scrollbar-track{{background:var(--n0);border-radius:2px}}
+.feed-list::-webkit-scrollbar-thumb{{background:rgba(201,162,39,.18);border-radius:2px}}
+.feed-list::-webkit-scrollbar-thumb:hover{{background:rgba(201,162,39,.38)}}
+.feed-item{{
+  display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:2px;
+  font-size:11px;background:rgba(255,255,255,.012);
+  border-left:2px solid rgba(201,162,39,.12);
+  transition:transform .1s,background .1s;
+  font-family:'IBM Plex Mono',monospace;
+}}
+.feed-item:hover{{transform:translateX(2px);background:rgba(201,162,39,.035)}}
+.feed-item.rec{{border-left-color:rgba(0,230,118,.55);background:rgba(0,230,118,.03)}}
+.feed-item.neg{{border-left-color:rgba(244,67,54,.55);background:rgba(244,67,54,.03)}}
+.feed-item.pos{{border-left-color:rgba(245,158,11,.55);background:rgba(245,158,11,.03)}}
+.feed-item.skip{{border-left-color:rgba(100,100,100,.25);opacity:.6}}
+.feed-ts{{color:var(--td);font-size:9px;min-width:38px;letter-spacing:.05em}}
+.feed-asset{{font-weight:600;min-width:52px;letter-spacing:.05em}}
+.feed-strat{{color:var(--ts);min-width:80px;letter-spacing:.02em}}
+.feed-note{{color:var(--ts);flex:1;font-size:10px;letter-spacing:.02em}}
+.feed-cagr{{font-weight:700;min-width:55px;text-align:right;font-feature-settings:"tnum"}}
 
-/* Counter banner */
 .counter-banner{{
-  background:linear-gradient(135deg,#0d1f3c 0%,#0d2616 50%,#1a0d2e 100%);
-  border:1px solid #30363d;border-radius:14px;
-  padding:22px 30px;margin-bottom:20px;
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;
+  background:linear-gradient(135deg,#060f26 0%,#050d1e 60%,#060f26 100%);
+  border:1px solid rgba(201,162,39,.28);border-top:2px solid var(--gold);
+  border-radius:3px;padding:24px 32px;margin-bottom:20px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;
   position:relative;overflow:hidden;
-  box-shadow:0 1px 0 #ffffff08 inset,0 12px 32px -12px #00000080;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.55) inset,
+    0 16px 48px -16px rgba(0,0,0,.9),
+    0 0 80px -40px rgba(201,162,39,.18);
 }}
 .counter-banner::before{{
   content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse at 20% 30%,#58a6ff12 0%,transparent 55%),
-             radial-gradient(ellipse at 80% 70%,#2ecc7112 0%,transparent 55%),
-             radial-gradient(ellipse at 50% 100%,#a78bfa08 0%,transparent 50%);
+  background:
+    radial-gradient(ellipse at 15% 30%,rgba(201,162,39,.06) 0%,transparent 50%),
+    radial-gradient(ellipse at 85% 70%,rgba(0,230,118,.04) 0%,transparent 50%);
   pointer-events:none;
 }}
-.counter-main{{display:flex;align-items:baseline;gap:12px;position:relative}}
+.counter-main{{display:flex;align-items:baseline;gap:14px;position:relative}}
 .counter-number{{
-  font-family:'JetBrains Mono',monospace;font-size:56px;font-weight:700;
-  background:linear-gradient(90deg,#58a6ff,#2ecc71,#a78bfa);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  line-height:1;letter-spacing:-2.5px;
-  filter:drop-shadow(0 2px 8px #58a6ff30);
+  font-family:'IBM Plex Mono',monospace;font-size:62px;font-weight:700;
+  color:var(--gold);
+  text-shadow:0 0 40px rgba(201,162,39,.5),0 0 80px rgba(201,162,39,.2);
+  line-height:1;letter-spacing:-4px;font-feature-settings:"tnum";
 }}
-.counter-label{{font-size:13px;color:#8b949e;line-height:1.4}}
-.counter-label strong{{color:#e6edf3;display:block;font-size:15px;letter-spacing:-.01em}}
-.counter-stats{{display:flex;gap:22px;flex-wrap:wrap;position:relative}}
+.counter-label{{font-size:12px;color:var(--ts);line-height:1.5;letter-spacing:.03em;font-family:'IBM Plex Mono',monospace}}
+.counter-label strong{{color:var(--tx);display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase}}
+.counter-stats{{display:flex;gap:24px;flex-wrap:wrap;position:relative}}
 .counter-stat{{text-align:center;padding:0 4px}}
-.counter-stat .val{{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:700;color:#e6edf3;letter-spacing:-.03em}}
-.counter-stat .lbl{{font-size:10px;color:#8b949e;margin-top:3px;letter-spacing:.1em;font-weight:600}}
+.counter-stat .val{{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;color:var(--tx);letter-spacing:-.02em;font-feature-settings:"tnum"}}
+.counter-stat .lbl{{font-size:8px;color:var(--ts);margin-top:4px;letter-spacing:3px;font-weight:600;text-transform:uppercase;font-family:'IBM Plex Mono',monospace}}
 .counter-rate{{
-  font-family:'JetBrains Mono',monospace;font-size:12px;color:#2ecc71;font-weight:600;
-  background:linear-gradient(135deg,#2ecc7115,#2ecc7108);
-  border:1px solid #2ecc7140;border-radius:6px;padding:5px 12px;
-  box-shadow:0 0 12px -4px #2ecc7140;
+  font-family:'IBM Plex Mono',monospace;font-size:11px;color:#00e676;font-weight:600;
+  background:rgba(0,230,118,.05);border:1px solid rgba(0,230,118,.18);
+  border-radius:2px;padding:5px 14px;letter-spacing:2px;text-transform:uppercase;
 }}
 
-/* Footer */
-.footer{{text-align:center;color:#8b949e;font-size:11px;padding:18px 0;border-top:1px solid #21262d;margin-top:16px}}
+.footer{{
+  text-align:center;color:var(--td);font-size:10px;padding:20px 0;
+  border-top:1px solid var(--bd-gold);margin-top:16px;
+  font-family:'IBM Plex Mono',monospace;letter-spacing:2px;text-transform:uppercase;
+}}
 
-/* Responsive */
+::-webkit-scrollbar{{width:6px;height:6px}}
+::-webkit-scrollbar-track{{background:var(--n0)}}
+::-webkit-scrollbar-thumb{{background:rgba(201,162,39,.18);border-radius:2px}}
+::-webkit-scrollbar-thumb:hover{{background:rgba(201,162,39,.38)}}
+
 @media(max-width:600px){{
-  .matrix{{border-spacing:4px 2px}}
-  .matrix th,.matrix td{{padding:6px 4px}}
-  .matrix th{{font-size:10px}}
+  .container{{padding:12px 10px 20px}}
+  .hdr{{flex-direction:column;gap:6px}}
+  .hdr .meta{{text-align:left}}
+  .matrix{{border-spacing:3px 2px}}
+  .matrix th,.matrix td{{padding:5px 3px}}
+  .matrix th{{font-size:8px;letter-spacing:2px}}
   .asset-name{{font-size:11px}}
+  .counter-banner{{padding:16px 18px;gap:12px}}
+  .counter-number{{font-size:40px;letter-spacing:-2px}}
+  .counter-stats{{gap:14px}}
+  .section-divider{{margin:16px 0 12px}}
+  .feed-item{{gap:5px}}
+  .feed-ts{{min-width:28px}}
+  .feed-strat{{min-width:46px}}
+  .feed-note{{font-size:9px}}
+  .card{{padding:14px 16px}}
+  .risk-panel{{padding:12px 16px}}
 }}
 
-/* Red flags tooltip — custom, instantaneo */
-.rf-tip {{ position: relative; display: inline-block; }}
-.rf-tip:hover::after {{
-  content: attr(data-tip);
-  white-space: pre-line;
-  position: absolute;
-  bottom: 130%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #1c1f26;
-  color: #e6edf3;
-  border: 1px solid #30363d;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 400;
-  line-height: 1.5;
-  width: 320px;
-  max-width: 90vw;
-  z-index: 9999;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
-  pointer-events: none;
-  text-align: left;
+@media(max-width:480px){{
+  .kpi-strip{{grid-template-columns:repeat(2,1fr);border-radius:2px}}
+  .kpi-value{{font-size:22px}}
+  .kpi-card{{border-right:none;border-bottom:1px solid rgba(201,162,39,.06);padding:12px 14px}}
+  .kpi-card:last-child{{border-bottom:none}}
+  .kpi-label{{font-size:7px;letter-spacing:2px}}
+  .kpi-sub{{font-size:9px}}
+  .risk-grid{{grid-template-columns:repeat(2,1fr)}}
+  .risk-cell{{border-right:none;border-bottom:1px solid rgba(201,162,39,.06);padding:10px 8px}}
+  .risk-cell-val{{font-size:16px}}
+  .counter-number{{font-size:34px;letter-spacing:-1px}}
+  .counter-label strong{{font-size:12px}}
+  .counter-banner{{flex-direction:column;align-items:flex-start;padding:14px 16px;gap:10px}}
+  .counter-rate{{font-size:10px;padding:4px 10px}}
+  .counter-stat .val{{font-size:18px}}
+  .regime-grid{{gap:6px}}
+  .regime-card{{min-width:calc(50% - 3px);padding:10px 12px;flex:none}}
+  .hdr h1{{font-size:16px;letter-spacing:2px}}
+  .rule{{padding:12px 14px}}
+  .pills{{gap:5px}}
+  .pill{{padding:3px 8px;font-size:10px}}
+  .heatmap-wrap{{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}}
+  .heatmap-wrap>div{{white-space:nowrap;min-width:max-content}}
+  .perf-snap-cols{{flex-direction:column!important;gap:12px}}
+  .container{{padding:10px 8px 16px}}
+  .risk-cell-label{{font-size:7px;letter-spacing:2px}}
+  .footer-pro{{flex-direction:column;gap:12px}}
+  .footer-col{{min-width:unset}}
 }}
-.rf-tip:hover::before {{
-  content: '';
-  position: absolute;
-  bottom: 120%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 6px solid transparent;
-  border-top-color: #30363d;
-  z-index: 10000;
+
+.card-purple{{border-top:2px solid var(--gold-b)!important}}
+.card-purple:hover{{border-color:rgba(232,192,64,.48)!important;box-shadow:0 0 48px -20px rgba(232,192,64,.12),0 0 0 1px rgba(0,0,0,.55) inset!important}}
+.card-green{{border-top:2px solid rgba(0,230,118,.75)!important;transition:border-color .25s,transform .25s,box-shadow .25s}}
+.card-green:hover{{border-top-color:rgba(0,230,118,.55)!important;box-shadow:0 0 48px -20px rgba(0,230,118,.1),0 0 0 1px rgba(0,0,0,.55) inset!important;transform:translateY(-2px)}}
+.regime-card{{border-top:2px solid transparent}}
+.regime-card:has(.regime-bull){{border-top-color:rgba(0,230,118,.48)}}
+.regime-card:has(.regime-bear){{border-top-color:rgba(244,67,54,.48)}}
+.regime-card:has(.regime-range){{border-top-color:rgba(245,158,11,.48)}}
+
+.rf-tip{{position:relative;display:inline-block}}
+.rf-tip:hover::after{{
+  content:attr(data-tip);white-space:pre-line;
+  position:absolute;bottom:130%;left:50%;transform:translateX(-50%);
+  background:#060c1c;color:var(--tx);
+  border:1px solid var(--bd-gold);
+  padding:10px 14px;border-radius:3px;
+  font-size:11px;font-weight:400;line-height:1.6;
+  width:320px;max-width:90vw;z-index:9999;
+  box-shadow:0 8px 32px rgba(0,0,0,.7);
+  pointer-events:none;text-align:left;
+  font-family:'IBM Plex Mono',monospace;
 }}
+.rf-tip:hover::before{{
+  content:'';position:absolute;bottom:120%;left:50%;transform:translateX(-50%);
+  border:5px solid transparent;border-top-color:var(--bd-gold);z-index:10000;
+}}
+
 </style>
 </head>
 <body>
@@ -1802,41 +2221,41 @@ table.t tr:hover td{{background:#1c2128}}
 <div class="container">
 
 <!-- HEADER INSTITUCIONAL -->
-<div class="hdr" style="border-bottom:1px solid #21262d;padding-bottom:14px;margin-bottom:18px">
+<div class="hdr" style="border-bottom:1px solid #1a2240;padding-bottom:14px;margin-bottom:18px">
   <div>
     <div style="display:flex;align-items:baseline;gap:14px">
       <h1 style="margin:0">&#963; SIGMA</h1>
-      <span style="color:#6e7681;font-size:11px;letter-spacing:.15em;text-transform:uppercase;font-weight:600">Quantitative Multi-Asset Strategy</span>
+      <span style="color:#4e5f90;font-size:11px;letter-spacing:.15em;text-transform:uppercase;font-weight:600">Quantitative Multi-Asset Strategy</span>
     </div>
-    <div style="color:#6e7681;font-size:10px;margin-top:6px;letter-spacing:.05em">
-      <span style="color:#8b949e">STRATEGY:</span> Long/Short Crypto Futures
+    <div style="color:#4e5f90;font-size:10px;margin-top:6px;letter-spacing:.05em">
+      <span style="color:#7a8db5">STRATEGY:</span> Long/Short Crypto Futures
       <span style="color:#444">  |  </span>
-      <span style="color:#8b949e">UNIVERSE:</span> BTC · ETH · SOL · LTC · BNB
+      <span style="color:#7a8db5">UNIVERSE:</span> BTC · ETH · SOL · LTC · BNB
       <span style="color:#444">  |  </span>
-      <span style="color:#8b949e">TF:</span> 15m · 1H · 4H
+      <span style="color:#7a8db5">TF:</span> 15m · 1H · 4H
       <span style="color:#444">  |  </span>
-      <span style="color:#8b949e">VENUE:</span> Binance Futures
+      <span style="color:#7a8db5">VENUE:</span> Binance Futures
     </div>
   </div>
   <div class="meta" style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
     <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
-      <button id="bell-btn" onclick="toggleBell()" style="position:relative;background:#161b22;border:1px solid #30363d;color:#c9d1d9;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600">
+      <button id="bell-btn" onclick="toggleBell()" style="position:relative;background:#0d1428;border:1px solid #242f55;color:#b8c5e0;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600">
         🔔 <span id="bell-badge" style="display:none;position:absolute;top:-4px;right:-4px;background:#f85149;color:#fff;border-radius:10px;padding:1px 6px;font-size:9px;font-weight:700;min-width:16px;text-align:center">0</span>
       </button>
-      <a href="/models" style="background:#161b22;border:1px solid #30363d;color:#a78bfa;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:600;letter-spacing:.05em">Per-Model Paper &rarr;</a>
+      <a href="/models" style="background:#0d1428;border:1px solid #242f55;color:#e0bb3a;padding:6px 12px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:600;letter-spacing:.05em">Per-Model Paper &rarr;</a>
     </div>
     <!-- Bell panel -->
-    <div id="bell-panel" style="display:none;position:absolute;top:90px;right:24px;width:380px;max-height:480px;overflow-y:auto;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;box-shadow:0 12px 36px rgba(0,0,0,.6);z-index:1000">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #21262d">
-        <span style="color:#c9d1d9;font-weight:700;font-size:12px;letter-spacing:.05em;text-transform:uppercase">Eventos recientes</span>
-        <button onclick="markAllRead()" style="background:none;border:none;color:#58a6ff;cursor:pointer;font-size:10px;font-weight:600;font-family:inherit">Marcar leidos</button>
+    <div id="bell-panel" style="display:none;position:absolute;top:90px;right:24px;width:380px;max-height:480px;overflow-y:auto;background:#07091c;border:1px solid #242f55;border-radius:10px;padding:12px;box-shadow:0 12px 36px rgba(0,0,0,.6);z-index:1000">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #1a2240">
+        <span style="color:#b8c5e0;font-weight:700;font-size:12px;letter-spacing:.05em;text-transform:uppercase">Eventos recientes</span>
+        <button onclick="markAllRead()" style="background:none;border:none;color:#c9a227;cursor:pointer;font-size:10px;font-weight:600;font-family:inherit">Marcar leidos</button>
       </div>
       <div id="bell-list" style="display:flex;flex-direction:column;gap:6px"></div>
     </div>
     <!-- Toast container -->
     <div id="toast-container" style="position:fixed;bottom:24px;right:24px;display:flex;flex-direction:column;gap:8px;z-index:9999;pointer-events:none"></div>
-    <div style="color:#6e7681;font-size:10px;letter-spacing:.1em;text-transform:uppercase">As of</div>
-    <div style="color:#c9d1d9;font-size:11px;font-family:'JetBrains Mono',monospace">{now}</div>
+    <div style="color:#4e5f90;font-size:10px;letter-spacing:.1em;text-transform:uppercase">As of</div>
+    <div style="color:#b8c5e0;font-size:11px;font-family:'IBM Plex Mono',monospace">{now}</div>
     <span class="phase" style="background:{phase_col}18;color:{phase_col};border:1px solid {phase_col}">{phase_txt}</span>
   </div>
 </div>
@@ -1888,7 +2307,7 @@ table.t tr:hover td{{background:#1c2128}}
 <div class="risk-panel">
   <div class="risk-header">
     <div class="risk-title">Risk Metrics &amp; Performance Ratios</div>
-    <div style="font-size:10px;color:#6e7681">actualizado en vivo</div>
+    <div style="font-size:10px;color:#4e5f90">actualizado en vivo</div>
   </div>
   <div class="risk-grid">
     <div class="risk-cell">
@@ -1956,11 +2375,15 @@ table.t tr:hover td{{background:#1c2128}}
     {tf_counter_html}
   </div>
   <div style="text-align:right">
-    <div class="counter-rate" id="live-rate">+{db.get("rate_hr",1328):,} / hora</div>
-    <div style="font-size:11px;color:#8b949e;margin-top:6px">{n_ready} modelos OOS positivos</div>
-    <div style="font-size:11px;color:#8b949e">{n_total - n_ready} pendientes</div>
+    <div class="counter-rate" id="live-rate">+{db.get("optuna_rate_hr", db.get("rate_hr",0)):,} / hora</div>
+    <div style="font-size:11px;color:#7a8db5;margin-top:6px">{n_ready} modelos OOS positivos</div>
+    <div style="font-size:11px;color:#7a8db5">{n_total - n_ready} pendientes M1</div>
   </div>
 </div>
+
+{_dca_html}
+{_cs_html}
+{_gate_html}
 
 <div class="section-divider">
   <span class="section-divider-text">Mercado &amp; Modelos</span>
@@ -1969,7 +2392,7 @@ table.t tr:hover td{{background:#1c2128}}
 
 <!-- REGIME PANEL -->
 <div style="margin-bottom:18px">
-  <div style="font-size:11px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;justify-content:space-between">
+  <div style="font-size:11px;font-weight:700;color:#7a8db5;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;justify-content:space-between">
     <span>&#127760; Regimen Actual por Par <span style="font-weight:400;color:#555">(actualiza cada 5min)</span></span>
     <span style="font-weight:400;color:#555">&#11088; Bull &gt;55 RSI_W + sobre EMA200 &nbsp; ~ Range &nbsp; &#10060; Bear</span>
   </div>
@@ -2001,7 +2424,7 @@ table.t tr:hover td{{background:#1c2128}}
     <div class="rule-sub">Max 2 activos activos &bull; 2.5% riesgo c/u &bull; 5% total maximo</div>
   </div>
   <div>
-    <div style="font-size:11px;color:#8b949e;margin-bottom:6px">Mejores 2 ahora:</div>
+    <div style="font-size:11px;color:#7a8db5;margin-bottom:6px">Mejores 2 ahora:</div>
     <div class="pills">{top2_pills}</div>
   </div>
   <div class="prog">Modelos listos: <strong>{n_ready}/{n_total}</strong></div>
@@ -2012,11 +2435,11 @@ table.t tr:hover td{{background:#1c2128}}
   <!-- Motor 1: Crypto -->
   <div class="card" id="matrix-section">
     <div class="card-title" style="display:flex;justify-content:space-between">
-      <span>Motor 1 &mdash; Crypto &nbsp;<span style="font-weight:400;color:#8b949e;font-size:12px">BTC / ETH / LTC / SOL / BNB</span></span>
+      <span>Motor 1 &mdash; Crypto &nbsp;<span style="font-weight:400;color:#7a8db5;font-size:12px">BTC / ETH / LTC / SOL / BNB</span></span>
       <span style="font-weight:400;color:#555;font-size:12px">
         <span style="color:#2ecc71">&#9632;</span> Positivo &nbsp;
-        <span style="color:#58a6ff">&#9632;</span> Optimizando &nbsp;
-        <span style="color:#30363d">&#9632;</span> Pendiente &nbsp;
+        <span style="color:#c9a227">&#9632;</span> Optimizando &nbsp;
+        <span style="color:#242f55">&#9632;</span> Pendiente &nbsp;
         <span style="color:#e74c3c44">&#9632;</span> OOS neg.
       </span>
     </div>
@@ -2039,16 +2462,16 @@ table.t tr:hover td{{background:#1c2128}}
   </div>
 
   <!-- Motor 2: Commodities -->
-  <div class="card" id="matrix-section-m2" style="border:1px solid #FFD70044;background:linear-gradient(180deg,rgba(255,215,0,.05),#161b22)">
+  <div class="card" id="matrix-section-m2" style="border:1px solid #FFD70044;background:linear-gradient(180deg,rgba(255,215,0,.05),#0d1428)">
     <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
-      <span><span style="color:#FFD700;font-weight:700">Motor 2</span> <span style="color:#8b949e;font-weight:400">&mdash; Commodities</span> <span style="font-weight:400;color:#8b949e;font-size:11px">XAU / XAG</span></span>
-      <span style="font-weight:400;color:#555;font-size:10px"><span style="color:#2ecc71">&#9632;</span> Listo &nbsp;<span style="color:#58a6ff">&#9632;</span> Optim. &nbsp;<span style="color:#30363d">&#9632;</span> Pendiente</span>
+      <span><span style="color:#ffa657;font-weight:700">SIGMA MACRO</span> <span style="color:#7a8db5;font-weight:400">&mdash; Metals &amp; Energy</span></span>
+      <span style="font-weight:400;color:#555;font-size:10px"><span style="color:#2ecc71">&#9632;</span> Listo &nbsp;<span style="color:#c9a227">&#9632;</span> Optim. &nbsp;<span style="color:#242f55">&#9632;</span> Pendiente</span>
     </div>
     <div class="matrix-wrap">
       <table class="matrix">
         <thead><tr>
           <th class="th-asset">Activo</th>
-          <th>4H</th><th>1H</th><th>15m</th><th>5m</th>
+          <th>1D</th><th>4H</th><th>1H</th><th>15m</th>
         </tr></thead>
         <tbody>{matrix_rows_m2}</tbody>
       </table>
@@ -2070,13 +2493,13 @@ table.t tr:hover td{{background:#1c2128}}
 <div class="card">
   <div class="card-title">Walk-Forward BTC 1H &mdash; Consistencia Historica 2017-2026</div>
   <div class="wft-stats">
-    <div class="wft-num"><div class="n" style="color:#58a6ff">{wft_done}/97</div><div class="l">Ventanas</div></div>
+    <div class="wft-num"><div class="n" style="color:#c9a227">{wft_done}/97</div><div class="l">Ventanas</div></div>
     <div class="wft-num"><div class="n" style="color:{wft_col}">{wft_pct:.0f}%</div><div class="l">Positivas</div></div>
     <div class="wft-num"><div class="n" style="color:#2ecc71">{wft_pos}</div><div class="l">OK</div></div>
     <div class="wft-num"><div class="n" style="color:#e74c3c">{wft_done-wft_pos}</div><div class="l">Negativas</div></div>
   </div>
   <div class="progress"><div class="progress-fill" style="width:{round(wft_done/97*100,1)}%"></div></div>
-  {"<div class='wft-scroll'><table class='t'><thead><tr><th>Ventana</th><th>Trades</th><th>WR</th><th>CAGR</th><th>&#10003;</th></tr></thead><tbody>" + wft_rows + "</tbody></table></div>" if wft_rows else "<div style='color:#8b949e;text-align:center;padding:16px'>Corriendo...</div>"}
+  {"<div class='wft-scroll'><table class='t'><thead><tr><th>Ventana</th><th>Trades</th><th>WR</th><th>CAGR</th><th>&#10003;</th></tr></thead><tbody>" + wft_rows + "</tbody></table></div>" if wft_rows else "<div style='color:#7a8db5;text-align:center;padding:16px'>Corriendo...</div>"}
 </div>
 
 <!-- CROSS-ASSET -->
@@ -2084,8 +2507,8 @@ table.t tr:hover td{{background:#1c2128}}
 <div class="card">
   <div class="card-title">Cross-Asset &mdash; Params BTC en otros activos</div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">{ca_cards_html}</div>
-  <div style="font-size:12px;color:#8b949e">
-    Positivos: <strong style="color:#e6edf3">{len(ca_pos)}/4</strong> &nbsp;&bull;&nbsp;
+  <div style="font-size:12px;color:#7a8db5">
+    Positivos: <strong style="color:#dde3f5">{len(ca_pos)}/4</strong> &nbsp;&bull;&nbsp;
     <strong style="color:{"#2ecc71" if len(ca_pos)>=3 else "#f1c40f"}">{ca_conf[:50] if ca_conf else "N/D"}</strong>
   </div>
 </div>''' if ca_cards_html else ""}
@@ -2093,7 +2516,7 @@ table.t tr:hover td{{background:#1c2128}}
 <!-- VPS ACTIVITY -->
 <div class="card">
   <div class="card-title">VPS &mdash; Actividad del Optimizador</div>
-  <div class="tf-pills">{tf_counts if tf_counts else '<span style="color:#8b949e">Sin datos</span>'}</div>
+  <div class="tf-pills">{tf_counts if tf_counts else '<span style="color:#7a8db5">Sin datos</span>'}</div>
   {"" if not top3_rows else f'<table class="t"><thead><tr><th>TF</th><th>Estrategia</th><th>CAGR IS</th><th>WR</th><th>Score</th></tr></thead><tbody>{top3_rows}</tbody></table>'}
 </div>
 
@@ -2101,8 +2524,8 @@ table.t tr:hover td{{background:#1c2128}}
   <div class="card-title" style="justify-content:center;margin-bottom:8px">
     &#9660; Descargar Pine Scripts &mdash; TradingView
   </div>
-  <p style="color:#8b949e;font-size:13px;margin-bottom:20px;max-width:520px;margin-left:auto;margin-right:auto">
-    Carga <strong style="color:#e6edf3">ambos indicadores</strong> en el mismo chart de TradingView.
+  <p style="color:#7a8db5;font-size:13px;margin-bottom:20px;max-width:520px;margin-left:auto;margin-right:auto">
+    Carga <strong style="color:#dde3f5">ambos indicadores</strong> en el mismo chart de TradingView.
     El ENGINE detecta par y temporalidad automaticamente y aplica el modelo validado.
   </p>
   <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:20px">
@@ -2116,21 +2539,21 @@ table.t tr:hover td{{background:#1c2128}}
          onclick="hudDownloadClick(this)">
         &#11015; SIGMA ENGINE v1.0
       </a>
-      <div style="font-size:11px;color:#8b949e;margin-top:6px">Senales + SL/TP + Backtest</div>
+      <div style="font-size:11px;color:#7a8db5;margin-top:6px">Senales + SL/TP + Backtest</div>
     </div>
     <div style="text-align:center">
       <a href="/download/terminal" download="SIGMA_v13_COMPLETO.pine"
          style="display:inline-flex;align-items:center;gap:8px;padding:12px 24px;
-                background:#21262d;color:#e6edf3;
+                background:#1a2240;color:#dde3f5;
                 border-radius:8px;text-decoration:none;font-weight:700;font-size:14px;
-                border:1px solid #30363d;transition:all .2s"
-         onmouseover="this.style.borderColor='#58a6ff'" onmouseout="this.style.borderColor='#30363d'">
+                border:1px solid #242f55;transition:all .2s"
+         onmouseover="this.style.borderColor='#c9a227'" onmouseout="this.style.borderColor='#242f55'">
         &#11015; SIGMA TERMINAL v13.0
       </a>
-      <div style="font-size:11px;color:#8b949e;margin-top:6px">Analisis ICT / OFI / CVD / Bayesian</div>
+      <div style="font-size:11px;color:#7a8db5;margin-top:6px">Analisis ICT / OFI / CVD / Bayesian</div>
     </div>
   </div>
-  <div id="hud-info" style="font-size:12px;color:#8b949e">Cargando info...</div>
+  <div id="hud-info" style="font-size:12px;color:#7a8db5">Cargando info...</div>
 </div>
 
 <div class="footer">
@@ -2140,7 +2563,7 @@ table.t tr:hover td{{background:#1c2128}}
 </div>
 
 <script>
-const TF_COLORS = {{'1h':'#58a6ff','4h':'#2ecc71','15m':'#f1c40f','5m':'#e67e22'}};
+const TF_COLORS = {{'1h':'#c9a227','4h':'#2ecc71','15m':'#f1c40f','5m':'#e67e22'}};
 
 function animateCount(el, target) {{
   const start = parseInt(el.innerText.replace(/,/g,'')) || 0;
@@ -2166,7 +2589,7 @@ function updateLive() {{
 
       // Rate
       const re = document.getElementById('live-rate');
-      if (re) re.innerText = '+' + (d.rate_hr || 0).toLocaleString() + ' / hora';
+      if (re) re.innerText = '+' + (d.optuna_rate_hr || d.rate_hr || 0).toLocaleString() + ' / hora';
 
       // Per-TF counters
       Object.entries(d.by_tf || {{}}).forEach(([tf, cnt]) => {{
@@ -2192,7 +2615,7 @@ function renderRegime(data) {{
     const regime = r.regime || 'UNKNOWN';
     const cls = regime === 'BULL' ? 'regime-bull' : regime === 'BEAR' ? 'regime-bear' : regime === 'RANGE' ? 'regime-range' : 'regime-unk';
     const icon = regime === 'BULL' ? '&#11088;' : regime === 'BEAR' ? '&#10060;' : regime === 'RANGE' ? '&#126;' : '?';
-    const col  = ASSET_COLORS[asset] || '#e6edf3';
+    const col  = ASSET_COLORS[asset] || '#dde3f5';
     const pct  = r.pct_vs_ema ? (r.pct_vs_ema > 0 ? '+' : '') + r.pct_vs_ema + '% vs EMA200' : '';
     html += `<div class="regime-card">
       <div class="regime-asset" style="color:${{col}}">${{ASSET_EMOJI[asset] || asset}} ${{asset}}</div>
@@ -2268,8 +2691,8 @@ function refreshHudInfo() {{
       if (!el) return;
       if (d.available) {{
         el.innerHTML = '&#9679; <strong style="color:#3fb950">' + d.size_kb + ' KB</strong>' +
-          '&nbsp;&nbsp;&#9679; <strong style="color:#58a6ff">' + d.models + ' modelos</strong>' +
-          '&nbsp;&nbsp;&#9679; actualizado <strong style="color:#e6edf3">' + d.updated + '</strong>';
+          '&nbsp;&nbsp;&#9679; <strong style="color:#c9a227">' + d.models + ' modelos</strong>' +
+          '&nbsp;&nbsp;&#9679; actualizado <strong style="color:#dde3f5">' + d.updated + '</strong>';
       }} else {{
         el.innerHTML = '<span style="color:#f85149">HUD no disponible en el servidor</span>';
       }}
@@ -2306,23 +2729,23 @@ async function loadTrainer(){{
       l.includes('PINE') || l.includes('ERROR') || l.includes('velas')
     ).slice(-18);
 
-    let html = `<div style="background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:14px;margin:16px 0">
+    let html = `<div style="background:#07091c;border:1px solid #1a2240;border-radius:8px;padding:14px;margin:16px 0">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <span style="color:#c9d1d9;font-weight:700;font-size:13px">⚙ Optimizador VPS — Actividad</span>
+        <span style="color:#b8c5e0;font-weight:700;font-size:13px">⚙ Optimizador VPS — Actividad</span>
         <span style="color:#555;font-size:11px">
-          DB: <b style="color:#8b949e">${{d.db_total?.toLocaleString()??'—'}}</b> runs ·
-          <b style="color:#69f0ae">${{d.rate_hr??0}}</b>/hr
+          DB: <b style="color:#7a8db5">${{d.db_total?.toLocaleString()??'—'}}</b> runs ·
+          <b style="color:#69f0ae">${{(d.optuna_rate_hr??d.rate_hr??0).toLocaleString()}}</b>/hr
         </span>
       </div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7">`;
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.7">`;
 
     relevant.forEach(line => {{
       let col = '#555';
       if(line.includes('GANADOR') || line.includes('CAGR') || line.includes('score=')) col = '#69f0ae';
       else if(line.includes('SIGMA') || line.includes('PIPELINE')) col = '#90a8f0';
-      else if(line.includes('Probando')) col = '#8b949e';
+      else if(line.includes('Probando')) col = '#7a8db5';
       else if(line.includes('ERROR')) col = '#f85149';
-      else if(line.includes('CLT]')) col = '#6a737d';
+      else if(line.includes('CLT]')) col = '#4a5580';
       else if(line.includes('BEAR') || line.includes('BULL') || line.includes('RÉGIMEN')) col = '#ff9800';
       html += `<div style="color:${{col}};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${{line.replace(/</g,'&lt;')}}</div>`;
     }});
@@ -2407,10 +2830,10 @@ function _initSSE() {{
 // Iniciar SSE despues de la primera carga
 setTimeout(_initSSE, 1500);
 
-const TD  = 'padding:7px 10px;border-bottom:1px solid #161622;white-space:nowrap;font-size:12px';
+const TD  = 'padding:5px 6px;border-bottom:1px solid #161622;white-space:nowrap;font-size:11px';
 const TDC = TD+';text-align:center';
 const TDR = TD+';text-align:right';
-const TH  = 'padding:6px 10px;text-align:left;color:#444;font-size:10px;text-transform:uppercase;letter-spacing:0.8px;border-bottom:2px solid #21262d;font-weight:500';
+const TH  = 'padding:4px 5px;text-align:left;color:#444;font-size:9px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid #1a2240;font-weight:500';
 const THC = TH+';text-align:center';
 const THR = TH+';text-align:right';
 const gradeC    = g => g==='A+'?'#00c853':g==='A'?'#69f0ae':g==='B'?'#ffeb3b':g==='C'?'#ff9800':'#f44336';
@@ -2431,8 +2854,8 @@ function renderHistTablePage(page) {{
   tbody.innerHTML = slice.map(function(t) {{
     const pnl = t.pnl_pct || 0;
     const col = pnl >= 0 ? '#00e676' : '#f44336';
-    const icon = t.reason === 'TP_HIT' ? 'TP' : t.reason === 'SL_HIT' ? 'SL' : '?';
-    const iconCol = t.reason === 'TP_HIT' ? '#00e676' : t.reason === 'SL_HIT' ? '#f44336' : '#555';
+    const icon = t.reason === 'TP_HIT' ? 'TP' : t.reason === 'SL_HIT' ? 'SL' : t.reason === 'TRAIL_HIT' ? 'TRAIL' : (t.reason||'?');
+    const iconCol = t.reason === 'TP_HIT' ? '#00e676' : t.reason === 'SL_HIT' ? '#f44336' : t.reason === 'TRAIL_HIT' ? '#f39c12' : '#555';
     return '<tr>'
       + '<td style="' + TD + ';font-weight:bold;color:' + iconCol + '">' + icon + '</td>'
       + '<td style="' + TD + '"><b style="color:#888">' + (t.sym||'') + '</b></td>'
@@ -2452,13 +2875,13 @@ function renderHistTablePage(page) {{
   let btns = '';
   for (let i = 0; i < totalPages; i++) {{
     const isCur = i === page;
-    btns += '<button onclick="renderHistTablePage(' + i + ')" style="background:' + (isCur?'#21262d':'transparent') + ';color:' + (isCur?'#c9d1d9':'#555') + ';border:1px solid ' + (isCur?'#58a6ff':'#21262d') + ';border-radius:4px;padding:2px 10px;font-size:11px;cursor:pointer;margin:0 2px">' + (i+1) + '</button>';
+    btns += '<button onclick="renderHistTablePage(' + i + ')" style="background:' + (isCur?'#1a2240':'transparent') + ';color:' + (isCur?'#b8c5e0':'#555') + ';border:1px solid ' + (isCur?'#c9a227':'#1a2240') + ';border-radius:4px;padding:2px 10px;font-size:11px;cursor:pointer;margin:0 2px">' + (i+1) + '</button>';
   }}
-  pag.innerHTML = '<div style="display:flex;align-items:center;gap:4px;margin-top:8px;padding-top:6px;border-top:1px solid #1c2128">'
+  pag.innerHTML = '<div style="display:flex;align-items:center;gap:4px;margin-top:8px;padding-top:6px;border-top:1px solid #141b38">'
     + '<span style="color:#444;font-size:10px;margin-right:4px">Pag:</span>'
-    + '<button onclick="renderHistTablePage(Math.max(0,window._histPage-1))" style="background:transparent;color:#555;border:1px solid #21262d;border-radius:4px;padding:2px 10px;font-size:11px;cursor:pointer">&#171;</button>'
+    + '<button onclick="renderHistTablePage(Math.max(0,window._histPage-1))" style="background:transparent;color:#555;border:1px solid #1a2240;border-radius:4px;padding:2px 10px;font-size:11px;cursor:pointer">&#171;</button>'
     + btns
-    + '<button onclick="renderHistTablePage(Math.min(' + (totalPages-1) + ',window._histPage+1))" style="background:transparent;color:#555;border:1px solid #21262d;border-radius:4px;padding:2px 10px;font-size:11px;cursor:pointer">&#187;</button>'
+    + '<button onclick="renderHistTablePage(Math.min(' + (totalPages-1) + ',window._histPage+1))" style="background:transparent;color:#555;border:1px solid #1a2240;border-radius:4px;padding:2px 10px;font-size:11px;cursor:pointer">&#187;</button>'
     + '<span style="color:#333;font-size:10px;margin-left:8px">' + hist.length + ' trades p. ' + (page+1) + '/' + totalPages + '</span>'
     + '</div>';
 }}
@@ -2528,7 +2951,7 @@ async function loadSignals(){{
         const m = models.find(x=>x.sym===sym&&x.tf===tf);
         if(m) {{
           const flash = document.createElement('div');
-          flash.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;background:#0d1117;border:2px solid '+(m.type!=='short'?'#00e676':'#f85149')+';border-radius:8px;padding:14px 20px;font-family:monospace;animation:flashIn 0.3s ease';
+          flash.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;background:#07091c;border:2px solid '+(m.type!=='short'?'#00e676':'#f85149')+';border-radius:8px;padding:14px 20px;font-family:monospace;animation:flashIn 0.3s ease';
           flash.innerHTML = `<b style="color:#e0e0e0">NUEVA SEÑAL ${{m.type!=='short'?'▲ LONG':'▼ SHORT'}}</b><br><span style="color:#aaa">${{sym}} ${{tf.toUpperCase()}} · ${{m.strategy}}</span>`;
           document.body.appendChild(flash);
           setTimeout(()=>flash.remove(), 8000);
@@ -2560,7 +2983,7 @@ async function loadSignals(){{
         rowStyle   = 'opacity:0.65;border-left:3px solid #7a4400';
       }} else {{
         stateBadge = `<span style="color:#333;font-size:11px">⏸ PAUSA</span>`;
-        rowStyle   = 'opacity:0.35;border-left:3px solid #1c2128';
+        rowStyle   = 'opacity:0.35;border-left:3px solid #141b38';
       }}
 
       // Confianza
@@ -2586,14 +3009,14 @@ async function loadSignals(){{
 
       const cagrCol = m.cagr>30?'#00c853':m.cagr>15?'#69f0ae':m.cagr>0?'#8bc48b':'#f44336';
       const ddCol   = m.dd>-15?'#69f0ae':m.dd>-25?'#ff9800':'#f44336';
-      const wrCol   = m.wr>=65?'#00c853':m.wr>=55?'#69f0ae':'#8b949e';
+      const wrCol   = m.wr>=65?'#00c853':m.wr>=55?'#69f0ae':'#7a8db5';
       const corrW   = m.corr_warning ? ' title="Correlacionado — reducir size"' : '';
 
       rows += `<tr style="${{rowStyle}}">
         <td style="${{TD}}">${{stateBadge}}</td>
-        <td style="${{TD}}"><b style="color:#c9d1d9">${{m.sym}}</b></td>
-        <td style="${{TD}};color:#6a737d">${{m.tf.toUpperCase()}}</td>
-        <td style="${{TD}};color:#ddd">${{stratShort(m.strategy)}}</td>
+        <td style="${{TD}}"><b style="color:#b8c5e0">${{m.sym}}</b></td>
+        <td style="${{TD}};color:#4a5580">${{m.tf.toUpperCase()}}</td>
+        <td style="${{TD}};color:#ddd;overflow:hidden;text-overflow:ellipsis" title="${{m.strategy}}">${{stratShort(m.strategy)}}</td>
         <td style="${{TDC}}"><span style="background:${{gc}};color:#000;padding:1px 7px;border-radius:10px;font-weight:bold;font-size:11px">${{m.grade}}</span></td>
         <td style="${{TDC}};font-size:11px">${{conf}}</td>
         <td style="${{TDR}};color:${{cagrCol}};font-weight:600">${{m.cagr>0?'+':''}}${{m.cagr?.toFixed(1)}}%</td>
@@ -2601,9 +3024,9 @@ async function loadSignals(){{
         <td style="${{TDR}};color:${{wrCol}}">${{m.wr?.toFixed(0)??'—'}}%</td>
         <td style="${{TDC}};color:#555">${{m.trades}}</td>
         <td style="${{TDR}};color:#555;font-size:11px">${{m.eff_risk_pct!=null?m.eff_risk_pct+'%':'—'}}${{m.corr_warning?' ⚠':''}}${{m.ensemble_count>1?' E'+m.ensemble_count:''}}</td>
-        <td style="${{TDR}};font-family:'JetBrains Mono',monospace;color:#a78bfa;font-weight:600" title="Posicion nominal en USD. Riesgo si SL: $${{(m.risk_usd||0).toFixed(0)}}. Ganancia si TP: $${{(m.reward_usd_at_tp||0).toFixed(0)}}">${{m.notional_usd?'$'+Math.round(m.notional_usd).toLocaleString():'—'}}</td>
+        <td style="${{TDR}};font-family:'IBM Plex Mono',monospace;color:#e0bb3a;font-weight:600" title="Posicion nominal en USD. Riesgo si SL: $${{(m.risk_usd||0).toFixed(0)}}. Ganancia si TP: $${{(m.reward_usd_at_tp||0).toFixed(0)}}">${{m.notional_usd?'$'+Math.round(m.notional_usd).toLocaleString():'—'}}</td>
         <td style="${{TDC}}">${{dirTag}}</td>
-        <td style="${{TDR}};font-family:monospace;color:#8b949e">${{precio}}</td>
+        <td style="${{TDR}};font-family:monospace;color:#7a8db5">${{precio}}</td>
         <td style="${{TDR}};font-family:monospace;color:#f85149">${{sl}}</td>
         <td style="${{TDR}};font-family:monospace;color:#00e676">${{tp}}</td>
         <td style="${{TDR}};color:${{rrCol}};font-weight:bold">${{rr!='—'?rr+':1':'—'}}</td>
@@ -2621,21 +3044,21 @@ async function loadSignals(){{
         const cagr = (m.cagr>=0?'+':'')+(m.cagr?.toFixed(1)??'?')+'%';
         const wr   = (m.wr?.toFixed(0)??'?')+'%';
         const strat= (typeof stratShort==='function')?stratShort(m.strategy):m.strategy;
-        return `<div style="display:flex;justify-content:space-between;font-size:11px;color:#c9d1d9;padding:3px 0;border-bottom:1px solid #161b22">
-          <span><b style="color:#00e676">${{m.sym}}</b> <span style="color:#6a737d">${{m.tf.toUpperCase()}}</span> <span style="color:#a78bfa">${{strat}}</span></span>
-          <span><span style="color:#69f0ae">CAGR ${{cagr}}</span> · <span style="color:#8b949e">WR ${{wr}}</span> · <span style="color:#ff9800">bloqueado: ${{m.reason||'régimen'}}</span></span>
+        return `<div style="display:flex;justify-content:space-between;font-size:11px;color:#b8c5e0;padding:3px 0;border-bottom:1px solid #0d1428">
+          <span><b style="color:#00e676">${{m.sym}}</b> <span style="color:#4a5580">${{m.tf.toUpperCase()}}</span> <span style="color:#e0bb3a">${{strat}}</span></span>
+          <span><span style="color:#69f0ae">CAGR ${{cagr}}</span> · <span style="color:#7a8db5">WR ${{wr}}</span> · <span style="color:#ff9800">bloqueado: ${{m.reason||'régimen'}}</span></span>
         </div>`;
       }}).join('');
-      armedHtml = `<div style="background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:12px 14px;margin:16px 0">
-        <div style="color:#c9d1d9;font-weight:700;font-size:13px;margin-bottom:6px">🎯 LONGS ARMADOS <span style="color:#6a737d;font-weight:400;font-size:11px">— esperando rotación del régimen (${{armedLongs.length}})</span></div>
+      armedHtml = `<div style="background:#07091c;border:1px solid #1a2240;border-radius:8px;padding:12px 14px;margin:16px 0">
+        <div style="color:#b8c5e0;font-weight:700;font-size:13px;margin-bottom:6px">🎯 LONGS ARMADOS <span style="color:#4a5580;font-weight:400;font-size:11px">— esperando rotación del régimen (${{armedLongs.length}})</span></div>
         ${{items}}
       </div>`;
     }}
 
-    let html = armedHtml + `<div style="background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:14px;margin:16px 0;overflow-x:auto">
+    let html = armedHtml + `<div style="background:#07091c;border:1px solid #1a2240;border-radius:8px;padding:14px;margin:16px 0;overflow-x:auto">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <div style="display:flex;align-items:center;gap:10px">
-          <span style="color:#c9d1d9;font-weight:700;font-size:14px">📊 Panel de Señales</span>
+          <span style="color:#b8c5e0;font-weight:700;font-size:14px">📊 Panel de Señales</span>
           <span style="color:#444;font-size:11px">Régimen <b style="color:#ff9800">${{regime}}</b></span>
           <span style="color:#333;font-size:10px" title="Backtest usa datos Futuros Binance, comisión 0.04%, funding rate histórico real incluido. CAGR sin leverage. Kelly sizing.">ⓘ Futuros · fee 0.04% · funding incluido</span>
           ${{gradeBar}}
@@ -2646,7 +3069,15 @@ async function loadSignals(){{
           ${{d.circuit_breaker?'<span style="background:#f44336;color:#fff;padding:2px 8px;border-radius:4px;font-weight:bold;margin-left:8px">⛔ CIRCUIT BREAKER</span>':''}}
         </span>
       </div>
-      <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <table style="width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed">
+        <colgroup>
+          <col style="width:88px"><col style="width:44px"><col style="width:34px">
+          <col style="width:140px"><col style="width:54px"><col style="width:62px">
+          <col style="width:56px"><col style="width:52px"><col style="width:40px">
+          <col style="width:38px"><col style="width:58px"><col style="width:70px">
+          <col style="width:32px"><col style="width:68px"><col style="width:68px">
+          <col style="width:68px"><col style="width:38px">
+        </colgroup>
         <thead><tr>
           <th style="${{TH}}">Estado</th>
           <th style="${{TH}}">Activo</th>
@@ -2903,25 +3334,25 @@ async function loadTrades() {{
       const margenTitle   = `MARGEN — lo que sale de tu wallet con leverage ${{LEVERAGE_EXCHANGE}}x del exchange. Notional/$${{LEVERAGE_EXCHANGE}} = $${{Math.round(margenUsd).toLocaleString()}}. Si usas leverage distinto: con 10x serían $${{Math.round(notional/10).toLocaleString()}}, con 20x $${{Math.round(notional/20).toLocaleString()}}`;
       return `<tr style="${{rStyle}}">
         <td style="${{TD}}"><span style="background:${{dirC}};color:#000;padding:2px 8px;border-radius:4px;font-weight:bold;font-size:11px">${{isLong?'L':'S'}}</span></td>
-        <td style="${{TD}}"><b style="color:#c9d1d9">${{t.sym}}</b></td>
-        <td style="${{TD}};color:#6a737d">${{t.tf?.toUpperCase()}}</td>
-        <td style="${{TD}};color:#8b949e">${{stratShort(t.strategy||'')}}</td>
+        <td style="${{TD}}"><b style="color:#b8c5e0">${{t.sym}}</b></td>
+        <td style="${{TD}};color:#4a5580">${{t.tf?.toUpperCase()}}</td>
+        <td style="${{TD}};color:#7a8db5">${{stratShort(t.strategy||'')}}</td>
         <td style="${{TDC}}"><span style="background:${{gradeC(t.grade||'D')}};color:#000;padding:1px 7px;border-radius:8px;font-weight:bold;font-size:11px">${{t.grade||'?'}}</span></td>
-        <td style="${{TDR}};font-family:monospace;color:#8b949e">${{t.entry}}</td>
-        <td style="${{TDR}};font-family:monospace;color:#e6edf3;font-weight:bold">${{cp.toFixed(2)}}</td>
+        <td style="${{TDR}};font-family:monospace;color:#7a8db5">${{t.entry}}</td>
+        <td style="${{TDR}};font-family:monospace;color:#dde3f5;font-weight:bold">${{cp.toFixed(2)}}</td>
         <td style="${{TDR}};font-family:monospace;color:#f85149">${{t.sl}}</td>
         <td style="${{TDR}};font-family:monospace;color:#00e676">${{t.tp}}</td>
         <td style="${{TDR}};color:${{rrC}};font-weight:bold">${{rn>0?rn.toFixed(1)+':1':'—'}}</td>
-        <td style="${{TDR}};font-family:'JetBrains Mono',monospace;color:#a78bfa;font-weight:600" title="${{notionalTitle}}">${{notionalTxt}}</td>
-        <td style="${{TDR}};font-family:'JetBrains Mono',monospace;color:#00e676;font-weight:700;font-size:13px" title="${{margenTitle}}">${{margenTxt}}</td>
-        <td style="${{TDR}};font-family:'JetBrains Mono',monospace;color:#ff9800;font-weight:700;font-size:13px" title="Apalancamiento del trade: notional/margen = ${{LEVERAGE_EXCHANGE}}x (config Binance). Apalancamiento sobre equity total: ${{notional>0?(notional/eq).toFixed(2):0}}x">${{notional>0?LEVERAGE_EXCHANGE+'x':'—'}}</td>
+        <td style="${{TDR}};font-family:'IBM Plex Mono',monospace;color:#e0bb3a;font-weight:600" title="${{notionalTitle}}">${{notionalTxt}}</td>
+        <td style="${{TDR}};font-family:'IBM Plex Mono',monospace;color:#00e676;font-weight:700;font-size:13px" title="${{margenTitle}}">${{margenTxt}}</td>
+        <td style="${{TDR}};font-family:'IBM Plex Mono',monospace;color:#ff9800;font-weight:700;font-size:13px" title="Apalancamiento del trade: notional/margen = ${{LEVERAGE_EXCHANGE}}x (config Binance). Apalancamiento sobre equity total: ${{notional>0?(notional/eq).toFixed(2):0}}x">${{notional>0?LEVERAGE_EXCHANGE+'x':'—'}}</td>
         <td style="${{TDR}};color:${{pnlCol}};font-weight:bold;font-size:13px">${{pnl>=0?'+':''}}${{pnl.toFixed(2)}}%</td>
         <td style="${{TD}};color:#444;font-size:10px">${{t.opened_at?.substring(11,16)||''}}</td>
         <td style="${{TDC}}">
           ${{slHit||tpHit?`<span style="color:${{slHit?'#f44336':'#00c853'}};font-weight:bold;font-size:11px">${{estado}} DETECTADO</span>`:''}}
           <button onclick="closeTrade('${{t.sym}}','${{t.tf}}','SL_HIT')" style="background:#2d1010;color:#f85149;border:1px solid #5a1a1a;border-radius:3px;padding:2px 6px;font-size:10px;cursor:pointer;margin-right:2px">SL</button>
           <button onclick="closeTrade('${{t.sym}}','${{t.tf}}','TP_HIT')" style="background:#0d2010;color:#00e676;border:1px solid #1a5a2a;border-radius:3px;padding:2px 6px;font-size:10px;cursor:pointer;margin-right:2px">TP</button>
-          <button onclick="closeTrade('${{t.sym}}','${{t.tf}}','MANUAL')" style="background:#161b22;color:#555;border:1px solid #21262d;border-radius:3px;padding:2px 6px;font-size:10px;cursor:pointer">X</button>
+          <button onclick="closeTrade('${{t.sym}}','${{t.tf}}','MANUAL')" style="background:#0d1428;color:#555;border:1px solid #1a2240;border-radius:3px;padding:2px 6px;font-size:10px;cursor:pointer">X</button>
         </td>
       </tr>`;
     }}).join('');
@@ -2941,10 +3372,10 @@ async function loadTrades() {{
     // Historial
     window._histData = hist;  // pagination via renderHistTablePage()
 
-    let html = `<div style="background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:14px;margin:16px 0;overflow-x:auto">
+    let html = `<div class="card-green" style="background:#07091c;border:1px solid #1a2240;border-radius:8px;padding:14px;margin:16px 0;overflow-x:auto">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <div style="display:flex;align-items:center;gap:8px">
-          <span style="color:#c9d1d9;font-weight:700;font-size:14px">🤖 Simulación — Paper Trading Automático</span>
+          <span style="color:#b8c5e0;font-weight:700;font-size:14px">🤖 Simulación — Paper Trading Automático</span>
           <span style="color:#444;font-size:10px">
             <span style="display:inline-block;width:6px;height:6px;background:#00e676;border-radius:50%;animation:pulse 1.5s infinite;margin-right:3px"></span>
             precio vivo · actualiza en <span id="trade-counter">10s</span>
@@ -2962,13 +3393,13 @@ async function loadTrades() {{
         </div>
       </div>
 
-      <div style="display:flex;gap:16px;align-items:center;padding:6px 0;border-bottom:1px solid #1c2128;margin-bottom:10px;font-size:11px;flex-wrap:wrap">
+      <div style="display:flex;gap:16px;align-items:center;padding:6px 0;border-bottom:1px solid #141b38;margin-bottom:10px;font-size:11px;flex-wrap:wrap">
         <span style="color:#555;font-size:10px;text-transform:uppercase;letter-spacing:0.8px">Capital</span>
-        <span id="capital-live" data-initial="${{port.initial||10000}}" data-base-equity="${{port.equity||port.initial||10000}}" style="font-family:'JetBrains Mono',monospace;color:#e6edf3;font-weight:700;font-size:13px;transition:color .3s ease,text-shadow .3s ease">${{(port.float_equity||port.equity||10000).toLocaleString('en-US',{{minimumFractionDigits:2,maximumFractionDigits:2}})}}</span>
+        <span id="capital-live" data-initial="${{port.initial||10000}}" data-base-equity="${{port.equity||port.initial||10000}}" style="font-family:'IBM Plex Mono',monospace;color:#dde3f5;font-weight:700;font-size:13px;transition:color .3s ease,text-shadow .3s ease">${{(port.float_equity||port.equity||10000).toLocaleString('en-US',{{minimumFractionDigits:2,maximumFractionDigits:2}})}}</span>
         <span style="color:${{(port.return_pct||0)>=0?'#00e676':'#f44336'}};font-weight:700">${{(port.return_pct||0)>=0?'+':''}}${{(port.return_pct||0).toFixed(2)}}%</span>
-        ${{port.cagr_live!=null?`<span style="color:#333">|</span><span style="color:#8b949e;font-size:10px">CAGR <b style="color:${{(port.cagr_live||0)>=20?'#00e676':'#ff9800'}}">${{(port.cagr_live||0)>=0?'+':''}}${{(port.cagr_live||0).toFixed(1)}}%/año</b></span>`:''}}
-        ${{port.max_dd?`<span style="color:#333">|</span><span style="color:#8b949e;font-size:10px">MaxDD <b style="color:#f44336">${{(port.max_dd||0).toFixed(1)}}%</b></span>`:''}}
-        ${{port.sharpe!=null?`<span style="color:#333">|</span><span style="color:#8b949e;font-size:10px">Sharpe <b style="color:#c9d1d9">${{(port.sharpe||0).toFixed(2)}}</b></span>`:''}}
+        ${{port.cagr_live!=null?`<span style="color:#333">|</span><span style="color:#7a8db5;font-size:10px">CAGR <b style="color:${{(port.cagr_live||0)>=20?'#00e676':'#ff9800'}}">${{(port.cagr_live||0)>=0?'+':''}}${{(port.cagr_live||0).toFixed(1)}}%/año</b></span>`:''}}
+        ${{port.max_dd?`<span style="color:#333">|</span><span style="color:#7a8db5;font-size:10px">MaxDD <b style="color:#f44336">${{(port.max_dd||0).toFixed(1)}}%</b></span>`:''}}
+        ${{port.sharpe!=null?`<span style="color:#333">|</span><span style="color:#7a8db5;font-size:10px">Sharpe <b style="color:#b8c5e0">${{(port.sharpe||0).toFixed(2)}}</b></span>`:''}}
         <span style="color:#333">|</span>
         <span style="color:#444;font-size:10px">inicial ${{(port.initial||10000).toLocaleString('en-US',{{minimumFractionDigits:0,maximumFractionDigits:0}})}}</span>
       </div>
@@ -2987,14 +3418,14 @@ async function loadTrades() {{
         <tbody>${{openRows}}</tbody>
       </table>`:'<p style="color:#333;font-size:12px;margin:6px 0 10px">Sin posiciones abiertas</p>'}}
 
-      <div style="margin-top:10px;padding-top:8px;border-top:1px solid #1c2128">
+      <div style="margin-top:10px;padding-top:8px;border-top:1px solid #141b38">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
           <span style="color:#555;font-size:10px;text-transform:uppercase;letter-spacing:0.8px">Curva de Equity</span>
           <span style="color:#444;font-size:10px">${{hist.length}} trades cerrados · flotante <span id="equity-float" style="font-weight:bold">—</span></span>
         </div>
         <div id="equity-wrap" style="position:relative">
-          <canvas id="equity-curve" height="180" style="width:100%;display:block;border-radius:6px;background:#0a0d12"></canvas>
-          <div id="equity-tooltip" style="position:absolute;display:none;pointer-events:none;background:rgba(13,17,23,0.96);border:1px solid #30363d;border-radius:6px;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#e6edf3;box-shadow:0 4px 16px rgba(0,0,0,0.6);z-index:100;min-width:200px;max-width:280px"></div>
+          <canvas id="equity-curve" height="180" style="width:100%;display:block;border-radius:6px;background:#050914"></canvas>
+          <div id="equity-tooltip" style="position:absolute;display:none;pointer-events:none;background:rgba(13,17,23,0.96);border:1px solid #242f55;border-radius:6px;padding:8px 10px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#dde3f5;box-shadow:0 4px 16px rgba(0,0,0,0.6);z-index:100;min-width:200px;max-width:280px"></div>
         </div>
       </div>
       ${{hist.length>0?`
@@ -3085,13 +3516,13 @@ async function loadTrades() {{
         const p = pts[best];
         let html = '';
         if (p.isStart) {{
-          html = '<div style="color:#6e7681">Inicio</div><div style="color:#e6edf3;font-weight:700">Capital $10,000.00</div>';
+          html = '<div style="color:#4e5f90">Inicio</div><div style="color:#dde3f5;font-weight:700">Capital $10,000.00</div>';
         }} else if (p.floating) {{
           const fc = s.data.floatNow >= 0 ? '#00e676' : '#f44336';
-          html = '<div style="color:#6e7681;font-size:9px;text-transform:uppercase;letter-spacing:0.5px">P&amp;L flotante</div>'
+          html = '<div style="color:#4e5f90;font-size:9px;text-transform:uppercase;letter-spacing:0.5px">P&amp;L flotante</div>'
                + '<div style="color:'+fc+';font-weight:700;font-size:14px">'+(s.data.floatNow>=0?'+':'')+s.data.floatNow.toFixed(2)+'%</div>'
-               + '<div style="color:#8b949e;font-size:10px;margin-top:3px">Acumulado: '+(p.v>=0?'+':'')+p.v.toFixed(2)+'%</div>'
-               + '<div style="color:#6e7681;font-size:9px;margin-top:4px">(posiciones abiertas, vivo)</div>';
+               + '<div style="color:#7a8db5;font-size:10px;margin-top:3px">Acumulado: '+(p.v>=0?'+':'')+p.v.toFixed(2)+'%</div>'
+               + '<div style="color:#4e5f90;font-size:9px;margin-top:4px">(posiciones abiertas, vivo)</div>';
         }} else if (p.trade) {{
           const t = p.trade;
           const isW = t.pnl_pct >= 0;
@@ -3111,17 +3542,17 @@ async function loadTrades() {{
           }} catch(_e) {{}}
           const dir = t.direction === 'short' ? '▼ SHORT' : '▲ LONG';
           html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">'
-                 + '<span style="color:#e6edf3;font-weight:700">'+icon+' '+(t.sym||'?')+' '+(t.tf||'').toUpperCase()+'</span>'
+                 + '<span style="color:#dde3f5;font-weight:700">'+icon+' '+(t.sym||'?')+' '+(t.tf||'').toUpperCase()+'</span>'
                  + '<span style="color:'+col+';font-weight:700;font-size:13px">'+(isW?'+':'')+(t.pnl_pct||0).toFixed(2)+'%</span>'
                  + '</div>'
-                 + '<div style="color:#8b949e;font-size:10px;margin-bottom:5px">'+dir+' · '+(t.strategy||'?')+' · Grade '+(t.grade||'?')+'</div>'
-                 + '<div style="font-size:10px;color:#8b949e;line-height:1.5">'
-                 + 'Entrada: <span style="color:#e6edf3">'+(t.entry||'?')+'</span>'
-                 + ' → Salida: <span style="color:#e6edf3">'+(t.exit_price||'?')+'</span><br>'
+                 + '<div style="color:#7a8db5;font-size:10px;margin-bottom:5px">'+dir+' · '+(t.strategy||'?')+' · Grade '+(t.grade||'?')+'</div>'
+                 + '<div style="font-size:10px;color:#7a8db5;line-height:1.5">'
+                 + 'Entrada: <span style="color:#dde3f5">'+(t.entry||'?')+'</span>'
+                 + ' → Salida: <span style="color:#dde3f5">'+(t.exit_price||'?')+'</span><br>'
                  + 'Razón: <span style="color:'+col+'">'+reason+'</span>'
-                 + (dur ? ' · Duración: <span style="color:#e6edf3">'+dur+'</span>' : '')
+                 + (dur ? ' · Duración: <span style="color:#dde3f5">'+dur+'</span>' : '')
                  + '</div>'
-                 + '<div style="color:#6e7681;font-size:9px;margin-top:5px">Acumulado: '+(p.v>=0?'+':'')+p.v.toFixed(2)+'%</div>';
+                 + '<div style="color:#4e5f90;font-size:9px;margin-top:5px">Acumulado: '+(p.v>=0?'+':'')+p.v.toFixed(2)+'%</div>';
         }}
 
         tooltip.innerHTML = html;
@@ -3192,7 +3623,7 @@ async function loadTrades() {{
       }});
 
       // Línea cero destacada
-      ctx.strokeStyle = '#21262d'; ctx.lineWidth = 1.5;
+      ctx.strokeStyle = '#1a2240'; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.moveTo(0, py(0)); ctx.lineTo(W, py(0)); ctx.stroke();
 
       // Helper: Catmull-Rom -> cubic bezier (curva suave que pasa por todos los puntos)
@@ -3275,7 +3706,7 @@ async function loadTrades() {{
           // Punto central nitido con borde
           ctx.fillStyle = col;
           ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI*2); ctx.fill();
-          ctx.strokeStyle = '#0a0d12';
+          ctx.strokeStyle = '#050914';
           ctx.lineWidth = 1.5;
           ctx.stroke();
         }});
@@ -3288,13 +3719,13 @@ async function loadTrades() {{
         ctx.beginPath(); ctx.arc(lpX, lpY, 7, 0, Math.PI*2); ctx.fill();
         ctx.fillStyle = lineCol;
         ctx.beginPath(); ctx.arc(lpX, lpY, 4, 0, Math.PI*2); ctx.fill();
-        ctx.strokeStyle = '#0a0d12';
+        ctx.strokeStyle = '#050914';
         ctx.lineWidth = 2;
         ctx.stroke();
 
         // ── Label P&L con fondo translucido ──────────────────────────────
         const label = (lastClosed>=0?'+':'')+lastClosed.toFixed(2)+'%';
-        ctx.font = 'bold 14px "JetBrains Mono", monospace';
+        ctx.font = 'bold 14px "IBM Plex Mono", monospace';
         const labelW = ctx.measureText(label).width + 12;
         let lx = lpX + 14;
         if (lx + labelW > W) lx = lpX - labelW - 8;
@@ -3483,7 +3914,7 @@ function _drawEquityFrame() {{
       ctx.beginPath(); ctx.arc(x, y, 8, 0, Math.PI*2); ctx.fill();
       ctx.fillStyle = col;
       ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI*2); ctx.fill();
-      ctx.strokeStyle = '#0a0d12';
+      ctx.strokeStyle = '#050914';
       ctx.lineWidth = 1.5;
       ctx.stroke();
     }});
@@ -3502,7 +3933,7 @@ function _drawEquityFrame() {{
     ctx.beginPath(); ctx.arc(lastP.x, lastP.y, haloMid, 0, Math.PI*2); ctx.fill();
     ctx.fillStyle = lineCol;
     ctx.beginPath(); ctx.arc(lastP.x, lastP.y, 4, 0, Math.PI*2); ctx.fill();
-    ctx.strokeStyle = '#0a0d12';
+    ctx.strokeStyle = '#050914';
     ctx.lineWidth = 2;
     ctx.stroke();
 
@@ -3518,10 +3949,10 @@ function _drawEquityFrame() {{
     const r1Label = 'CAPITAL REALIZADO';
     const r2Label = 'VALOR FLOTANTE';
 
-    ctx.font = 'bold 9px "JetBrains Mono", monospace';
+    ctx.font = 'bold 9px "IBM Plex Mono", monospace';
     const tw1 = ctx.measureText(r1Label).width;
     const tw2 = ctx.measureText(r2Label).width;
-    ctx.font = 'bold 11px "JetBrains Mono", monospace';
+    ctx.font = 'bold 11px "IBM Plex Mono", monospace';
     const tw3 = ctx.measureText(realizedStr).width;
     const tw4 = ctx.measureText(floatStr).width;
     const colA = Math.max(tw1, tw2);
@@ -3551,11 +3982,11 @@ function _drawEquityFrame() {{
     ctx.lineTo(legX + 20, r1Y - 3);
     ctx.stroke();
     // Label
-    ctx.font = 'bold 9px "JetBrains Mono", monospace';
-    ctx.fillStyle = '#8b949e';
+    ctx.font = 'bold 9px "IBM Plex Mono", monospace';
+    ctx.fillStyle = '#7a8db5';
     ctx.fillText(r1Label, legX + 24, r1Y);
     // Value
-    ctx.font = 'bold 11px "JetBrains Mono", monospace';
+    ctx.font = 'bold 11px "IBM Plex Mono", monospace';
     ctx.fillStyle = realizedCol;
     ctx.textAlign = 'right';
     ctx.fillText(realizedStr, legX + legW - 8, r1Y);
@@ -3572,11 +4003,11 @@ function _drawEquityFrame() {{
     ctx.stroke();
     ctx.setLineDash([]);
     // Label
-    ctx.font = 'bold 9px "JetBrains Mono", monospace';
-    ctx.fillStyle = '#8b949e';
+    ctx.font = 'bold 9px "IBM Plex Mono", monospace';
+    ctx.fillStyle = '#7a8db5';
     ctx.fillText(r2Label, legX + 24, r2Y);
     // Value
-    ctx.font = 'bold 11px "JetBrains Mono", monospace';
+    ctx.font = 'bold 11px "IBM Plex Mono", monospace';
     ctx.fillStyle = lineCol;
     ctx.textAlign = 'right';
     ctx.fillText(floatStr, legX + legW - 8, r2Y);
@@ -3655,7 +4086,7 @@ async function _refreshFloatingCapital() {{
       const up = liveEquity >= (parseFloat(_lastCapitalVal.replace(/,/g,''))||liveEquity);
       capEl.style.color = up ? '#00e676' : '#f44336';
       capEl.style.textShadow = up ? '0 0 12px #00e67660' : '0 0 12px #f4433660';
-      setTimeout(() => {{ capEl.style.color='#e6edf3'; capEl.style.textShadow='none'; }}, 600);
+      setTimeout(() => {{ capEl.style.color='#dde3f5'; capEl.style.textShadow='none'; }}, 600);
     }}
     capEl.textContent = newVal;
     _lastCapitalVal = newVal;
@@ -3690,16 +4121,16 @@ function showToast(e) {{
   const arrow = isShort ? '▼' : '▲';
   const color = isShort ? '#f85149' : '#00e676';
   const t = document.createElement('div');
-  t.style.cssText = `background:linear-gradient(180deg,#161b22,#13181f);border:1px solid #30363d;border-left:3px solid ${{color}};border-radius:10px;padding:12px 16px;min-width:300px;max-width:400px;box-shadow:0 8px 24px rgba(0,0,0,.6);pointer-events:auto;font-family:'Inter',sans-serif;color:#e6edf3;animation:slideIn .3s ease`;
+  t.style.cssText = `background:linear-gradient(180deg,#0d1428,#0a1020);border:1px solid #242f55;border-left:3px solid ${{color}};border-radius:10px;padding:12px 16px;min-width:300px;max-width:400px;box-shadow:0 8px 24px rgba(0,0,0,.6);pointer-events:auto;font-family:'Inter',sans-serif;color:#dde3f5;animation:slideIn .3s ease`;
   t.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
     <div>
-      <div style="font-size:11px;font-weight:700;color:#a78bfa;letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px">📊 Per-Model Trade</div>
-      <div style="font-size:14px;font-weight:700;color:#c9d1d9">${{arrow}} <b>${{e.sym}}</b> ${{(e.tf||'').toUpperCase()}} ${{isShort?'SHORT':'LONG'}}</div>
-      <div style="font-size:11px;color:#8b949e;margin-top:2px">${{e.strategy||''}} [${{e.grade||'?'}}]</div>
+      <div style="font-size:11px;font-weight:700;color:#e0bb3a;letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px">📊 Per-Model Trade</div>
+      <div style="font-size:14px;font-weight:700;color:#b8c5e0">${{arrow}} <b>${{e.sym}}</b> ${{(e.tf||'').toUpperCase()}} ${{isShort?'SHORT':'LONG'}}</div>
+      <div style="font-size:11px;color:#7a8db5;margin-top:2px">${{e.strategy||''}} [${{e.grade||'?'}}]</div>
       
-      <div style="font-size:10px;color:#6e7681;margin-top:2px">RR ${{e.rr}}:1 · Kelly ${{e.kelly_pct}}%</div>
+      <div style="font-size:10px;color:#4e5f90;margin-top:2px">RR ${{e.rr}}:1 · Kelly ${{e.kelly_pct}}%</div>
     </div>
-    <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:#6e7681;cursor:pointer;font-size:16px;line-height:1;padding:0">×</button>
+    <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:#4e5f90;cursor:pointer;font-size:16px;line-height:1;padding:0">×</button>
   </div>`;
   c.appendChild(t);
   setTimeout(() => {{ try {{ t.style.opacity = '0'; t.style.transition = 'opacity .4s'; setTimeout(() => t.remove(), 400); }} catch(e){{}} }}, 8000);
@@ -3708,7 +4139,7 @@ function showToast(e) {{
 function renderBellList(events) {{
   const list = document.getElementById('bell-list');
   if (!list) return;
-  if (!events.length) {{ list.innerHTML = '<div style="color:#6e7681;font-size:11px;text-align:center;padding:14px">Sin eventos aun</div>'; return; }}
+  if (!events.length) {{ list.innerHTML = '<div style="color:#4e5f90;font-size:11px;text-align:center;padding:14px">Sin eventos aun</div>'; return; }}
   let html = '';
   for (const e of events.slice(0, 30)) {{
     const id = notifId(e);
@@ -3716,14 +4147,14 @@ function renderBellList(events) {{
     const isShort = (e.direction||'') === 'short';
     const arrow = isShort ? '▼' : '▲';
     const color = isShort ? '#f85149' : '#00e676';
-    const bg = unread ? '#161b22' : 'transparent';
+    const bg = unread ? '#0d1428' : 'transparent';
     html += `<div style="padding:8px 10px;border-radius:6px;background:${{bg}};border-left:2px solid ${{color}};font-size:11px">
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <span style="color:#c9d1d9;font-weight:700">${{arrow}} ${{e.sym}} ${{(e.tf||'').toUpperCase()}} ${{e.strategy||''}}</span>
-        <span style="color:#6e7681;font-size:9px;font-family:'JetBrains Mono',monospace">${{(e.ts||'').substring(11,16)}}</span>
+        <span style="color:#b8c5e0;font-weight:700">${{arrow}} ${{e.sym}} ${{(e.tf||'').toUpperCase()}} ${{e.strategy||''}}</span>
+        <span style="color:#4e5f90;font-size:9px;font-family:'IBM Plex Mono',monospace">${{(e.ts||'').substring(11,16)}}</span>
       </div>
-      <div style="color:#8b949e;font-size:10px;margin-top:2px">[${{e.grade||'?'}}] Entry <b>${{e.entry}}</b> · Kelly ${{e.kelly_pct}}% · RR ${{e.rr}}:1</div>
-      <div style="font-size:10px;color:#6e7681;margin-top:5px;font-family:'JetBrains Mono',monospace">SL <b>${{e.sl||'--'}}</b> &bull; TP <b>${{e.tp||'--'}}</b></div>
+      <div style="color:#7a8db5;font-size:10px;margin-top:2px">[${{e.grade||'?'}}] Entry <b>${{e.entry}}</b> · Kelly ${{e.kelly_pct}}% · RR ${{e.rr}}:1</div>
+      <div style="font-size:10px;color:#4e5f90;margin-top:5px;font-family:'IBM Plex Mono',monospace">SL <b>${{e.sl||'--'}}</b> &bull; TP <b>${{e.tp||'--'}}</b></div>
     </div>`;
   }}
   list.innerHTML = html;

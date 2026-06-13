@@ -1,0 +1,52 @@
+{
+  "symbol": "ETH/USDT",
+  "tf": "15m",
+  "strategy": "lower_high_structure_short",
+  "params": {
+    "sl_mult": 1.9,
+    "tp_mult": 1.5,
+    "cooldown": 10,
+    "rsi_w_thr": 60
+  },
+  "risk_pct": 4.9,
+  "metrics_is": {
+    "trades": 997,
+    "wr": 75.7,
+    "cagr": 133.7,
+    "dd": -51.0,
+    "pf": 1.32,
+    "trades_year": 141.3
+  },
+  "metrics_oos": {
+    "trades": 290,
+    "wr": 73.1,
+    "cagr": 115.7,
+    "dd": -46.3,
+    "pf": 1.36,
+    "trades_year": 164.7
+  },
+  "oos_days": 643,
+  "saved_at": "2026-06-12 21:21:54.443411",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 96.6,
+      "median": 30.3,
+      "ic95_lo": -2.5,
+      "ic95_hi": 46.5,
+      "ic80_lo": 12.1,
+      "ic80_hi": 41.8,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 29,
+      "positive": 22,
+      "pct_positive": 75.9,
+      "avg_cagr": 501.9,
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "passed_steps": 2,
+    "max_steps": 2,
+    "validated_at": "2026-06-12 21:21:56.094031"
+  }
+}

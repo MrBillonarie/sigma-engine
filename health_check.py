@@ -28,6 +28,7 @@ def check_services():
     services = [
         "sigma-web.service", "sigma-trainer.service", "sigma-pipeline.service",
         "sigma-telegram.service", "sigma-paper-trader.service",
+        "sigma-champion-watcher.service", "sigma-commodities.service", "sigma-discord.service",
     ]
     out = []
     for svc in services:

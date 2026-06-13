@@ -1,0 +1,12 @@
+{
+  "kelly_multiplier": 0.938,
+  "dd_current_pct": -1.21,
+  "dd_from_peak_pct": -1.21,
+  "dd_from_init_pct": 14.23,
+  "equity": 11422.53,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.2% (peak=-1.2% init=14.2%) -> Kelly x0.94 [NORMAL]",
+  "computed_at": "2026-06-13T04:30:01.781335-04:00"
+}

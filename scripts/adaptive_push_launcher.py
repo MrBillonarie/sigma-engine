@@ -50,14 +50,37 @@ def get_load_avg():
     return float(parts[1])  # 5-min average
 
 
+MAX_PUSH_HOURS = 4
+
 def is_push_running():
-    """True if there's already a push_grade_a or push_grade_a_overnight process running."""
     try:
-        out = subprocess.check_output(['pgrep', '-f', 'push_grade_a'], text=True)
-        return bool(out.strip())
+        out = subprocess.check_output(['pgrep', '-f', 'push_grade_a'], text=True).strip()
+        if not out:
+            return False
+        pids = [int(p) for p in out.split() if p.strip()]
+        import time as _t, signal
+        for pid in pids:
+            try:
+                with open(f'/proc/{pid}/stat') as f:
+                    starttime_ticks = int(f.read().split()[21])
+                hz = os.sysconf('SC_CLK_TCK')
+                with open('/proc/uptime') as f:
+                    uptime_s = float(f.read().split()[0])
+                age_h = (uptime_s - starttime_ticks / hz) / 3600
+                if age_h > MAX_PUSH_HOURS:
+                    log(f'[TIMEOUT] push PID {pid} lleva {age_h:.1f}h - matando')
+                    os.kill(pid, signal.SIGTERM)
+                    _t.sleep(2)
+                    try:
+                        os.kill(pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                    return False
+            except (FileNotFoundError, ProcessLookupError, ValueError):
+                pass
+        return True
     except subprocess.CalledProcessError:
         return False
-
 
 def load_state():
     if not STATE_FILE.exists():

@@ -18,6 +18,31 @@ Se registra como servicio systemd: sigma-pipeline
 """
 import sys, os, time, json, subprocess, signal
 import psutil
+import atexit
+
+_children_killed = False
+
+def _kill_children(signum=None, frame=None):
+    """Mata todos los asset_pipeline hijos — safe para atexit y signal handlers."""
+    global _children_killed
+    if _children_killed:
+        return
+    _children_killed = True
+    try:
+        import subprocess as _sp
+        _sp.run(['pkill', '-9', '-f', 'asset_pipeline.py'], capture_output=True, timeout=5)
+    except Exception:
+        pass
+
+def _signal_exit(signum, frame):
+    _kill_children()
+    sys.exit(0)
+
+# SIGTERM (systemctl stop) y SIGINT (Ctrl+C) -> matar hijos y salir
+signal.signal(signal.SIGTERM, _signal_exit)
+signal.signal(signal.SIGINT,  _signal_exit)
+# atexit: matar hijos al salir por cualquier razon (crash, exception, etc)
+atexit.register(_kill_children)
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from pathlib import Path
@@ -47,8 +72,8 @@ TRIALS_BY_TF = {'4h': 250, '1h': 300, '15m': 300, '5m': 150, '1m': 35}  # 2026-0
 # Con 60 trials Optuna TPE igual encuentra buenas soluciones
 
 # 4 slots paralelos — sigma-trainer pausado, tenemos 3.5+ cores libres
-MAX_PARALLEL = 8  # 2026-06-07: 8 cores upgrade — 2 master + 6 gap = 8 total
-MIN_RAM_GB  = 2.5   # No lanzar si RAM libre < 2.5GB
+MAX_PARALLEL = 8   # 8 M1 + 2 M2 = 10 total × n_jobs=2 = 20 threads / 8 CPUs → load ~10-12
+MIN_RAM_GB  = 2.0   # No lanzar si RAM libre < 2.0GB
 
 running_procs = {}
 log_path = OUTPUT_DIR / 'results' / 'reports' / 'master_pipeline.log'
@@ -336,8 +361,8 @@ def run():
         log(f'Total modelos OOS positivos: {found}/20')
 
         # Pause between cycles
-        wait = 300 if found < 10 else 600  # 5min si pocos modelos, 10min si muchos
-        log(f'Pausa {wait//60}min antes del siguiente ciclo...')
+        wait = 60  # ciclo rapido: relanzar inmediatamente cuando hay slots listos
+        log(f'Pausa {wait}s antes del siguiente ciclo...')
         time.sleep(wait)
 
 

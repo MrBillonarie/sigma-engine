@@ -1,0 +1,79 @@
+{
+  "BTC": {
+    "regime": "BEAR",
+    "rsi_w": 42.7,
+    "price": 63817.99,
+    "ema200": 77326.3274,
+    "pct_vs_ema": -17.5
+  },
+  "ETH": {
+    "regime": "BEAR",
+    "rsi_w": 41.2,
+    "price": 1675.34,
+    "ema200": 2344.3157,
+    "pct_vs_ema": -28.5
+  },
+  "LTC": {
+    "regime": "BEAR",
+    "rsi_w": 24.9,
+    "price": 43.5,
+    "ema200": 61.8346,
+    "pct_vs_ema": -29.7
+  },
+  "SOL": {
+    "regime": "BEAR",
+    "rsi_w": 34.2,
+    "price": 67.37,
+    "ema200": 96.5231,
+    "pct_vs_ema": -30.2
+  },
+  "BNB": {
+    "regime": "BEAR",
+    "rsi_w": 45.8,
+    "price": 603.83,
+    "ema200": 704.6525,
+    "pct_vs_ema": -14.3
+  },
+  "XAU": {
+    "regime": "BEAR",
+    "rsi_w": 41.5,
+    "price": 4215.0,
+    "ema200": 4398.1868,
+    "pct_vs_ema": -4.2
+  },
+  "HG": {
+    "regime": "BULL",
+    "rsi_w": 66.4,
+    "price": 6.4305,
+    "ema200": 5.675,
+    "pct_vs_ema": 13.3
+  },
+  "NG": {
+    "regime": "BEAR",
+    "rsi_w": 48.8,
+    "price": 3.12,
+    "ema200": 3.3004,
+    "pct_vs_ema": -5.5
+  },
+  "WTI": {
+    "regime": "RANGE",
+    "rsi_w": 50.5,
+    "price": 84.88,
+    "ema200": 80.0246,
+    "pct_vs_ema": 6.1
+  },
+  "PL": {
+    "regime": "BEAR",
+    "rsi_w": 41.5,
+    "price": 1709.2,
+    "ema200": 1866.8782,
+    "pct_vs_ema": -8.4
+  },
+  "XAG": {
+    "regime": "RANGE",
+    "rsi_w": 46.3,
+    "price": 67.859,
+    "ema200": 67.8449,
+    "pct_vs_ema": 0.0
+  }
+}
