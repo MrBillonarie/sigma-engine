@@ -1,5 +1,5 @@
 {
-  "computed_at": "2026-06-13T04:30:01.763868",
+  "computed_at": "2026-06-17T21:30:01.557204",
   "strategies": {
     "breakdown": {
       "n_trades": 6,
@@ -15,17 +15,17 @@
       "last_trade": "2026-06-05 18:00"
     },
     "momentum_short": {
-      "n_trades": 10,
+      "n_trades": 11,
       "wins": 6,
-      "losses": 4,
-      "posterior_mean_wr": 0.5833,
-      "credible_lower_95": 0.3153,
-      "credible_upper_95": 0.8513,
-      "prob_above_55": 0.5833,
+      "losses": 5,
+      "posterior_mean_wr": 0.5385,
+      "credible_lower_95": 0.2773,
+      "credible_upper_95": 0.7996,
+      "prob_above_55": 0.2692,
       "edge_confirmed": false,
-      "live_sharpe": 5.409,
-      "sharpe_lower_ci": 2.959,
-      "last_trade": "2026-06-02 15:00"
+      "live_sharpe": 4.721,
+      "sharpe_lower_ci": 2.662,
+      "last_trade": "2026-06-13 17:42"
     },
     "three_candles_short": {
       "n_trades": 4,
@@ -39,8 +39,34 @@
       "live_sharpe": null,
       "sharpe_lower_ci": null,
       "last_trade": "2026-06-06 23:19"
+    },
+    "volatility_breakout": {
+      "n_trades": 4,
+      "wins": 2,
+      "losses": 2,
+      "posterior_mean_wr": 0.5,
+      "credible_lower_95": 0.1296,
+      "credible_upper_95": 0.8704,
+      "prob_above_55": 0.25,
+      "edge_confirmed": false,
+      "live_sharpe": null,
+      "sharpe_lower_ci": null,
+      "last_trade": "2026-06-15 11:30"
+    },
+    "lower_lows": {
+      "n_trades": 3,
+      "wins": 1,
+      "losses": 2,
+      "posterior_mean_wr": 0.4,
+      "credible_lower_95": 0.008,
+      "credible_upper_95": 0.792,
+      "prob_above_55": 0.2,
+      "edge_confirmed": false,
+      "live_sharpe": null,
+      "sharpe_lower_ci": null,
+      "last_trade": "2026-06-17 15:31"
     }
   },
-  "total_strategies_tracked": 3,
+  "total_strategies_tracked": 5,
   "edge_confirmed_count": 1
 }

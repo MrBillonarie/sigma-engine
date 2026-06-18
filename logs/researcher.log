@@ -1,0 +1,8 @@
+[RESEARCHER] Analizando 25 trades...
+[RESEARCHER] Modo estadistico (sin API key o error)
+[RESEARCHER] Guardado en /opt/sigma/results/reports/research_insights.json
+  [LOW] Hora 11:00 UTC acumula perdidas promedio -2.7% (3 trades)
+       Accion: Agregar cooldown en hora 11:00-13:00 UTC
+  [HIGH] SL teorico 1.75% vs perdida real 2.38% — slippage alto (1.4x)
+       Accion: Revisar execution quality o ampliar SL en 30%
+[RESEARCHER] Telegram enviado

@@ -1,0 +1,79 @@
+{
+  "symbol": "XAG/USD",
+  "tf": "4h",
+  "strategy": "regime_adaptive",
+  "params": {
+    "sl_mult": 2.6,
+    "tp_mult": 2.2,
+    "cooldown": 8,
+    "rsi_w_thr": 47,
+    "lookback": 51,
+    "vol_mult": 1.2,
+    "sl_mult_long": 2.5,
+    "tp_mult_long": 5.0,
+    "sl_mult_short": 1.6,
+    "tp_mult_short": 2.1,
+    "rsi_w_bull": 60,
+    "rsi_w_bear": 42
+  },
+  "risk_pct": 3.5,
+  "metrics_is": {
+    "trades": 151,
+    "wr": 46.4,
+    "cagr": 2.8,
+    "dd": -44.6,
+    "pf": 1.1,
+    "trades_year": 8.4
+  },
+  "metrics_oos": {
+    "trades": 45,
+    "wr": 48.9,
+    "cagr": 6.2,
+    "dd": -25.1,
+    "pf": 1.37,
+    "trades_year": 10.0
+  },
+  "oos_days": 1649,
+  "saved_at": "2026-06-16 15:08:48.812198",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 80.4,
+      "median": 38.5,
+      "ic95_lo": -39.7,
+      "ic95_hi": 137.4,
+      "ic80_lo": -16.6,
+      "ic80_hi": 102.0,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 29,
+      "positive": 13,
+      "pct_positive": 44.8,
+      "avg_cagr": 4.9,
+      "passed": false
+    },
+    "cross_asset": {
+      "positive": 0,
+      "passed": false,
+      "note": "sin datos"
+    },
+    "confidence": "BAJA",
+    "passed_steps": 1,
+    "max_steps": 3,
+    "validated_at": "2026-06-16 15:09:00.397972"
+  },
+  "m2_validation": {
+    "status": "PASS",
+    "reasons": [],
+    "validated_at": "2026-06-17T16:00:01.351273-04:00"
+  },
+  "mc": {
+    "mc_cagr_p05": -35.9,
+    "mc_cagr_p50": -10.1,
+    "mc_cagr_p95": 26.2,
+    "mc_dd_p50": -40.5,
+    "mc_dd_p95": -19.1,
+    "mc_confidence": 19.1,
+    "mc_sims": 1000
+  }
+}

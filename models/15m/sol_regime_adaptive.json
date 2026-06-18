@@ -39,10 +39,10 @@
     "oos_win_rate": 40.0,
     "n_windows": 10,
     "positive_windows": 4,
-    "avg_cagr_oos": 192.33,
-    "avg_cagr_pos": 529.9,
+    "avg_cagr_oos": 302.64,
+    "avg_cagr_pos": 833.3,
     "verdict": "FAIL",
-    "date": "2026-06-07 02:14"
+    "date": "2026-06-14 02:14"
   },
   "validation": {
     "monte_carlo": {

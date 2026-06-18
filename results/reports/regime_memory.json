@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-06-12 06:00:01",
-  "n_trades_used": 22,
-  "n_models_tracked": 8,
+  "updated_at": "2026-06-17 06:00:02",
+  "n_trades_used": 27,
+  "n_models_tracked": 9,
   "current_regime": "BEAR",
   "leaderboard": [
     {
@@ -29,12 +29,20 @@
       "score": 1.305
     },
     {
+      "model": "ETH_15m_volatility_breakout",
+      "regime": "BEAR",
+      "wr": 66.7,
+      "avg_pnl": 0.1277,
+      "n": 3,
+      "score": 0.487
+    },
+    {
       "model": "BTC_1h_momentum_short",
       "regime": "BEAR",
-      "wr": 50.0,
-      "avg_pnl": 0.0198,
-      "n": 4,
-      "score": 0.263
+      "wr": 40.0,
+      "avg_pnl": -0.1653,
+      "n": 5,
+      "score": -0.441
     }
   ],
   "memory": {
@@ -51,14 +59,14 @@
     },
     "BTC_1h_momentum_short": {
       "BEAR": {
-        "n": 4,
-        "wr": 50.0,
-        "avg_pnl": 0.0198,
-        "last_seen": "2026-05-31 19:03:39.984041",
-        "score": 0.263
+        "n": 5,
+        "wr": 40.0,
+        "avg_pnl": -0.1653,
+        "last_seen": "2026-06-13 17:42:25.887519",
+        "score": -0.441
       },
       "_best_regime": "BEAR",
-      "_best_score": 0.263
+      "_best_score": -0.441
     },
     "ETH_1h_momentum_short": {
       "BEAR": {
@@ -95,14 +103,14 @@
     },
     "SOL_4h_supply_zone_rejection": {
       "BEAR": {
-        "n": 1,
-        "wr": 100.0,
-        "avg_pnl": 0.0353,
-        "last_seen": "2026-05-24 22:07:50.065692",
-        "score": 0.108
+        "n": 2,
+        "wr": 50.0,
+        "avg_pnl": -0.3655,
+        "last_seen": "2026-06-15 07:19:43.883142",
+        "score": -0.485
       },
       "_best_regime": "BEAR",
-      "_best_score": 0.108
+      "_best_score": -0.485
     },
     "BTC_4h_three_candles_short": {
       "BEAR": {
@@ -115,16 +123,27 @@
       "_best_regime": "BEAR",
       "_best_score": 2.64
     },
+    "ETH_15m_volatility_breakout": {
+      "BEAR": {
+        "n": 3,
+        "wr": 66.7,
+        "avg_pnl": 0.1277,
+        "last_seen": "2026-06-15 07:26:05.805970",
+        "score": 0.487
+      },
+      "_best_regime": "BEAR",
+      "_best_score": 0.487
+    },
     "SOL_15m_regime_adaptive": {
       "BEAR": {
         "n": 1,
         "wr": 0.0,
-        "avg_pnl": -0.9633,
-        "last_seen": "2026-06-12 02:37:34.947037",
-        "score": -0.751
+        "avg_pnl": -0.8514,
+        "last_seen": "2026-06-15 18:31:56.476948",
+        "score": -0.661
       },
       "_best_regime": "BEAR",
-      "_best_score": -0.751
+      "_best_score": -0.661
     }
   }
 }

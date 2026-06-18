@@ -119,6 +119,6 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.write(msg)
 
 if __name__ == "__main__":
-    server = HTTPServer(("0.0.0.0", PORT), Handler)
+    server = HTTPServer(("127.0.0.1", PORT), Handler)
     print(f"[2FA] Servidor en http://178.104.10.97:{PORT}", flush=True)
     server.serve_forever()

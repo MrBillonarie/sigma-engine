@@ -284,22 +284,47 @@ def _regen_snapshot():
             if _slot not in champions:
                 champions[_slot] = _val
 
+    # Calcular vistas multi-nivel M1+M2 por robustness rank
+    _cagrs_op, _cagrs_pl, _cagrs_all = [], [], []
+    _w_op, _w_pl, _w_all = [], [], []
+    _n_pass_live, _n_blocked = 0, 0
+    for _i, (_slot_key, _slot_val) in enumerate(by_slot.items()):
+        _rk = _slot_val[0][0] if isinstance(_slot_val[0], tuple) else 0
+        _cg = _slot_val[1]
+        _wt = max(trades_per_slot[_i], 1) if _i < len(trades_per_slot) else 1
+        _cagrs_all.append(_cg); _w_all.append(_wt)
+        if _rk >= 2:
+            _cagrs_op.append(_cg); _w_op.append(_wt)
+        if _rk == 3:
+            _cagrs_pl.append(_cg); _w_pl.append(_wt)
+            _n_pass_live += 1
+        if _rk == 1:
+            _n_blocked += 1
+    def _wavg(_vals, _wts):
+        _tw = sum(_wts)
+        return sum(_v * _w for _v, _w in zip(_vals, _wts)) / _tw if _tw > 0 else 0.0
+
     snap = dict(existing)
     snap['champions'] = champions
     snap['snapshot_at'] = datetime.now(timezone.utc).replace(tzinfo=None).isoformat() + 'Z'
     snap['trigger'] = 'champion_watcher refresh'
-    if not existing:
-        snap.update({
-            'port_cagr': port_cagr,
-            'port_cagr_kelly_boost': _kelly_boost,
-            'port_cagr_with_kelly': round(port_cagr + _kelly_boost, 4),
-            'port_wr': port_wr,
-            'port_dd': port_dd,
-            'port_pf': round(port_pf, 2),
-            'port_calmar': round(port_calmar, 2),
-            'total_trades': trades,
-            'n_grade_a': n_grade_a,
-        })
+    # Siempre actualizar métricas (M1+M2). web_server.py solo lee port_snapshot, no escribe.
+    snap.update({
+        'port_cagr': round(port_cagr, 4),
+        'port_cagr_kelly_boost': _kelly_boost,
+        'port_cagr_with_kelly': round(port_cagr + _kelly_boost, 4),
+        'port_wr': port_wr,
+        'port_dd': port_dd,
+        'port_pf': round(port_pf, 2),
+        'port_calmar': round(port_calmar, 2),
+        'total_trades': trades,
+        'n_grade_a': n_grade_a,
+        'port_cagr_operational': round(_wavg(_cagrs_op, _w_op), 2) if _cagrs_op else round(port_cagr, 2),
+        'port_cagr_pass_live': round(_wavg(_cagrs_pl, _w_pl), 2) if _cagrs_pl else round(port_cagr, 2),
+        'port_cagr_all_inc_blocked': round(_wavg(_cagrs_all, _w_all), 2),
+        'n_pass_live': _n_pass_live,
+        'n_blocked': _n_blocked,
+    })
     try:
         SNAPSHOT_PATH.parent.mkdir(parents=True, exist_ok=True)
         SNAPSHOT_PATH.write_text(json.dumps(snap, indent=2))

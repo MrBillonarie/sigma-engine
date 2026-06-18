@@ -172,30 +172,7 @@
     "phase_3_trades": "100+",
     "phase_3_action": "Optimizacion completa. A/B testing."
   },
-  "telegram": {},
   "discord": {
-    "bot_token": "MTUwNDkwNTk5MjA2Mjc2NzE2NA.GrQzOY.yVpqIPy3htFP7ihkorTDCMHKL1jXCdsH1sO96Q",
-    "application_id": "1504905992062767164",
-    "guild_id": 1387450237349662854,
-    "channel_ids": {
-      "broadcasts": 1392228516816359534,
-      "estrategias": 1493787791665139744,
-      "backtesting": 1493787871914623067,
-      "data_feeds": 1493787962432032868,
-      "market_alerts": 1493790119117979758,
-      "sigma_reports": 1493789904256368680,
-      "general": 1387450239669108793,
-      "resultados_pnl": 1493787446721118259,
-      "risk_management": 1493787547258847242
-    },
-    "enabled": true,
-    "created_at": "2026-05-15 14:07:09",
-    "primary_channel_id": 1387450239669108793,
-    "intro_msg_ids": {
-      "broadcasts": 1504910811838021772,
-      "estrategias": 1504910812966555829,
-      "backtesting": 1504910814958588146,
-      "data_feeds": 1504910816875380756
-    }
+    "bot_token": "REGENERATE_IN_DISCORD_DEVELOPER_PORTAL"
   }
 }

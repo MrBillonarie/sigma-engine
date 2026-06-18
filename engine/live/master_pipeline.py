@@ -72,7 +72,7 @@ TRIALS_BY_TF = {'4h': 250, '1h': 300, '15m': 300, '5m': 150, '1m': 35}  # 2026-0
 # Con 60 trials Optuna TPE igual encuentra buenas soluciones
 
 # 4 slots paralelos — sigma-trainer pausado, tenemos 3.5+ cores libres
-MAX_PARALLEL = 8   # 8 M1 + 2 M2 = 10 total × n_jobs=2 = 20 threads / 8 CPUs → load ~10-12
+MAX_PARALLEL = 2   # reducido temporalmente 2026-06-17 mientras LIVE trading esta activo (era 8)
 MIN_RAM_GB  = 2.0   # No lanzar si RAM libre < 2.0GB
 
 running_procs = {}

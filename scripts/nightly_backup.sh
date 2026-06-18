@@ -15,13 +15,30 @@ if [ "$BRANCH" != "vps-snapshot" ]; then
     git checkout vps-snapshot >> $LOG 2>&1
 fi
 
-git add -A >> $LOG 2>&1
-CHANGED=$(git diff --cached --name-only | wc -l)
-if [ "$CHANGED" -gt 0 ]; then
-    git commit -m "Auto backup $(date '+%Y-%m-%d %H:%M') — $CHANGED archivos" >> $LOG 2>&1
-    echo "[$DATE] Git: $CHANGED archivos commiteados" >> $LOG
+# 2026-06-17: git add -A puede fallar por carrera con archivos que se modifican
+# mientras se leen (modelos/trade_state.json en escritura activa por el motor
+# corriendo en vivo) -- "fatal: confused by unstable object source data". Sin
+# reintento, esto dejaba el backup de GitHub desactualizado en silencio (4 dias).
+ADD_OK=0
+for i in 1 2 3; do
+    if git add -A >> $LOG 2>&1; then
+        ADD_OK=1
+        break
+    fi
+    echo "[$DATE] git add -A fallo (intento $i/3) -- reintentando en 5s" >> $LOG
+    sleep 5
+done
+
+if [ "$ADD_OK" -eq 0 ]; then
+    echo "[$DATE] git add -A fallo 3/3 -- backup de hoy incompleto, se reintenta manana" >> $LOG
 else
-    echo "[$DATE] Git: sin cambios nuevos" >> $LOG
+    CHANGED=$(git diff --cached --name-only | wc -l)
+    if [ "$CHANGED" -gt 0 ]; then
+        git commit -m "Auto backup $(date '+%Y-%m-%d %H:%M') — $CHANGED archivos" >> $LOG 2>&1
+        echo "[$DATE] Git: $CHANGED archivos commiteados" >> $LOG
+    else
+        echo "[$DATE] Git: sin cambios nuevos" >> $LOG
+    fi
 fi
 
 # ── Push a GitHub (offsite real) ─────────────────────────────────────────────

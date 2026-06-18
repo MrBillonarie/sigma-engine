@@ -54,9 +54,9 @@
     "oos_win_rate": 100.0,
     "n_windows": 3,
     "positive_windows": 3,
-    "avg_cagr_oos": 20.83,
-    "avg_cagr_pos": 20.83,
+    "avg_cagr_oos": 19.93,
+    "avg_cagr_pos": 19.93,
     "verdict": "PASS",
-    "date": "2026-06-07 02:19"
+    "date": "2026-06-14 02:19"
   }
 }

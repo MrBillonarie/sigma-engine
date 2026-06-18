@@ -1,0 +1,61 @@
+{
+  "symbol": "BNB/USDT",
+  "tf": "15m",
+  "strategy": "lower_high_structure_short",
+  "params": {
+    "sl_mult": 2.2,
+    "tp_mult": 1.7,
+    "cooldown": 4,
+    "rsi_w_thr": 51
+  },
+  "risk_pct": 4.7,
+  "metrics_is": {
+    "trades": 316,
+    "wr": 75.3,
+    "cagr": 61.0,
+    "dd": -33.3,
+    "pf": 1.29,
+    "trades_year": 63.2
+  },
+  "metrics_oos": {
+    "trades": 81,
+    "wr": 76.5,
+    "cagr": 31.8,
+    "dd": -23.7,
+    "pf": 1.18,
+    "trades_year": 113.8
+  },
+  "oos_days": 260,
+  "saved_at": "2026-06-16 20:03:38.177204",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 72.2,
+      "median": 16.4,
+      "ic95_lo": -45.0,
+      "ic95_hi": 56.6,
+      "ic80_lo": -20.3,
+      "ic80_hi": 44.2,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 29,
+      "positive": 20,
+      "pct_positive": 69.0,
+      "avg_cagr": 142.2,
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "passed_steps": 2,
+    "max_steps": 2,
+    "validated_at": "2026-06-16 20:03:38.945873"
+  },
+  "mc": {
+    "mc_cagr_p05": 960.9,
+    "mc_cagr_p50": 4598.2,
+    "mc_cagr_p95": 14243.1,
+    "mc_dd_p50": -30.2,
+    "mc_dd_p95": -19.6,
+    "mc_confidence": 100.0,
+    "mc_sims": 1000
+  }
+}

@@ -93,6 +93,22 @@ def _write_snapshot(path, cagr, wr, dd, pf, calmar, trades, n_grade_a, champions
         'trigger':      trigger,
         'champions':    champions,
     }
+    # Preservar M2 champions del snapshot anterior (M2 = XAU/XAG/WTI/NG/HG/PL)
+    _M2_ASSETS = {'XAU', 'XAG', 'WTI', 'NG', 'HG', 'PL'}
+    try:
+        if path.exists():
+            _prev_snap = json.loads(path.read_text())
+            for _m2_slot, _m2_val in _prev_snap.get('champions', {}).items():
+                _m2_sym = _m2_slot.split('|')[0]
+                if _m2_sym in _M2_ASSETS and _m2_slot not in snap['champions']:
+                    snap['champions'][_m2_slot] = _m2_val
+            # Preservar métricas M1+M2 calculadas por champion_watcher (no M1-only)
+            if _prev_snap.get('total_trades', 0) > snap.get('total_trades', 0):
+                snap['port_cagr'] = _prev_snap['port_cagr']
+                snap['total_trades'] = _prev_snap['total_trades']
+                snap['n_grade_a'] = _prev_snap.get('n_grade_a', snap['n_grade_a'])
+    except Exception:
+        pass
     path.write_text(json.dumps(snap, indent=2))
 
 
@@ -1180,7 +1196,8 @@ def generate_html():
             _snap_now['port_cagr_all_inc_blocked'] = round(port_cagr_total, 2)
             _snap_now['n_pass_live'] = n_pass_live
             _snap_now['n_blocked'] = n_blocked
-            _snap_now['port_cagr'] = round(port_cagr_operational, 2)  # OVERRIDE: port_cagr ahora es OPERATIONAL honesto
+            # port_cagr es M1+M2 (set by champion_watcher). NO sobreescribir con M1-only.
+        # Usar port_cagr_operational para la vista M1-only.
             SNAPSHOT_PATH.write_text(json.dumps(_snap_now, indent=2))
     except Exception as _e_honest:
         print('[honest update err] ' + str(_e_honest), flush=True)
@@ -3288,14 +3305,16 @@ async function loadTrades() {{
     const pnlCol  = (st.total_pnl||0) >= 0 ? '#00e676' : '#f44336';
     const wrCol   = (st.win_rate||0) >= 55 ? '#00c853' : (st.win_rate||0) >= 45 ? '#ff9800' : '#f44336';
 
-    // Precios en vivo desde Binance para P&L flotante
+    // Precios en vivo: /api/m2_prices para commodities, Binance para crypto
+    const _COM_SYMS = new Set(['HG','WTI','XAU','XAG','NG','PL']);
     const _livePrices = {{}};
     try {{
-      const pairs = [...new Set(open.map(t=>t.sym+'USDT'))];
+      try {{ const _m2r=await fetch('/api/m2_prices'); const _m2j=await _m2r.json(); Object.assign(_livePrices,_m2j); }} catch(e) {{}}
+      const pairs = [...new Set(open.filter(t=>!_COM_SYMS.has(t.sym)).map(t=>t.sym+'USDT'))];
       await Promise.all(pairs.map(async p => {{
         const r = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${{p}}`);
         const j = await r.json();
-        _livePrices[p.replace('USDT','')] = parseFloat(j.price);
+        if(j.price) _livePrices[p.replace('USDT','')] = parseFloat(j.price);
       }}));
     }} catch(e) {{}}
 
@@ -3350,9 +3369,6 @@ async function loadTrades() {{
         <td style="${{TD}};color:#444;font-size:10px">${{t.opened_at?.substring(11,16)||''}}</td>
         <td style="${{TDC}}">
           ${{slHit||tpHit?`<span style="color:${{slHit?'#f44336':'#00c853'}};font-weight:bold;font-size:11px">${{estado}} DETECTADO</span>`:''}}
-          <button onclick="closeTrade('${{t.sym}}','${{t.tf}}','SL_HIT')" style="background:#2d1010;color:#f85149;border:1px solid #5a1a1a;border-radius:3px;padding:2px 6px;font-size:10px;cursor:pointer;margin-right:2px">SL</button>
-          <button onclick="closeTrade('${{t.sym}}','${{t.tf}}','TP_HIT')" style="background:#0d2010;color:#00e676;border:1px solid #1a5a2a;border-radius:3px;padding:2px 6px;font-size:10px;cursor:pointer;margin-right:2px">TP</button>
-          <button onclick="closeTrade('${{t.sym}}','${{t.tf}}','MANUAL')" style="background:#0d1428;color:#555;border:1px solid #1a2240;border-radius:3px;padding:2px 6px;font-size:10px;cursor:pointer">X</button>
         </td>
       </tr>`;
     }}).join('');
@@ -3413,7 +3429,7 @@ async function loadTrades() {{
           <th style="${{THR}}">Entrada</th><th style="${{THR}}">Live</th>
           <th style="${{THR}}">SL</th><th style="${{THR}}">TP</th>
           <th style="${{THR}}">RR</th><th style="${{THR}}" title="Posicion nominal en USD (equity x leverage implicito)">Posición $</th><th style="${{THR}}" title="MARGEN — lo que sale de tu wallet asumiendo leverage 5x del exchange">Margen $</th><th style="${{THR}}" title="Apalancamiento implicito = notional/equity">Lev</th><th style="${{THR}}">P&L live</th>
-          <th style="${{THR}}">Hora</th><th style="${{THC}}">Acción</th>
+          <th style="${{THR}}">Hora</th>
         </tr></thead>
         <tbody>${{openRows}}</tbody>
       </table>`:'<p style="color:#333;font-size:12px;margin:6px 0 10px">Sin posiciones abiertas</p>'}}
@@ -4062,13 +4078,15 @@ async function _refreshFloatingCapital() {{
     let floatPnlPct = 0;
 
     if(open.length > 0) {{
-      const pairs = [...new Set(open.map(t=>t.sym+'USDT'))];
+      const _COM_SYMS2 = new Set(['HG','WTI','XAU','XAG','NG','PL']);
+      const pairs = [...new Set(open.filter(t=>!_COM_SYMS2.has(t.sym)).map(t=>t.sym+'USDT'))];
       const prices = {{}};
+      try {{ const _m2r2=await fetch('/api/m2_prices'); Object.assign(prices,await _m2r2.json()); }} catch(e) {{}}
       await Promise.all(pairs.map(async p => {{
         try {{
           const r = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${{p}}`);
           const j = await r.json();
-          prices[p.replace('USDT','')] = parseFloat(j.price);
+          if(j.price) prices[p.replace('USDT','')] = parseFloat(j.price);
         }} catch(e) {{}}
       }}));
       open.forEach(t => {{

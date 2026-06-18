@@ -1,0 +1,74 @@
+{
+  "symbol": "PL/USD",
+  "tf": "1h",
+  "strategy": "tema_cross",
+  "params": {
+    "sl_mult": 1.9,
+    "tp_mult": 3.8000000000000003,
+    "cooldown": 8,
+    "rsi_w_thr": 62,
+    "tema_period": 14
+  },
+  "risk_pct": 2.4,
+  "metrics_is": {
+    "trades": 180,
+    "wr": 97.8,
+    "cagr": 1397.8,
+    "dd": -4.8,
+    "pf": 22.24,
+    "trades_year": 91.2
+  },
+  "metrics_oos": {
+    "trades": 129,
+    "wr": 98.4,
+    "cagr": 6387.8,
+    "dd": -2.4,
+    "pf": 104.89,
+    "trades_year": 146.3
+  },
+  "oos_days": 322,
+  "saved_at": "2026-06-16 17:35:52.143033",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 100.0,
+      "median": 393.9,
+      "ic95_lo": 345.5,
+      "ic95_hi": 438.6,
+      "ic80_lo": 362.3,
+      "ic80_hi": 423.7,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 17,
+      "positive": 17,
+      "pct_positive": 100.0,
+      "avg_cagr": 367825.6,
+      "passed": true
+    },
+    "cross_asset": {
+      "positive": 0,
+      "passed": false,
+      "note": "sin datos"
+    },
+    "confidence": "MEDIA",
+    "passed_steps": 2,
+    "max_steps": 3,
+    "validated_at": "2026-06-16 17:35:53.860873"
+  },
+  "m2_validation": {
+    "status": "BLOCK",
+    "reasons": [
+      "CAGR_INSANE: 6388% (max permitido 400%)"
+    ],
+    "validated_at": "2026-06-17T18:00:02.203546-04:00"
+  },
+  "mc": {
+    "mc_cagr_p05": 17505078.1,
+    "mc_cagr_p50": 26162946.6,
+    "mc_cagr_p95": 34200692.3,
+    "mc_dd_p50": -4.6,
+    "mc_dd_p95": 0.0,
+    "mc_confidence": 100.0,
+    "mc_sims": 1000
+  }
+}

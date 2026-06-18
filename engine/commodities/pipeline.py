@@ -4,7 +4,7 @@ SIGMA Motor 2 — Commodities Pipeline
 Optimiza XAU y XAG en 1h/4h de forma continua.
 Motor independiente del crypto pipeline (Motor 1).
 """
-import sys, os, subprocess, time, json
+import sys, os, subprocess, time, json, random
 sys.path.insert(0, '/opt/sigma')
 sys.path.insert(0, '/opt/sigma/engine')
 os.chdir('/opt/sigma')
@@ -13,13 +13,27 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 # ── Config ────────────────────────────────────────────────────────────────────
+def _has_15m_data(asset, min_rows=50000):  # 50k: solo XAU/XAG tienen 15m real (491k/479k rows)
+    """True si tenemos suficientes datos 15m para este activo."""
+    path = Path(f'/opt/sigma/models/data_{asset}_15m_max.csv')
+    if not path.exists():
+        return False
+    try:
+        # Count rows fast (no parse)
+        with open(path) as f:
+            rows = sum(1 for _ in f) - 1  # minus header
+        return rows >= min_rows
+    except Exception:
+        return False
+
+
 ASSET_TFS = {
-    'XAU': ['1d', '4h', '1h', '15m'],  # 26y diario + 2yr intraday (Dukascopy 4h/1h)
-    'XAG': ['1d', '4h', '1h', '15m'],  # 26y diario + 2yr 4h/1h + 90d 15m
-    'WTI': ['1d', '4h', '1h', '15m'],  # 26y diario + 2yr 4h/1h + 90d 15m
-    'NG':  ['1d', '4h', '1h', '15m'],  # 26y diario + 2yr 4h/1h + 90d 15m
-    'PL':  ['1d', '4h', '1h', '15m'],  # 26y diario + 2yr 4h/1h + 90d 15m
-    'HG':  ['1d', '4h', '1h', '15m'],  # 26y diario + 2yr 4h/1h + 90d 15m
+    'XAU': ['1d', '4h', '1h', '15m'],
+    'XAG': ['1d', '4h', '1h', '15m'],
+    'WTI': ['1d', '4h', '1h'] + (['15m'] if _has_15m_data('WTI') else []),
+    'NG':  ['1d', '4h', '1h'] + (['15m'] if _has_15m_data('NG')  else []),
+    'PL':  ['1d', '4h', '1h'] + (['15m'] if _has_15m_data('PL')  else []),
+    'HG':  ['1d', '4h', '1h'] + (['15m'] if _has_15m_data('HG')  else []),
 }
 ASSETS = list(ASSET_TFS.keys())
 TFS    = ['4h', '1h', '1d']
@@ -94,9 +108,9 @@ def build_queue():
             cagr, age = get_best_model(asset, tf)
             # Sin modelo = maxima prioridad | Viejo = mayor prioridad
             score = (cagr if cagr is not None else -999) - age * 0.5
-            slots.append((score, asset, tf))
+            slots.append((score, random.random(), asset, tf))  # random tiebreaker: rotacion equitativa entre sin-modelo
     slots.sort()  # peor primero
-    return [(a, tf) for _, a, tf in slots]
+    return [(a, tf) for _, _, a, tf in slots]
 
 
 def run():

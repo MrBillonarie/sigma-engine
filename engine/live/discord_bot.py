@@ -971,4 +971,9 @@ async def on_ready():
 
 
 if __name__ == "__main__":
-    bot.run(TOKEN, log_handler=None)
+    import discord as _discord_m
+    try:
+        bot.run(TOKEN, log_handler=None)
+    except _discord_m.errors.LoginFailure:
+        print("[DISCORD] Token invalido - actualizar bot_token en /opt/sigma/config/settings.json", flush=True)
+        sys.exit(3)

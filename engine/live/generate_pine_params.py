@@ -187,6 +187,47 @@ def get_best_models():
             except:
                 continue
 
+    # Override con signals_cache: misma fuente que pine_sync usa para "vps champion"
+    try:
+        _cache = json.loads((BASE / 'results' / 'signals_cache.json').read_text(encoding='utf-8'))
+        _cache_models = _cache.get('models', [])
+        _cache_best = {}
+        for _cm in _cache_models:
+            _sym = _cm.get('sym',''); _tf = _cm.get('tf',''); _st = _cm.get('strategy','')
+            _sc = _cm.get('score', 0) or 0
+            if not (_sym and _tf and _st): continue
+            _full = _sym+'/USDT' if _sym in ['BTC','ETH','SOL','BNB','LTC'] else _sym+'/USD'
+            _k = (_full, _tf)
+            if _k not in _cache_best or _sc > _cache_best[_k][1]:
+                _cache_best[_k] = (_st, _sc)
+        for _k, (_cst, _csc) in _cache_best.items():
+            if _k not in models: continue
+            if models[_k][0] == _cst: continue
+            _symbol2, _tf2 = _k
+            _tf_dir2 = BASE / 'models' / _tf2
+            for _jf2 in sorted(_tf_dir2.glob('*.json')):
+                try:
+                    _d2 = json.loads(_jf2.read_text(encoding='utf-8'))
+                    if _d2.get('strategy','') != _cst: continue
+                    _sym2 = (_d2.get('symbol','') or '').replace('/USDT','').replace('/USD','').upper()
+                    if _sym2 not in _symbol2.replace('/USDT','').replace('/USD','').upper(): continue
+                    try:
+                        from utils.robustness import robustness_score as _rf2
+                        if _rf2(_d2).get('action') == 'BLOCKED': break
+                    except: pass
+                    _m2 = _d2.get('metrics_oos', {}); _p2 = _d2.get('params', {})
+                    if not _m2 or _m2.get('cagr',0) <= 0: break
+                    _sc2 = _score_fn(_m2, _tf2)
+                    if _sc2 <= -9999: break
+                    _gr2, _ = compute_grade(_sc2)
+                    _wr2 = _m2.get('wr', 0)
+                    _wr2 = round(_wr2*100,1) if _wr2 <= 1.0 else round(_wr2,1)
+                    models[_k] = (_cst, _p2, round(_m2.get('cagr',0),1), _wr2, _sc2, _gr2, 0, _wft_status(_d2, _symbol2, _tf2, _cst))
+                    break
+                except: continue
+    except Exception as _e:
+        log(f"  WARN signals_cache override: {_e}")
+
     for (symbol, tf), (strategy, params, cagr, wr_pct, score, grade_txt, age_days, wft_st) in sorted(models.items()):
         log(f"  {symbol} {tf}: {strategy} CAGR:{cagr:+.1f}% WR:{wr_pct:.0f}% Grade:{grade_txt} WFT:{wft_st} Edad:{age_days}d")
     return models
@@ -434,6 +475,66 @@ def run():
     else:
         log("✗ No se pudo actualizar el Pine")
 
+
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PINE LINT — validates generated SIGMA_v13_COMPLETO.pine for known bad patterns
+# Called automatically after every parameter update.
+# ─────────────────────────────────────────────────────────────────────────────
+
+_PINE_LINT_RULES = [
+    # (regex_pattern, error_message)
+    # Rule fires if pattern is FOUND in the file (bad = pattern present)
+    (
+        r'ob_bull_detected\s*=.*and\s+f_imp_up\(',
+        "CW10001: f_imp_up() inside AND conditional — pre-calculate _ob_imp_up first"
+    ),
+    (
+        r'ob_bear_detected\s*=.*and\s+f_imp_dn\(',
+        "CW10001: f_imp_dn() inside AND conditional — pre-calculate _ob_imp_dn first"
+    ),
+    (
+        r'is_week_start\s*=.*ta\.change\(time\("W"\)\).*ta\.change\(time\("W"\)\)',
+        "CW10002: ta.change(time('W')) called twice in one expression — use _tw_chg pre-calc"
+    ),
+]
+
+def pine_lint(pine_path) -> list:
+    """Return list of error strings; empty list means clean."""
+    import re as _re
+    try:
+        src = pine_path.read_text(encoding='utf-8')
+    except Exception as exc:
+        return [f"Cannot read {pine_path}: {exc}"]
+
+    errors = []
+
+    # Pattern-based rules (pattern present = error)
+    for pattern, msg in _PINE_LINT_RULES:
+        if _re.search(pattern, src):
+            errors.append(msg)
+
+    # Compound rule: m_rsi_w_thr USED but NOT DECLARED
+    # (using it as an alias is fine; missing declaration is the bug)
+    if _re.search(r'm_rsi_w_thr', src) and not _re.search(r'm_rsi_w_thr\s*=', src):
+        errors.append(
+            "Undeclared m_rsi_w_thr: add 'm_rsi_w_thr = m_rsi_w_b' alias "
+            "after m_rsi_w_b declaration"
+        )
+
+    return errors
+
+
+def pine_lint(pine_path: Path) -> list[str]:
+    """Return list of error strings; empty = clean."""
+    import re as _re
+    src = pine_path.read_text(encoding='utf-8')
+    errors = []
+    for pattern, msg in _PINE_LINT_RULES:
+        if _re.search(pattern, src):
+            errors.append(msg)
+    return errors
 
 if __name__ == '__main__':
     run()

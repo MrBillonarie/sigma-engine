@@ -47,9 +47,19 @@ for asset, ticker in ASSETS.items():
             cols = [c for c in ["open","high","low","close","volume"] if c in df1h.columns]
             save(asset, "1h", df1h[cols])
             results[f"{asset}_1h"] = len(df1h)
+            # Resample 1h -> 4h para asegurar CSV 4h actualizado
+            try:
+                df4h = df1h[cols].resample("4h", closed="left", label="left").agg({
+                    "open": "first", "high": "max", "low": "min", "close": "last", "volume": "sum"
+                }).dropna(subset=["close"])
+                if len(df4h) > 100:
+                    save(asset, "4h", df4h)
+                    results[f"{asset}_4h"] = len(df4h)
+            except Exception as e_4h:
+                log(f"  {asset}/4h resample error: {e_4h}")
 
         # 1D - hasta 10 años
-        df1d = t.history(period="10y", interval="1d", auto_adjust=True)
+        df1d = t.history(period="max", interval="1d", auto_adjust=True)  # max: ~25 anos de historia
         if df1d is not None and len(df1d) > 0:
             df1d.index = pd.to_datetime(df1d.index, utc=True)
             df1d.columns = [c.lower() for c in df1d.columns]

@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-06-11 12:50:06",
-  "current_regime": "UNKNOWN",
-  "n_models": 67,
+  "updated_at": "2026-06-15 07:00:01",
+  "current_regime": "BEAR",
+  "n_models": 72,
   "summary": {
-    "HEALTHY": 67,
+    "HEALTHY": 72,
     "WARNING": 0,
     "DECLINING": 0,
     "CRITICAL": 0
@@ -430,6 +430,21 @@
       "weeks_remaining": 8.0
     },
     {
+      "model": "eth_lower_high_structure_short",
+      "tf": "1h",
+      "age_days": 0,
+      "age_weeks": 0.0,
+      "expected_life_weeks": 8,
+      "life_pct_used": 0.0,
+      "score_initial": 0,
+      "score_current": 0,
+      "score_slope": 0.0,
+      "n_score_evals": 1,
+      "regime_mismatch": false,
+      "health": "HEALTHY",
+      "weeks_remaining": 8.0
+    },
+    {
       "model": "bnb_dmi_trend",
       "tf": "1h",
       "age_days": 0,
@@ -491,6 +506,21 @@
     },
     {
       "model": "btc_pullback",
+      "tf": "1h",
+      "age_days": 0,
+      "age_weeks": 0.0,
+      "expected_life_weeks": 8,
+      "life_pct_used": 0.0,
+      "score_initial": 0,
+      "score_current": 0,
+      "score_slope": 0.0,
+      "n_score_evals": 1,
+      "regime_mismatch": false,
+      "health": "HEALTHY",
+      "weeks_remaining": 8.0
+    },
+    {
+      "model": "eth_lower_high_break_short",
       "tf": "1h",
       "age_days": 0,
       "age_weeks": 0.0,
@@ -745,6 +775,21 @@
       "weeks_remaining": 12.0
     },
     {
+      "model": "xauusd_hull_cross",
+      "tf": "4h",
+      "age_days": 0,
+      "age_weeks": 0.0,
+      "expected_life_weeks": 12,
+      "life_pct_used": 0.0,
+      "score_initial": 0,
+      "score_current": 0,
+      "score_slope": 0.0,
+      "n_score_evals": 1,
+      "regime_mismatch": false,
+      "health": "HEALTHY",
+      "weeks_remaining": 12.0
+    },
+    {
       "model": "btc_three_candles_short",
       "tf": "4h",
       "age_days": 0,
@@ -971,6 +1016,36 @@
     },
     {
       "model": "hgusd_pullback",
+      "tf": "1d",
+      "age_days": 0,
+      "age_weeks": 0.0,
+      "expected_life_weeks": 20,
+      "life_pct_used": 0.0,
+      "score_initial": 0,
+      "score_current": 0,
+      "score_slope": 0.0,
+      "n_score_evals": 1,
+      "regime_mismatch": false,
+      "health": "HEALTHY",
+      "weeks_remaining": 20.0
+    },
+    {
+      "model": "ngusd_zscore_rich_short",
+      "tf": "1d",
+      "age_days": 0,
+      "age_weeks": 0.0,
+      "expected_life_weeks": 20,
+      "life_pct_used": 0.0,
+      "score_initial": 0,
+      "score_current": 0,
+      "score_slope": 0.0,
+      "n_score_evals": 1,
+      "regime_mismatch": false,
+      "health": "HEALTHY",
+      "weeks_remaining": 20.0
+    },
+    {
+      "model": "ngusd_energy_seasonal_short",
       "tf": "1d",
       "age_days": 0,
       "age_weeks": 0.0,

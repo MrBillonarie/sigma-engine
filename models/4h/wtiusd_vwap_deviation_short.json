@@ -1,0 +1,65 @@
+{
+  "symbol": "WTI/USD",
+  "tf": "4h",
+  "strategy": "vwap_deviation_short",
+  "params": {
+    "sl_mult": 2.0,
+    "tp_mult": 3.8000000000000003,
+    "cooldown": 12,
+    "rsi_w_thr": 56
+  },
+  "risk_pct": 4.7,
+  "metrics_is": {
+    "trades": 23,
+    "wr": 60.9,
+    "cagr": 80.9,
+    "dd": -12.8,
+    "pf": 2.53,
+    "trades_year": 11.7
+  },
+  "metrics_oos": {
+    "trades": 16,
+    "wr": 56.2,
+    "cagr": 26.6,
+    "dd": -20.8,
+    "pf": 1.44,
+    "trades_year": 17.8
+  },
+  "oos_days": 328,
+  "saved_at": "2026-06-17 17:02:31.050309",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 76.1,
+      "median": 53.4,
+      "ic95_lo": -65.7,
+      "ic95_hi": 263.6,
+      "ic80_lo": -34.3,
+      "ic80_hi": 176.4,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 8,
+      "positive": 6,
+      "pct_positive": 75.0,
+      "avg_cagr": 543.8,
+      "passed": true
+    },
+    "cross_asset": {
+      "positive": 0,
+      "passed": false,
+      "note": "sin datos"
+    },
+    "confidence": "MEDIA",
+    "passed_steps": 2,
+    "max_steps": 3,
+    "validated_at": "2026-06-17 17:02:31.425409"
+  },
+  "m2_validation": {
+    "status": "BLOCK",
+    "reasons": [
+      "IS_OOS_GAP: OOS/IS=0.33 (minimo 0.35)",
+      "[WARN] FEW_TRADES: 16 trades OOS (estadistica debil)"
+    ],
+    "validated_at": "2026-06-17T17:30:01.411371-04:00"
+  }
+}

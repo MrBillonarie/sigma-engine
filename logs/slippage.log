@@ -10,3 +10,15 @@
 [SLIPPAGE] global=1.17x | 8/9 calibrados
   BTC: 1.04x
   SOL: 1.24x
+[SLIPPAGE] global=1.15x | 9/10 calibrados
+  BTC: 1.03x
+  SOL: 1.24x
+[SLIPPAGE] global=1.15x | 9/10 calibrados
+  BTC: 1.03x
+  SOL: 1.24x
+[SLIPPAGE] global=1.12x | 11/12 calibrados
+  BTC: 1.03x
+  SOL: 1.18x
+[SLIPPAGE] global=1.12x | 11/12 calibrados
+  BTC: 1.03x
+  SOL: 1.18x

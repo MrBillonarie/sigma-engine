@@ -46,7 +46,7 @@ threading.Thread(target=_refresh_m2_prices, daemon=True, name='m2-prices').start
 # Para activar: (1) API keys en engine/config/secrets.json
 #               (2) LIVE_MODE=True en engine/live/live_executor.py
 #               (3) cambiar esta linea a True + restart sigma-web
-LIVE_EXECUTION = False
+LIVE_EXECUTION = True
 
 DB   = BASE / 'models' / 'sigma.db'
 
@@ -182,6 +182,13 @@ def _now_chile():
 
 
 TRADE_STATE_FILE = __import__("pathlib").Path("/opt/sigma/results/trade_state.json")
+
+_TRADE_LOCK = threading.RLock()
+def _locked_trade_op(fn):
+    def _wrapper(*a, **kw):
+        with _TRADE_LOCK:
+            return fn(*a, **kw)
+    return _wrapper
 
 
 
@@ -1400,21 +1407,26 @@ def _vol_targeted_kelly(sym, kelly_base, regime="NEUTRAL"):
 
 def _execute_trade(sym, tf, direction, price, sl, tp,
                    strategy='', grade='B', wr=50.0, cagr=0.0, kelly_pct=2.2):
-    """Wrapper paper/live segun LIVE_EXECUTION. SL/TP como ordenes reales cuando LIVE_MODE=True."""
-    if LIVE_EXECUTION:
+    """Wrapper paper/live segun LIVE_EXECUTION. SL/TP como ordenes reales cuando LIVE_MODE=True.
+    M2 (commodities) nunca intenta live -- Binance Futures no tiene esos pares."""
+    if LIVE_EXECUTION and sym not in _M2_ASSETS_SET:
         try:
             import sys as _sys
             _sys.path.insert(0, str(BASE))
             from engine.live.live_executor import execute_entry as _live_fn
-            return _live_fn(sym, tf, direction, price, sl, tp,
+            _live_result = _live_fn(sym, tf, direction, price, sl, tp,
                            strategy=strategy, grade=grade, wr=wr,
                            cagr=cagr, kelly_pct=kelly_pct, paper=False)
+            if _live_result:
+                return _live_result
+            print(f'[LIVE_EXECUTOR] {sym}/{tf} bloqueado por safety checks -- fallback paper', flush=True)
         except Exception as _le:
             print(f'[LIVE_EXECUTOR ERROR] {_le} -- fallback paper', flush=True)
     return open_trade(sym, tf, direction, price, sl, tp, strategy,
                       paper=True, grade=grade, wr=wr, cagr=cagr, kelly_pct=kelly_pct)
 
 
+@_locked_trade_op
 def open_trade(sym, tf, direction, price, sl, tp, strategy='',
 
                paper=False, grade='B', wr=50.0, cagr=0.0, kelly_pct=2.2):
@@ -1475,6 +1487,8 @@ def open_trade(sym, tf, direction, price, sl, tp, strategy='',
 
         'kelly_pct': round(kelly_pct, 2),
 
+        'mode': 'PAPER' if paper else 'LIVE',
+
         'opened_at': now, 'status': 'open',
 
     }
@@ -1499,6 +1513,7 @@ def open_trade(sym, tf, direction, price, sl, tp, strategy='',
 
 
 
+@_locked_trade_op
 def close_trade(sym, tf, exit_price, reason='MANUAL'):
 
     """Cierra un trade y registra resultado en historial."""
@@ -1757,6 +1772,13 @@ def close_trade(sym, tf, exit_price, reason='MANUAL'):
 # ╚════════════════════════════════════════════════════════════════════════════╝
 
 PER_MODEL_FILE = Path('/opt/sigma/results/per_model_state.json')
+
+_PM_LOCK = threading.RLock()
+def _locked_pm_op(fn):
+    def _wrapper(*a, **kw):
+        with _PM_LOCK:
+            return fn(*a, **kw)
+    return _wrapper
 
 # Pausa flag — si existe, opener bloquea nuevas entradas (macro y per-model)
 
@@ -2122,6 +2144,7 @@ def _notify_per_model_close(sym, tf, strategy, direction, pnl_pct, reason, equit
 
 
 
+@_locked_pm_op
 def open_trade_per_model(sym, tf, strategy, direction, entry, sl, tp, kelly_pct=5.0):
 
     """Abre trade en sub-account del modelo. Sin restriccion macro. Notifica via Telegram."""
@@ -2182,6 +2205,7 @@ def open_trade_per_model(sym, tf, strategy, direction, entry, sl, tp, kelly_pct=
 
 
 
+@_locked_pm_op
 def close_trade_per_model(sym, tf, strategy, exit_price, reason='AUTO'):
 
     """Cierra trade per_model. Usa formula backtest: pnl = raw × kelly/sl_dist."""
@@ -2249,6 +2273,7 @@ def close_trade_per_model(sym, tf, strategy, exit_price, reason='AUTO'):
 
 
 
+@_locked_pm_op
 def check_auto_close_per_model(sym, tf, current_price):
 
     """Verifica todos los modelos para sym/tf, cierra los que toquen SL/TP.
@@ -2651,6 +2676,7 @@ def get_per_model_stats():
 
 
 
+@_locked_trade_op
 def check_auto_close(sym, tf, current_price):
     """Verifica si SL o TP fue tocado. Incluye trailing stop activo."""
     state = _load_trades()
@@ -2711,6 +2737,7 @@ def check_auto_close(sym, tf, current_price):
         reason = 'TRAIL_HIT' if trade.get('trail_active') else hit
         return close_trade(sym, tf, current_price, reason)
     return None
+@_locked_trade_op
 def is_blocked(sym, tf):
 
     """True si hay trade abierto o cooldown activo para este sym/tf."""
@@ -2745,6 +2772,7 @@ def is_blocked(sym, tf):
 
 
 
+@_locked_trade_op
 def check_circuit_breaker():
 
     """True si el circuit breaker esta activo. Auto-reset tras 72h sin nuevas operaciones."""
@@ -2969,6 +2997,11 @@ def _refresh_signals():
 
             print(f'[SIGNALS ERROR after {elapsed:.1f}s] {_e}\n{_tb.format_exc()}', flush=True)
 
+        try:
+            import gc as _gc_sigma
+            _gc_sigma.collect()
+        except Exception:
+            pass
         time.sleep(5)   # cada 5 segundos - refresh acelerado
 
 
@@ -4079,6 +4112,11 @@ def _compute_signals():
                         # ATR de la última vela completa para SL/TP
 
                         atr   = float(df['atr'].iloc[-1])
+                        # Guard: ATR < 0.1% del precio = cache OHLCV corrupto, no abrir trade
+                        _atr_pct = atr / price * 100 if price > 0 else 0
+                        if _atr_pct < 0.1:
+                            print(f'[ATR_GUARD] {symbol} {tf} atr={atr:.5f} ({_atr_pct:.4f}%) INVALIDO — skip', flush=True)
+                            has_signal = False
 
                         sl_m  = params.get('sl_mult', 2.0)
 
@@ -4929,7 +4967,7 @@ def _compute_signals():
 
     for _r in sorted(results, key=lambda x: x.get('slot',0), reverse=True):
 
-        if _r.get('slot',0) not in (1,2): continue
+        if _r.get('slot',0) not in (1,2,3): continue
 
         _k = _r['sym']+'_'+_r['tf']
 
@@ -4983,6 +5021,29 @@ def _compute_signals():
             continue
 
 
+
+        # Champion gate: solo abrir si la estrategia es la champion del slot
+        try:
+            _cg2_snap = __import__('json').loads(open('/opt/sigma/results/reports/port_snapshot.json').read())
+            _cg2_champs = _cg2_snap.get('champions', {})
+            _cg2_key = _c['sym'] + '|' + _c['tf']
+            _cg2_champ = _cg2_champs.get(_cg2_key, '')
+            _cg2_strat = _cg2_champ.split('|')[0] if _cg2_champ else ''
+            if _cg2_strat and _c['strat'] != _cg2_strat:
+                # buscar en results el modelo champion con signal activa
+                _cg2_champ_m = next((r for r in results if r.get('sym')==_c['sym'] and r.get('tf')==_c['tf'] and r.get('strategy')==_cg2_strat and r.get('signal')), None)
+                if _cg2_champ_m:
+                    _c = {**_c, 'strat': _cg2_strat, 'price': _cg2_champ_m.get('price', _c['price']),
+                          'sl': _cg2_champ_m.get('sl', _c['sl']), 'tp': _cg2_champ_m.get('tp', _c['tp']),
+                          'grade': _cg2_champ_m.get('grade', _c['grade']), 'wr': _cg2_champ_m.get('wr', _c['wr']),
+                          'cagr': _cg2_champ_m.get('cagr', _c['cagr'])}
+                    print(f"[CHAMPION_GATE] {_c['sym']}/{_c['tf']} usando champion {_cg2_strat}", flush=True)
+                else:
+                    print(f"[CHAMPION_GATE] {_c['sym']}/{_c['tf']} champion {_cg2_strat} sin signal activa - abortando", flush=True)
+                    continue
+        except Exception as _cg2e:
+            print(f'[CHAMPION_GATE ERROR] {_cg2e} -- fail-safe: no abrir', flush=True)
+            continue
 
         _execute_trade(_c['sym'],_c['tf'],_c['dir'],_c['price'],_c['sl'],_c['tp'],
                        strategy=_c['strat'],grade=_c['grade'],wr=_c['wr'],cagr=_c['cagr'],
@@ -5535,7 +5596,7 @@ def _serve_file(handler, path, filename):
 
         handler.send_header('Content-Disposition', f'attachment; filename="{filename}"')
 
-        handler.send_header('Access-Control-Allow-Origin', '*')
+        handler.send_header('Access-Control-Allow-Origin', 'https://squantdesk.com')
 
         handler.end_headers()
 
@@ -5561,7 +5622,7 @@ def _send_json(handler, data):
 
     handler.send_header('Content-Length', len(body))
 
-    handler.send_header('Access-Control-Allow-Origin', '*')
+    handler.send_header('Access-Control-Allow-Origin', 'https://squantdesk.com')
 
     handler.end_headers()
 
@@ -5579,9 +5640,9 @@ _AUTH_FILE = Path('/opt/sigma/engine/config/dashboard_auth.txt')
 
 def _read_auth_config():
 
-    """Lee password y cookie secret del archivo (re-lee en cada request — permite rotar sin restart)."""
+    """Lee password, cookie secret y URL_TOKEN del archivo (re-lee en cada request — permite rotar sin restart)."""
 
-    pwd, secret = '0808', 'fallback-secret-change-me'
+    pwd, secret, url_token = '0808', 'fallback-secret-change-me', ''
 
     try:
 
@@ -5595,11 +5656,15 @@ def _read_auth_config():
 
                 secret = line.split('=',1)[1].strip()
 
+            elif line.startswith('URL_TOKEN='):
+
+                url_token = line.split('=',1)[1].strip()
+
     except Exception:
 
         pass
 
-    return pwd, secret
+    return pwd, secret, url_token
 
 
 
@@ -5667,9 +5732,10 @@ def _is_authenticated(handler):
 
         return False
 
-    _, secret = _read_auth_config()
+    _, secret, _ = _read_auth_config()
 
-    return token == _auth_token(secret)
+    import hmac as _hmac_cmp
+    return _hmac_cmp.compare_digest(token, _auth_token(secret))
 
 
 
@@ -6620,15 +6686,14 @@ async function renderActiveTrades(precachedPrices) {
     const rewardUsd = (t.tp && t.entry) ? notional * Math.abs(t.tp-t.entry)/t.entry : 0;
 
     // PnL flotante con formula del backtest
-
+    // Si no hay precio live (commodities/CSV), usar pnl_pct del backend
     let pnl = 0;
-
-    if (live && t.entry) {
-
+    const hasLivePrice = prices[m.sym] && prices[m.sym] !== t.entry;
+    if (hasLivePrice && t.entry) {
       const move = isLong ? (live-t.entry)/t.entry*100 : (t.entry-live)/t.entry*100;
-
       pnl = move * (kelly/Math.max(slDistPct,0.01));
-
+    } else if (t.pnl_pct != null) {
+      pnl = t.pnl_pct;  // fallback: PnL calculado por el watcher en el servidor
     }
 
     const pnlCol = pnl >= 0 ? '#00e676' : '#f44336';
@@ -7023,6 +7088,38 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
             return True
 
+        # Token en URL: ?token=SECRETO → setea cookie y redirige a ruta limpia
+
+        import urllib.parse as _up_gate
+
+        _parsed = _up_gate.urlparse(self.path)
+
+        _qs = dict(_up_gate.parse_qsl(_parsed.query))
+
+        _url_tok = _qs.get('token', '')
+
+        if _url_tok:
+
+            _, _secret, _valid_tok = _read_auth_config()
+
+            if _valid_tok and _url_tok == _valid_tok:
+
+                _cookie_tok = _auth_token(_secret)
+
+                _dest = _parsed.path or '/'
+
+                self.send_response(302)
+
+                self.send_header('Location', _dest)
+
+                self.send_header('Set-Cookie', f'sigma_auth={_cookie_tok}; Path=/; Max-Age=7776000; HttpOnly; SameSite=Lax')
+
+                self.send_header('Cache-Control', 'no-store')
+
+                self.end_headers()
+
+                return False
+
         # No autenticado → mostrar login
 
         html = _render_login_page().encode('utf-8')
@@ -7056,11 +7153,21 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 _open_trades = []
                 _history = []
                 _port = {}
+                _real_wr = None; _real_pf = None; _n_trades = 0
                 if _ts_p.exists():
                     _ts = _j.loads(_ts_p.read_text())
                     _open_trades = [v for v in _ts.get('open', {}).values() if v.get('status') == 'open']
-                    _history = _ts.get('history', [])[-20:]
+                    _all_hist = _ts.get('history', [])
+                    _history = _all_hist[-20:]
                     _port = _ts.get('portfolio', {})
+                    _n_trades = len(_all_hist)
+                    if _all_hist:
+                        _win_t = [t for t in _all_hist if (t.get('pnl_pct') or 0) > 0]
+                        _loss_t = [t for t in _all_hist if (t.get('pnl_pct') or 0) < 0]
+                        _real_wr = round(len(_win_t) / _n_trades * 100, 1)
+                        _gp = sum(t.get('pnl_dollar', 0) or 0 for t in _win_t)
+                        _gl = abs(sum(t.get('pnl_dollar', 0) or 0 for t in _loss_t))
+                        _real_pf = round(_gp / _gl, 2) if _gl > 0 else None
                 _perf_p = _pl.Path('/opt/sigma/results/reports/performance_tracker.json')
                 if _perf_p.exists() and not _port:
                     _port = _j.loads(_perf_p.read_text()).get('portfolio', {})
@@ -7073,7 +7180,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     'regime': _cache.get('regime', 'UNKNOWN'),
                     'signals': _signals,
                     'top_models': _top_models,
-                    'portfolio': {**_port, 'return_pct': _return_pct},
+                    'portfolio': {**_port, 'return_pct': _return_pct, 'wr': _real_wr, 'pf': _real_pf, 'n_trades': _n_trades},
                     'open_trades': _open_trades,
                     'history': _history,
                     'updated': _cache.get('updated', ''),
@@ -7268,11 +7375,18 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         elif self.path.startswith('/download/model/'):
 
-            fname = self.path.split('/download/model/')[-1]
+            import urllib.parse as _up_dlm
 
-            fpath = BASE / 'results' / 'pine_scripts' / fname
+            fname = _up_dlm.unquote(self.path.split('/download/model/')[-1])
 
-            _serve_file(self, fpath, fname)
+            _dlm_base = (BASE / 'results' / 'pine_scripts').resolve()
+
+            fpath = (_dlm_base / fname).resolve()
+
+            if not fpath.is_relative_to(_dlm_base):
+                self.send_response(403); self.end_headers(); self.wfile.write(b"Forbidden")
+            else:
+                _serve_file(self, fpath, fname)
 
         elif self.path == '/download/hud':
 
@@ -7850,6 +7964,32 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
                 _send_json(self, {'events': [], 'error': str(_en)})
 
+        elif self.path == '/api/pipeline_events':
+
+            try:
+
+                import json as _pj
+
+                _pev_file = Path('/opt/sigma/results/reports/pipeline_events.jsonl')
+
+                _events = []
+
+                if _pev_file.exists():
+
+                    _lines = _pev_file.read_text(encoding='utf-8').splitlines()
+
+                    for _l in _lines[-80:]:
+
+                        try: _events.append(_pj.loads(_l))
+
+                        except: pass
+
+                _send_json(self, {'events': list(reversed(_events))})
+
+            except Exception as _eph:
+
+                _send_json(self, {'events': [], 'error': str(_eph)})
+
 
 
         elif self.path == '/models' or self.path == '/models.html':
@@ -8379,7 +8519,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
                 self.send_header('Cache-Control', 'no-store')
 
-                self.send_header('Access-Control-Allow-Origin', '*')
+                self.send_header('Access-Control-Allow-Origin', 'https://squantdesk.com')
 
                 self.end_headers()
 
@@ -8441,7 +8581,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         self.send_response(200)
 
-        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Origin', 'https://squantdesk.com')
 
         self.send_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
 
@@ -8471,9 +8611,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
                 pwd_provided = fields.get('pwd', '')
 
-                pwd_real, secret = _read_auth_config()
+                pwd_real, secret, _ = _read_auth_config()
 
-                if pwd_provided == pwd_real:
+                import hmac as _hmac_cmp2
+                if _hmac_cmp2.compare_digest(pwd_provided, pwd_real):
 
                     tok = _auth_token(secret)
 
@@ -8543,7 +8684,10 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
             t = open_trade(body['sym'], body['tf'], body['direction'],
 
-                          body['entry'], body['sl'], body['tp'], body.get('strategy',''))
+                          body['entry'], body['sl'], body['tp'], body.get('strategy',''),
+                          paper=body.get('paper', False), grade=body.get('grade','B'),
+                          wr=body.get('wr', 50.0), cagr=body.get('cagr', 0.0),
+                          kelly_pct=body.get('kelly_pct', 2.2))
 
             _send_json(self, {'ok': True, 'trade': t})
 
@@ -8875,6 +9019,27 @@ def _watch_open_trades():
 
                         cp  = float(_jw.loads(_ur.urlopen(url, timeout=5).read())['price'])
 
+                    # Actualizar PnL unrealizado en el trade abierto
+                    # NOTA: recarga state fresco antes de grabar — el 'state' del
+                    # ciclo es una copia que puede haber quedado vieja si otro
+                    # sym/tf ya cerró su trade en esta misma iteración; grabar
+                    # la copia vieja resucitaría ese cierre (bug LTC/PL 2026-06-17).
+                    try:
+                        _entry  = float(tr.get('entry', 0) or 0)
+                        _sl_d   = float(tr.get('sl_dist_pct_at_open', 0) or 0)
+                        _kelly  = float(tr.get('kelly_pct', 1.0) or 1.0)
+                        _direc  = tr.get('direction', 'long')
+                        if _entry > 0 and cp > 0 and _sl_d > 0:
+                            _raw = ((cp - _entry)/_entry*100 if _direc=='long'
+                                    else (_entry - cp)/_entry*100)
+                            _unr = round(_raw * _kelly / _sl_d, 4)
+                            _fresh_pnl = _load_trades()
+                            _fresh_tr  = _fresh_pnl.get('open', {}).get(key)
+                            if _fresh_tr and _fresh_tr.get('status') == 'open':
+                                _fresh_pnl['open'][key]['pnl_pct'] = _unr
+                                _save_trades(_fresh_pnl)
+                    except Exception as _eu:
+                        pass
                     result = check_auto_close(sym, tf, cp)
 
                     # Tambien chequea per-model en mismo sym/tf
@@ -8892,19 +9057,9 @@ def _watch_open_trades():
 
                         print(f'[WATCHER] {sym}/{tf} {reason} @ {cp:.4f} P&L={pnl:+.2f}%', flush=True)
 
-                        time.sleep(1)
-
-                        try:
-
-                            url2 = f'https://fapi.binance.com/fapi/v1/ticker/price?symbol={sym}USDT'
-
-                            cp2  = float(_jw.loads(_ur.urlopen(url2, timeout=5).read())['price'])
-
-                            _reopen_after_close(sym, tf, cp2)
-
-                        except Exception as _er2:
-
-                            print(f'[REOPEN] error precio: {_er2}', flush=True)
+                        # _reopen_after_close es no-op desde 2026-05-13 (ver su docstring) --
+                        # se quito el fetch de precio Binance que fallaba siempre para
+                        # simbolos M2 (HG/XAU/etc no cotizan en Binance Futures)
 
                 except Exception as _e_macro:
 
@@ -9320,6 +9475,15 @@ t3 = threading.Thread(target=_refresh_signals, daemon=True)
 
 t3.start()
 
+if LIVE_EXECUTION:
+    try:
+        import sys as _rsys2
+        _rsys2.path.insert(0, str(BASE / 'engine' / 'live'))
+        from live_executor import reconcile as _reconcile_startup
+        _reconcile_startup()
+    except Exception as _rece:
+        print(f'[RECONCILE STARTUP ERROR] {_rece}', flush=True)
+
 
 
 os.chdir(str(BASE / 'results' / 'charts'))
@@ -9376,9 +9540,10 @@ signal.signal(signal.SIGINT,  _graceful_shutdown)
 
 
 
-httpd = ReusableHTTPServer(('0.0.0.0', PORT), Handler)
+httpd = ReusableHTTPServer(('127.0.0.1', PORT), Handler)
 
 print(f'Dashboard en http://178.104.10.97:{PORT}/dashboard.html', flush=True)
 
 httpd.serve_forever()
+
 

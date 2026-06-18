@@ -1,14 +1,38 @@
 {
-  "timestamp": "2026-06-13T04:00:01.708154",
+  "timestamp": "2026-06-17T21:00:01.661740",
   "models": {
     "1h": [
       {
-        "file": "eth_lower_high_structure_short.json",
-        "strategy": "lower_high_structure_short",
-        "cagr_oos": 226.6,
-        "wr_oos": 75.3,
-        "dd_oos": -29.8,
-        "trades_oos": 93
+        "file": "plusd_tema_cross.json",
+        "strategy": "tema_cross",
+        "cagr_oos": 6387.8,
+        "wr_oos": 98.4,
+        "dd_oos": -2.4,
+        "trades_oos": 129
+      },
+      {
+        "file": "plusd_hull_cross.json",
+        "strategy": "hull_cross",
+        "cagr_oos": 3301.4,
+        "wr_oos": 100.0,
+        "dd_oos": 0.0,
+        "trades_oos": 143
+      },
+      {
+        "file": "plusd_aroon_cross.json",
+        "strategy": "aroon_cross",
+        "cagr_oos": 846.6,
+        "wr_oos": 70.3,
+        "dd_oos": -21.0,
+        "trades_oos": 74
+      },
+      {
+        "file": "wtiusd_hull_cross.json",
+        "strategy": "hull_cross",
+        "cagr_oos": 811.3,
+        "wr_oos": 100.0,
+        "dd_oos": 0.0,
+        "trades_oos": 68
       },
       {
         "file": "xau_regime_adaptive.json",
@@ -17,6 +41,14 @@
         "wr_oos": 70.0,
         "dd_oos": -6.7,
         "trades_oos": 20
+      },
+      {
+        "file": "eth_lower_high_structure_short.json",
+        "strategy": "lower_high_structure_short",
+        "cagr_oos": 176.6,
+        "wr_oos": 75.3,
+        "dd_oos": -28.9,
+        "trades_oos": 93
       },
       {
         "file": "ltc_williams_r.json",
@@ -41,6 +73,14 @@
         "wr_oos": 50.7,
         "dd_oos": -40.4,
         "trades_oos": 71
+      },
+      {
+        "file": "wtiusd_chaikin_mf.json",
+        "strategy": "chaikin_mf",
+        "cagr_oos": 81.3,
+        "wr_oos": 71.4,
+        "dd_oos": -11.1,
+        "trades_oos": 28
       },
       {
         "file": "eth_lower_high_break_short.json",
@@ -115,6 +155,14 @@
         "trades_oos": 50
       },
       {
+        "file": "plusd_volume_exhaustion.json",
+        "strategy": "volume_exhaustion",
+        "cagr_oos": 27.2,
+        "wr_oos": 55.2,
+        "dd_oos": -15.6,
+        "trades_oos": 134
+      },
+      {
         "file": "eth_tma_bands.json",
         "strategy": "tma_bands",
         "cagr_oos": 27.0,
@@ -129,6 +177,14 @@
         "wr_oos": 52.9,
         "dd_oos": -23.6,
         "trades_oos": 51
+      },
+      {
+        "file": "xagusd_lower_high_structure_short.json",
+        "strategy": "lower_high_structure_short",
+        "cagr_oos": 18.9,
+        "wr_oos": 88.6,
+        "dd_oos": -16.5,
+        "trades_oos": 70
       },
       {
         "file": "ngusd_tma_bands.json",
@@ -213,6 +269,38 @@
     ],
     "4h": [
       {
+        "file": "plusd_ichimoku.json",
+        "strategy": "ichimoku",
+        "cagr_oos": 156.1,
+        "wr_oos": 76.9,
+        "dd_oos": -6.4,
+        "trades_oos": 26
+      },
+      {
+        "file": "hgusd_vwap_overpriced_short.json",
+        "strategy": "vwap_overpriced_short",
+        "cagr_oos": 152.1,
+        "wr_oos": 36.1,
+        "dd_oos": -8.8,
+        "trades_oos": 36
+      },
+      {
+        "file": "eth_tma_bands.json",
+        "strategy": "tma_bands",
+        "cagr_oos": 74.2,
+        "wr_oos": 58.8,
+        "dd_oos": -20.8,
+        "trades_oos": 51
+      },
+      {
+        "file": "plusd_lower_lows.json",
+        "strategy": "lower_lows",
+        "cagr_oos": 61.4,
+        "wr_oos": 59.4,
+        "dd_oos": -15.9,
+        "trades_oos": 32
+      },
+      {
         "file": "sol_pullback_short.json",
         "strategy": "pullback_short",
         "cagr_oos": 48.3,
@@ -227,6 +315,30 @@
         "wr_oos": 48.0,
         "dd_oos": -16.1,
         "trades_oos": 25
+      },
+      {
+        "file": "hgusd_keltner_trend_long.json",
+        "strategy": "keltner_trend_long",
+        "cagr_oos": 47.2,
+        "wr_oos": 44.8,
+        "dd_oos": -3.6,
+        "trades_oos": 29
+      },
+      {
+        "file": "ngusd_tma_bands.json",
+        "strategy": "tma_bands",
+        "cagr_oos": 46.2,
+        "wr_oos": 43.8,
+        "dd_oos": -28.7,
+        "trades_oos": 32
+      },
+      {
+        "file": "xauusd_hull_cross.json",
+        "strategy": "hull_cross",
+        "cagr_oos": 43.7,
+        "wr_oos": 67.6,
+        "dd_oos": -25.5,
+        "trades_oos": 111
       },
       {
         "file": "ltc_bearish_rsi_divergence.json",
@@ -253,6 +365,22 @@
         "trades_oos": 27
       },
       {
+        "file": "wtiusd_vwap_deviation_short.json",
+        "strategy": "vwap_deviation_short",
+        "cagr_oos": 26.6,
+        "wr_oos": 56.2,
+        "dd_oos": -20.8,
+        "trades_oos": 16
+      },
+      {
+        "file": "btc_three_candles_short.json",
+        "strategy": "three_candles_short",
+        "cagr_oos": 24.7,
+        "wr_oos": 56.0,
+        "dd_oos": -16.6,
+        "trades_oos": 25
+      },
+      {
         "file": "sol_momentum_short.json",
         "strategy": "momentum_short",
         "cagr_oos": 24.5,
@@ -261,28 +389,12 @@
         "trades_oos": 21
       },
       {
-        "file": "btc_three_candles_short.json",
-        "strategy": "three_candles_short",
-        "cagr_oos": 24.3,
-        "wr_oos": 70.0,
-        "dd_oos": -10.7,
-        "trades_oos": 30
-      },
-      {
         "file": "sol_tma_bands.json",
         "strategy": "tma_bands",
         "cagr_oos": 21.7,
         "wr_oos": 75.0,
         "dd_oos": -10.0,
         "trades_oos": 16
-      },
-      {
-        "file": "eth_tma_bands.json",
-        "strategy": "tma_bands",
-        "cagr_oos": 19.8,
-        "wr_oos": 77.8,
-        "dd_oos": -10.9,
-        "trades_oos": 27
       },
       {
         "file": "eth_lower_high_structure_short.json",
@@ -317,12 +429,36 @@
         "trades_oos": 22
       },
       {
+        "file": "btc_tick_follow_short.json",
+        "strategy": "tick_follow_short",
+        "cagr_oos": 9.0,
+        "wr_oos": 78.9,
+        "dd_oos": -9.4,
+        "trades_oos": 19
+      },
+      {
         "file": "btc_breakout.json",
         "strategy": "breakout",
         "cagr_oos": 7.1,
         "wr_oos": 62.5,
         "dd_oos": -16.6,
         "trades_oos": 32
+      },
+      {
+        "file": "hgusd_macro_momentum_long.json",
+        "strategy": "macro_momentum_long",
+        "cagr_oos": 6.8,
+        "wr_oos": 52.9,
+        "dd_oos": -5.1,
+        "trades_oos": 17
+      },
+      {
+        "file": "xagusd_regime_adaptive.json",
+        "strategy": "regime_adaptive",
+        "cagr_oos": 6.2,
+        "wr_oos": 48.9,
+        "dd_oos": -25.1,
+        "trades_oos": 45
       },
       {
         "file": "sol_pullback.json",
@@ -337,10 +473,18 @@
       {
         "file": "eth_lower_high_structure_short.json",
         "strategy": "lower_high_structure_short",
-        "cagr_oos": 115.7,
-        "wr_oos": 73.1,
+        "cagr_oos": 111.4,
+        "wr_oos": 73.3,
         "dd_oos": -46.3,
-        "trades_oos": 290
+        "trades_oos": 288
+      },
+      {
+        "file": "sol_lower_high_structure_short.json",
+        "strategy": "lower_high_structure_short",
+        "cagr_oos": 78.6,
+        "wr_oos": 81.1,
+        "dd_oos": -24.6,
+        "trades_oos": 270
       },
       {
         "file": "eth_volatility_breakout.json",
@@ -359,14 +503,6 @@
         "trades_oos": 127
       },
       {
-        "file": "sol_lower_high_structure_short.json",
-        "strategy": "lower_high_structure_short",
-        "cagr_oos": 74.8,
-        "wr_oos": 81.0,
-        "dd_oos": -24.6,
-        "trades_oos": 269
-      },
-      {
         "file": "btc_dmi_bear.json",
         "strategy": "dmi_bear",
         "cagr_oos": 40.4,
@@ -381,6 +517,14 @@
         "wr_oos": 63.0,
         "dd_oos": -17.8,
         "trades_oos": 54
+      },
+      {
+        "file": "bnb_lower_high_structure_short.json",
+        "strategy": "lower_high_structure_short",
+        "cagr_oos": 31.8,
+        "wr_oos": 76.5,
+        "dd_oos": -23.7,
+        "trades_oos": 81
       },
       {
         "file": "sol_regime_adaptive.json",

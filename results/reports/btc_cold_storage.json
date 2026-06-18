@@ -1,6 +1,28 @@
 {
-  "entries": [],
-  "total_btc": 0.0,
+  "entries": [
+    {
+      "date": "2026-06-14 17:50:23",
+      "trade": "ETH_15m",
+      "reason": "TP_HIT",
+      "pnl_usd": 88.92,
+      "alloc_usd": 13.3384,
+      "btc_price": 65526.8,
+      "btc": 0.00020356,
+      "sats": 20356
+    },
+    {
+      "date": "2026-06-15 07:26:06",
+      "trade": "ETH_15m",
+      "reason": "TP_HIT",
+      "pnl_usd": 76.09,
+      "alloc_usd": 11.4128,
+      "btc_price": 66302.9,
+      "btc": 0.00017213,
+      "sats": 17213
+    }
+  ],
+  "total_btc": 0.00037569,
   "goal_btc": 1.0,
-  "note": "Agregar entrada cada vez que se envie BTC a cold storage"
+  "note": "Agregar entrada cada vez que se envie BTC a cold storage",
+  "total_usd": 24.7512
 }

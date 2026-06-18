@@ -3,92 +3,81 @@
   "tf": "4h",
   "strategy": "tma_bands",
   "params": {
-    "sl_mult": 3.0,
-    "tp_mult": 1.8,
+    "sl_mult": 1.7,
+    "tp_mult": 2.2,
     "cooldown": 11,
-    "rsi_w_thr": 48,
-    "tma_period": 19,
-    "atr_mult": 2.2
+    "rsi_w_thr": 46,
+    "tma_period": 18,
+    "atr_mult": 1.3
   },
-  "risk_pct": 4.9,
+  "risk_pct": 4.7,
   "metrics_is": {
-    "trades": 96,
-    "wr": 71.9,
-    "cagr": 12.5,
-    "dd": -17.8,
-    "pf": 1.57,
-    "trades_year": 13.7
+    "trades": 189,
+    "wr": 55.6,
+    "cagr": 37.7,
+    "dd": -37.4,
+    "pf": 1.45,
+    "trades_year": 26.8
   },
   "metrics_oos": {
-    "trades": 27,
-    "wr": 77.8,
-    "cagr": 19.8,
-    "dd": -10.9,
-    "pf": 2.06,
-    "trades_year": 15.5
+    "trades": 51,
+    "wr": 58.8,
+    "cagr": 74.2,
+    "dd": -20.8,
+    "pf": 1.4,
+    "trades_year": 28.9
   },
-  "oos_days": 638,
-  "saved_at": "2026-05-19 04:02:49.052176",
+  "oos_days": 644,
+  "saved_at": "2026-06-15 00:28:04.308574",
   "validation": {
     "monte_carlo": {
-      "p_pos": 95.6,
-      "median": 92.0,
-      "ic95_lo": -15.3,
-      "ic95_hi": 219.2,
-      "ic80_lo": 19.7,
-      "ic80_hi": 172.8,
+      "p_pos": 89.9,
+      "median": 210.5,
+      "ic95_lo": -70.3,
+      "ic95_hi": 611.4,
+      "ic80_lo": -0.2,
+      "ic80_hi": 445.2,
       "passed": true
     },
     "walk_forward": {
-      "windows": 25,
-      "positive": 19,
-      "pct_positive": 76.0,
-      "avg_cagr": 22.1,
+      "windows": 28,
+      "positive": 20,
+      "pct_positive": 71.4,
+      "avg_cagr": 99.0,
       "passed": true
     },
     "cross_asset": {
       "tested": 2,
-      "positive": 1,
-      "positive_assets": [
-        "LTC/USDT"
-      ],
+      "positive": 0,
+      "positive_assets": [],
       "results": [
         {
           "symbol": "BTC/USDT",
-          "cagr": -15.1,
-          "wr": 60.0,
-          "trades": 55
+          "cagr": -9.8,
+          "wr": 53.6,
+          "trades": 151
         },
         {
           "symbol": "LTC/USDT",
-          "cagr": 13.3,
-          "wr": 69.7,
-          "trades": 66
+          "cagr": -55.1,
+          "wr": 42.0,
+          "trades": 138
         }
       ],
-      "passed": true
+      "passed": false
     },
-    "confidence": "ALTA",
-    "passed_steps": 3,
+    "confidence": "MEDIA",
+    "passed_steps": 2,
     "max_steps": 3,
-    "validated_at": "2026-05-19 04:04:36.836029"
+    "validated_at": "2026-06-15 00:30:18.823563"
   },
   "mc": {
-    "mc_cagr_p05": -2.9,
-    "mc_cagr_p50": 58.1,
-    "mc_cagr_p95": 157.2,
-    "mc_dd_p50": -27.2,
-    "mc_dd_p95": -14.7,
-    "mc_confidence": 94.2,
+    "mc_cagr_p05": 8.2,
+    "mc_cagr_p50": 104.4,
+    "mc_cagr_p95": 222.0,
+    "mc_dd_p50": -32.0,
+    "mc_dd_p95": -20.9,
+    "mc_confidence": 96.4,
     "mc_sims": 1000
-  },
-  "wft": {
-    "oos_win_rate": 87.5,
-    "n_windows": 8,
-    "positive_windows": 7,
-    "avg_cagr_oos": 18.69,
-    "avg_cagr_pos": 22.0,
-    "verdict": "PASS",
-    "date": "2026-06-07 02:19"
   }
 }

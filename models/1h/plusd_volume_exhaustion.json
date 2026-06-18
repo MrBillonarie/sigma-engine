@@ -1,0 +1,75 @@
+{
+  "symbol": "PL/USD",
+  "tf": "1h",
+  "strategy": "volume_exhaustion",
+  "params": {
+    "sl_mult": 1.7,
+    "tp_mult": 1.9,
+    "cooldown": 3,
+    "rsi_w_thr": 44,
+    "ve_period": 3,
+    "rsi_max": 61
+  },
+  "risk_pct": 3.6,
+  "metrics_is": {
+    "trades": 550,
+    "wr": 55.6,
+    "cagr": 62.2,
+    "dd": -18.5,
+    "pf": 1.11,
+    "trades_year": 278.6
+  },
+  "metrics_oos": {
+    "trades": 134,
+    "wr": 55.2,
+    "cagr": 27.2,
+    "dd": -15.6,
+    "pf": 1.08,
+    "trades_year": 152.0
+  },
+  "oos_days": 322,
+  "saved_at": "2026-06-16 17:28:31.529110",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 67.3,
+      "median": 9.0,
+      "ic95_lo": -41.7,
+      "ic95_hi": 39.0,
+      "ic80_lo": -20.8,
+      "ic80_hi": 30.5,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 23,
+      "positive": 17,
+      "pct_positive": 73.9,
+      "avg_cagr": 392.1,
+      "passed": true
+    },
+    "cross_asset": {
+      "positive": 0,
+      "passed": false,
+      "note": "sin datos"
+    },
+    "confidence": "MEDIA",
+    "passed_steps": 2,
+    "max_steps": 3,
+    "validated_at": "2026-06-16 17:28:32.838506"
+  },
+  "m2_validation": {
+    "status": "WARN",
+    "reasons": [
+      "[WARN] IS_OOS_WARN: OOS/IS=0.44 \u2014 degradacion moderada"
+    ],
+    "validated_at": "2026-06-17T18:00:02.073536-04:00"
+  },
+  "mc": {
+    "mc_cagr_p05": -2.9,
+    "mc_cagr_p50": 253.7,
+    "mc_cagr_p95": 1188.9,
+    "mc_dd_p50": -41.3,
+    "mc_dd_p95": -26.6,
+    "mc_confidence": 92.0,
+    "mc_sims": 1000
+  }
+}

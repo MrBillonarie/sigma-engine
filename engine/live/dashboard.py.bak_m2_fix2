@@ -1,0 +1,1076 @@
+"""
+SIGMA ENGINE - Dashboard Multi-Activo
+Genera dashboard.html con matriz completa: 5 activos x 5 TFs
+Se regenera cada 2 minutos via web_server.py
+"""
+import sys, os
+
+# --- SIGMA strategies registry (centralized 2026-05-14) ---
+import sys as _sig_sys
+if "/opt/sigma" not in _sig_sys.path: _sig_sys.path.insert(0, "/opt/sigma")
+from utils.strategies import SHORT_STRATEGIES as _SIGMA_SHORTS
+# --- end SIGMA strategies ---
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import json, sqlite3, re, time
+from pathlib import Path
+from datetime import datetime, date, timezone
+
+OUTPUT_DIR = Path(__file__).parent.parent.parent
+
+ASSETS    = ['BTC','ETH','LTC','SOL','BNB','XAU','XAG']
+ASSETS_M1 = ['BTC','ETH','LTC','SOL','BNB']          # Motor 1: Crypto
+ASSETS_M2 = ['XAU','XAG','WTI','HG','NG','PL']         # Motor 2: 6 Commodities
+TIMEFRAMES_M2 = ['1d','4h','1h','15m']               # Motor 2: 1d/4h/1h/15m
+ASSET_EMOJI = {'BTC':'&#8383;','ETH':'&#926;','LTC':'&#321;','SOL':'&#9678;','BNB':'&#11042;','XAU':'Au','XAG':'Ag','WTI':'&#9651;','HG':'Cu','NG':'&#9650;','PL':'Pt'}
+ASSET_COLOR = {'BTC':'#f7931a','ETH':'#627eea','LTC':'#345d9d','SOL':'#9945ff','BNB':'#f3ba2f','XAU':'#FFD700','XAG':'#C0C0C0','WTI':'#4a90d9','HG':'#B87333','NG':'#e67e22','PL':'#7ec8e3'}
+TIMEFRAMES  = ['4h','1h','15m','5m']
+TF_LABEL    = {'1d':'1D','4h':'4H','1h':'1H','15m':'15m','5m':'5m'}
+TF_COLORS_H = {'1d':'#e0bb3a','4h':'#2ecc71','1h':'#c9a227','15m':'#f1c40f','5m':'#e67e22'}
+
+
+# ── SNAPSHOT del ponderado ────────────────────────────────────────────────────
+
+def _funding_kelly_boost_estimate(champions_data):
+    """Estima pp extra de port_cagr por Kelly v2 (solo shorts).
+    Backtest histórico: shorts ganan promedio +3% sobre CAGR puro."""
+    SHORT_BOOST_PCT = 0.03
+    total_trades = 0
+    short_alpha = 0.0
+    for ch in champions_data:
+        direction = ch.get('direction', 'long')
+        trades = ch.get('trades', 0) or 0
+        cagr = ch.get('cagr', 0) or 0
+        total_trades += trades
+        if direction == 'short':
+            short_alpha += cagr * trades * SHORT_BOOST_PCT
+    return round(short_alpha / total_trades, 4) if total_trades > 0 else 0.0
+
+
+def _write_snapshot(path, cagr, wr, dd, pf, calmar, trades, n_grade_a, champions, trigger):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    # Calcular funding Kelly boost (alpha esperado del Kelly v2 sobre shorts)
+    _kelly_boost = 0.0
+    try:
+        _champ_list = []
+        for _slot, _val in (champions or {}).items():
+            if '|' not in _val: continue
+            _strat, _dir = _val.split('|', 1)
+            _sym, _tf = _slot.split('|')
+            _jp = OUTPUT_DIR / 'models' / _tf / (_sym.lower() + '_' + _strat + '.json')
+            if _jp.exists():
+                _d = json.loads(_jp.read_text())
+                _m = _d.get('metrics_oos') or {}
+                _champ_list.append({
+                    'direction': _dir,
+                    'cagr': _m.get('cagr', 0) or 0,
+                    'trades': _m.get('trades', 0) or 0,
+                })
+        _kelly_boost = _funding_kelly_boost_estimate(_champ_list)
+    except Exception as _e_kb:
+        print(f'[KELLY BOOST ERROR] {_e_kb}', flush=True)
+    # Preservar boost previo si nuestro cálculo dio 0 pero el snapshot anterior tenía valor
+    if _kelly_boost == 0.0:
+        try:
+            if path.exists():
+                _prev = json.loads(path.read_text())
+                _prev_boost = _prev.get('port_cagr_kelly_boost', 0)
+                if _prev_boost and _prev_boost > 0:
+                    _kelly_boost = _prev_boost
+        except Exception:
+            pass
+    snap = {
+        'port_cagr':    cagr,
+        'port_cagr_kelly_boost': _kelly_boost,
+        'port_cagr_with_kelly':  round(cagr + _kelly_boost, 4),
+        'port_wr':      wr,
+        'port_dd':      dd,
+        'port_pf':      pf,
+        'port_calmar':  calmar,
+        'total_trades': trades,
+        'n_grade_a':    n_grade_a,
+        'snapshot_at':  datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
+        'trigger':      trigger,
+        'champions':    champions,
+    }
+    path.write_text(json.dumps(snap, indent=2))
+
+
+# ── SCORE / GRADE ─────────────────────────────────────────────────────────────
+
+def _compute_score(m):
+    """DELEGATE a utils.scoring.canonical_score (verified lossless 2026-05-16).
+    Mantiene la firma legacy: recibe dict de metrics (con cagr/trades/dd/etc al top),
+    devuelve score o -9999 si descalifica.
+    """
+    if not m: return -9999
+    # canonical_score espera d con metrics_oos dentro. Wrappeamos.
+    try:
+        from utils.scoring import canonical_score as _ucs
+        return _ucs({'metrics_oos': m}, strict=True)
+    except Exception:
+        return -9999
+
+def _score_grade(score):
+    """Retorna badge HTML con grade A+/A/B/C/D según score."""
+    if score is None or score < 0:
+        return ''
+    if score >= 0.70:
+        color, label = '#00c853', 'A+'
+    elif score >= 0.55:
+        color, label = '#69f0ae', 'A'
+    elif score >= 0.40:
+        color, label = '#ffeb3b', 'B'
+    elif score >= 0.25:
+        color, label = '#ff9800', 'C'
+    else:
+        color, label = '#f44336', 'D'
+    return f'<span style="background:{color};color:#000;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:bold">{label}</span>'
+
+
+# ── LOADERS ──────────────────────────────────────────────────────────────────
+
+LONG_STRATEGIES = {
+    # LONG-only (logica clara de long)
+    'breakout', 'tma_breakout', 'momentum', 'pullback', 'regime_adaptive', 'mean_rev',
+    'higher_highs', 'ema50_bounce', 'donchian_break', 'keltner_breakout', 'supertrend',
+    'three_candles', 'engulfing', 'pin_bar', 'consecutive_wick',
+    # bidireccionales (incluidas en LONG)
+    'tma_bands', 'dmi_trend', 'ichimoku', 'mfi_reversal', 'psar_flip',
+    'volatility_breakout', 'break_of_structure', 'aroon_cross', 'atr_channel',
+    'bb_bandwidth', 'bb_squeeze', 'cci_reversal', 'chaikin_mf', 'cvd_divergence',
+    'elder_impulse', 'ema_ribbon', 'ema_triple', 'funding_momentum', 'funding_reversal',
+    'heikin_ashi', 'htf_divergence', 'hull_cross', 'inside_bar', 'linear_reg_break',
+    'macd_divergence', 'obv_divergence', 'open_close_cross', 'pivot_bounce',
+    'roc_momentum', 'rsi_divergence', 'rsi_trend', 'squeeze_pro', 'stoch_rsi',
+    'tema_cross', 'trend_strength', 'volume_climax', 'vwap_deviation',
+    'williams_r', 'wma_momentum', 'zscore_reversion',
+    # Agregadas 2026-05-14 (sprint shorts expansion)
+    'rsi_overbought_short', 'death_cross_short', 'ema200_rejection_short', 'macd_bear_cross', 'lower_high_break_short',
+    'wedge_breakdown_short', 'supply_zone_rejection', 'bearish_rsi_divergence', 'volume_climax_top', 'range_break_down', 'macd_zero_cross_down',
+    'stoch_rsi_short', 'williams_r_short', 'cci_reversal_short', 'engulfing_short', 'three_candles_short', 'inside_bar_short',
+    'zscore_rich_short', 'heikin_ashi_short', 'roc_negative_short', 'dmi_bear', 'vwap_overpriced_short', 'keltner_breakdown_short',
+}
+SHORT_STRATEGIES = _SIGMA_SHORTS  # centralizado en utils.strategies (2026-05-14)
+
+
+
+
+# === HEDGE FUND VISUALS ============================================
+
+def _daily_pnl_map(hist, days=30):
+    """Suma pnl_pct por dia ultimos N dias."""
+    from datetime import datetime, timedelta, date
+    end = date.today()
+    start = end - timedelta(days=days-1)
+    daily = {}
+    for t in hist:
+        try:
+            cdt = t.get("closed_at", "")
+            if not cdt: continue
+            d = datetime.fromisoformat(str(cdt)[:19]).date()
+            if d >= start:
+                daily[d] = daily.get(d, 0) + (t.get("pnl_pct", 0) or 0)
+        except Exception:
+            continue
+    return daily
+
+
+def render_calendar_heatmap(hist, days=30):
+    """Heatmap horizontal 30 cuadrados."""
+    from datetime import date, timedelta
+    daily = _daily_pnl_map(hist, days)
+    end = date.today()
+    cells = []
+    for i in range(days):
+        d = end - timedelta(days=days-1-i)
+        pnl = daily.get(d, None)
+        if pnl is None:
+            color = "#141b38"
+            tip = str(d) + ": sin trades"
+        elif pnl > 1.0: color = "#00c853"; tip = str(d) + ": +" + str(round(pnl,2)) + "%"
+        elif pnl > 0.2: color = "#43a047"; tip = str(d) + ": +" + str(round(pnl,2)) + "%"
+        elif pnl > 0:   color = "#66bb6a"; tip = str(d) + ": +" + str(round(pnl,2)) + "%"
+        elif pnl == 0:  color = "#555";    tip = str(d) + ": 0%"
+        elif pnl > -0.2: color = "#ff9800"; tip = str(d) + ": " + str(round(pnl,2)) + "%"
+        elif pnl > -1.0: color = "#ef5350"; tip = str(d) + ": " + str(round(pnl,2)) + "%"
+        else: color = "#c62828"; tip = str(d) + ": " + str(round(pnl,2)) + "%"
+        cells.append('<div title="' + tip + '" style="background:' + color + ';width:20px;height:20px;border-radius:3px;display:inline-block;margin:2px;transition:transform .15s" onmouseover="this.style.transform=&quot;scale(1.3)&quot;" onmouseout="this.style.transform=&quot;scale(1)&quot;"></div>')
+    return "".join(cells)
+
+
+def render_donut_exposure(open_trades):
+    """Donut SVG de open positions por ticker."""
+    sym_colors = {"BTC":"#f7931a","ETH":"#627eea","LTC":"#345d9d","SOL":"#9945ff","BNB":"#f3ba2f"}
+    by_ticker = {}
+    raw = open_trades if isinstance(open_trades, dict) else {str(i):t for i,t in enumerate(open_trades or [])}
+    for k, t in raw.items():
+        if not isinstance(t, dict): continue
+        if t.get("status") != "open": continue
+        sym = t.get("sym", "?")
+        by_ticker[sym] = by_ticker.get(sym, 0) + 1
+    if not by_ticker:
+        return '<div style="color:#4e5f90;font-size:11px;padding:12px;text-align:center">Sin exposicion activa</div>'
+    total = sum(by_ticker.values())
+    svg = '<svg viewBox="0 0 100 100" width="100" height="100" style="vertical-align:middle">'
+    offset = 0
+    circumference = 2 * 3.14159265 * 40
+    items = []
+    for sym, count in sorted(by_ticker.items(), key=lambda x: -x[1]):
+        pct = count / total * 100
+        color = sym_colors.get(sym, "#888")
+        dash = pct / 100 * circumference
+        offset_d = round(offset / 100 * circumference, 2)
+        svg += '<circle cx="50" cy="50" r="40" fill="transparent" stroke="' + color + '" stroke-width="16" stroke-dasharray="' + str(round(dash,2)) + ' ' + str(round(circumference,2)) + '" stroke-dashoffset="-' + str(offset_d) + '" transform="rotate(-90 50 50)"/>'
+        offset += pct
+        items.append((sym, count, color))
+    svg += '<text x="50" y="50" text-anchor="middle" dy=".35em" fill="#dde3f5" font-family="IBM Plex Mono" font-size="16" font-weight="700">' + str(total) + '</text>'
+    svg += '</svg>'
+    legend = ''
+    for sym, count, color in items:
+        legend += '<div style="display:flex;align-items:center;gap:6px;font-size:10px;color:#7a8db5;margin:2px 0"><span style="width:10px;height:10px;background:' + color + ';border-radius:2px;display:inline-block"></span>' + sym + ' (' + str(count) + ')</div>'
+    return '<div style="display:flex;align-items:center;gap:16px">' + svg + '<div>' + legend + '</div></div>'
+
+
+def render_rolling_metrics(hist, days=30):
+    """Rolling Sharpe, streak, best/worst, win days."""
+    daily = _daily_pnl_map(hist, days)
+    if not daily: return None
+    pnls = list(daily.values())
+    n = len(pnls)
+    avg = sum(pnls) / n if n else 0
+    var = sum((x-avg)**2 for x in pnls) / n if n > 1 else 0
+    sd = var ** 0.5
+    sharpe = (avg / sd) * (365**0.5) if sd > 0 else 0
+    streak = 0; cur = 0
+    for v in pnls:
+        if v > 0: cur += 1; streak = max(streak, cur)
+        else: cur = 0
+    return dict(
+        sharpe=sharpe, streak=streak,
+        best=max(pnls), worst=min(pnls),
+        wins=sum(1 for v in pnls if v > 0),
+        losses=sum(1 for v in pnls if v < 0),
+        n_days=n,
+    )
+
+
+def load_model(asset, tf, direction='long'):
+    """Carga el MEJOR modelo OOS para asset+tf segun direccion (mayor CAGR)."""
+    d = OUTPUT_DIR / 'models' / tf
+    if not d.exists():
+        return None
+    sym = asset.lower()
+
+    if direction == 'short':
+        candidates = [f'{sym}_{s}.json' for s in _SIGMA_SHORTS]  # centralizado utils.strategies (2026-05-14)
+        _COM_PFX_S = {'XAU':'xauusd','XAG':'xagusd','WTI':'wtiusd','HG':'hgusd','NG':'ngusd','PL':'plusd'}
+        if asset in _COM_PFX_S:
+            candidates += [f"{_COM_PFX_S[asset]}_{s}.json" for s in _SIGMA_SHORTS]
+    else:
+        long_strats = [
+            # STRATEGIES — originales core
+            'breakout', 'pullback', 'tma_bands', 'momentum', 'mean_rev', 'regime_adaptive',
+            # STRATEGIES_EXPLORE — indicadores avanzados
+            'funding_reversal', 'volatility_breakout', 'htf_divergence', 'rsi_divergence',
+            'bb_squeeze', 'ema_triple', 'supertrend', 'break_of_structure',
+            'cvd_divergence', 'vwap_deviation', 'inside_bar', 'pin_bar',
+            'heikin_ashi', 'macd_divergence', 'keltner_breakout', 'rsi_trend',
+            'ema50_bounce', 'volume_climax',
+            # STRATEGIES_NEW — sistemas completos
+            'ema_ribbon', 'hull_cross', 'tema_cross', 'wma_momentum',
+            'stoch_rsi', 'cci_reversal', 'williams_r', 'mfi_reversal', 'roc_momentum',
+            'dmi_trend', 'higher_highs', 'lower_lows', 'aroon_cross',
+            'psar_flip', 'donchian_break', 'trend_strength', 'elder_impulse',
+            'engulfing', 'three_candles', 'consecutive_wick', 'volume_exhaustion',
+            'chaikin_mf', 'obv_divergence', 'zscore_reversion', 'bb_bandwidth',
+            'ichimoku', 'pivot_bounce', 'atr_channel', 'linear_reg_break',
+            'squeeze_pro', 'open_close_cross', 'funding_momentum', 'ema50_bounce']
+        candidates = [f'{sym}_{s}.json' for s in long_strats]
+        # Legacy BTC filenames por compatibilidad con archivos viejos en disco
+        if asset == 'BTC':
+            candidates += [
+                'best_bull_breakout.json', 'best_bull_tma_bands.json',
+                'best_bull_pullback.json', 'best_validated.json',
+            ]
+        # Fallback: Optuna generaba con prefijo {sym}usd_ para commodities (antes del fix)
+        _COMMODITY_PREFIXES = {
+            'XAU': 'xauusd', 'XAG': 'xagusd', 'WTI': 'wtiusd',
+            'HG':  'hgusd',  'NG':  'ngusd',   'PL':  'plusd',
+        }
+        if asset in _COMMODITY_PREFIXES:
+            _pfx = _COMMODITY_PREFIXES[asset]
+            candidates += [f'{_pfx}_{s}.json' for s in long_strats]
+
+    best_dict = None
+    best_cagr = 0.0  # solo guardamos modelos con CAGR > 0
+    best_rank = (-1, 0.0)  # 2026-05-19: (robustness_rank, cagr) — preferir no-BLOCKED primero
+
+    for fname in candidates:
+        p = d / fname
+        if not p.exists():
+            continue
+        try:
+            data = json.loads(p.read_text())
+            sym_field = data.get('symbol', '').upper()
+            if sym_field and asset not in sym_field and asset != 'BTC':
+                continue
+            m    = data.get('metrics_oos') or {}
+            cagr = m.get('cagr', 0)
+            if cagr <= 0:
+                continue
+            # 2026-05-19: ranking (robustness_rank, cagr) — preferir validados antes que high-CAGR overfit
+            try:
+                import sys as _sl
+                if '/opt/sigma' not in _sl.path: _sl.path.insert(0, '/opt/sigma')
+                from utils.robustness import robustness_score as _rs_lm
+                _rank_lm = {'PASS_LIVE': 3, 'PAPER_ONLY': 2, 'BLOCKED': 1}.get(_rs_lm(data).get('action','?'), 0)
+            except Exception:
+                _rank_lm = 0
+            this_rank = (_rank_lm, cagr)
+            if this_rank <= best_rank:
+                continue
+            v     = data.get('validation', {})
+            strat = data.get('strategy', '') or fname.replace('.json','').split('_',1)[-1]
+            best_cagr = cagr
+            best_rank = this_rank
+            _params = data.get('params', {}) or {}
+            _sl_m = _params.get('sl_mult', 0) or 0
+            _tp_m = _params.get('tp_mult', 0) or 0
+            _rr   = (_tp_m / _sl_m) if _sl_m > 0 else 0
+            best_dict = {
+                'cagr':       cagr,
+                'wr':         m.get('wr', m.get('winrate', 0)),
+                'dd':         m.get('dd', m.get('max_dd', 0)),
+                'pf':         m.get('pf', m.get('profit_factor', 0)),
+                'trades':     m.get('trades', 0),
+                'sl_mult':    _sl_m,
+                'tp_mult':    _tp_m,
+                'rr':         _rr,
+                'cagr_is':    data.get('metrics_is', {}).get('cagr', 0),
+                'source':     fname,
+                'strategy':   strat,
+                'adaptive':   strat == 'regime_adaptive',
+                'confidence': v.get('confidence', ''),
+                'mc_p_pos':   v.get('monte_carlo', {}).get('p_pos', 0),
+                'wft_pct':    v.get('walk_forward', {}).get('pct_positive', 0),
+            }
+        except:
+            continue
+
+    if best_dict:
+        try:
+            best_dict['score'] = _compute_score(best_dict)
+        except Exception:
+            best_dict['score'] = -9999
+    return best_dict
+
+
+def is_running(asset, tf):
+    """Devuelve True si el optimizador para asset+tf fue modificado recientemente."""
+    name = f'{asset.lower()}_{tf}'
+    candidates_log = [
+        OUTPUT_DIR / 'results' / 'reports' / f'{name}.log',
+        OUTPUT_DIR / 'results' / 'reports' / f'commodities_{asset}_{tf}.log',
+    ]
+    for lp in candidates_log:
+        if lp.exists():
+            age_min = (time.time() - lp.stat().st_mtime) / 60
+            if age_min < 10:
+                return True
+    return False
+
+
+def load_events(n=30):
+    """Lee los ultimos N eventos del pipeline_events.jsonl."""
+    p = OUTPUT_DIR / 'results' / 'reports' / 'pipeline_events.jsonl'
+    if not p.exists():
+        return []
+    events = []
+    try:
+        for line in p.read_text(encoding='utf-8', errors='replace').splitlines():
+            line = line.strip()
+            if line:
+                try:
+                    events.append(json.loads(line))
+                except:
+                    pass
+    except:
+        pass
+    return events[-n:]
+
+
+def load_wft():
+    p = OUTPUT_DIR / 'results' / 'reports' / 'wft_1h.log'
+    if not p.exists():
+        return []
+    rows = []
+    pat  = re.compile(r'(\d{4}-\d{2})\s+\d+d\s+\d+d\s+(\d+)\s+([\d.]+)%\s+([+-][\d.]+)%\s+(\w+)')
+    for line in p.read_text(encoding='utf-8', errors='replace').splitlines():
+        m = pat.search(line)
+        if m:
+            rows.append({
+                'window': m.group(1),
+                'trades': int(m.group(2)),
+                'wr':     float(m.group(3)),
+                'cagr':   float(m.group(4)),
+                'ok':     m.group(5) == 'OK',
+            })
+    return rows
+
+
+def load_mc():
+    p = OUTPUT_DIR / 'results' / 'reports' / 'monte_carlo_results.json'
+    try: return json.loads(p.read_text()) if p.exists() else {}
+    except: return {}
+
+
+def load_cross_asset():
+    p = OUTPUT_DIR / 'results' / 'reports' / 'cross_asset_validation.json'
+    try: return json.loads(p.read_text()) if p.exists() else {}
+    except: return {}
+
+
+def get_db_stats():
+    db = OUTPUT_DIR / 'models' / 'sigma.db'
+    if not db.exists():
+        return {'total': 0, 'by_tf': {}, 'top3': []}
+    try:
+        conn = sqlite3.connect(str(db))
+        total  = conn.execute('SELECT COUNT(*) FROM runs').fetchone()[0]
+        by_tf  = {r[0]: r[1] for r in conn.execute('SELECT tf,COUNT(*) FROM runs GROUP BY tf')}
+        top3   = [{'tf':r[0],'mode':r[1],'cagr':r[2],'wr':r[3],'score':r[4]}
+                  for r in conn.execute(
+                    'SELECT tf,mode,cagr,winrate,score FROM runs '
+                    'WHERE cagr>10 AND winrate>55 ORDER BY score DESC LIMIT 3')]
+        rate   = conn.execute(
+                    "SELECT COUNT(*) FROM runs WHERE ts > datetime('now','-1 hours')"
+                 ).fetchone()[0]
+        conn.close()
+        # Optuna per-study: throughput real
+        import glob as _g, datetime as _d
+        optuna_rate = 0
+        try:
+            _cut = (_d.datetime.now() - _d.timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
+            for _db in _g.glob(str(OUTPUT_DIR / 'models' / 'optuna_per_study' / '*.db')):
+                try:
+                    _cx = sqlite3.connect(_db, timeout=1)
+                    optuna_rate += _cx.execute("SELECT count(*) FROM trials WHERE state='COMPLETE' AND datetime_complete >= ?", (_cut,)).fetchone()[0]
+                    _cx.close()
+                except: pass
+        except: pass
+        return {'total': total, 'by_tf': by_tf, 'top3': top3, 'rate_hr': rate, 'optuna_rate_hr': optuna_rate}
+    except:
+        return {'total': 0, 'by_tf': {}, 'top3': []}
+
+
+# ── COLOR HELPERS ─────────────────────────────────────────────────────────────
+
+def c_cagr(v):
+    if v >= 20: return '#2ecc71'
+    if v >= 10: return '#f1c40f'
+    if v >  0:  return '#e67e22'
+    return '#e74c3c'
+
+def c_wr(v):
+    if v >= 60: return '#2ecc71'
+    if v >= 55: return '#f1c40f'
+    if v >= 50: return '#e67e22'
+    return '#e74c3c'
+
+def c_dd(v):
+    if v >= -5:  return '#2ecc71'
+    if v >= -10: return '#f1c40f'
+    if v >= -20: return '#e67e22'
+    return '#e74c3c'
+
+def c_conf(p):
+    if p >= 75: return ('#2ecc71','ALTA')
+    if p >= 60: return ('#f1c40f','MEDIA')
+    return ('#e74c3c','BAJA')
+
+
+# ── CELL GENERATOR ────────────────────────────────────────────────────────────
+
+def _red_flags(m):
+    """Devuelve lista de red flags detectados en el modelo (no muta nada).
+    Posibles: LOW_N, WFT_FAIL, CAGR_TOO_HIGH, IS_OOS_GAP, LOW_MC, NOISE_SCALPER.
+    """
+    if not m: return []
+    flags = []
+    try:
+        t = float(m.get('trades', 0) or 0)
+        cagr = float(m.get('cagr', 0) or 0)
+        wr = float(m.get('wr', 0) or 0)
+        cagr_is = float(m.get('cagr_is', 0) or 0)
+        wft_pct = m.get('wft_pct')
+        mc_pos = m.get('mc_p_pos')
+
+        if t > 0 and t < 30:
+            flags.append('LOW_N')  # sample insuficiente
+        if wft_pct is not None and wft_pct > 0 and wft_pct < 50:
+            flags.append('WFT_FAIL')  # walk-forward inestable
+        if cagr > 80:
+            flags.append('CAGR_TOO_HIGH')  # sospechoso por overfit
+        if cagr_is and abs(cagr_is - cagr) > 40:
+            flags.append('IS_OOS_GAP')  # in-sample vs out-of-sample diff alto
+        if mc_pos and mc_pos > 0 and mc_pos < 0.70:
+            flags.append('LOW_MC')  # Monte Carlo confianza baja
+        if t >= 100 and 0 < wr < 55:
+            flags.append('NOISE_SCALPER')  # muchos trades + WR coin-flip
+    except Exception:
+        pass
+    return flags
+
+
+def _red_flags_badge(m):
+    """HTML badge con tooltip custom CSS (instantaneo, dark mode)."""
+    flags = _red_flags(m)
+    if not flags:
+        return ''
+    descriptions = {
+        'LOW_N':           'LOW_N — Menos de 30 trades en backtest (muestra chica, baja confianza estadistica)',
+        'WFT_FAIL':        'WFT_FAIL — Walk-forward test: menos de 50% de ventanas con OOS positivo',
+        'CAGR_TOO_HIGH':   'CAGR_TOO_HIGH — CAGR mayor a 80% (sospechoso de overfit, no realista en live)',
+        'IS_OOS_GAP':      'IS_OOS_GAP — Diferencia entre CAGR in-sample y out-of-sample mayor a 40pp',
+        'LOW_MC':          'LOW_MC — Monte Carlo: probabilidad de PnL positivo menor a 70%',
+        'NOISE_SCALPER':   'NOISE_SCALPER — Mas de 100 trades pero WR menor a 55% (parece ruido, no edge)',
+    }
+    lines = [descriptions.get(f, f) for f in flags]
+    # Construir el tooltip con cada flag en su linea (separador \n para data-attr y &#10; HTML)
+    tooltip_text = '\n'.join(lines)
+    # Escape para HTML attribute
+    tooltip_html = tooltip_text.replace('"', '&quot;')
+    color = '#f1c40f' if len(flags) == 1 else '#e67e22' if len(flags) == 2 else '#e74c3c'
+    return (
+        f'<span class="rf-tip" data-tip="{tooltip_html}" '
+        f'style="color:{color};font-size:9px;margin-left:3px;cursor:help;position:relative" '
+        f'data-flags="{",".join(flags)}">&#9888;{len(flags)}</span>'
+    )
+
+
+def _row_model(m, direction):
+    """HTML de una fila LONG o SHORT dentro de la celda."""
+    arrow  = '&#9650;' if direction == 'long' else '&#9660;'
+    col    = '#2ecc71' if direction == 'long' else '#e74c3c'
+    empty  = f'<div style="color:#242f55;font-size:9px;padding:2px 0">{arrow} <span style="color:#242f55">pendiente</span></div>'
+    if not m:
+        return empty
+    cagr  = float(m.get('cagr', 0) or 0)
+    wr    = float(m.get('wr', 0) or 0)
+    t     = int(m.get('trades', 0) or 0)
+    conf  = m.get('confidence','')
+    cc    = {'ALTA':'#2ecc71','MEDIA':'#f1c40f','BAJA':'#e67e22'}.get(conf,'#555')
+    strat = (m.get('strategy','') or '')[:10]
+    grade_badge = _score_grade(m.get('score', -9999))
+    return (
+        f'<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 0 1px">'
+        f'<span style="color:{col};font-size:9px">{arrow} {strat}</span>'
+        f'<span style="font-family:monospace;color:{c_cagr(cagr)};font-weight:700;font-size:11px">{cagr:+.1f}%</span>'
+        f'</div>'
+        f'<div style="display:flex;justify-content:space-between;font-size:9px;padding-bottom:1px">'
+        f'<span style="color:{cc}">{conf}&nbsp;{grade_badge}{_red_flags_badge(m)}</span>'
+        f'<span style="color:#7a8db5">WR {wr:.0f}% {t}T</span>'
+        f'</div>'
+    )
+
+def _combined_row(ml, ms, ma):
+    """HTML fila COMBINED — usa adaptive si existe, sino estima."""
+    sep = '<div style="border-top:1px solid #141b38;margin:2px 0"></div>'
+    if ma:
+        # Adaptive ya es el combined real backtestado
+        cagr = ma['cagr']; wr = ma['wr']; t = ma['trades']
+        conf = ma.get('confidence','')
+        cc   = {'ALTA':'#2ecc71','MEDIA':'#f1c40f','BAJA':'#e67e22'}.get(conf,'#555')
+        return (
+            sep +
+            f'<div style="background:rgba(88,166,255,.08);border-radius:3px;padding:2px 3px;margin-top:1px">'
+            f'<div style="display:flex;justify-content:space-between;align-items:center">'
+            f'<span style="color:#c9a227;font-size:9px;font-weight:700">&#9670; ADAPTIVE</span>'
+            f'<span style="font-family:monospace;color:{c_cagr(cagr)};font-weight:700;font-size:11px">{cagr:+.1f}%</span>'
+            f'</div>'
+            f'<div style="display:flex;justify-content:space-between;font-size:9px">'
+            f'<span style="color:{cc}">{conf}</span>'
+            f'<span style="color:#7a8db5">WR {wr:.0f}% {t}T</span>'
+            f'</div>'
+            f'</div>'
+        )
+    elif ml and ms:
+        # Estimar: BULL ~40% del tiempo, BEAR ~35% — resto RANGE sin trades
+        est = ml['cagr'] * 0.40 + ms['cagr'] * 0.35
+        return (
+            sep +
+            f'<div style="background:rgba(88,166,255,.05);border-radius:3px;padding:2px 3px;margin-top:1px">'
+            f'<div style="display:flex;justify-content:space-between;align-items:center">'
+            f'<span style="color:#c9a227;font-size:9px">&#9670; COMBINED ~</span>'
+            f'<span style="font-family:monospace;color:{c_cagr(est)};font-weight:700;font-size:11px">{est:+.1f}%</span>'
+            f'</div>'
+            f'<div style="font-size:9px;color:#555">estimado (40% bull + 35% bear)</div>'
+            f'</div>'
+        )
+    return ''
+
+def cell_html(asset, tf):
+    """Celda con 3 secciones: LONG / SHORT / COMBINED."""
+    ml = load_model(asset, tf, direction='long')
+    ms = load_model(asset, tf, direction='short')
+
+    # Separar adaptive del long normal
+    ma = None
+    if ml and ml.get('adaptive'):
+        ma = ml
+        ml = None  # adaptive reemplaza a long+short
+
+    if ml or ms or ma:
+        long_row  = _row_model(ml, 'long')
+        short_row = _row_model(ms, 'short')
+        comb_row  = _combined_row(ml, ms, ma)
+
+        if ma and not ml and not ms:
+            # Solo adaptive — mostrar compacto
+            _sep_div = '<div style="border-top:1px solid #141b38;margin:2px 0"></div>'
+            _adp = comb_row.replace('margin-top:1px', 'margin-top:6px').replace(_sep_div, '', 1)
+            return (
+                f'<td class="cell-ok" style="background:linear-gradient(180deg,rgba(88,166,255,.07),rgba(88,166,255,.01))">'
+                f'{_adp}'
+                f'</td>'
+            )
+
+        return (
+            f'<td class="cell-ok">'
+            f'{long_row}'
+            f'<div style="border-top:1px solid #141b38;margin:2px 0"></div>'
+            f'{short_row}'
+            f'{comb_row}'
+            f'</td>'
+        )
+
+    if is_running(asset, tf):
+        return '<td class="cell-run"><div class="spin">&#9696;</div><div class="cell-sub">Optimizando</div></td>'
+
+    name = f'{asset.lower()}_{tf}'
+    for lp in [OUTPUT_DIR/'results'/'reports'/f'{name}_pipeline.log',
+               OUTPUT_DIR/'results'/'reports'/f'{name}.log']:
+        if lp.exists():
+            last = lp.read_text(encoding='utf-8', errors='replace')[-300:]
+            if 'Probando:' in last or 'Ciclo' in last:
+                return '<td class="cell-run"><div class="spin">&#9696;</div><div class="cell-sub">Explorando</div></td>'
+            if 'OOS negativo' in last or 'sin trades' in last:
+                return '<td class="cell-neg"><div>&#9654;</div><div class="cell-sub">Reintentando</div></td>'
+
+    return '<td class="cell-run" style="opacity:0.5"><div>&#8230;</div><div class="cell-sub">En cola</div></td>'
+
+
+# ── MAIN HTML ─────────────────────────────────────────────────────────────────
+
+
+
+def _dca_benchmark():
+    """Compara paper trading vs BTC DCA desde el inicio."""
+    try:
+        BASE2 = Path('/opt/sigma')
+        ts_f = BASE2 / 'results' / 'trade_state.json'
+        bl_f = BASE2 / 'results' / 'reports' / 'btc_dca_baseline.json'
+        if not ts_f.exists() or not bl_f.exists():
+            return None
+        ts = json.loads(ts_f.read_text())
+        bl = json.loads(bl_f.read_text())
+        port     = ts.get('portfolio', {})
+        equity   = float(port.get('equity', 10000))
+        initial  = float(port.get('initial_capital', 10000))
+        start_dt = port.get('start_date', bl.get('start_date', ''))
+        start_btc = float(bl.get('start_btc_price', 0))
+        if start_btc <= 0:
+            return None
+        paper_ret = (equity - initial) / initial * 100
+        import urllib.request as _ur
+        _resp = json.loads(_ur.urlopen('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT', timeout=3).read())
+        btc_now = float(_resp['price'])
+        dca_ret = (btc_now - start_btc) / start_btc * 100
+        alpha   = paper_ret - dca_ret
+        return {
+            'paper_ret': paper_ret, 'dca_ret': dca_ret, 'alpha': alpha,
+            'equity': equity, 'btc_now': btc_now, 'btc_start': start_btc,
+            'start_date': start_dt, 'n_trades': len(ts.get('history', []))
+        }
+    except:
+        return None
+
+
+def _dca_benchmark_widget():
+    """HTML: paper trading vs BTC DCA comparison."""
+    dca = _dca_benchmark()
+    if not dca:
+        return ''
+    pr   = dca['paper_ret']
+    dr   = dca['dca_ret']
+    alph = dca['alpha']
+    eq   = dca['equity']
+    btcn = dca['btc_now']
+    n    = dca['n_trades']
+    sd   = dca.get('start_date', '')[:10]
+    pc   = '#2ecc71' if pr > 0 else '#e74c3c'
+    dc   = '#2ecc71' if dr > 0 else '#e74c3c'
+    ac   = '#2ecc71' if alph > 0 else '#e74c3c'
+    cf   = ('#f1c40f', f'n={n} sin poder estadistico') if n < 30 else ('#2ecc71', f'n={n} valido')
+    mono = 'IBM Plex Mono,monospace'
+    h  = '<div style="background:#07091c;border:1px solid #1a2240;border-radius:10px;padding:14px 18px;margin-bottom:14px">'
+    h += '<div style="font-size:9px;color:#7a8db5;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">'
+    h += f'Paper Trading vs BTC DCA desde {sd} '
+    h += f'<span style="color:{cf[0]};font-size:9px">{cf[1]}</span></div>'
+    h += '<div style="display:flex;gap:10px">'
+    h += '<div style="flex:1;background:#0d1428;border-radius:8px;padding:10px;text-align:center">'
+    h += '<div style="font-size:9px;color:#7a8db5;margin-bottom:4px">SIGMA Paper</div>'
+    h += f'<div style="font-size:20px;font-weight:800;color:{pc};font-family:{mono}">{pr:+.1f}%</div>'
+    h += f'<div style="font-size:9px;color:#7a8db5">${eq:,.0f}</div>'
+    h += '</div>'
+    h += '<div style="flex:1;background:#0d1428;border-radius:8px;padding:10px;text-align:center">'
+    h += '<div style="font-size:9px;color:#7a8db5;margin-bottom:4px">BTC DCA</div>'
+    h += f'<div style="font-size:20px;font-weight:800;color:{dc};font-family:{mono}">{dr:+.1f}%</div>'
+    h += f'<div style="font-size:9px;color:#7a8db5">${btcn:,.0f}/BTC</div>'
+    h += '</div>'
+    h += '<div style="flex:1;background:rgba(46,204,113,.06);border:1px solid rgba(46,204,113,.2);border-radius:8px;padding:10px;text-align:center">'
+    h += '<div style="font-size:9px;color:#7a8db5;margin-bottom:4px">Alpha real</div>'
+    h += f'<div style="font-size:20px;font-weight:800;color:{ac};font-family:{mono}">{alph:+.1f}pp</div>'
+    h += '<div style="font-size:9px;color:#7a8db5">ventaja</div>'
+    h += '</div>'
+    h += '</div>'
+    h += '</div>'
+    return h
+
+def _btc_cold_storage_widget():
+    """HTML: progreso BTC cold storage hacia la meta."""
+    try:
+        cs_f = Path('/opt/sigma/results/reports/btc_cold_storage.json')
+        if not cs_f.exists():
+            return ''
+        cs    = json.loads(cs_f.read_text())
+        total = float(cs.get('total_btc', 0))
+        goal  = float(cs.get('goal_btc', 1.0))
+        pct   = min(100, total / goal * 100) if goal > 0 else 0
+        btc_usd = 0
+        try:
+            import urllib.request as _ur3
+            _r3 = json.loads(_ur3.urlopen('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT', timeout=2).read())
+            btc_usd = float(_r3['price'])
+        except:
+            pass
+        value_usd = total * btc_usd
+        pc2 = '#2ecc71' if pct >= 50 else ('#f1c40f' if pct >= 20 else '#e74c3c')
+        mono = 'IBM Plex Mono,monospace'
+        entries  = cs.get('entries', [])
+        last_str = ''
+        if entries:
+            le = entries[-1]
+            last_str = (f'<div style="font-size:9px;color:#7a8db5;margin-top:4px">'
+                        f'Ultimo: {le.get("btc",0):.6f} BTC @ ${le.get("price_usd",0):,.0f}</div>')
+        h  = '<div style="background:#07091c;border:1px solid #1a2240;border-radius:10px;padding:14px 18px;margin-bottom:14px">'
+        h += '<div style="font-size:9px;color:#f7931a;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">BTC Cold Storage</div>'
+        h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'
+        h += f'<span style="color:#f7931a;font-size:22px;font-weight:800;font-family:{mono}">{total:.6f} BTC</span>'
+        h += f'<span style="font-size:11px;color:#7a8db5">${value_usd:,.0f} USD</span>'
+        h += '</div>'
+        h += '<div style="background:#1a2240;border-radius:4px;height:6px;overflow:hidden;margin-bottom:5px">'
+        h += f'<div style="background:{pc2};width:{pct:.1f}%;height:100%;border-radius:4px"></div>'
+        h += '</div>'
+        h += f'<div style="display:flex;justify-content:space-between;font-size:9px;color:#7a8db5">'
+        h += f'<span>{pct:.1f}% hacia {goal:.2f} BTC</span>'
+        h += '<span>Not your keys, not your coins.</span>'
+        h += '</div>'
+        h += last_str
+        h += '</div>'
+        return h
+    except:
+        return ''
+
+
+
+def _executor_gate_widget():
+    """HTML: progreso del gate multi-factor hacia activacion del executor."""
+    try:
+        import urllib.request as _ur4
+        ts_f = Path('/opt/sigma/results/trade_state.json')
+        if not ts_f.exists():
+            return ''
+        ts   = json.loads(ts_f.read_text())
+        hist = ts.get('history', [])
+        port = ts.get('portfolio', {})
+        n    = len(hist)
+        # Criterio 1: n >= 30
+        c1_ok  = n >= 30
+        c1_val = f"{n}/30 trades"
+        # Criterio 2: WR live >= 55%
+        wins  = sum(1 for t in hist if float(t.get('pnl_pct',0)) > 0)
+        wr    = wins/n*100 if n > 0 else 0
+        c2_ok  = n >= 15 and wr >= 55
+        c2_val = f"WR {wr:.1f}%" + (" ✓" if c2_ok else " (min 55%, necesita 15+ trades)")
+        # Criterio 3: PF >= 1.3
+        wl = [t.get('pnl_pct',0) for t in hist if float(t.get('pnl_pct',0)) > 0]
+        ll = [t.get('pnl_pct',0) for t in hist if float(t.get('pnl_pct',0)) < 0]
+        pf = sum(wl)/max(abs(sum(ll)),0.01) if ll else 9.9
+        c3_ok  = n >= 10 and pf >= 1.3
+        c3_val = f"PF {pf:.2f}" + (" ✓" if c3_ok else " (min 1.3)")
+        # Criterio 4: Diversidad de regimen >= 2
+        regimes = set(t.get('regime_at_close','BEAR') for t in hist if t.get('regime_at_close'))
+        if not regimes: regimes = {'BEAR'}
+        c4_ok  = len(regimes) >= 2
+        c4_val = ', '.join(sorted(regimes)) + (" ✓" if c4_ok else " — falta BULL o RANGE")
+        # Criterio 5: Duracion >= 6 semanas
+        from datetime import datetime as _dt
+        start_str = port.get('start_date','')
+        try:
+            start_dt = _dt.strptime(start_str[:10],'%Y-%m-%d')
+            weeks = (_dt.now() - start_dt).days / 7
+        except:
+            weeks = 0
+        c5_ok  = weeks >= 6
+        c5_val = f"{weeks:.1f} semanas" + (" ✓" if c5_ok else f" (min 6)")
+        # Score
+        criteria = [c1_ok, c2_ok, c3_ok, c4_ok, c5_ok]
+        n_ok = sum(criteria)
+        pct  = n_ok / len(criteria) * 100
+        bar_color = '#2ecc71' if n_ok == 5 else ('#f1c40f' if n_ok >= 3 else '#e74c3c')
+        level_text = 'LISTO' if n_ok == 5 else ('CASI' if n_ok >= 4 else ('BUILDING' if n_ok >= 2 else 'EARLY'))
+        level_color = {'LISTO':'#2ecc71','CASI':'#f1c40f','BUILDING':'#e67e22','EARLY':'#e74c3c'}.get(level_text,'#7a8db5')
+        rows = ''
+        for ok, val, name in [
+            (c1_ok, c1_val, 'Trades suficientes (≥30)'),
+            (c2_ok, c2_val, 'WR live vs benchmark (≥55%)'),
+            (c3_ok, c3_val, 'Profit Factor (≥1.3)'),
+            (c4_ok, c4_val, 'Diversidad de regimen (≥2)'),
+            (c5_ok, c5_val, 'Duracion validacion (≥6 sem)'),
+        ]:
+            ic = '#2ecc71' if ok else '#e74c3c'
+            sym_i = '✅' if ok else '❌'
+            rows += (f'<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #141b38">'
+                     f'<span style="font-size:10px;color:#b8c5e0">{sym_i} {name}</span>'
+                     f'<span style="font-size:10px;color:{ic};font-family:IBM Plex Mono,monospace">{val}</span>'
+                     f'</div>')
+        mono = 'IBM Plex Mono,monospace'
+        h  = '<div style="background:#07091c;border:1px solid #1a2240;border-radius:10px;padding:14px 18px;margin-bottom:14px">'
+        h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px">'
+        h += '<div style="font-size:9px;color:#7a8db5;letter-spacing:1px;text-transform:uppercase">Executor Gate — Criterios de Activacion</div>'
+        h += f'<div style="font-size:13px;font-weight:800;color:{level_color}">{level_text} {n_ok}/5</div>'
+        h += '</div>'
+        h += '<div style="background:#1a2240;border-radius:4px;height:5px;overflow:hidden;margin-bottom:12px">'
+        h += f'<div style="background:{bar_color};width:{pct:.0f}%;height:100%;border-radius:4px;transition:width .3s"></div>'
+        h += '</div>'
+        h += rows
+        h += '</div>'
+        return h
+    except:
+        return ''
+
+
+def generate_html():
+    now = datetime.now().strftime('%Y-%m-%d %H:%M')
+    mc     = load_mc()
+    ca     = load_cross_asset()
+    wft    = load_wft()
+    db     = get_db_stats()
+    events = load_events(25)
+
+    # Halving cycle
+    halving   = date(2024, 4, 20)
+    cyc_pct   = (date.today() - halving).days / 1461 * 100
+    phase_ok  = not (50 <= cyc_pct <= 75)
+    phase_txt = f'FASE OK ({cyc_pct:.0f}%)' if phase_ok else f'FASE DIFICIL ({cyc_pct:.0f}%)'
+    phase_col = '#2ecc71' if phase_ok else '#e74c3c'
+
+    # Top models for portfolio rule (Motor 1 only — Motor 2 is independent)
+    all_m = []
+    for asset in ASSETS_M1:
+        for tf in ['1h','4h','15m','5m']:
+            ml = load_model(asset, tf, direction='long')
+            ms = load_model(asset, tf, direction='short')
+            m = None
+            if ml and ms:
+                # 2026-05-19: tie-break por ROBUSTNESS rank primero, score como segundo
+                def _rob_rank_cell(_m, _tf, _asset):
+                    if not _m: return -1
+                    try:
+                        import sys as _src
+                        if '/opt/sigma' not in _src.path: _src.path.insert(0, '/opt/sigma')
+                        from utils.robustness import robustness_score as _rsc
+                        _strat = _m.get('strategy', '')
+                        _jp = OUTPUT_DIR / 'models' / _tf / (_asset.lower() + '_' + _strat + '.json')
+                        if not _jp.exists(): return 0
+                        _d = json.loads(_jp.read_text())
+                        return {'PASS_LIVE': 3, 'PAPER_ONLY': 2, 'BLOCKED': 1}.get(_rsc(_d).get('action','?'), 0)
+                    except Exception:
+                        return 0
+                _r_l2 = _rob_rank_cell(ml, tf, asset)
+                _r_s2 = _rob_rank_cell(ms, tf, asset)
+                if _r_l2 != _r_s2:
+                    m = ml if _r_l2 > _r_s2 else ms
+                else:
+                    m = ml if (ml.get('score', -9999) or -9999) >= (ms.get('score', -9999) or -9999) else ms
+            elif ml: m = ml
+            elif ms: m = ms
+            if m:
+                all_m.append((m['cagr'], asset, tf, m))
+    all_m.sort(reverse=True)
+    top2 = all_m[:2]
+
+    # Count total ready
+    n_ready   = sum(1 for c,a,t,m in all_m)
+    n_total   = len(ASSETS_M1) * len(TIMEFRAMES)  # M1 only
+    # Pre-computar widgets para inyectar en f-string
+    _dca_html  = _dca_benchmark_widget()
+    _cs_html   = _btc_cold_storage_widget()
+    _gate_html = _executor_gate_widget()
+
+    # Walk-forward stats
+    wft_done = len(wft)
+    wft_pos  = sum(1 for w in wft if w['ok'])
+    wft_pct  = round(wft_pos/wft_done*100,1) if wft_done else 0
+    wft_col  = '#2ecc71' if wft_pct>=60 else '#f1c40f' if wft_pct>=50 else '#e74c3c'
+
+    # Cross-asset
+    ca_pos   = ca.get('positive_assets', [])
+    ca_conf  = ca.get('confidence', '')
+
+    # Matrix rows
+    matrix_rows = ''
+    # Collect model data for summary row
+    tf_models = {tf: [] for tf in TIMEFRAMES}  # tf -> list of (cagr, wr, trades, score)
+    current_champions = {}  # 'ASSET|tf|dir' -> strategy_name (para detectar cambios de campeon)
+
+    for asset in ASSETS_M1:
+        color  = ASSET_COLOR[asset]
+        emoji  = ASSET_EMOJI[asset]
+        cells  = ''.join(cell_html(asset, tf) for tf in TIMEFRAMES)
+        matrix_rows += f'''
+        <tr>
+          <td class="asset-col">
+            <div class="asset-box" style="--asset-color:{color}">
+              <span class="asset-emoji" style="color:{color}">{emoji}</span>
+              <span class="asset-name">{asset}</span>
+            </div>
+          </td>
+          {cells}
+        </tr>'''
+        # Collect for summary — UN modelo por slot (el mejor entre long y short),
+        # consistente con lo que el Pine realmente deploya en TradingView.
+        for tf in TIMEFRAMES:
+            ml = load_model(asset, tf, direction='long')
+            ms = load_model(asset, tf, direction='short')
+            best = None
+            if ml and ms:
+                # 2026-05-19: tie-break por ROBUSTNESS rank primero, score como segundo
+                # PASS_LIVE > PAPER_ONLY > BLOCKED. Resuelve "slot stuck con champion overfit"
+                def _rob_rank(_m, _tf, _asset):
+                    if not _m: return -1
+                    try:
+                        import sys as _sr
+                        if '/opt/sigma' not in _sr.path: _sr.path.insert(0, '/opt/sigma')
+                        from utils.robustness import robustness_score as _rs
+                        _strat = _m.get('strategy', '')
+                        _jp = OUTPUT_DIR / 'models' / _tf / (_asset.lower() + '_' + _strat + '.json')
+                        if not _jp.exists(): return 0
+                        _d = json.loads(_jp.read_text())
+                        _act = _rs(_d).get('action', '?')
+                        return {'PASS_LIVE': 3, 'PAPER_ONLY': 2, 'BLOCKED': 1}.get(_act, 0)
+                    except Exception:
+                        return 0
+                _r_l = _rob_rank(ml, tf, asset)
+                _r_s = _rob_rank(ms, tf, asset)
+                if _r_l != _r_s:
+                    best = ml if _r_l > _r_s else ms
+                else:
+                    # Empate de robustness: usa score
+                    best = ml if (ml.get('score', -9999) or -9999) >= (ms.get('score', -9999) or -9999) else ms
+                best_dir = 'long' if best is ml else 'short'
+            elif ml:
+                best, best_dir = ml, 'long'
+            elif ms:
+                best, best_dir = ms, 'short'
+            if best:
+                # 2026-05-19: robustness_action (idx 7) para port_cagr honesto
+                _rob_action = '?'
+                try:
+                    import sys as _sys_rob
+                    if '/opt/sigma' not in _sys_rob.path: _sys_rob.path.insert(0, '/opt/sigma')
+                    from utils.robustness import robustness_score as _rob_score
+                    _strat_rob = best.get('strategy','')
+                    _jp_rob = OUTPUT_DIR / 'models' / tf / (asset.lower() + '_' + _strat_rob + '.json')
+                    if _jp_rob.exists():
+                        _d_rob = json.loads(_jp_rob.read_text())
+                        _rob_action = _rob_score(_d_rob).get('action', '?')
+                except Exception:
+                    pass
+                tf_models[tf].append((
+                    best['cagr'], best['wr'], best['trades'], best.get('score', -9999),
+                    best.get('dd', 0), best.get('pf', 0), best.get('rr', 0),
+                    _rob_action,
+                ))
+                current_champions[f'{asset}|{tf}'] = f'{best.get("strategy","?")}|{best_dir}'
+
+    # Summary row — weighted averages per TF column
+    summary_cells = ''
+    all_cagrs, all_wrs, all_trades_sum = [], [], 0
+    for tf in TIMEFRAMES:
+        ms = tf_models[tf]
+        if ms:
+            cagrs  = [x[0] for x in ms]
+            wrs    = [x[1] for x in ms]
+            trades = [x[2] for x in ms]
+            total_t = sum(trades)
+            # Weighted WR by trades
+            w_wr   = sum(wrs[i]*trades[i] for i in range(len(ms))) / max(total_t, 1)
+            avg_c  = sum(cagrs) / len(cagrs)
+            all_cagrs.extend(cagrs); all_wrs.extend(wrs); all_trades_sum += total_t
+            summary_cells += (
+                f'<td style="text-align:center;border-top:2px solid #242f55;padding:7px 4px">'
+                f'<div style="color:{c_cagr(avg_c)};font-family:\'IBM Plex Mono\',monospace;font-size:12px;font-weight:700">{avg_c:+.1f}%</div>'
+                f'<div style="font-size:10px;color:{c_wr(w_wr)}">WR {w_wr:.0f}%</div>'
+                f'<div style="font-size:10px;color:#7a8db5">{total_t}T</div>'
+                f'</td>'
+            )
+        else:
+            summary_cells += '<td style="border-top:2px solid #242f55;text-align:center;color:#242f55">—</td>'
+
+    # Overall portfolio — promedio simple de TODOS los slots activos (best por sym+tf)
+    # Cada slot cuenta igual: 1 voto cada uno. Se auto-actualiza al agregar nuevos champions.
+    if all_cagrs:
+        all_models_w = []
+        for tf in TIMEFRAMES:
+            for m_data in tf_models[tf]:
+                all_models_w.append(m_data)
+        tot_t = all_trades_sum
+        CAGR_OPERABLE = 12.0
+        def _calc_port(ms):
+            """Port metrics. CAGR ponderado por trades (m[2]) — slots más activos pesan más."""
+            if not ms:
+                return dict(cagr=0, wr=0, dd=0, dd_worst=0, pf=0, rr=0, ev_r=0, calmar=0, std=0, n=0, cagr_simple=0)
+            n = len(ms)
+            # Weights por trades (m[2]). Si no hay trades o len<3, peso=1 (modelo poco probado pesa mínimo)
+            weights = [max(m[2] if len(m) > 2 else 1, 1) for m in ms]
+            total_w = sum(weights)
+            # CAGR ponderado (la métrica principal ahora)
+            cagr_weighted = sum(m[0] * w for m, w in zip(ms, weights)) / total_w if total_w > 0 else 0
+            # CAGR simple (referencia, preservado por compatibilidad)
+            cagr_simple = sum(m[0] for m in ms) / n
+            cagr = cagr_weighted
+            # WR también ponderado por trades — más justo
+            wr = sum(m[1] * w for m, w in zip(ms, weights)) / total_w if total_w > 0 else 0
+            dd_v = [m[4] for m in ms if len(m) > 4]
+            dd_w = [max(m[2] if len(m) > 2 else 1, 1) for m in ms if len(m) > 4]
+            dd_avg = sum(d * w for d, w in zip(dd_v, dd_w)) / sum(dd_w) if dd_w else 0
+            dd_worst = min(dd_v) if dd_v else 0
+            pf_v = [m[5] for m in ms if len(m) > 5 and m[5] > 0]
+            pf = sum(pf_v) / max(len(pf_v), 1)
+            rr_v = [m[6] for m in ms if len(m) > 6 and m[6] > 0]
+            rr = sum(rr_v) / len(rr_v) if rr_v else 0
+            wr_d = wr / 100 if wr else 0
+            ev_r = wr_d * rr - (1 - wr_d) if rr > 0 else 0
+            std = (sum((m[0] - cagr) ** 2 for m in ms) / n) ** 0.5 if n > 1 else 0
+            calmar = round(cagr / abs(dd_worst), 2) if dd_worst < 0 else 0
+            return dict(cagr=cagr, wr=wr, dd=dd_avg, dd_worst=dd_worst, pf=pf, rr=rr, ev_r=ev_r, calmar=calmar, std=std, n=n, cagr_simple=cagr_simple)
+        # 2026-05-19: PORT_CAGR HONESTO — BLOCKED no cuenta en operacional.
+        def _is_blocked(m):
+            return len(m) > 7 and m[7] == 'BLOCKED'
+        def _is_pass_live(m):
+            return len(m) > 7 and m[7] == 'PASS_LIVE'
+        operational_models = [m for m in all_models_w if not _is_blocked(m)]
+        pass_live_models = 

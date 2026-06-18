@@ -39,16 +39,16 @@
     "mc_cagr_p95": 151.8,
     "mc_dd_p50": -32.9,
     "mc_dd_p95": -18.1,
-    "mc_confidence": 91.5,
+    "mc_confidence": 91.3,
     "mc_sims": 1000
   },
   "wft": {
     "oos_win_rate": 0.0,
     "n_windows": 3,
     "positive_windows": 0,
-    "avg_cagr_oos": -31.7,
+    "avg_cagr_oos": -32.17,
     "avg_cagr_pos": 0.0,
     "verdict": "FAIL",
-    "date": "2026-06-07 02:20"
+    "date": "2026-06-14 02:20"
   }
 }

@@ -1,5 +1,62 @@
 WebSocket server settings:
-  - Listen on 0.0.0.0:6080
+  - Listen on :6080
   - Web server. Web root: /usr/share/novnc
   - No SSL/TLS support (no cert file)
-  - Backgrounding (daemon)
+  - proxying from :6080 to localhost:5902
+186.175.115.76 - - [16/Jun/2026 02:49:15] code 404, message File not found
+186.175.115.76 - - [16/Jun/2026 02:49:16] 186.175.115.76: Plain non-SSL (ws://) WebSocket connection
+186.175.115.76 - - [16/Jun/2026 02:49:16] 186.175.115.76: Path: '/websockify'
+186.175.115.76 - - [16/Jun/2026 02:49:16] connecting to: localhost:5902
+handler exception: [Errno 104] Connection reset by peer
+186.175.115.76 - - [16/Jun/2026 02:51:42] code 404, message File not found
+186.175.115.76 - - [16/Jun/2026 02:51:43] 186.175.115.76: Plain non-SSL (ws://) WebSocket connection
+186.175.115.76 - - [16/Jun/2026 02:51:43] 186.175.115.76: Path: '/websockify'
+186.175.115.76 - - [16/Jun/2026 02:51:43] connecting to: localhost:5902
+186.175.115.76 - - [16/Jun/2026 02:58:46] code 404, message File not found
+186.175.115.76 - - [16/Jun/2026 03:34:23] code 404, message File not found
+186.175.115.76 - - [16/Jun/2026 03:34:36] 186.175.115.76: Plain non-SSL (ws://) WebSocket connection
+186.175.115.76 - - [16/Jun/2026 03:34:36] 186.175.115.76: Path: '/websockify'
+186.175.115.76 - - [16/Jun/2026 03:34:36] connecting to: localhost:5902
+186.175.115.76 - - [16/Jun/2026 04:01:23] code 404, message File not found
+186.175.115.76 - - [16/Jun/2026 04:01:25] 186.175.115.76: Plain non-SSL (ws://) WebSocket connection
+186.175.115.76 - - [16/Jun/2026 04:01:25] 186.175.115.76: Path: '/websockify'
+186.175.115.76 - - [16/Jun/2026 04:01:25] connecting to: localhost:5902
+65.49.1.94: SSL connection but '/root/self.pem' not found
+handler exception: [Errno 104] Connection reset by peer
+handler exception: [Errno 104] Connection reset by peer
+184.105.139.69 - - [16/Jun/2026 06:52:58] code 404, message File not found
+78.178.84.175 - - [16/Jun/2026 08:59:59] 78.178.84.175: Plain non-SSL (ws://) WebSocket connection
+78.178.84.175 - - [16/Jun/2026 08:59:59] 78.178.84.175: Path: '/websockify'
+78.178.84.175 - - [16/Jun/2026 08:59:59] connecting to: localhost:5902
+78.178.84.175 - - [16/Jun/2026 08:59:59] 78.178.84.175: Plain non-SSL (ws://) WebSocket connection
+78.178.84.175 - - [16/Jun/2026 08:59:59] 78.178.84.175: Path: '/websockify'
+78.178.84.175 - - [16/Jun/2026 08:59:59] connecting to: localhost:5902
+78.178.84.175 - - [16/Jun/2026 09:00:00] 78.178.84.175: Plain non-SSL (ws://) WebSocket connection
+78.178.84.175 - - [16/Jun/2026 09:00:00] 78.178.84.175: Path: '/websockify'
+78.178.84.175 - - [16/Jun/2026 09:00:00] connecting to: localhost:5902
+78.178.84.175 - - [16/Jun/2026 09:00:00] 78.178.84.175: Plain non-SSL (ws://) WebSocket connection
+78.178.84.175 - - [16/Jun/2026 09:00:00] 78.178.84.175: Path: '/websockify'
+78.178.84.175 - - [16/Jun/2026 09:00:00] connecting to: localhost:5902
+78.178.84.175 - - [16/Jun/2026 09:00:01] 78.178.84.175: Plain non-SSL (ws://) WebSocket connection
+78.178.84.175 - - [16/Jun/2026 09:00:01] 78.178.84.175: Path: '/websockify'
+78.178.84.175 - - [16/Jun/2026 09:00:01] connecting to: localhost:5902
+78.178.84.175 - - [16/Jun/2026 09:00:01] 78.178.84.175: Plain non-SSL (ws://) WebSocket connection
+78.178.84.175 - - [16/Jun/2026 09:00:01] 78.178.84.175: Path: '/websockify'
+78.178.84.175 - - [16/Jun/2026 09:00:01] connecting to: localhost:5902
+186.175.33.72 - - [16/Jun/2026 11:27:48] 186.175.33.72: Plain non-SSL (ws://) WebSocket connection
+186.175.33.72 - - [16/Jun/2026 11:27:48] 186.175.33.72: Path: '/websockify'
+186.175.33.72 - - [16/Jun/2026 11:27:48] connecting to: localhost:5902
+186.175.33.72 - - [16/Jun/2026 11:27:55] 186.175.33.72: Plain non-SSL (ws://) WebSocket connection
+186.175.33.72 - - [16/Jun/2026 11:27:55] 186.175.33.72: Path: '/websockify'
+186.175.33.72 - - [16/Jun/2026 11:27:55] connecting to: localhost:5902
+186.175.33.72 - - [16/Jun/2026 11:27:58] 186.175.33.72: Plain non-SSL (ws://) WebSocket connection
+186.175.33.72 - - [16/Jun/2026 11:27:58] 186.175.33.72: Path: '/websockify'
+186.175.33.72 - - [16/Jun/2026 11:27:58] connecting to: localhost:5902
+186.175.33.72 - - [16/Jun/2026 11:28:01] code 404, message File not found
+186.175.33.72 - - [16/Jun/2026 11:28:02] 186.175.33.72: Plain non-SSL (ws://) WebSocket connection
+186.175.33.72 - - [16/Jun/2026 11:28:02] 186.175.33.72: Path: '/websockify'
+186.175.33.72 - - [16/Jun/2026 11:28:02] connecting to: localhost:5902
+186.175.33.72 - - [16/Jun/2026 11:32:21] code 404, message File not found
+186.175.33.72 - - [16/Jun/2026 11:32:22] 186.175.33.72: Plain non-SSL (ws://) WebSocket connection
+186.175.33.72 - - [16/Jun/2026 11:32:22] 186.175.33.72: Path: '/websockify'
+186.175.33.72 - - [16/Jun/2026 11:32:22] connecting to: localhost:5902

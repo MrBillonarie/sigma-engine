@@ -68,9 +68,12 @@ def fetch_ohlcv(symbol=None, tf="15m", days=None, use_cache=True):
             pass  # no es valido, continuar con API
         else:
             max_days = (df_max.index[-1] - df_max.index[0]).days
-            if max_days >= days * 0.9:
+            stale_days = (pd.Timestamp.now() - df_max.index[-1]).days
+            if max_days >= days * 0.9 and stale_days <= 2:
                 print(f"  [CACHE] {tf} cargado desde disco ({len(df_max)} velas)")
                 return df_max
+            elif stale_days > 2:
+                print(f"  [STALE] {tf} cache desactualizado ({stale_days}d) — forzando descarga")
 
     if use_cache:
         cached = _load_cache(symbol, tf, days)

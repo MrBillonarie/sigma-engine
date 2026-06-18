@@ -2673,7 +2673,8 @@ def run_pipeline(symbol, tf, n_trials=350, loop=False, max_cycles=99, csv_path=N
         return
 
     df = add_features(df_raw)
-    n  = len(df); split = int(n * 0.80)
+    n  = len(df); _days_tot = (df.index[-1]-df.index[0]).days
+    split = int(n * 0.65) if _days_tot < 1100 else int(n * 0.80)  # M2: 65/35 para datos<3y
     df_is  = df.iloc[:split]
     # Pre-cast a float64 una vez: evita conversiones repetidas en cada trial
     for _col in ("close","high","low","open","volume"):
@@ -2749,7 +2750,8 @@ def run_pipeline(symbol, tf, n_trials=350, loop=False, max_cycles=99, csv_path=N
             try:
                 sig_oos, sl_oos, tp_oos = sig_map[strategy](df_oos, bp)
                 dt_oos, eq_oos = backtest(df_oos, sig_oos, sl_oos, tp_oos, rp)
-                m_oos = metrics(dt_oos, eq_oos, days_oos, min_t=10)
+                _min_oos_t = 6 if days_oos < 400 else 10  # M2: menos trades requeridos en OOS corto
+                m_oos = metrics(dt_oos, eq_oos, days_oos, min_t=_min_oos_t)
             except:
                 m_oos = None
 
@@ -2766,7 +2768,8 @@ def run_pipeline(symbol, tf, n_trials=350, loop=False, max_cycles=99, csv_path=N
             # Anti-overfitting: si IS >> OOS por más de 2.5x, el modelo memorizó el IS
             if m_is and m_oos and m_is.get('cagr', 0) > 0 and cagr_oos > 0:
                 overfit_ratio = m_is['cagr'] / cagr_oos
-                if overfit_ratio > 2.0:
+                _max_overfit = 3.5 if days_oos < 400 else 2.0  # M2: ratio mas permisivo con OOS corto
+                if overfit_ratio > _max_overfit:
                     log(symbol, tf,
                         f'  {strategy}: OVERFIT detectado — IS {m_is["cagr"]:+.1f}% vs OOS {cagr_oos:+.1f}% '
                         f'(ratio {overfit_ratio:.1f}x > 2.0) — descartando')
@@ -2780,7 +2783,7 @@ def run_pipeline(symbol, tf, n_trials=350, loop=False, max_cycles=99, csv_path=N
                 # Reemplazos de un champion ya existente siguen rigiendose por score.
                 trades_oos_n = m_oos.get('trades', 0) if isinstance(m_oos, dict) else 0
                 is_first_champion = best_oos_score <= -900
-                min_n_required = 20 if is_first_champion else 12
+                min_n_required = (10 if days_oos < 400 else 20) if is_first_champion else (6 if days_oos < 400 else 12)  # M2: umbral menor con OOS corto
                 if trades_oos_n < min_n_required:
                     log(symbol, tf, f'  {strategy}: CAGR+ pero N OOS insuficiente ({trades_oos_n} < {min_n_required}), descartando')
                     log_event(asset, tf, strategy, 'LOW_N_OOS',
@@ -2884,7 +2887,7 @@ def run_pipeline(symbol, tf, n_trials=350, loop=False, max_cycles=99, csv_path=N
         if df_new is not None and len(df_new) > len(df_raw):
             df_raw = df_new
             df     = add_features(df_raw)
-            n      = len(df); split = int(n * 0.80)
+            n      = len(df); split = int(n * 0.65) if (df.index[-1]-df.index[0]).days < 1100 else int(n * 0.80)  # M2: adaptive
             df_is  = df.iloc[:split]; df_oos = df.iloc[split:]
             days_is  = (df_is.index[-1]-df_is.index[0]).days
             days_oos = (df_oos.index[-1]-df_oos.index[0]).days

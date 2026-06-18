@@ -28,6 +28,8 @@ HARD_CONS_PAPER    = 0.30   # consistency menor que esto -> max PAPER_ONLY
 HARD_DD_BLOCK      = 0.30   # dd_score menor que esto -> BLOCKED (DD > 50%)
 HARD_N_PAPER       = 0.50   # n menor que esto -> max PAPER_ONLY (< 15 trades)
 HARD_WFT_FAIL      = 0.50   # WFT pct positive < 0.50 confirmado -> max PAPER_ONLY
+HARD_CAGR_IMPOSSIBLE = 800.0  # CAGR OOS > 800% -> magnitud imposible para un edge real, BLOCKED
+HARD_WR_SUSPECT      = 95.0  # WR > 95% con n>=20 -> casi seguro artefacto de backtest, max PAPER_ONLY
 
 # Defaults para datos faltantes — penalty, NO neutral
 WFT_NA_DEFAULT  = 0.30  # WFT no computado = penalty (era 0.50)
@@ -120,6 +122,16 @@ def robustness_score(model_dict: dict) -> dict:
             action = "PAPER_ONLY"
         gates_failed.append(f"WFT_FAIL({wft:.2f})")
 
+    # CAGR/WR magnitud imposible -> casi siempre bug de backtest, no edge real
+    wr_oos = float(m_oos.get("wr", 0) or 0)
+    if abs(cagr_oos) > HARD_CAGR_IMPOSSIBLE:
+        action = "BLOCKED"
+        gates_failed.append(f"CAGR_IMPOSSIBLE({cagr_oos:.0f}%>{HARD_CAGR_IMPOSSIBLE:.0f}%)")
+    elif wr_oos > HARD_WR_SUSPECT and trades >= 20:
+        if action == "PASS_LIVE":
+            action = "PAPER_ONLY"
+        gates_failed.append(f"WR_SUSPECT({wr_oos:.1f}%>{HARD_WR_SUSPECT:.0f}%)")
+
     return {
         "wft": round(wft, 3),
         "wft_na": wft_na,
@@ -167,3 +179,4 @@ if __name__ == "__main__":
     print(f"  PASS_LIVE:  {counts['PASS_LIVE']:>2d}/16  (apto real money con Kelly normal)")
     print(f"  PAPER_ONLY: {counts['PAPER_ONLY']:>2d}/16  (paper trading OK, no live)")
     print(f"  BLOCKED:    {counts['BLOCKED']:>2d}/16  (ni paper - DD critico o overfit brutal)")
+

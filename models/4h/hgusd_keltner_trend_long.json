@@ -1,0 +1,74 @@
+{
+  "symbol": "HG/USD",
+  "tf": "4h",
+  "strategy": "keltner_trend_long",
+  "params": {
+    "sl_mult": 3.4000000000000004,
+    "tp_mult": 2.3,
+    "cooldown": 5,
+    "rsi_w_thr": 50
+  },
+  "risk_pct": 3.9000000000000004,
+  "metrics_is": {
+    "trades": 100,
+    "wr": 49.0,
+    "cagr": 125.7,
+    "dd": -8.6,
+    "pf": 2.86,
+    "trades_year": 62.4
+  },
+  "metrics_oos": {
+    "trades": 29,
+    "wr": 44.8,
+    "cagr": 47.2,
+    "dd": -3.6,
+    "pf": 3.51,
+    "trades_year": 34.3
+  },
+  "oos_days": 309,
+  "saved_at": "2026-06-16 19:54:42.514954",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 99.9,
+      "median": 87.0,
+      "ic95_lo": 22.0,
+      "ic95_hi": 170.0,
+      "ic80_lo": 41.8,
+      "ic80_hi": 140.1,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 15,
+      "positive": 13,
+      "pct_positive": 86.7,
+      "avg_cagr": 144.7,
+      "passed": true
+    },
+    "cross_asset": {
+      "positive": 0,
+      "passed": false,
+      "note": "sin datos"
+    },
+    "confidence": "MEDIA",
+    "passed_steps": 2,
+    "max_steps": 3,
+    "validated_at": "2026-06-16 19:54:43.409504"
+  },
+  "m2_validation": {
+    "status": "WARN",
+    "reasons": [
+      "[WARN] FEW_TRADES: 29 trades OOS (estadistica debil)",
+      "[WARN] IS_OOS_WARN: OOS/IS=0.38 \u2014 degradacion moderada"
+    ],
+    "validated_at": "2026-06-17T20:30:01.535580-04:00"
+  },
+  "mc": {
+    "mc_cagr_p05": -87.7,
+    "mc_cagr_p50": -75.7,
+    "mc_cagr_p95": -46.0,
+    "mc_dd_p50": -94.6,
+    "mc_dd_p95": -78.7,
+    "mc_confidence": 0.1,
+    "mc_sims": 1000
+  }
+}

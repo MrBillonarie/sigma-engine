@@ -1353,9 +1353,15 @@ def _signal_explainer(m, regime, hist_trades, now_str):
         live_wr=round(wins_past/n_past*100,0) if n_past>0 else None
 
         lines=[]
-        regime_ctx={"BEAR":f"Mercado bajista — favorece {dir_txt}.",
-                    "BULL":f"Mercado alcista — favorece {dir_txt}.",
-                    "RANGE":"Mercado lateral — ser selectivo."}.get(regime,"")
+        aligned = (regime=="BEAR" and not isL) or (regime=="BULL" and isL)
+        if regime=="BEAR":
+            regime_ctx = f"Mercado bajista — {'favorece SHORT.' if not isL else 'senal contratendencia (LONG en BEAR).'}"
+        elif regime=="BULL":
+            regime_ctx = f"Mercado alcista — {'favorece LONG.' if isL else 'senal contratendencia (SHORT en BULL).'}"
+        elif regime=="RANGE":
+            regime_ctx = "Mercado lateral — ser selectivo."
+        else:
+            regime_ctx = ""
         if regime_ctx: lines.append(f"Contexto: {regime_ctx}")
 
         if grade in ("A+","A") and wr>=65:
@@ -1888,14 +1894,17 @@ def main():
                     pass
                 # Trade Journal — analisis narrativo del trade
                 try:
-                    import subprocess as _sp, json as _jj
+                    import subprocess as _sp, json as _jj, threading as _th
                     _td = {**t, "equity_after": eq, "kelly_pct": kelly}
-                    _sp.Popen(
+                    _jproc = _sp.Popen(
                         ["/opt/sigma_env/bin/python3",
                          "/opt/sigma/engine/live/trade_journal.py",
                          _jj.dumps(_td)],
                         stdout=_sp.DEVNULL, stderr=_sp.DEVNULL
                     )
+                    # reaper en hilo aparte -- sin esto el proceso queda zombie
+                    # al terminar (encontrado en auditoria 2026-06-17)
+                    _th.Thread(target=_jproc.wait, daemon=True).start()
                 except Exception as _je:
                     print(f"[JOURNAL] {_je}", flush=True)
 

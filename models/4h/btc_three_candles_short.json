@@ -3,46 +3,46 @@
   "tf": "4h",
   "strategy": "three_candles_short",
   "params": {
-    "sl_mult": 2.8,
-    "tp_mult": 1.8,
+    "sl_mult": 2.7,
+    "tp_mult": 3.3,
     "cooldown": 3,
-    "rsi_w_thr": 61,
+    "rsi_w_thr": 62,
     "vol_mult": 1.0
   },
-  "risk_pct": 3.4000000000000004,
+  "risk_pct": 5.0,
   "metrics_is": {
-    "trades": 83,
-    "wr": 61.4,
-    "cagr": 0.2,
-    "dd": -22.2,
+    "trades": 69,
+    "wr": 47.8,
+    "cagr": 0.6,
+    "dd": -42.1,
     "pf": 1.0,
-    "trades_year": 11.8
+    "trades_year": 9.8
   },
   "metrics_oos": {
-    "trades": 30,
-    "wr": 70.0,
-    "cagr": 24.3,
-    "dd": -10.7,
-    "pf": 2.31,
-    "trades_year": 17.1
+    "trades": 25,
+    "wr": 56.0,
+    "cagr": 24.7,
+    "dd": -16.6,
+    "pf": 1.44,
+    "trades_year": 14.2
   },
-  "oos_days": 639,
-  "saved_at": "2026-05-21 09:52:33.432930",
+  "oos_days": 644,
+  "saved_at": "2026-06-17 05:57:53.616343",
   "validation": {
     "monte_carlo": {
-      "p_pos": 97.0,
-      "median": 104.0,
-      "ic95_lo": -2.7,
-      "ic95_hi": 248.2,
-      "ic80_lo": 26.3,
-      "ic80_hi": 193.1,
+      "p_pos": 78.7,
+      "median": 107.8,
+      "ic95_lo": -86.7,
+      "ic95_hi": 588.9,
+      "ic80_lo": -47.6,
+      "ic80_hi": 387.1,
       "passed": true
     },
     "walk_forward": {
-      "windows": 18,
-      "positive": 11,
-      "pct_positive": 61.1,
-      "avg_cagr": 11.1,
+      "windows": 17,
+      "positive": 10,
+      "pct_positive": 58.8,
+      "avg_cagr": 25.2,
       "passed": true
     },
     "cross_asset": {
@@ -52,15 +52,15 @@
       "results": [
         {
           "symbol": "ETH/USDT",
-          "cagr": -12.6,
-          "wr": 60.9,
-          "trades": 110
+          "cagr": -17.3,
+          "wr": 49.0,
+          "trades": 100
         },
         {
           "symbol": "LTC/USDT",
-          "cagr": -29.4,
-          "wr": 55.9,
-          "trades": 118
+          "cagr": -45.8,
+          "wr": 45.3,
+          "trades": 95
         }
       ],
       "passed": false
@@ -68,24 +68,15 @@
     "confidence": "MEDIA",
     "passed_steps": 2,
     "max_steps": 3,
-    "validated_at": "2026-05-21 09:54:24.617612"
+    "validated_at": "2026-06-17 05:59:57.549494"
   },
   "mc": {
-    "mc_cagr_p05": -17.0,
-    "mc_cagr_p50": 23.7,
-    "mc_cagr_p95": 70.1,
-    "mc_dd_p50": -27.5,
-    "mc_dd_p95": -13.1,
-    "mc_confidence": 79.4,
+    "mc_cagr_p05": -32.5,
+    "mc_cagr_p50": 42.1,
+    "mc_cagr_p95": 157.8,
+    "mc_dd_p50": -44.0,
+    "mc_dd_p95": -25.2,
+    "mc_confidence": 79.6,
     "mc_sims": 1000
-  },
-  "wft": {
-    "oos_win_rate": 50.0,
-    "n_windows": 6,
-    "positive_windows": 3,
-    "avg_cagr_oos": 8.17,
-    "avg_cagr_pos": 27.67,
-    "verdict": "FAIL",
-    "date": "2026-06-07 02:19"
   }
 }

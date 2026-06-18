@@ -27,7 +27,7 @@ def _vitrina_log_push(kind, sym, tf, **kw):
         pass
 
 
-LOAD_MAX = 7.0  # 2026-06-07: 8 cores upgrade
+LOAD_MAX = 11.0  # 2026-06-16: master_pipeline base load es 10-12, ajustar para que push pueda entrar
 TRIALS          = 600
 COOLDOWN_HOURS  = 12       # no re-pushear el mismo slot por X horas
 STATE_FILE      = Path('/opt/sigma/state/adaptive_push.json')

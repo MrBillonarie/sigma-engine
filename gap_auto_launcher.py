@@ -30,7 +30,7 @@ def log(msg):
 
 # Config
 MIN_RAM_FREE_MB = 4000  # 4GB avail minimo
-MAX_PARALLEL = 9  # 8 master_pipeline + 1 extra gap job
+MAX_PARALLEL = 2  # reducido temporalmente 2026-06-17 mientras LIVE trading esta activo (era 9)
 TRIALS_BY_TF = {'5m': 80, '15m': 120, '1h': 150, '4h': 150}  # per-TF: 5m menor (noisier pero rapido), 1h/4h mayor calidad
 TRIALS_PER_SLOT = 150  # fallback
 CSV_PATHS = {
@@ -46,7 +46,7 @@ except Exception as e:
     log('FATAL importing SHORT_STRATEGIES: ' + str(e))
     sys.exit(1)
 
-SYMS = ['BTC','ETH','SOL','BNB','LTC','XAU']
+SYMS = ['BTC','ETH','SOL','BNB','LTC']  # XAU excluido — M2 (sigma-commodities) lo cubre
 TFS = ['5m','15m','1h','4h']  # 2026-05-20: incluye 5m para llegar a 40 sub-portafolios
 DIRS = ['long','short']
 
@@ -82,7 +82,7 @@ for line in r.stdout.split(chr(10)):
     ts = line.split()
     sym = tf = focus = None
     for i,t in enumerate(ts):
-        if t == '--symbol' and i+1 < len(ts): sym = ts[i+1].replace('/USDT','')
+        if t == '--symbol' and i+1 < len(ts): sym = ts[i+1].replace('/USDT','').replace('/USD','').upper()
         if t == '--tf' and i+1 < len(ts): tf = ts[i+1]
         if t == '--focus' and i+1 < len(ts): focus = ts[i+1]
     if sym and tf and focus and focus in ('long','short'):
@@ -131,6 +131,10 @@ if not todo:
     sys.exit(0)
 
 # 5. Lanzar
+MAX_TOTAL_HARD = 12
+if n_active >= MAX_TOTAL_HARD:
+    log('STOP: techo absoluto (' + str(n_active) + ' >= ' + str(MAX_TOTAL_HARD) + ' procesos totales)')
+    import sys as _sys; _sys.exit(0)
 slots_to_launch = MAX_PARALLEL - n_active
 if avail_mb < MIN_RAM_FREE_MB:
     log('STOP: RAM insuficiente (avail ' + str(avail_mb) + 'MB < ' + str(MIN_RAM_FREE_MB) + 'MB)')

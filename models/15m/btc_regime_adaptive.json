@@ -60,19 +60,19 @@
   "mc": {
     "mc_cagr_p05": -100.0,
     "mc_cagr_p50": -99.8,
-    "mc_cagr_p95": -95.9,
+    "mc_cagr_p95": -96.8,
     "mc_dd_p50": -99.8,
-    "mc_dd_p95": -97.7,
-    "mc_confidence": 0.0,
+    "mc_dd_p95": -97.6,
+    "mc_confidence": 0.1,
     "mc_sims": 1000
   },
   "wft": {
-    "oos_win_rate": 66.7,
+    "oos_win_rate": 55.6,
     "n_windows": 9,
-    "positive_windows": 6,
-    "avg_cagr_oos": 613.89,
-    "avg_cagr_pos": 962.27,
-    "verdict": "PASS",
-    "date": "2026-06-07 02:06"
+    "positive_windows": 5,
+    "avg_cagr_oos": 1166.88,
+    "avg_cagr_pos": 2153.84,
+    "verdict": "FAIL",
+    "date": "2026-06-14 02:06"
   }
 }

@@ -1,0 +1,76 @@
+{
+  "symbol": "PL/USD",
+  "tf": "4h",
+  "strategy": "ichimoku",
+  "params": {
+    "sl_mult": 2.0,
+    "tp_mult": 2.0,
+    "cooldown": 13,
+    "rsi_w_thr": 62,
+    "tenkan": 11,
+    "kijun": 28,
+    "senkou": 60
+  },
+  "risk_pct": 3.1,
+  "metrics_is": {
+    "trades": 29,
+    "wr": 69.0,
+    "cagr": 41.5,
+    "dd": -17.1,
+    "pf": 2.24,
+    "trades_year": 18.5
+  },
+  "metrics_oos": {
+    "trades": 26,
+    "wr": 76.9,
+    "cagr": 156.1,
+    "dd": -6.4,
+    "pf": 4.46,
+    "trades_year": 30.8
+  },
+  "oos_days": 308,
+  "saved_at": "2026-06-16 15:18:30.385825",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 99.9,
+      "median": 389.6,
+      "ic95_lo": 94.0,
+      "ic95_hi": 852.8,
+      "ic80_lo": 178.7,
+      "ic80_hi": 660.4,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 8,
+      "positive": 5,
+      "pct_positive": 62.5,
+      "avg_cagr": 54.7,
+      "passed": true
+    },
+    "cross_asset": {
+      "positive": 0,
+      "passed": false,
+      "note": "sin datos"
+    },
+    "confidence": "MEDIA",
+    "passed_steps": 2,
+    "max_steps": 3,
+    "validated_at": "2026-06-16 15:18:31.699470"
+  },
+  "m2_validation": {
+    "status": "WARN",
+    "reasons": [
+      "[WARN] FEW_TRADES: 26 trades OOS (estadistica debil)"
+    ],
+    "validated_at": "2026-06-17T16:00:01.289391-04:00"
+  },
+  "mc": {
+    "mc_cagr_p05": 81.0,
+    "mc_cagr_p50": 162.6,
+    "mc_cagr_p95": 258.2,
+    "mc_dd_p50": -13.0,
+    "mc_dd_p95": -6.9,
+    "mc_confidence": 100.0,
+    "mc_sims": 1000
+  }
+}
