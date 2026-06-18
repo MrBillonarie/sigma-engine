@@ -89,11 +89,27 @@ Al activarse, bloquea nuevas entradas hasta reset manual o automático (ver `sta
 | Sharpe (con CI, Lo 2002) | `utils/quant.py::sharpe_with_ci` | Telegram diario (`daily_hf_report.py`, 21:30 Chile), `bayesian_edges.json` |
 | Sortino (downside-only) | `utils/quant.py::sortino_with_ci` (agregado 2026-06-18) | Telegram diario |
 | VaR 95%/99%, CVaR | `utils/portfolio_risk.py` (cron hourly) | `/api/portfolio_risk`, Telegram diario |
-| Stress test (shock BTC -10/-20/-30%) | `utils/portfolio_risk.py::stress_scenarios()` (agregado 2026-06-18) | `/api/portfolio_risk` campo `stress_test`, Telegram diario. **Nota:** no tiene tarjeta propia en el dashboard Next.js todavía — se evaluó pero no había un patrón de tarjeta de VaR existente para replicar (gap real encontrado durante la implementación, ver pendientes). |
+| Stress test (shock BTC -10/-20/-30%) | `utils/portfolio_risk.py::stress_scenarios()` (agregado 2026-06-18) | `/api/portfolio_risk` campo `stress_test`, Telegram diario, tarjeta en dashboard nativo (`engine/live/dashboard.py::_stress_test_widget()`, visible en `/hud` público) |
 | Concentración (HHI) | `utils/portfolio_risk.py` | Telegram diario, `/api/portfolio_risk` |
 | Bayesian edge confirmado | `utils/quant.py::bayesian_edge` vía `bayesian_tracker.py` | Telegram/Discord pulse, `/api/decisions` |
 | Decision Stream (auditoría completa) | `utils/decisions.py` (append-only JSONL) | `/api/decisions`, squantdesk.com/decisiones |
 
+## 7. Slots simultáneos y notional mínimo por activo
+
+`MAX_OPEN_SLOTS = 3` (`engine/live/live_executor.py:34`) es el tope duro de posiciones reales simultáneas — independiente del capital. El gate de correlación (`utils/quant.py::position_correlation_gate`, §2) agrega un tope de 2 por cluster en la misma dirección, pero el de 3 es el que manda.
+
+**El límite real con capital chico no es el "3" — es el notional mínimo de Binance, que varía por activo** (verificado 2026-06-18 vía `ex.market(sym)['limits']`):
+
+| Activo | Notional mínimo Binance | Kelly mínimo para no caer a paper (con $552 de capital) |
+|---|---|---|
+| SOL / BNB | $5 | 0.91% — casi cualquier señal pasa |
+| LTC / ETH | $20 | 3.62% — señales de Kelly bajo se van a paper, no real |
+| BTC | $50 | 9.05% — **por encima del tope máximo de Kelly (6%). Con $552, BTC no puede ir a real en ningún caso**, sin importar qué tan buena sea la señal |
+
+Si una señal de un activo con notional mínimo alto sale ACTIVAR pero su Kelly calculado no alcanza, el intento de orden real falla por error de Binance (`-4164`) y cae automáticamente a paper (fallback agregado 2026-06-17) — no cuenta como uno de los 3 slots reales, ni se pierde la señal.
+
+**Para que BTC pueda operar real**, el capital necesita crecer a `equity ≥ $50 / (MAX_KELLY_PCT/100) ≈ $833` (con Kelly al tope de 6%), o subir el tope de Kelly (con más riesgo). Recalcular esta tabla cada vez que el capital cambie significativamente — los umbrales son función directa del equity real en Binance.
+
 ## Pendientes conocidos (no bloqueantes)
-- El stress test (§6) no tiene visualización propia en el dashboard web — hoy solo vía API cruda y Telegram. Si se quiere una tarjeta dedicada, requiere diseñar el componente desde cero (no hay un patrón de "tarjeta de riesgo" existente en `(dashboard)/portafolio/page.tsx` para replicar, a diferencia de lo asumido inicialmente).
 - `utils/quant.py::decay_signal` está implementado pero no se usa en producción — `engine/live/decay_monitor.py` tiene su propia lógica separada (pandas/ccxt) para lo mismo. No es un bug, es redundancia menor.
+
