@@ -7,8 +7,11 @@ Wants=sigma-web.service
 Environment=TZ=America/Santiago
 Environment=PYTHONUNBUFFERED=1
 Type=simple
-Restart=always
-RestartSec=10
+Restart=on-failure
+RestartSec=30
+RestartPreventExitStatus=3
+StartLimitIntervalSec=300
+StartLimitBurst=5
 TimeoutStopSec=20
 KillMode=mixed
 User=root

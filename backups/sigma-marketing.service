@@ -1,0 +1,19 @@
+[Unit]
+Description=SIGMA Marketing Engine — auto-publisher
+After=network.target sigma-web.service
+Wants=sigma-web.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/sigma_marketing
+ExecStart=/usr/bin/python3 /opt/sigma_marketing/main.py
+EnvironmentFile=/opt/sigma_marketing/.env
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=sigma-marketing
+
+[Install]
+WantedBy=multi-user.target
