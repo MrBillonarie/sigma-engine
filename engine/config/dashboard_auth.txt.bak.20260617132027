@@ -1,4 +1,0 @@
-# Dashboard auth — cambiar PASSWORD para rotar la clave (no requiere restart)
-PASSWORD=0808
-COOKIE_SECRET=63900dbea3c7705196f89d5a64921b5c1329c3ed6bbd6ef859d4ed14d0700601
-URL_TOKEN=Kf-zClgEhs8_zRIDtS1Ncg
