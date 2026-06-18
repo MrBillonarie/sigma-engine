@@ -8384,3 +8384,982 @@ again.
 2026-06-18 01:54:56:854 IBC: detected dialog entitled: ** no title **; event=Activated
 2026-06-18 01:54:56:854 IBC: detected dialog entitled: ** no title **; event=Focused
 2026-06-18 01:54:56:855 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 01:59:54:786 IBC: Setting Trading mode = live
+2026-06-18 01:59:54:866 IBC: Setting user name
+2026-06-18 01:59:54:866 IBC: Setting password
+2026-06-18 01:59:54:866 IBC: Login attempt: 273
+2026-06-18 01:59:54:876 IBC: Click button: Log In
+2026-06-18 01:59:54:958 IBC: Button now disabled: Log In
+2026-06-18 01:59:55:485 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 01:59:55:485 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 01:59:55:485 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 01:59:55:485 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 01:59:55:783 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 01:59:55:783 IBC: Second Factor Authentication initiated
+2026-06-18 01:59:55:787 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 01:59:55:787 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 01:59:55:787 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 01:59:55:787 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 02:15:22:283 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 02:15:22:283 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 02:15:22:283 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 02:15:22:283 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 02:15:22:283 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 02:15:22:283 IBC: Duration since login: 1225 seconds
+2026-06-18 02:15:22:283 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 02:15:27:283 IBC: Setting Trading mode = live
+2026-06-18 02:15:27:363 IBC: Setting user name
+2026-06-18 02:15:27:363 IBC: Setting password
+2026-06-18 02:15:27:363 IBC: Login attempt: 274
+2026-06-18 02:15:27:385 IBC: Click button: Log In
+2026-06-18 02:15:27:480 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 02:15:27:480 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 02:15:27:480 IBC: Will re-login at 2026-06-18 02:20:25:480; login number: 275
+2026-06-18 02:15:27:480 IBC: Click button: OK
+2026-06-18 02:15:27:550 IBC: Button now disabled: Log In
+2026-06-18 02:15:27:551 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 02:15:27:551 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 02:15:27:551 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 02:15:27:551 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 02:15:27:552 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 02:15:27:571 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 02:15:27:572 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 02:15:27:572 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 02:15:27:572 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 02:20:25:481 IBC: Setting Trading mode = live
+2026-06-18 02:20:25:558 IBC: Setting user name
+2026-06-18 02:20:25:558 IBC: Setting password
+2026-06-18 02:20:25:558 IBC: Login attempt: 275
+2026-06-18 02:20:25:568 IBC: Click button: Log In
+2026-06-18 02:20:25:647 IBC: Button now disabled: Log In
+2026-06-18 02:20:25:652 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 02:20:25:652 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 02:20:26:250 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 02:20:26:250 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 02:20:26:686 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 02:20:26:686 IBC: Second Factor Authentication initiated
+2026-06-18 02:20:26:686 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 02:20:26:686 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 02:20:26:686 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 02:20:26:686 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 02:30:21:482 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 02:30:21:483 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 02:30:21:483 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 02:30:21:483 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 02:30:21:483 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 02:30:21:487 IBC: Duration since login: 894 seconds
+2026-06-18 02:30:21:487 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 02:30:26:487 IBC: Setting Trading mode = live
+2026-06-18 02:30:26:560 IBC: Setting user name
+2026-06-18 02:30:26:560 IBC: Setting password
+2026-06-18 02:30:26:560 IBC: Login attempt: 276
+2026-06-18 02:30:26:572 IBC: Click button: Log In
+2026-06-18 02:30:26:671 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 02:30:26:671 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 02:30:26:671 IBC: Will re-login at 2026-06-18 02:35:24:671; login number: 277
+2026-06-18 02:30:26:671 IBC: Click button: OK
+2026-06-18 02:30:26:742 IBC: Button now disabled: Log In
+2026-06-18 02:30:26:743 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 02:30:26:743 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 02:30:26:743 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 02:30:26:743 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 02:30:26:744 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 02:30:26:744 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 02:30:26:744 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 02:30:26:763 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 02:30:26:763 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 02:35:24:671 IBC: Setting Trading mode = live
+2026-06-18 02:35:24:752 IBC: Setting user name
+2026-06-18 02:35:24:753 IBC: Setting password
+2026-06-18 02:35:24:753 IBC: Login attempt: 277
+2026-06-18 02:35:24:765 IBC: Click button: Log In
+2026-06-18 02:35:24:846 IBC: Button now disabled: Log In
+2026-06-18 02:35:24:850 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 02:35:24:851 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 02:35:25:329 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 02:35:25:329 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 02:35:25:637 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 02:35:25:637 IBC: Second Factor Authentication initiated
+2026-06-18 02:35:25:638 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 02:35:25:638 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 02:35:25:638 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 02:35:25:639 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 02:51:46:496 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 02:51:46:496 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 02:51:46:496 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 02:51:46:496 IBC: Duration since login: 1279 seconds
+2026-06-18 02:51:46:496 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 02:51:51:496 IBC: Setting Trading mode = live
+2026-06-18 02:51:51:583 IBC: Setting user name
+2026-06-18 02:51:51:583 IBC: Setting password
+2026-06-18 02:51:51:583 IBC: Login attempt: 278
+2026-06-18 02:51:51:590 IBC: Click button: Log In
+2026-06-18 02:51:51:689 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 02:51:51:689 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 02:51:51:689 IBC: Will re-login at 2026-06-18 02:56:49:689; login number: 279
+2026-06-18 02:51:51:689 IBC: Click button: OK
+2026-06-18 02:51:51:758 IBC: Button now disabled: Log In
+2026-06-18 02:51:51:759 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 02:51:51:759 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 02:51:51:760 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 02:56:49:689 IBC: Setting Trading mode = live
+2026-06-18 02:56:49:764 IBC: Setting user name
+2026-06-18 02:56:49:764 IBC: Setting password
+2026-06-18 02:56:49:764 IBC: Login attempt: 279
+2026-06-18 02:56:49:782 IBC: Click button: Log In
+2026-06-18 02:56:49:867 IBC: Button now disabled: Log In
+2026-06-18 02:56:50:353 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 02:56:50:354 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 02:56:50:354 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 02:56:50:354 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 02:56:50:659 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 02:56:50:659 IBC: Second Factor Authentication initiated
+2026-06-18 02:56:50:659 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 02:56:50:659 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 02:56:50:659 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 02:56:50:659 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 03:06:02:175 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 03:06:02:175 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 03:06:02:175 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 03:06:02:175 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 03:06:02:175 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 03:06:02:175 IBC: Duration since login: 850 seconds
+2026-06-18 03:06:02:175 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 03:06:07:175 IBC: Setting Trading mode = live
+2026-06-18 03:06:07:249 IBC: Setting user name
+2026-06-18 03:06:07:252 IBC: Setting password
+2026-06-18 03:06:07:252 IBC: Login attempt: 280
+2026-06-18 03:06:07:259 IBC: Click button: Log In
+2026-06-18 03:06:07:361 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 03:06:07:361 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 03:06:07:361 IBC: Will re-login at 2026-06-18 03:11:05:361; login number: 281
+2026-06-18 03:06:07:361 IBC: Click button: OK
+2026-06-18 03:06:07:430 IBC: Button now disabled: Log In
+2026-06-18 03:06:07:434 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 03:06:07:434 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 03:06:07:434 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 03:06:07:434 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 03:06:07:435 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 03:06:07:435 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 03:06:07:435 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 03:06:07:435 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 03:06:07:436 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 03:11:05:363 IBC: Setting Trading mode = live
+2026-06-18 03:11:05:443 IBC: Setting user name
+2026-06-18 03:11:05:443 IBC: Setting password
+2026-06-18 03:11:05:443 IBC: Login attempt: 281
+2026-06-18 03:11:05:460 IBC: Click button: Log In
+2026-06-18 03:11:05:548 IBC: Button now disabled: Log In
+2026-06-18 03:11:05:552 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 03:11:05:552 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 03:11:06:038 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 03:11:06:038 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 03:11:06:337 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 03:11:06:337 IBC: Second Factor Authentication initiated
+2026-06-18 03:11:06:337 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 03:11:06:338 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 03:11:06:338 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 03:11:06:338 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 03:28:09:245 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 03:28:09:245 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 03:28:09:245 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 03:28:09:245 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 03:28:09:245 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 03:28:09:246 IBC: Duration since login: 1321 seconds
+2026-06-18 03:28:09:246 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 03:28:14:246 IBC: Setting Trading mode = live
+2026-06-18 03:28:14:324 IBC: Setting user name
+2026-06-18 03:28:14:324 IBC: Setting password
+2026-06-18 03:28:14:324 IBC: Login attempt: 282
+2026-06-18 03:28:14:347 IBC: Click button: Log In
+2026-06-18 03:28:14:444 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 03:28:14:444 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 03:28:14:445 IBC: Will re-login at 2026-06-18 03:33:12:445; login number: 283
+2026-06-18 03:28:14:445 IBC: Click button: OK
+2026-06-18 03:28:14:513 IBC: Button now disabled: Log In
+2026-06-18 03:28:14:515 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 03:28:14:515 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 03:28:14:515 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 03:28:14:515 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 03:28:14:516 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 03:28:14:537 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 03:28:14:537 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 03:28:14:537 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 03:28:14:537 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 03:33:12:445 IBC: Setting Trading mode = live
+2026-06-18 03:33:12:528 IBC: Setting user name
+2026-06-18 03:33:12:528 IBC: Setting password
+2026-06-18 03:33:12:528 IBC: Login attempt: 283
+2026-06-18 03:33:12:540 IBC: Click button: Log In
+2026-06-18 03:33:12:622 IBC: Button now disabled: Log In
+2026-06-18 03:33:12:632 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 03:33:12:632 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 03:33:13:110 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 03:33:13:110 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 03:33:13:413 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 03:33:13:413 IBC: Second Factor Authentication initiated
+2026-06-18 03:33:13:413 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 03:33:13:413 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 03:33:13:413 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 03:33:13:413 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 03:40:30:721 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 03:40:30:721 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 03:40:30:721 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 03:40:30:721 IBC: Duration since login: 736 seconds
+2026-06-18 03:40:30:721 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 03:40:35:721 IBC: Setting Trading mode = live
+2026-06-18 03:40:35:807 IBC: Setting user name
+2026-06-18 03:40:35:807 IBC: Setting password
+2026-06-18 03:40:35:807 IBC: Login attempt: 284
+2026-06-18 03:40:35:824 IBC: Click button: Log In
+2026-06-18 03:40:35:919 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 03:40:35:919 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 03:40:35:923 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 03:40:35:923 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 03:40:35:923 IBC: Will re-login at 2026-06-18 03:45:33:923; login number: 285
+2026-06-18 03:40:35:923 IBC: Click button: OK
+2026-06-18 03:40:35:992 IBC: Button now disabled: Log In
+2026-06-18 03:40:35:993 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 03:45:33:924 IBC: Setting Trading mode = live
+2026-06-18 03:45:34:000 IBC: Setting user name
+2026-06-18 03:45:34:000 IBC: Setting password
+2026-06-18 03:45:34:000 IBC: Login attempt: 285
+2026-06-18 03:45:34:009 IBC: Click button: Log In
+2026-06-18 03:45:34:097 IBC: Button now disabled: Log In
+2026-06-18 03:45:34:821 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 03:45:34:821 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 03:45:34:821 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 03:45:34:821 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 03:45:34:887 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 03:45:34:887 IBC: Second Factor Authentication initiated
+2026-06-18 03:45:34:888 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 03:45:34:888 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 03:45:34:888 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 03:45:34:888 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 03:53:02:124 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 03:53:02:125 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 03:53:02:125 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 03:53:02:125 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 03:53:02:125 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 03:53:02:125 IBC: Duration since login: 746 seconds
+2026-06-18 03:53:02:125 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 03:53:07:125 IBC: Setting Trading mode = live
+2026-06-18 03:53:07:199 IBC: Setting user name
+2026-06-18 03:53:07:199 IBC: Setting password
+2026-06-18 03:53:07:199 IBC: Login attempt: 286
+2026-06-18 03:53:07:217 IBC: Click button: Log In
+2026-06-18 03:53:07:312 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 03:53:07:312 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 03:53:07:313 IBC: Will re-login at 2026-06-18 03:58:05:313; login number: 287
+2026-06-18 03:53:07:313 IBC: Click button: OK
+2026-06-18 03:53:07:382 IBC: Button now disabled: Log In
+2026-06-18 03:53:07:383 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 03:53:07:383 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 03:53:07:383 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 03:53:07:383 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 03:53:07:384 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 03:53:07:384 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 03:53:07:385 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 03:53:07:409 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 03:53:07:409 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 03:58:05:313 IBC: Setting Trading mode = live
+2026-06-18 03:58:05:389 IBC: Setting user name
+2026-06-18 03:58:05:389 IBC: Setting password
+2026-06-18 03:58:05:389 IBC: Login attempt: 287
+2026-06-18 03:58:05:412 IBC: Click button: Log In
+2026-06-18 03:58:05:496 IBC: Button now disabled: Log In
+2026-06-18 03:58:05:510 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 03:58:05:510 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 03:58:06:015 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 03:58:06:016 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 03:58:06:319 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 03:58:06:319 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 03:58:06:319 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 03:58:06:319 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 03:58:06:320 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 03:58:06:321 IBC: Second Factor Authentication initiated
+2026-06-18 04:06:44:405 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 04:06:44:405 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 04:06:44:405 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 04:06:44:405 IBC: Duration since login: 817 seconds
+2026-06-18 04:06:44:405 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 04:06:49:409 IBC: Setting Trading mode = live
+2026-06-18 04:06:49:484 IBC: Setting user name
+2026-06-18 04:06:49:484 IBC: Setting password
+2026-06-18 04:06:49:485 IBC: Login attempt: 288
+2026-06-18 04:06:49:505 IBC: Click button: Log In
+2026-06-18 04:06:49:597 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 04:06:49:598 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 04:06:49:598 IBC: Will re-login at 2026-06-18 04:11:47:598; login number: 289
+2026-06-18 04:06:49:598 IBC: Click button: OK
+2026-06-18 04:06:49:667 IBC: Button now disabled: Log In
+2026-06-18 04:06:49:667 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 04:06:49:668 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 04:06:49:668 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 04:11:47:598 IBC: Setting Trading mode = live
+2026-06-18 04:11:47:671 IBC: Setting user name
+2026-06-18 04:11:47:671 IBC: Setting password
+2026-06-18 04:11:47:671 IBC: Login attempt: 289
+2026-06-18 04:11:47:679 IBC: Click button: Log In
+2026-06-18 04:11:47:759 IBC: Button now disabled: Log In
+2026-06-18 04:11:48:244 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 04:11:48:245 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 04:11:48:245 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 04:11:48:245 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 04:11:48:549 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 04:11:48:549 IBC: Second Factor Authentication initiated
+2026-06-18 04:11:48:642 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 04:11:48:642 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 04:11:48:642 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 04:11:48:642 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 04:13:47:997 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 04:13:47:997 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 04:13:47:997 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 04:13:47:997 IBC: Duration since login: 418 seconds
+2026-06-18 04:13:47:997 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 04:13:52:997 IBC: Setting Trading mode = live
+2026-06-18 04:13:53:075 IBC: Setting user name
+2026-06-18 04:13:53:075 IBC: Setting password
+2026-06-18 04:13:53:075 IBC: Login attempt: 290
+2026-06-18 04:13:53:094 IBC: Click button: Log In
+2026-06-18 04:13:53:186 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 04:13:53:187 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 04:13:53:187 IBC: Will re-login at 2026-06-18 04:18:51:187; login number: 291
+2026-06-18 04:13:53:187 IBC: Click button: OK
+2026-06-18 04:13:53:256 IBC: Button now disabled: Log In
+2026-06-18 04:13:53:257 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 04:13:53:257 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 04:13:53:257 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 04:18:51:187 IBC: Setting Trading mode = live
+2026-06-18 04:18:51:261 IBC: Setting user name
+2026-06-18 04:18:51:261 IBC: Setting password
+2026-06-18 04:18:51:261 IBC: Login attempt: 291
+2026-06-18 04:18:51:274 IBC: Click button: Log In
+2026-06-18 04:18:51:361 IBC: Button now disabled: Log In
+2026-06-18 04:18:51:851 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 04:18:51:851 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 04:18:51:851 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 04:18:51:851 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 04:18:52:153 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 04:18:52:153 IBC: Second Factor Authentication initiated
+2026-06-18 04:18:52:153 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 04:18:52:154 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 04:18:52:154 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 04:18:52:154 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 04:32:54:431 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 04:32:54:431 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 04:32:54:431 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 04:32:54:431 IBC: Duration since login: 1141 seconds
+2026-06-18 04:32:54:431 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 04:32:59:431 IBC: Setting Trading mode = live
+2026-06-18 04:32:59:512 IBC: Setting user name
+2026-06-18 04:32:59:513 IBC: Setting password
+2026-06-18 04:32:59:514 IBC: Login attempt: 292
+2026-06-18 04:32:59:526 IBC: Click button: Log In
+2026-06-18 04:32:59:621 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 04:32:59:621 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 04:32:59:621 IBC: Will re-login at 2026-06-18 04:37:57:621; login number: 293
+2026-06-18 04:32:59:621 IBC: Click button: OK
+2026-06-18 04:32:59:690 IBC: Button now disabled: Log In
+2026-06-18 04:32:59:692 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 04:32:59:692 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 04:32:59:692 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 04:32:59:692 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 04:32:59:692 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 04:37:57:621 IBC: Setting Trading mode = live
+2026-06-18 04:37:57:699 IBC: Setting user name
+2026-06-18 04:37:57:700 IBC: Setting password
+2026-06-18 04:37:57:700 IBC: Login attempt: 293
+2026-06-18 04:37:57:717 IBC: Click button: Log In
+2026-06-18 04:37:57:798 IBC: Button now disabled: Log In
+2026-06-18 04:37:58:459 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 04:37:58:459 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 04:37:58:593 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 04:37:58:593 IBC: Second Factor Authentication initiated
+2026-06-18 04:37:58:593 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 04:37:58:594 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 04:37:58:594 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 04:37:58:594 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 04:44:48:688 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 04:44:48:688 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 04:44:48:688 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 04:44:48:688 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 04:44:48:688 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 04:44:48:688 IBC: Duration since login: 709 seconds
+2026-06-18 04:44:48:688 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 04:44:53:688 IBC: Setting Trading mode = live
+2026-06-18 04:44:53:765 IBC: Setting user name
+2026-06-18 04:44:53:765 IBC: Setting password
+2026-06-18 04:44:53:765 IBC: Login attempt: 294
+2026-06-18 04:44:53:778 IBC: Click button: Log In
+2026-06-18 04:44:53:879 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 04:44:53:879 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 04:44:53:879 IBC: Will re-login at 2026-06-18 04:49:51:879; login number: 295
+2026-06-18 04:44:53:879 IBC: Click button: OK
+2026-06-18 04:44:53:948 IBC: Button now disabled: Log In
+2026-06-18 04:44:53:949 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 04:44:53:949 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 04:44:53:949 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 04:44:53:949 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 04:44:53:951 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 04:44:53:951 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 04:44:53:951 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 04:44:53:974 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 04:44:53:974 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 04:49:51:879 IBC: Setting Trading mode = live
+2026-06-18 04:49:51:953 IBC: Setting user name
+2026-06-18 04:49:51:953 IBC: Setting password
+2026-06-18 04:49:51:953 IBC: Login attempt: 295
+2026-06-18 04:49:51:961 IBC: Click button: Log In
+2026-06-18 04:49:52:041 IBC: Button now disabled: Log In
+2026-06-18 04:49:52:045 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 04:49:52:045 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 04:49:52:525 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 04:49:52:525 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 04:49:52:828 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 04:49:52:830 IBC: Second Factor Authentication initiated
+2026-06-18 04:49:52:937 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 04:49:52:938 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 04:49:52:938 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 04:49:52:938 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 05:03:35:424 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 05:03:35:424 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 05:03:35:424 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 05:03:35:424 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 05:03:35:424 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 05:03:35:424 IBC: Duration since login: 1121 seconds
+2026-06-18 05:03:35:424 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 05:03:40:424 IBC: Setting Trading mode = live
+2026-06-18 05:03:40:500 IBC: Setting user name
+2026-06-18 05:03:40:500 IBC: Setting password
+2026-06-18 05:03:40:500 IBC: Login attempt: 296
+2026-06-18 05:03:40:521 IBC: Click button: Log In
+2026-06-18 05:03:40:620 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 05:03:40:620 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 05:03:40:620 IBC: Will re-login at 2026-06-18 05:08:38:620; login number: 297
+2026-06-18 05:03:40:620 IBC: Click button: OK
+2026-06-18 05:03:40:689 IBC: Button now disabled: Log In
+2026-06-18 05:03:40:694 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 05:03:40:694 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 05:03:40:694 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 05:03:40:694 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 05:03:40:695 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 05:03:40:712 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 05:03:40:712 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 05:03:40:712 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 05:03:40:712 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 05:08:38:620 IBC: Setting Trading mode = live
+2026-06-18 05:08:38:693 IBC: Setting user name
+2026-06-18 05:08:38:695 IBC: Setting password
+2026-06-18 05:08:38:695 IBC: Login attempt: 297
+2026-06-18 05:08:38:708 IBC: Click button: Log In
+2026-06-18 05:08:38:787 IBC: Button now disabled: Log In
+2026-06-18 05:08:38:791 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 05:08:38:791 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 05:08:39:273 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 05:08:39:273 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 05:08:39:585 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 05:08:39:585 IBC: Second Factor Authentication initiated
+2026-06-18 05:08:39:585 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 05:08:39:585 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 05:08:39:585 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 05:08:39:585 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 05:18:56:398 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 05:18:56:398 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 05:18:56:398 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 05:18:56:398 IBC: Duration since login: 915 seconds
+2026-06-18 05:18:56:399 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 05:19:01:399 IBC: Setting Trading mode = live
+2026-06-18 05:19:01:479 IBC: Setting user name
+2026-06-18 05:19:01:482 IBC: Setting password
+2026-06-18 05:19:01:482 IBC: Login attempt: 298
+2026-06-18 05:19:01:498 IBC: Click button: Log In
+2026-06-18 05:19:01:587 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 05:19:01:587 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 05:19:01:587 IBC: Will re-login at 2026-06-18 05:23:59:587; login number: 299
+2026-06-18 05:19:01:587 IBC: Click button: OK
+2026-06-18 05:19:01:656 IBC: Button now disabled: Log In
+2026-06-18 05:19:01:657 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 05:19:01:657 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 05:19:01:657 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 05:19:01:657 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 05:19:01:657 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 05:23:59:587 IBC: Setting Trading mode = live
+2026-06-18 05:23:59:663 IBC: Setting user name
+2026-06-18 05:23:59:663 IBC: Setting password
+2026-06-18 05:23:59:663 IBC: Login attempt: 299
+2026-06-18 05:23:59:673 IBC: Click button: Log In
+2026-06-18 05:23:59:753 IBC: Button now disabled: Log In
+2026-06-18 05:24:00:252 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 05:24:00:252 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 05:24:00:558 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 05:24:00:558 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 05:24:00:558 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 05:24:00:558 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 05:24:00:558 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 05:24:00:558 IBC: Second Factor Authentication initiated
+2026-06-18 05:30:23:187 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 05:30:23:187 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 05:30:23:187 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 05:30:23:188 IBC: Duration since login: 681 seconds
+2026-06-18 05:30:23:188 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 05:30:28:188 IBC: Setting Trading mode = live
+2026-06-18 05:30:28:269 IBC: Setting user name
+2026-06-18 05:30:28:269 IBC: Setting password
+2026-06-18 05:30:28:269 IBC: Login attempt: 300
+2026-06-18 05:30:28:287 IBC: Click button: Log In
+2026-06-18 05:30:28:375 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 05:30:28:376 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 05:30:28:376 IBC: Will re-login at 2026-06-18 05:35:26:376; login number: 301
+2026-06-18 05:30:28:376 IBC: Click button: OK
+2026-06-18 05:30:28:444 IBC: Button now disabled: Log In
+2026-06-18 05:30:28:445 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 05:30:28:445 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 05:30:28:445 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 05:35:26:376 IBC: Setting Trading mode = live
+2026-06-18 05:35:26:455 IBC: Setting user name
+2026-06-18 05:35:26:455 IBC: Setting password
+2026-06-18 05:35:26:455 IBC: Login attempt: 301
+2026-06-18 05:35:26:467 IBC: Click button: Log In
+2026-06-18 05:35:26:548 IBC: Button now disabled: Log In
+2026-06-18 05:35:27:033 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 05:35:27:033 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 05:35:27:033 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 05:35:27:033 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 05:35:27:339 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 05:35:27:339 IBC: Second Factor Authentication initiated
+2026-06-18 05:35:27:340 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 05:35:27:340 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 05:35:27:340 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 05:35:27:340 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 05:47:44:459 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 05:47:44:459 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 05:47:44:459 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 05:47:44:459 IBC: Duration since login: 1036 seconds
+2026-06-18 05:47:44:459 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 05:47:49:460 IBC: Setting Trading mode = live
+2026-06-18 05:47:49:536 IBC: Setting user name
+2026-06-18 05:47:49:536 IBC: Setting password
+2026-06-18 05:47:49:536 IBC: Login attempt: 302
+2026-06-18 05:47:49:550 IBC: Click button: Log In
+2026-06-18 05:47:49:661 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 05:47:49:661 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 05:47:49:661 IBC: Will re-login at 2026-06-18 05:52:47:661; login number: 303
+2026-06-18 05:47:49:661 IBC: Click button: OK
+2026-06-18 05:47:49:730 IBC: Button now disabled: Log In
+2026-06-18 05:47:49:734 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 05:47:49:734 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 05:47:49:734 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 05:52:47:661 IBC: Setting Trading mode = live
+2026-06-18 05:52:47:736 IBC: Setting user name
+2026-06-18 05:52:47:736 IBC: Setting password
+2026-06-18 05:52:47:736 IBC: Login attempt: 303
+2026-06-18 05:52:47:747 IBC: Click button: Log In
+2026-06-18 05:52:47:832 IBC: Button now disabled: Log In
+2026-06-18 05:52:48:322 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 05:52:48:322 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 05:52:48:322 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 05:52:48:322 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 05:52:48:626 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 05:52:48:626 IBC: Second Factor Authentication initiated
+2026-06-18 05:52:48:626 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 05:52:48:626 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 05:52:48:626 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 05:52:48:626 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 06:07:23:755 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 06:07:23:756 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 06:07:23:756 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 06:07:23:756 IBC: Duration since login: 1174 seconds
+2026-06-18 06:07:23:756 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 06:07:28:756 IBC: Setting Trading mode = live
+2026-06-18 06:07:28:836 IBC: Setting user name
+2026-06-18 06:07:28:836 IBC: Setting password
+2026-06-18 06:07:28:836 IBC: Login attempt: 304
+2026-06-18 06:07:28:864 IBC: Click button: Log In
+2026-06-18 06:07:28:969 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 06:07:28:969 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 06:07:28:969 IBC: Will re-login at 2026-06-18 06:12:26:969; login number: 305
+2026-06-18 06:07:28:969 IBC: Click button: OK
+2026-06-18 06:07:29:038 IBC: Button now disabled: Log In
+2026-06-18 06:07:29:038 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 06:07:29:038 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 06:07:29:039 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 06:12:26:971 IBC: Setting Trading mode = live
+2026-06-18 06:12:27:053 IBC: Setting user name
+2026-06-18 06:12:27:054 IBC: Setting password
+2026-06-18 06:12:27:054 IBC: Login attempt: 305
+2026-06-18 06:12:27:061 IBC: Click button: Log In
+2026-06-18 06:12:27:145 IBC: Button now disabled: Log In
+2026-06-18 06:12:27:629 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 06:12:27:629 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 06:12:27:629 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 06:12:27:629 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 06:12:27:934 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 06:12:27:934 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 06:12:27:934 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 06:12:27:934 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 06:12:27:935 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 06:12:27:935 IBC: Second Factor Authentication initiated
+2026-06-18 06:28:49:239 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 06:28:49:239 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 06:28:49:239 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 06:28:49:239 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 06:28:49:239 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 06:28:49:239 IBC: Duration since login: 1280 seconds
+2026-06-18 06:28:49:239 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 06:28:54:240 IBC: Setting Trading mode = live
+2026-06-18 06:28:54:315 IBC: Setting user name
+2026-06-18 06:28:54:315 IBC: Setting password
+2026-06-18 06:28:54:316 IBC: Login attempt: 306
+2026-06-18 06:28:54:325 IBC: Click button: Log In
+2026-06-18 06:28:54:414 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 06:28:54:414 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 06:28:54:414 IBC: Will re-login at 2026-06-18 06:33:52:414; login number: 307
+2026-06-18 06:28:54:414 IBC: Click button: OK
+2026-06-18 06:28:54:483 IBC: Button now disabled: Log In
+2026-06-18 06:28:54:485 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 06:28:54:486 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 06:28:54:486 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 06:28:54:486 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 06:28:54:488 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 06:28:54:490 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 06:28:54:491 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 06:28:54:491 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 06:28:54:491 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 06:33:52:415 IBC: Setting Trading mode = live
+2026-06-18 06:33:52:498 IBC: Setting user name
+2026-06-18 06:33:52:498 IBC: Setting password
+2026-06-18 06:33:52:498 IBC: Login attempt: 307
+2026-06-18 06:33:52:555 IBC: Click button: Log In
+2026-06-18 06:33:52:645 IBC: Button now disabled: Log In
+2026-06-18 06:33:52:654 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 06:33:52:654 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 06:33:53:139 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 06:33:53:139 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 06:33:53:444 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 06:33:53:444 IBC: Second Factor Authentication initiated
+2026-06-18 06:33:53:444 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 06:33:53:444 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 06:33:53:444 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 06:33:53:444 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 06:43:10:185 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 06:43:10:185 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 06:43:10:185 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 06:43:10:185 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 06:43:10:185 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 06:43:10:185 IBC: Duration since login: 855 seconds
+2026-06-18 06:43:10:185 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 06:43:15:188 IBC: Setting Trading mode = live
+2026-06-18 06:43:15:267 IBC: Setting user name
+2026-06-18 06:43:15:267 IBC: Setting password
+2026-06-18 06:43:15:268 IBC: Login attempt: 308
+2026-06-18 06:43:15:279 IBC: Click button: Log In
+2026-06-18 06:43:15:370 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 06:43:15:370 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 06:43:15:370 IBC: Will re-login at 2026-06-18 06:48:13:370; login number: 309
+2026-06-18 06:43:15:370 IBC: Click button: OK
+2026-06-18 06:43:15:440 IBC: Button now disabled: Log In
+2026-06-18 06:43:15:441 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 06:43:15:441 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 06:43:15:441 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 06:43:15:441 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 06:43:15:442 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 06:43:15:442 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 06:43:15:442 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 06:43:15:442 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 06:43:15:442 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 06:48:13:371 IBC: Setting Trading mode = live
+2026-06-18 06:48:13:444 IBC: Setting user name
+2026-06-18 06:48:13:444 IBC: Setting password
+2026-06-18 06:48:13:445 IBC: Login attempt: 309
+2026-06-18 06:48:13:454 IBC: Click button: Log In
+2026-06-18 06:48:13:536 IBC: Button now disabled: Log In
+2026-06-18 06:48:13:539 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 06:48:13:539 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 06:48:14:019 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 06:48:14:019 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 06:48:14:324 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 06:48:14:324 IBC: Second Factor Authentication initiated
+2026-06-18 06:48:14:324 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 06:48:14:324 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 06:48:14:324 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 06:48:14:324 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 06:55:24:634 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 06:55:24:634 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 06:55:24:634 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 06:55:24:634 IBC: Duration since login: 729 seconds
+2026-06-18 06:55:24:634 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 06:55:29:634 IBC: Setting Trading mode = live
+2026-06-18 06:55:29:711 IBC: Setting user name
+2026-06-18 06:55:29:711 IBC: Setting password
+2026-06-18 06:55:29:712 IBC: Login attempt: 310
+2026-06-18 06:55:29:726 IBC: Click button: Log In
+2026-06-18 06:55:29:820 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 06:55:29:820 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 06:55:29:820 IBC: Will re-login at 2026-06-18 07:00:27:820; login number: 311
+2026-06-18 06:55:29:820 IBC: Click button: OK
+2026-06-18 06:55:29:889 IBC: Button now disabled: Log In
+2026-06-18 06:55:29:889 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 06:55:29:890 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 06:55:29:890 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 07:00:27:821 IBC: Setting Trading mode = live
+2026-06-18 07:00:27:901 IBC: Setting user name
+2026-06-18 07:00:27:901 IBC: Setting password
+2026-06-18 07:00:27:901 IBC: Login attempt: 311
+2026-06-18 07:00:27:913 IBC: Click button: Log In
+2026-06-18 07:00:27:995 IBC: Button now disabled: Log In
+2026-06-18 07:00:28:483 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 07:00:28:485 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 07:00:28:485 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 07:00:28:485 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 07:00:28:783 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 07:00:28:784 IBC: Second Factor Authentication initiated
+2026-06-18 07:00:28:784 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 07:00:28:784 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 07:00:28:784 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 07:00:28:784 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 07:14:16:807 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 07:14:16:807 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 07:14:16:807 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 07:14:16:807 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 07:14:16:807 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 07:14:16:807 IBC: Duration since login: 1127 seconds
+2026-06-18 07:14:16:807 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 07:14:21:808 IBC: Setting Trading mode = live
+2026-06-18 07:14:21:893 IBC: Setting user name
+2026-06-18 07:14:21:893 IBC: Setting password
+2026-06-18 07:14:21:893 IBC: Login attempt: 312
+2026-06-18 07:14:21:902 IBC: Click button: Log In
+2026-06-18 07:14:21:994 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 07:14:21:994 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 07:14:21:994 IBC: Will re-login at 2026-06-18 07:19:19:994; login number: 313
+2026-06-18 07:14:21:994 IBC: Click button: OK
+2026-06-18 07:14:22:063 IBC: Button now disabled: Log In
+2026-06-18 07:14:22:065 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 07:14:22:065 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 07:14:22:066 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 07:14:22:066 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 07:14:22:067 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 07:14:22:085 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 07:14:22:085 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 07:14:22:085 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 07:14:22:085 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 07:19:19:995 IBC: Setting Trading mode = live
+2026-06-18 07:19:20:073 IBC: Setting user name
+2026-06-18 07:19:20:077 IBC: Setting password
+2026-06-18 07:19:20:077 IBC: Login attempt: 313
+2026-06-18 07:19:20:084 IBC: Click button: Log In
+2026-06-18 07:19:20:165 IBC: Button now disabled: Log In
+2026-06-18 07:19:20:169 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 07:19:20:169 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 07:19:20:650 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 07:19:20:650 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 07:19:20:962 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 07:19:20:962 IBC: Second Factor Authentication initiated
+2026-06-18 07:19:20:962 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 07:19:20:962 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 07:19:20:963 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 07:19:20:963 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 07:30:14:242 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 07:30:14:242 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 07:30:14:242 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 07:30:14:242 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 07:30:14:242 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 07:30:14:242 IBC: Duration since login: 952 seconds
+2026-06-18 07:30:14:242 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 07:30:19:242 IBC: Setting Trading mode = live
+2026-06-18 07:30:19:315 IBC: Setting user name
+2026-06-18 07:30:19:316 IBC: Setting password
+2026-06-18 07:30:19:316 IBC: Login attempt: 314
+2026-06-18 07:30:19:342 IBC: Click button: Log In
+2026-06-18 07:30:19:435 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 07:30:19:435 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 07:30:19:435 IBC: Will re-login at 2026-06-18 07:35:17:435; login number: 315
+2026-06-18 07:30:19:435 IBC: Click button: OK
+2026-06-18 07:30:19:504 IBC: Button now disabled: Log In
+2026-06-18 07:30:19:506 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 07:30:19:506 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 07:30:19:506 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 07:30:19:506 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 07:30:19:507 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 07:30:19:508 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 07:30:19:508 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 07:30:19:508 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 07:30:19:508 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 07:35:17:436 IBC: Setting Trading mode = live
+2026-06-18 07:35:17:514 IBC: Setting user name
+2026-06-18 07:35:17:514 IBC: Setting password
+2026-06-18 07:35:17:514 IBC: Login attempt: 315
+2026-06-18 07:35:17:523 IBC: Click button: Log In
+2026-06-18 07:35:17:604 IBC: Button now disabled: Log In
+2026-06-18 07:35:17:610 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 07:35:17:610 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 07:35:18:088 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 07:35:18:088 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 07:35:18:395 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 07:35:18:395 IBC: Second Factor Authentication initiated
+2026-06-18 07:35:18:397 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 07:35:18:397 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 07:35:18:397 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 07:35:18:397 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 07:45:32:544 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 07:45:32:544 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 07:45:32:545 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 07:45:32:545 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 07:45:32:545 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 07:45:32:545 IBC: Duration since login: 913 seconds
+2026-06-18 07:45:32:545 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 07:45:37:546 IBC: Setting Trading mode = live
+2026-06-18 07:45:37:625 IBC: Setting user name
+2026-06-18 07:45:37:625 IBC: Setting password
+2026-06-18 07:45:37:625 IBC: Login attempt: 316
+2026-06-18 07:45:37:642 IBC: Click button: Log In
+2026-06-18 07:45:37:750 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 07:45:37:750 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 07:45:37:750 IBC: Will re-login at 2026-06-18 07:50:35:750; login number: 317
+2026-06-18 07:45:37:750 IBC: Click button: OK
+2026-06-18 07:45:37:819 IBC: Button now disabled: Log In
+2026-06-18 07:45:37:821 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 07:45:37:821 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 07:45:37:821 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 07:45:37:821 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 07:45:37:822 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 07:45:37:840 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 07:45:37:840 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 07:45:37:840 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 07:45:37:840 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 07:50:35:751 IBC: Setting Trading mode = live
+2026-06-18 07:50:35:824 IBC: Setting user name
+2026-06-18 07:50:35:824 IBC: Setting password
+2026-06-18 07:50:35:824 IBC: Login attempt: 317
+2026-06-18 07:50:35:834 IBC: Click button: Log In
+2026-06-18 07:50:35:922 IBC: Button now disabled: Log In
+2026-06-18 07:50:35:929 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 07:50:35:929 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 07:50:36:409 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 07:50:36:409 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 07:50:36:721 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 07:50:36:721 IBC: Second Factor Authentication initiated
+2026-06-18 07:50:36:721 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 07:50:36:721 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 07:50:36:721 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 07:50:36:721 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 07:59:54:306 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 07:59:54:306 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 07:59:54:306 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 07:59:54:306 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 07:59:54:306 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 07:59:54:306 IBC: Duration since login: 856 seconds
+2026-06-18 07:59:54:306 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 07:59:59:307 IBC: Setting Trading mode = live
+2026-06-18 07:59:59:386 IBC: Setting user name
+2026-06-18 07:59:59:387 IBC: Setting password
+2026-06-18 07:59:59:387 IBC: Login attempt: 318
+2026-06-18 07:59:59:418 IBC: Click button: Log In
+2026-06-18 07:59:59:522 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 07:59:59:522 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 07:59:59:522 IBC: Will re-login at 2026-06-18 08:04:57:522; login number: 319
+2026-06-18 07:59:59:522 IBC: Click button: OK
+2026-06-18 07:59:59:592 IBC: Button now disabled: Log In
+2026-06-18 07:59:59:593 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 07:59:59:593 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 07:59:59:593 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 07:59:59:593 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 07:59:59:594 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 07:59:59:598 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 07:59:59:598 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 07:59:59:598 IBC: detected frame entitled: IBKR Gateway; event=Activated
+2026-06-18 07:59:59:598 IBC: detected frame entitled: IBKR Gateway; event=Focused
+2026-06-18 08:04:57:522 IBC: Setting Trading mode = live
+2026-06-18 08:04:57:596 IBC: Setting user name
+2026-06-18 08:04:57:596 IBC: Setting password
+2026-06-18 08:04:57:596 IBC: Login attempt: 319
+2026-06-18 08:04:57:608 IBC: Click button: Log In
+2026-06-18 08:04:57:695 IBC: Button now disabled: Log In
+2026-06-18 08:04:57:705 IBC: detected frame entitled: IBKR Gateway; event=Lost focus
+2026-06-18 08:04:57:706 IBC: detected frame entitled: IBKR Gateway; event=Deactivated
+2026-06-18 08:04:58:183 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 08:04:58:184 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 08:04:58:487 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 08:04:58:487 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 08:04:58:487 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 08:04:58:487 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 08:04:58:488 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 08:04:58:488 IBC: Second Factor Authentication initiated
+2026-06-18 08:14:38:353 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 08:14:38:353 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 08:14:38:353 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 08:14:38:353 IBC: Duration since login: 878 seconds
+2026-06-18 08:14:38:353 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 08:14:43:354 IBC: Setting Trading mode = live
+2026-06-18 08:14:43:427 IBC: Setting user name
+2026-06-18 08:14:43:427 IBC: Setting password
+2026-06-18 08:14:43:427 IBC: Login attempt: 320
+2026-06-18 08:14:43:447 IBC: Click button: Log In
+2026-06-18 08:14:43:545 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 08:14:43:545 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 08:14:43:545 IBC: Will re-login at 2026-06-18 08:19:41:545; login number: 321
+2026-06-18 08:14:43:545 IBC: Click button: OK
+2026-06-18 08:14:43:613 IBC: Button now disabled: Log In
+2026-06-18 08:14:43:613 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 08:14:43:613 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 08:14:43:614 IBC: detected dialog entitled: ** no title **; event=Closed
+2026-06-18 08:19:41:545 IBC: Setting Trading mode = live
+2026-06-18 08:19:41:624 IBC: Setting user name
+2026-06-18 08:19:41:624 IBC: Setting password
+2026-06-18 08:19:41:624 IBC: Login attempt: 321
+2026-06-18 08:19:41:635 IBC: Click button: Log In
+2026-06-18 08:19:41:718 IBC: Button now disabled: Log In
+2026-06-18 08:19:42:205 IBC: detected dialog entitled: ** no title **; event=Lost focus
+2026-06-18 08:19:42:205 IBC: detected dialog entitled: ** no title **; event=Deactivated
+2026-06-18 08:19:42:206 IBC: detected frame entitled: Authenticating...; event=Activated
+2026-06-18 08:19:42:206 IBC: detected frame entitled: Authenticating...; event=Focused
+2026-06-18 08:19:42:512 IBC: detected dialog entitled: Second Factor Authentication; event=Opened
+2026-06-18 08:19:42:512 IBC: Second Factor Authentication initiated
+2026-06-18 08:19:42:512 IBC: detected frame entitled: Authenticating...; event=Lost focus
+2026-06-18 08:19:42:512 IBC: detected frame entitled: Authenticating...; event=Deactivated
+2026-06-18 08:19:42:512 IBC: detected dialog entitled: Second Factor Authentication; event=Activated
+2026-06-18 08:19:42:512 IBC: detected dialog entitled: Second Factor Authentication; event=Focused
+2026-06-18 08:29:51:456 IBC: detected dialog entitled: Second Factor Authentication; event=Lost focus
+2026-06-18 08:29:51:456 IBC: detected dialog entitled: Second Factor Authentication; event=Deactivated
+2026-06-18 08:29:51:456 IBC: detected dialog entitled: Second Factor Authentication; event=Closed
+2026-06-18 08:29:51:456 IBC: Duration since login: 908 seconds
+2026-06-18 08:29:51:456 IBC: Re-login after second factor authentication timeout in 5 second
+2026-06-18 08:29:56:456 IBC: Setting Trading mode = live
+2026-06-18 08:29:56:533 IBC: Setting user name
+2026-06-18 08:29:56:533 IBC: Setting password
+2026-06-18 08:29:56:533 IBC: Login attempt: 322
+2026-06-18 08:29:56:555 IBC: Click button: Log In
+2026-06-18 08:29:56:652 IBC: detected dialog entitled: ** no title **; event=Opened
+2026-06-18 08:29:56:652 IBC: Too many failed login attempts. Please wait 4 minutes & 55 seconds before attempting to re-login
+again.
+2026-06-18 08:29:56:652 IBC: Will re-login at 2026-06-18 08:34:54:652; login number: 323
+2026-06-18 08:29:56:652 IBC: Click button: OK
+2026-06-18 08:29:56:721 IBC: Button now disabled: Log In
+2026-06-18 08:29:56:722 IBC: detected dialog entitled: ** no title **; event=Activated
+2026-06-18 08:29:56:722 IBC: detected dialog entitled: ** no title **; event=Focused
+2026-06-18 08:29:56:723 IBC: detected dialog entitled: ** no title **; event=Closed

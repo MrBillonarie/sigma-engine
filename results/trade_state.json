@@ -5,7 +5,7 @@
       "tf": "4h",
       "direction": "short",
       "entry": 44.91,
-      "sl": 46.6125,
+      "sl": 44.8651,
       "tp": 43.7323,
       "sl_dist_pct_at_open": 3.7909,
       "strategy": "bearish_rsi_divergence",
@@ -16,7 +16,26 @@
       "mode": "LIVE",
       "opened_at": "2026-06-17 21:26:12.752588",
       "status": "open",
-      "pnl_pct": 0.0504
+      "pnl_pct": 1.0079,
+      "be_set": true
+    },
+    "WTI_1d": {
+      "sym": "WTI",
+      "tf": "1d",
+      "direction": "short",
+      "entry": 75.11,
+      "sl": 83.0545,
+      "tp": 67.6621,
+      "sl_dist_pct_at_open": 10.5772,
+      "strategy": "heikin_ashi_short",
+      "grade": "A+",
+      "wr": 81.1,
+      "cagr": 28.1,
+      "kelly_pct": 1.0,
+      "mode": "PAPER",
+      "opened_at": "2026-06-17 22:56:16.274000",
+      "status": "open",
+      "pnl_pct": 0.1259
     }
   },
   "history": [

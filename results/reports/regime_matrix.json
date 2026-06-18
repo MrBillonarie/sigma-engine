@@ -1,5 +1,5 @@
 {
-  "computed_at": "2026-06-17T21:45:01.159329-04:00",
+  "computed_at": "2026-06-18T04:30:01.768307-04:00",
   "global_regime_m1": "BEAR",
   "correlation_global": 58.6,
   "assets": {
@@ -54,61 +54,61 @@
       "source": "global_regime"
     },
     "XAU": {
-      "momentum": 51.4,
-      "volatility": 86.4,
+      "momentum": 25.6,
+      "volatility": 88.6,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 46.2,
-      "label": "NEUTRAL_VOLATILE",
-      "kelly_mult": 0.9,
+      "composite": 36.7,
+      "label": "BEAR_VOLATILE",
+      "kelly_mult": 0.55,
       "source": "csv_based"
     },
     "XAG": {
-      "momentum": 27.0,
-      "volatility": 79.5,
+      "momentum": 9.5,
+      "volatility": 84.1,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 39.0,
+      "composite": 32.0,
       "label": "BEAR_VOLATILE",
       "kelly_mult": 0.55,
       "source": "csv_based"
     },
     "WTI": {
-      "momentum": 87.9,
-      "volatility": 9.1,
+      "momentum": 81.2,
+      "volatility": 0.0,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 74.4,
+      "composite": 73.9,
       "label": "BULL_QUIET",
       "kelly_mult": 1.25,
       "source": "csv_based"
     },
     "HG": {
-      "momentum": 7.5,
-      "volatility": 20.5,
+      "momentum": 8.8,
+      "volatility": 2.3,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 44.0,
+      "composite": 48.1,
       "label": "BEAR_QUIET",
       "kelly_mult": 0.7,
       "source": "csv_based"
     },
     "NG": {
-      "momentum": 8.6,
-      "volatility": 20.5,
+      "momentum": 10.8,
+      "volatility": 0.0,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 44.4,
+      "composite": 49.3,
       "label": "BEAR_QUIET",
       "kelly_mult": 0.7,
       "source": "csv_based"
     },
     "PL": {
-      "momentum": 85.4,
-      "volatility": 15.9,
+      "momentum": 84.6,
+      "volatility": 4.5,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 72.2,
+      "composite": 74.2,
       "label": "BULL_QUIET",
       "kelly_mult": 1.25,
       "source": "csv_based"

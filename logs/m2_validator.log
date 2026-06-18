@@ -2487,3 +2487,94 @@
   "warned": 0,
   "blocked": 0
 }
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+[2026-06-17 22:30] [WARN] hgusd_vwap_overpriced_short (4h) — [WARN] IS_OOS_WARN: OOS/IS=0.37 — degradacion moderada
+[2026-06-17 22:30] [WARN] ngusd_tma_bands (1h) — [WARN] FEW_TRADES: 19 trades OOS (estadistica debil)
+[2026-06-17 22:30] Summary: 2 validated | 0 PASS | 2 WARN | 0 BLOCK
+{
+  "validated": 2,
+  "passed": 0,
+  "warned": 2,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+[2026-06-18 02:30] [PASS] xagusd_lower_high_structure_short (1h) — OK
+[2026-06-18 02:30] Summary: 1 validated | 1 PASS | 0 WARN | 0 BLOCK
+{
+  "validated": 1,
+  "passed": 1,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+[2026-06-18 04:30] [PASS] xauusd_dmi_trend (1h) — OK
+[2026-06-18 04:30] Summary: 1 validated | 1 PASS | 0 WARN | 0 BLOCK
+{
+  "validated": 1,
+  "passed": 1,
+  "warned": 0,
+  "blocked": 0
+}

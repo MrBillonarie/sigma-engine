@@ -1,0 +1,61 @@
+{
+  "symbol": "WTI/USD",
+  "tf": "1d",
+  "strategy": "heikin_ashi_short",
+  "params": {
+    "sl_mult": 1.6,
+    "tp_mult": 1.5,
+    "cooldown": 3,
+    "rsi_w_thr": 62
+  },
+  "risk_pct": 2.8,
+  "metrics_is": {
+    "trades": 296,
+    "wr": 51.0,
+    "cagr": 9.4,
+    "dd": -46.1,
+    "pf": 1.23,
+    "trades_year": 8.8
+  },
+  "metrics_oos": {
+    "trades": 53,
+    "wr": 81.1,
+    "cagr": 28.1,
+    "dd": -10.8,
+    "pf": 8.25,
+    "trades_year": 8.0
+  },
+  "oos_days": 2423,
+  "saved_at": "2026-06-17 22:56:12.554844",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 100.0,
+      "median": 466.8,
+      "ic95_lo": 315.8,
+      "ic95_hi": 621.9,
+      "ic80_lo": 368.9,
+      "ic80_hi": 569.5,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 26,
+      "positive": 13,
+      "pct_positive": 50.0,
+      "avg_cagr": 4.7,
+      "passed": false
+    },
+    "confidence": "MEDIA",
+    "passed_steps": 1,
+    "max_steps": 2,
+    "validated_at": "2026-06-17 22:56:13.049999"
+  },
+  "mc": {
+    "mc_cagr_p05": 7.1,
+    "mc_cagr_p50": 22.0,
+    "mc_cagr_p95": 33.1,
+    "mc_dd_p50": -4.9,
+    "mc_dd_p95": -4.5,
+    "mc_confidence": 99.8,
+    "mc_sims": 1000
+  }
+}

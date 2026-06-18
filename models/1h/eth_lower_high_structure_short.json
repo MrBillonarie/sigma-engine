@@ -26,22 +26,22 @@
     "trades_year": 52.7
   },
   "oos_days": 644,
-  "saved_at": "2026-06-17 08:25:43.691185",
+  "saved_at": "2026-06-18 02:53:03.920631",
   "validation": {
     "monte_carlo": {
-      "p_pos": 99.3,
-      "median": 194.0,
-      "ic95_lo": 42.6,
-      "ic95_hi": 312.3,
-      "ic80_lo": 98.3,
-      "ic80_hi": 272.4,
+      "p_pos": 98.5,
+      "median": 193.3,
+      "ic95_lo": 31.4,
+      "ic95_hi": 299.6,
+      "ic80_lo": 98.9,
+      "ic80_hi": 268.1,
       "passed": true
     },
     "walk_forward": {
       "windows": 27,
-      "positive": 20,
-      "pct_positive": 74.1,
-      "avg_cagr": 142.2,
+      "positive": 21,
+      "pct_positive": 77.8,
+      "avg_cagr": 142.5,
       "passed": true
     },
     "cross_asset": {
@@ -53,15 +53,15 @@
       "results": [
         {
           "symbol": "BTC/USDT",
-          "cagr": -13.8,
-          "wr": 62.8,
-          "trades": 78
+          "cagr": -11.0,
+          "wr": 63.3,
+          "trades": 79
         },
         {
           "symbol": "LTC/USDT",
-          "cagr": 7.0,
-          "wr": 65.0,
-          "trades": 100
+          "cagr": 7.8,
+          "wr": 65.3,
+          "trades": 101
         }
       ],
       "passed": true
@@ -69,15 +69,6 @@
     "confidence": "ALTA",
     "passed_steps": 3,
     "max_steps": 3,
-    "validated_at": "2026-06-17 08:27:48.094352"
-  },
-  "mc": {
-    "mc_cagr_p05": 160.7,
-    "mc_cagr_p50": 467.8,
-    "mc_cagr_p95": 1136.7,
-    "mc_dd_p50": -18.1,
-    "mc_dd_p95": -9.0,
-    "mc_confidence": 100.0,
-    "mc_sims": 1000
+    "validated_at": "2026-06-18 02:54:46.616134"
   }
 }

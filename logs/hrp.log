@@ -295,3 +295,12 @@
   ETH|15m: 7.19%
   SOL|5m: 7.19%
   BNB|4h: 6.73%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 20 champs | min=1.5% max=8.0% avg=4.5% | hrp_live
+  HG|1h: 8.00%
+  LTC|15m: 8.00%
+  BTC|5m: 7.31%
+  ETH|15m: 7.19%
+  SOL|5m: 7.19%
+  BNB|4h: 6.73%

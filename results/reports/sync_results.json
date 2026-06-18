@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-17T21:00:01.661740",
+  "timestamp": "2026-06-18T04:00:01.980707",
   "models": {
     "1h": [
       {
@@ -607,6 +607,14 @@
         "wr_oos": 72.7,
         "dd_oos": -14.9,
         "trades_oos": 22
+      },
+      {
+        "file": "eth_vwap_deviation_long.json",
+        "strategy": "vwap_deviation_long",
+        "cagr_oos": 11.5,
+        "wr_oos": 80.0,
+        "dd_oos": -6.0,
+        "trades_oos": 20
       },
       {
         "file": "btc_momentum_short.json",

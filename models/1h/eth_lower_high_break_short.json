@@ -83,12 +83,12 @@
     "date": "2026-06-14 02:17"
   },
   "mc": {
-    "mc_cagr_p05": -12.9,
-    "mc_cagr_p50": 104.1,
+    "mc_cagr_p05": -22.9,
+    "mc_cagr_p50": 80.7,
     "mc_cagr_p95": 378.4,
-    "mc_dd_p50": -54.7,
-    "mc_dd_p95": -35.6,
-    "mc_confidence": 87.7,
+    "mc_dd_p50": -56.6,
+    "mc_dd_p95": -38.7,
+    "mc_confidence": 86.5,
     "mc_sims": 1000
   }
 }

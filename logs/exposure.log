@@ -5107,3 +5107,185 @@
   "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
   "computed_at": "2026-06-17T21:30:01.551299-04:00"
 }
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-17T22:00:01.820189-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-17T22:30:01.764989-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-17T23:00:01.425904-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-17T23:30:02.006303-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T00:00:01.632612-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T00:30:01.420698-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T01:00:01.821894-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T01:30:01.615913-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T02:00:02.065193-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T02:30:02.045190-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T03:00:01.326869-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T03:30:02.020968-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T04:00:01.978182-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T04:30:01.696753-04:00"
+}

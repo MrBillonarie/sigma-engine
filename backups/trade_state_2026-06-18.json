@@ -1,5 +1,43 @@
 {
-  "open": {},
+  "open": {
+    "LTC_4h": {
+      "sym": "LTC",
+      "tf": "4h",
+      "direction": "short",
+      "entry": 44.91,
+      "sl": 44.8651,
+      "tp": 43.7323,
+      "sl_dist_pct_at_open": 3.7909,
+      "strategy": "bearish_rsi_divergence",
+      "grade": "A",
+      "wr": 73.3,
+      "cagr": 39.7,
+      "kelly_pct": 4.29,
+      "mode": "LIVE",
+      "opened_at": "2026-06-17 21:26:12.752588",
+      "status": "open",
+      "pnl_pct": 0.9323,
+      "be_set": true
+    },
+    "WTI_1d": {
+      "sym": "WTI",
+      "tf": "1d",
+      "direction": "short",
+      "entry": 75.11,
+      "sl": 83.0545,
+      "tp": 67.6621,
+      "sl_dist_pct_at_open": 10.5772,
+      "strategy": "heikin_ashi_short",
+      "grade": "A+",
+      "wr": 81.1,
+      "cagr": 28.1,
+      "kelly_pct": 1.0,
+      "mode": "PAPER",
+      "opened_at": "2026-06-17 22:56:16.274000",
+      "status": "open",
+      "pnl_pct": 0.1083
+    }
+  },
   "history": [
     {
       "sym": "SOL",
@@ -30,7 +68,9 @@
       "pnl_pct_previous_kelly10": -0.0437,
       "pnl_pct_previous_method": -0.0662,
       "sl_dist_pct_at_open": 1.2638653683319134,
-      "sizing_factor": 3.956
+      "sizing_factor": 3.956,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "BTC",
@@ -70,7 +110,9 @@
       "pnl_pct_previous_kelly10": 0.0179,
       "pnl_pct_previous_method": 0.027,
       "sl_dist_pct_at_open": 0.6432518978538093,
-      "sizing_factor": 7.773
+      "sizing_factor": 7.773,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "ETH",
@@ -110,7 +152,9 @@
       "pnl_pct_previous_kelly10": 0.0348,
       "pnl_pct_previous_method": 0.0527,
       "sl_dist_pct_at_open": 1.3216344393641386,
-      "sizing_factor": 3.783
+      "sizing_factor": 3.783,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "SOL",
@@ -150,7 +194,9 @@
       "pnl_pct_previous_kelly10": -0.0028,
       "pnl_pct_previous_method": -0.0042,
       "sl_dist_pct_at_open": 2.840134270429036,
-      "sizing_factor": 1.76
+      "sizing_factor": 1.76,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "ETH",
@@ -187,7 +233,9 @@
       "pnl_pct_previous_kelly10": 0.0765,
       "pnl_pct_previous_method": 0.1159,
       "sl_dist_pct_at_open": 3.6178351074357407,
-      "sizing_factor": 1.382
+      "sizing_factor": 1.382,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "SOL",
@@ -216,7 +264,9 @@
       "commission": 0.0752,
       "funding": 0.0,
       "equity_after": 11279.52,
-      "cooldown_seconds": 1800
+      "cooldown_seconds": 1800,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "SOL",
@@ -244,7 +294,9 @@
       "commission": 0.0706,
       "funding": 0.0,
       "equity_after": 11579.53,
-      "cooldown_seconds": 1800
+      "cooldown_seconds": 1800,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "SOL",
@@ -272,7 +324,9 @@
       "commission": 0.0683,
       "funding": 0.0,
       "equity_after": 11910.15,
-      "cooldown_seconds": 1800
+      "cooldown_seconds": 1800,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "SOL",
@@ -299,7 +353,9 @@
       "commission": 0.0668,
       "funding": 0.0,
       "equity_after": 11513.65,
-      "cooldown_seconds": 7200
+      "cooldown_seconds": 7200,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "SOL",
@@ -327,7 +383,9 @@
       "commission": 0.0685,
       "funding": 0.0,
       "equity_after": 11517.71,
-      "cooldown_seconds": 7200
+      "cooldown_seconds": 7200,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "BTC",
@@ -355,7 +413,9 @@
       "commission": 60.7825,
       "funding": 0.0,
       "equity_after": 11835.33,
-      "cooldown_seconds": 1800
+      "cooldown_seconds": 1800,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "BTC",
@@ -382,7 +442,9 @@
       "commission": 58.8157,
       "funding": 0.0,
       "equity_after": 11441.44,
-      "cooldown_seconds": 7200
+      "cooldown_seconds": 7200,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "BTC",
@@ -409,7 +471,9 @@
       "commission": 59.0573,
       "funding": 0.0,
       "equity_after": 11034.71,
-      "cooldown_seconds": 7200
+      "cooldown_seconds": 7200,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "SOL",
@@ -437,7 +501,9 @@
       "funding": 0.0,
       "equity_after": 10869.19,
       "paper": true,
-      "note": "Retroactivo: bloqueado por CB (bug no auto-reset 72h). Resultado verificado en Binance."
+      "note": "Retroactivo: bloqueado por CB (bug no auto-reset 72h). Resultado verificado en Binance.",
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "BTC",
@@ -462,7 +528,9 @@
       "commission": 1.14,
       "funding": 0.0,
       "reason": "TP_HIT",
-      "be_set": false
+      "be_set": false,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "BTC",
@@ -487,7 +555,9 @@
       "commission": 1.13,
       "funding": 0.0,
       "reason": "TP_HIT",
-      "be_set": false
+      "be_set": false,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "SOL",
@@ -512,7 +582,9 @@
       "commission": 2.28,
       "funding": 0.0,
       "reason": "TP_HIT",
-      "be_set": false
+      "be_set": false,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "SOL",
@@ -537,7 +609,9 @@
       "commission": 1.37,
       "funding": 0.0,
       "reason": "TP_HIT",
-      "be_set": false
+      "be_set": false,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "BTC",
@@ -562,7 +636,9 @@
       "commission": 1.12,
       "funding": 0.0,
       "reason": "TP_HIT",
-      "be_set": false
+      "be_set": false,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "SOL",
@@ -587,7 +663,9 @@
       "commission": 1.34,
       "funding": 0.0,
       "reason": "TP_HIT",
-      "be_set": false
+      "be_set": false,
+      "regime_at_close": "BEAR",
+      "source": "macro"
     },
     {
       "sym": "BTC",
@@ -612,7 +690,354 @@
       "commission": 0.23,
       "funding": 0.0,
       "reason": "SL_HIT",
-      "be_set": false
+      "be_set": false,
+      "regime_at_close": "BEAR",
+      "source": "macro"
+    },
+    {
+      "sym": "SOL",
+      "tf": "15m",
+      "direction": "long",
+      "entry": 66.44,
+      "sl": 66.986,
+      "tp": 67.3962,
+      "sl_dist_pct_at_open": 0.7851,
+      "strategy": "regime_adaptive",
+      "grade": "B",
+      "wr": 58.2,
+      "cagr": 29.9,
+      "kelly_pct": 0.75,
+      "opened_at": "2026-06-11 21:37:17.453235",
+      "status": "TRAIL_HIT",
+      "trail_high_water": 67.25,
+      "trail_active": true,
+      "exit_price": 66.98,
+      "pnl_pct": 0.6427,
+      "pnl_pct_raw": 0.8128,
+      "pnl_dollar": 73.8363,
+      "kelly_pct_used": 0.75,
+      "reason": "TRAIL_HIT",
+      "closed_at": "2026-06-11 23:03:08.348035",
+      "commission": 0.0534,
+      "funding": 0.0,
+      "equity_after": 11562.3,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 3600,
+      "source": "macro"
+    },
+    {
+      "sym": "ETH",
+      "tf": "15m",
+      "direction": "long",
+      "entry": 1689.45,
+      "sl": 1663.7594,
+      "tp": 1710.607,
+      "sl_dist_pct_at_open": 1.5206,
+      "strategy": "volatility_breakout",
+      "grade": "A+",
+      "wr": 72.9,
+      "cagr": 77.6,
+      "kelly_pct": 0.95,
+      "opened_at": "2026-06-12 11:02:42.021635",
+      "status": "SL_HIT",
+      "exit_price": 1662.76,
+      "pnl_pct": -1.0745,
+      "pnl_pct_raw": -1.5798,
+      "pnl_dollar": -122.9053,
+      "kelly_pct_used": 0.95,
+      "reason": "SL_HIT",
+      "closed_at": "2026-06-12 11:50:00.927583",
+      "commission": 1.3409,
+      "funding": 0.0,
+      "equity_after": 11315.46,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 7200,
+      "source": "macro"
+    },
+    {
+      "sym": "HG",
+      "tf": "1h",
+      "direction": "long",
+      "entry": 6.383,
+      "sl": 6.448,
+      "tp": 6.4858,
+      "sl_dist_pct_at_open": 1.2471,
+      "strategy": "lower_lows",
+      "grade": "A+",
+      "wr": 58.1,
+      "cagr": 64.0,
+      "kelly_pct": 0.78,
+      "opened_at": "2026-06-12 08:35:53.587338",
+      "status": "TRAIL_HIT",
+      "trail_high_water": 6.488500118255615,
+      "trail_active": true,
+      "exit_price": 6.488500118255615,
+      "pnl_pct": 0.9462,
+      "pnl_pct_raw": 1.6528,
+      "pnl_dollar": 107.0669,
+      "kelly_pct_used": 0.78,
+      "reason": "TRAIL_HIT",
+      "closed_at": "2026-06-12 15:32:35.724524",
+      "commission": 0.0051,
+      "funding": 0.0,
+      "equity_after": 11422.53,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 3600
+    },
+    {
+      "sym": "BTC",
+      "tf": "1h",
+      "direction": "short",
+      "entry": 63653.3,
+      "sl": 64725.0957,
+      "tp": 62760.1369,
+      "sl_dist_pct_at_open": 1.6838,
+      "strategy": "momentum_short",
+      "grade": "A",
+      "wr": 68.4,
+      "cagr": 46.3,
+      "kelly_pct": 0.83,
+      "opened_at": "2026-06-12 12:05:07.931925",
+      "status": "SL_HIT",
+      "exit_price": 64733.6,
+      "pnl_pct": -0.9056,
+      "pnl_pct_raw": -1.6972,
+      "pnl_dollar": -103.4424,
+      "kelly_pct_used": 0.83,
+      "reason": "SL_HIT",
+      "closed_at": "2026-06-13 17:42:25.887519",
+      "commission": 51.3548,
+      "funding": 0.0,
+      "equity_after": 11319.09,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 7200
+    },
+    {
+      "sym": "ETH",
+      "tf": "15m",
+      "direction": "long",
+      "entry": 1709.75,
+      "sl": 1711.4597,
+      "tp": 1728.7733,
+      "sl_dist_pct_at_open": 1.3511,
+      "strategy": "volatility_breakout",
+      "grade": "A+",
+      "wr": 72.9,
+      "cagr": 77.6,
+      "kelly_pct": 0.92,
+      "opened_at": "2026-06-14 17:39:24.007622",
+      "status": "TP_HIT",
+      "be_set": true,
+      "exit_price": 1731.87,
+      "pnl_pct": 0.7856,
+      "pnl_pct_raw": 1.2938,
+      "pnl_dollar": 88.9228,
+      "kelly_pct_used": 0.92,
+      "reason": "TP_HIT",
+      "closed_at": "2026-06-14 17:50:22.966882",
+      "commission": 1.3766,
+      "funding": 0.0,
+      "equity_after": 11408.01,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 1800
+    },
+    {
+      "sym": "SOL",
+      "tf": "4h",
+      "direction": "short",
+      "entry": 67.3,
+      "sl": 72.1876,
+      "tp": 63.9398,
+      "sl_dist_pct_at_open": 7.2624,
+      "strategy": "supply_zone_rejection",
+      "grade": "A+",
+      "wr": 70.4,
+      "cagr": 28.3,
+      "kelly_pct": 0.75,
+      "opened_at": "2026-06-12 12:06:33.300845",
+      "status": "SL_HIT",
+      "exit_price": 72.2,
+      "pnl_pct": -0.7664,
+      "pnl_pct_raw": -7.2808,
+      "pnl_dollar": -87.431,
+      "kelly_pct_used": 0.75,
+      "reason": "SL_HIT",
+      "closed_at": "2026-06-15 07:19:43.883142",
+      "commission": 0.0558,
+      "funding": 0.0,
+      "equity_after": 11320.58,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 7200
+    },
+    {
+      "sym": "ETH",
+      "tf": "15m",
+      "direction": "long",
+      "entry": 1740.49,
+      "sl": 1742.2305,
+      "tp": 1758.2006,
+      "sl_dist_pct_at_open": 1.2356,
+      "strategy": "volatility_breakout",
+      "grade": "A+",
+      "wr": 72.9,
+      "cagr": 77.6,
+      "kelly_pct": 0.91,
+      "opened_at": "2026-06-15 07:08:06.769781",
+      "status": "TP_HIT",
+      "be_set": true,
+      "exit_price": 1758.81,
+      "pnl_pct": 0.6721,
+      "pnl_pct_raw": 1.0526,
+      "pnl_dollar": 76.0856,
+      "kelly_pct_used": 0.91,
+      "reason": "TP_HIT",
+      "closed_at": "2026-06-15 07:26:05.805970",
+      "commission": 1.3997,
+      "funding": 0.0,
+      "equity_after": 11396.67,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 1800
+    },
+    {
+      "sym": "ETH",
+      "tf": "15m",
+      "direction": "long",
+      "entry": 1819.64,
+      "sl": 1785.4519,
+      "tp": 1847.7949,
+      "sl_dist_pct_at_open": 1.8788,
+      "strategy": "volatility_breakout",
+      "grade": "A+",
+      "wr": 72.9,
+      "cagr": 77.6,
+      "kelly_pct": 0.85,
+      "opened_at": "2026-06-15 09:30:14.125876",
+      "status": "REGIME_EXIT",
+      "exit_price": 1815.35,
+      "pnl_pct": -0.17,
+      "pnl_pct_raw": -0.2358,
+      "pnl_dollar": -19.3743,
+      "kelly_pct_used": 0.85,
+      "reason": "REGIME_EXIT",
+      "closed_at": "2026-06-15 11:30:22.629040",
+      "commission": 1.454,
+      "funding": 0.0,
+      "equity_after": 11377.3,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 3600
+    },
+    {
+      "sym": "SOL",
+      "tf": "15m",
+      "direction": "long",
+      "entry": 74.44,
+      "sl": 73.6171,
+      "tp": 75.9486,
+      "sl_dist_pct_at_open": 1.1055,
+      "strategy": "regime_adaptive",
+      "grade": "B",
+      "wr": 58.2,
+      "cagr": 29.9,
+      "kelly_pct": 0.75,
+      "opened_at": "2026-06-15 17:39:24.388960",
+      "status": "SL_HIT",
+      "exit_price": 73.61,
+      "pnl_pct": -0.8514,
+      "pnl_pct_raw": -1.115,
+      "pnl_dollar": -96.8663,
+      "kelly_pct_used": 0.75,
+      "reason": "SL_HIT",
+      "closed_at": "2026-06-15 18:31:56.476948",
+      "commission": 0.0592,
+      "funding": 0.0,
+      "equity_after": 11280.43,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 7200
+    },
+    {
+      "sym": "HG",
+      "tf": "1h",
+      "direction": "long",
+      "entry": 6.49,
+      "sl": 6.4207,
+      "tp": 6.5795,
+      "sl_dist_pct_at_open": 1.0678,
+      "strategy": "lower_lows",
+      "grade": "A+",
+      "wr": 58.1,
+      "cagr": 64.0,
+      "kelly_pct": 0.77,
+      "opened_at": "2026-06-15 10:37:21.963597",
+      "status": "SL_HIT",
+      "pnl_pct": -0.871,
+      "exit_price": 6.4207,
+      "pnl_pct_raw": -1.0678,
+      "pnl_dollar": -98.2525,
+      "kelly_pct_used": 0.77,
+      "reason": "SL_HIT",
+      "closed_at": "2026-06-17 14:35:52.913769",
+      "commission": 0.0052,
+      "funding": 0.0,
+      "equity_after": 11182.18,
+      "regime_at_close": "BEAR",
+      "manual_fix_note": "Cerrado manualmente 2026-06-17 - bug de race condition en watcher revertia el cierre automatico",
+      "cooldown_seconds": 7200
+    },
+    {
+      "sym": "PL",
+      "tf": "4h",
+      "direction": "long",
+      "entry": 1811.2,
+      "sl": 1743.7373,
+      "tp": 1896.2617,
+      "sl_dist_pct_at_open": 3.7248,
+      "strategy": "lower_lows",
+      "grade": "A+",
+      "wr": 59.4,
+      "cagr": 61.4,
+      "kelly_pct": 1.09,
+      "opened_at": "2026-06-16 16:42:43.026349",
+      "status": "SL_HIT",
+      "pnl_pct": -1.1396,
+      "exit_price": 1743.199951171875,
+      "pnl_pct_raw": -3.7544,
+      "pnl_dollar": -127.4321,
+      "kelly_pct_used": 1.09,
+      "reason": "SL_HIT",
+      "closed_at": "2026-06-17 15:31:35.994120",
+      "commission": 1.4218,
+      "funding": 0.0,
+      "equity_after": 11054.75,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 7200
+    },
+    {
+      "sym": "LTC",
+      "tf": "4h",
+      "direction": "short",
+      "entry": 44.92,
+      "sl": 46.6125,
+      "tp": 43.7323,
+      "sl_dist_pct_at_open": 3.7678,
+      "strategy": "bearish_rsi_divergence",
+      "grade": "A",
+      "wr": 73.3,
+      "cagr": 39.7,
+      "kelly_pct": 1.0,
+      "opened_at": "2026-06-16 11:53:57.905770",
+      "status": "MANUAL_LIVE_TEST_MIGRATION",
+      "pnl_pct": -0.0549,
+      "exit_price": 44.95,
+      "pnl_pct_raw": -0.0668,
+      "pnl_dollar": -6.0691,
+      "kelly_pct_used": 1.0,
+      "reason": "MANUAL_LIVE_TEST_MIGRATION",
+      "closed_at": "2026-06-17 21:25:12.853710",
+      "commission": 0.0359,
+      "funding": 0.0,
+      "equity_after": 11048.68,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 3600
     }
   ],
   "circuit_breaker": {
@@ -624,8 +1049,98 @@
   "cooldowns": {},
   "portfolio": {
     "initial_capital": 10000,
-    "equity": 11488.46,
+    "equity": 11048.68,
     "start_date": "2026-05-10",
-    "max_dd_pct": -7.3
+    "max_dd_pct": -7.3,
+    "total_commission": 60.1047,
+    "peak_equity": 11562.3,
+    "equity_history": [
+      {
+        "eq": 11562.3,
+        "date": "2026-06-11"
+      },
+      {
+        "eq": 11549.66,
+        "date": "2026-06-12"
+      },
+      {
+        "eq": 11438.4,
+        "date": "2026-06-12"
+      },
+      {
+        "eq": 11444.38,
+        "date": "2026-06-12"
+      },
+      {
+        "eq": 11438.37,
+        "date": "2026-06-12"
+      },
+      {
+        "eq": 11315.46,
+        "date": "2026-06-12"
+      },
+      {
+        "eq": 11422.53,
+        "date": "2026-06-12"
+      },
+      {
+        "eq": 11319.09,
+        "date": "2026-06-13"
+      },
+      {
+        "eq": 11408.01,
+        "date": "2026-06-14"
+      },
+      {
+        "eq": 11320.58,
+        "date": "2026-06-15"
+      },
+      {
+        "eq": 11396.67,
+        "date": "2026-06-15"
+      },
+      {
+        "eq": 11377.3,
+        "date": "2026-06-15"
+      },
+      {
+        "eq": 11280.43,
+        "date": "2026-06-15"
+      },
+      {
+        "eq": 11182.18,
+        "date": "2026-06-17"
+      },
+      {
+        "eq": 11054.75,
+        "date": "2026-06-17"
+      },
+      {
+        "eq": 11048.68,
+        "date": "2026-06-17"
+      }
+    ]
+  },
+  "model_suspensions": {
+    "SOL|15m": {
+      "streak": 1,
+      "suspended_until": null
+    },
+    "HG|1h": {
+      "streak": 0,
+      "suspended_until": null
+    },
+    "ETH|15m": {
+      "streak": 0,
+      "suspended_until": null
+    },
+    "SOL|4h": {
+      "streak": 1,
+      "suspended_until": null
+    },
+    "PL|4h": {
+      "streak": 1,
+      "suspended_until": null
+    }
   }
 }

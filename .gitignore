@@ -32,4 +32,6 @@ sigma_env/
 # Temporales
 *.tmp
 *.bak
+*.bak.*
+*.bak_*
 .DS_Store

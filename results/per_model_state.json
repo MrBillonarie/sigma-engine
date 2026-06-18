@@ -1284,21 +1284,30 @@
     "recommendation_at_init": "NO_ACTIVAR"
   },
   "LTC_4h_bearish_rsi_divergence": {
-    "equity": 10000,
+    "equity": 10037.07,
     "initial": 10000,
-    "open": {
-      "sym": "LTC",
-      "tf": "4h",
-      "strategy": "bearish_rsi_divergence",
-      "direction": "short",
-      "entry": 45.25,
-      "sl": 46.816,
-      "tp": 44.1658,
-      "sl_dist_pct_at_open": 3.4608,
-      "kelly_pct": 0.56,
-      "opened_at": "2026-06-15 00:14:42"
-    },
-    "history": [],
+    "open": null,
+    "history": [
+      {
+        "sym": "LTC",
+        "tf": "4h",
+        "strategy": "bearish_rsi_divergence",
+        "direction": "short",
+        "entry": 45.25,
+        "sl": 46.816,
+        "tp": 44.1658,
+        "sl_dist_pct_at_open": 3.4608,
+        "kelly_pct": 0.56,
+        "opened_at": "2026-06-15 00:14:42",
+        "exit_price": 44.15,
+        "reason": "TP_HIT",
+        "pnl_pct_raw": 2.2909,
+        "pnl_pct": 0.3707,
+        "pnl_dollar": 37.07,
+        "equity_after": 10037.07,
+        "closed_at": "2026-06-18 00:47:21"
+      }
+    ],
     "created_at": "2026-05-29 23:15:15",
     "pre_initialized": true,
     "recommendation_at_init": "CONDICIONAL"
@@ -1786,6 +1795,24 @@
     "open": null,
     "history": [],
     "created_at": "2026-06-17 17:02:34",
+    "pre_initialized": true,
+    "recommendation_at_init": "CONDICIONAL"
+  },
+  "WTI_1d_heikin_ashi_short": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-06-17 22:56:18",
+    "pre_initialized": true,
+    "recommendation_at_init": "ACTIVAR"
+  },
+  "ETH_5m_vwap_deviation_long": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-06-18 03:06:27",
     "pre_initialized": true,
     "recommendation_at_init": "CONDICIONAL"
   }

@@ -1,24 +1,24 @@
 {
-  "computed_at": "2026-06-17 21:05",
-  "n_trades": 32,
+  "computed_at": "2026-06-18 04:05",
+  "n_trades": 33,
   "portfolio": {
-    "equity": 11054.75,
+    "equity": 11048.68,
     "initial": 10000,
-    "return_pct": 10.55,
+    "return_pct": 10.49,
     "var_95_pct": -3.5549,
     "cvar_95_pct": -5.2339,
     "var_99_pct": -5.2339,
     "max_dd_pct": -8.74,
-    "max_losing_streak": 4
+    "max_losing_streak": 5
   },
   "concentration": {
-    "hhi": 0.3105,
-    "n_effective_assets": 3.22,
+    "hhi": 0.2929,
+    "n_effective_assets": 3.41,
     "ok": true,
     "assets": {
       "SOL": {
         "n": 14,
-        "weight_pct": 43.8,
+        "weight_pct": 42.4,
         "wr": 57.1,
         "total_pnl": 5.32,
         "avg_pnl": 0.38,
@@ -26,7 +26,7 @@
       },
       "BTC": {
         "n": 9,
-        "weight_pct": 28.1,
+        "weight_pct": 27.3,
         "wr": 66.7,
         "total_pnl": 2.07,
         "avg_pnl": 0.23,
@@ -34,7 +34,7 @@
       },
       "ETH": {
         "n": 6,
-        "weight_pct": 18.8,
+        "weight_pct": 18.2,
         "wr": 66.7,
         "total_pnl": 7.41,
         "avg_pnl": 1.23,
@@ -42,7 +42,7 @@
       },
       "HG": {
         "n": 2,
-        "weight_pct": 6.2,
+        "weight_pct": 6.1,
         "wr": 50.0,
         "total_pnl": 0.08,
         "avg_pnl": 0.04,
@@ -50,24 +50,32 @@
       },
       "PL": {
         "n": 1,
-        "weight_pct": 3.1,
+        "weight_pct": 3.0,
         "wr": 0.0,
         "total_pnl": -1.14,
         "avg_pnl": -1.14,
         "var_95": -1.1396
+      },
+      "LTC": {
+        "n": 1,
+        "weight_pct": 3.0,
+        "wr": 0.0,
+        "total_pnl": -0.05,
+        "avg_pnl": -0.05,
+        "var_95": -0.0549
       }
     }
   },
   "direction_split": {
     "short": {
-      "n": 23,
-      "weight_pct": 71.9,
-      "wr": 65.2,
-      "total_pnl": 14.8
+      "n": 24,
+      "weight_pct": 72.7,
+      "wr": 62.5,
+      "total_pnl": 14.74
     },
     "long": {
       "n": 9,
-      "weight_pct": 28.1,
+      "weight_pct": 27.3,
       "wr": 44.4,
       "total_pnl": -1.06
     }
@@ -102,15 +110,15 @@
     "BTC/1h/momentum_short": {
       "n": 5,
       "avg_pnl": -0.165,
-      "dir_avg": 0.643,
-      "alpha": -0.809,
+      "dir_avg": 0.614,
+      "alpha": -0.78,
       "positive_alpha": false
     },
     "SOL/4h/momentum_short": {
       "n": 4,
       "avg_pnl": 1.27,
-      "dir_avg": 0.643,
-      "alpha": 0.627,
+      "dir_avg": 0.614,
+      "alpha": 0.656,
       "positive_alpha": true
     },
     "SOL/4h/supply_zone_rejection": {
@@ -123,8 +131,8 @@
     "BTC/4h/three_candles_short": {
       "n": 4,
       "avg_pnl": 0.725,
-      "dir_avg": 0.643,
-      "alpha": 0.082,
+      "dir_avg": 0.614,
+      "alpha": 0.111,
       "positive_alpha": true
     },
     "SOL/15m/regime_adaptive": {
