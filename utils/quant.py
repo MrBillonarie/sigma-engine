@@ -57,6 +57,56 @@ def sharpe_from_trades(trades_list, periods_per_year=252):
 
 
 # ========================================================================
+# 1b. SORTINO RATIO CON CI — solo penaliza volatilidad a la baja
+# ========================================================================
+
+def sortino_with_ci(returns_list, confidence=0.95, periods_per_year=252, target=0.0):
+    """Sortino ratio: como Sharpe pero el denominador es downside deviation
+    (solo retornos por debajo de `target`), no la std completa.
+
+    Mas relevante que Sharpe para esta cartera porque las estrategias tienen
+    SL/TP asimetrico (ganancias y perdidas no son simetricas) — penalizar
+    la volatilidad al alza junto con la de abajo (como hace Sharpe) castiga
+    de mas a una estrategia que solo tiene "sorpresas" positivas.
+
+    El CI usa la misma aproximacion delta-method que sharpe_with_ci (no hay
+    forma cerrada estandar para Sortino) — tratarlo como guia, no como un
+    intervalo exacto.
+    """
+    n = len(returns_list)
+    if n < 5:
+        return {"sortino": None, "lower_ci": None, "upper_ci": None, "n": n, "reason": "n<5"}
+
+    mu = mean(returns_list)
+    downside = [min(0.0, r - target) for r in returns_list]
+    downside_var = sum(d * d for d in downside) / n
+    downside_dev = math.sqrt(downside_var)
+    if downside_dev == 0:
+        return {"sortino": None, "lower_ci": None, "upper_ci": None, "n": n, "reason": "zero_downside_vol"}
+
+    sortino = (mu - target) / downside_dev * math.sqrt(periods_per_year)
+    sortino_se = math.sqrt((1 + (sortino ** 2) / 2) / n)
+    z_alpha = 1.96 if confidence == 0.95 else (1.645 if confidence == 0.90 else 2.576)
+    lower = sortino - z_alpha * sortino_se
+    upper = sortino + z_alpha * sortino_se
+
+    return {
+        "sortino": round(sortino, 3),
+        "sortino_se": round(sortino_se, 3),
+        "lower_ci": round(lower, 3),
+        "upper_ci": round(upper, 3),
+        "n": n,
+        "confidence": confidence,
+    }
+
+
+def sortino_from_trades(trades_list, periods_per_year=252):
+    """Helper: convierte lista de trades (con pnl_pct) en Sortino-CI."""
+    rets = [(t.get("pnl_pct", 0) or 0) / 100.0 for t in trades_list if t.get("pnl_pct") is not None]
+    return sortino_with_ci(rets, periods_per_year=periods_per_year)
+
+
+# ========================================================================
 # 2. BAYESIAN EDGE PROBABILITY
 # ========================================================================
 
@@ -172,6 +222,10 @@ if __name__ == "__main__":
     print("  Volatile (N=7):", sharpe_with_ci(rets_vol))
     print("  Stable (N=50):", sharpe_with_ci(rets_stab))
 
+    print("\n[1b] Sortino-CI:")
+    print("  Volatile (N=7):", sortino_with_ci(rets_vol))
+    print("  Stable (N=50):", sortino_with_ci(rets_stab))
+
     print("\n[2] Bayesian Edge:")
     print("  5W 1L:", bayesian_edge(5, 1, target_wr=0.50))
     print("  20W 10L:", bayesian_edge(20, 10, target_wr=0.55))
@@ -187,3 +241,4 @@ if __name__ == "__main__":
     opens = [{"sym": "BTC", "direction": "long"}, {"sym": "ETH", "direction": "long"}]
     print("  LTC long w/ BTC+ETH long:", position_correlation_gate(opens, {"sym": "LTC", "type": "long"}))
     print("  SOL long w/ BTC+ETH long:", position_correlation_gate(opens, {"sym": "SOL", "type": "long"}))
+

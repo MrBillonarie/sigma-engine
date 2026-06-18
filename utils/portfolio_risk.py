@@ -13,6 +13,17 @@ OUT_FILE = BASE / "results/reports/portfolio_risk.json"
 
 sys.path.insert(0, str(BASE))
 
+# Beta vs BTC por activo para el stress test de escenario (asset_beta_to_btc).
+# Aproximacion documentada, no medida en vivo: BTC mueve el mercado crypto
+# completo en un selloff y los altcoins históricamente caen mas (beta>1);
+# los commodities no siguen a BTC, se asume beta 0 (sin beneficio de hedge
+# asumido, conservador en la dirección de no subestimar el riesgo).
+ASSET_BETA_TO_BTC = {
+    "BTC": 1.0, "ETH": 1.2, "SOL": 1.4, "BNB": 1.3, "LTC": 1.4,
+    "XAU": 0.0, "XAG": 0.0, "WTI": 0.0, "NG": 0.0, "PL": 0.0, "HG": 0.0,
+}
+STRESS_SHOCKS_BTC_PCT = [-10.0, -20.0, -30.0]
+
 
 def _pearson(a, b):
     """Pearson correlation between two lists of equal length."""
@@ -136,10 +147,50 @@ def _compute_factor_decomposition(trades):
     }
 
 
+def stress_scenarios(open_trades, equity):
+    """Forward-looking: ¿qué pasa con las posiciones REALES abiertas hoy si
+    BTC cae -10%/-20%/-30% en un día? Usa la misma fórmula de pnl que el resto
+    del sistema (pnl_pct = move_a_favor_pct * kelly_pct/sl_dist_pct_at_open) y
+    el beta por activo de ASSET_BETA_TO_BTC. Cada posición se clipea a su
+    propio -kelly_pct (el peor caso real ya es "toca SL"), así el escenario
+    nunca exagera por encima de lo que la protección de SL permite.
+    """
+    scenarios = {}
+    for btc_shock in STRESS_SHOCKS_BTC_PCT:
+        total_pnl_pct = 0.0
+        per_position = []
+        for t in open_trades:
+            sym   = (t.get("sym") or "").upper()
+            direc = (t.get("direction") or "long").lower()
+            kelly = t.get("kelly_pct_used", t.get("kelly_pct", 2.2)) or 2.2
+            sl_dist = t.get("sl_dist_pct_at_open") or 5.0
+            beta  = ASSET_BETA_TO_BTC.get(sym, 0.6)  # default conservador para activos no listados
+            asset_move_pct = btc_shock * beta
+            # long sufre cuando el precio cae (move_in_favor negativo); short se
+            # beneficia de la misma caida (move_in_favor positivo) -- signo invertido.
+            move_in_favor_pct = asset_move_pct if direc == "long" else -asset_move_pct
+            pnl_pct = move_in_favor_pct * (kelly / max(sl_dist, 0.1))
+            pnl_pct = max(pnl_pct, -kelly)  # floor: nunca peor que el SL real
+            total_pnl_pct += pnl_pct
+            per_position.append({
+                "sym": sym, "tf": t.get("tf"), "direction": direc,
+                "kelly_pct": round(kelly, 2), "pnl_pct": round(pnl_pct, 3),
+            })
+        scenarios[f"btc_{int(btc_shock)}pct"] = {
+            "btc_shock_pct": btc_shock,
+            "portfolio_pnl_pct": round(total_pnl_pct, 3),
+            "portfolio_pnl_usd": round(equity * total_pnl_pct / 100, 2),
+            "positions": per_position,
+        }
+    return scenarios
+
+
 def compute():
     ts   = json.load(open(TS_FILE))
     hist = ts.get("history",[]) or []
     port = ts.get("portfolio",{}) or {}
+    open_raw = ts.get("open", {}) or {}
+    open_trades = list(open_raw.values()) if isinstance(open_raw, dict) else (open_raw or [])
     equity  = port.get("equity",10000)
     initial = port.get("initial_capital",10000)
 
@@ -294,6 +345,7 @@ def compute():
             "n_high":    len(high_corr),
         },
         "alpha_per_strategy": strat_alpha,
+        "stress_test": stress_scenarios(open_trades, equity),
     }
     OUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     json.dump(result, open(OUT_FILE,"w"), indent=2)
@@ -324,3 +376,8 @@ if __name__ == "__main__":
     for k, v in sorted(r["alpha_per_strategy"].items(), key=lambda x:-x[1]["alpha"]):
         sign = "+" if v["positive_alpha"] else "-"
         print(f"  {k:<40} alpha={v['alpha']:+.2f}% (strat={v['avg_pnl']:+.2f}% dir_avg={v['dir_avg']:+.2f}%)")
+    print()
+    print("Stress test (posiciones reales abiertas hoy):")
+    for key, sc in r["stress_test"].items():
+        print(f"  BTC {sc['btc_shock_pct']:+.0f}%: portafolio {sc['portfolio_pnl_pct']:+.2f}% (${sc['portfolio_pnl_usd']:+,.2f})")
+

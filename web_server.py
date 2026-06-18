@@ -3738,6 +3738,35 @@ def _compute_signals():
 
                     _df['rsi_w'] = _df.get('rsi14', 50)
 
+                if 'htf_bull' not in _df.columns:
+                    # Replica exacta de asset_pipeline.py (calculo de HTF) -- sin esto
+                    # estrategias como lower_high_structure_short/energy_seasonal_short/
+                    # keltner_trend_long/macro_momentum_long tiran KeyError y quedan
+                    # con signal=False para siempre, aunque sean champion del slot.
+                    try:
+                        _c_htfc = _df['close']
+                        _freq_min = (_df.index[-1] - _df.index[0]).total_seconds() / 60 / max(len(_df)-1, 1)
+                        if _freq_min <= 30:
+                            _htf_rule = '1h'
+                        elif _freq_min <= 90:
+                            _htf_rule = '4h'
+                        else:
+                            _htf_rule = '1D'
+                        _c_htf = _c_htfc.resample(_htf_rule).last().ffill()
+                        _ema200_htf = _c_htf.ewm(span=200, adjust=False).mean()
+                        _d_htf = _c_htf.diff()
+                        _g_htf = _d_htf.clip(lower=0).ewm(alpha=1/14, adjust=False).mean()
+                        _ll_htf = (-_d_htf.clip(upper=0)).ewm(alpha=1/14, adjust=False).mean()
+                        _rsi_htf = (100 - 100/(1 + _g_htf/(_ll_htf+1e-9))).reindex(_df.index, method='ffill').fillna(50)
+                        _ema200_htf_r = _ema200_htf.reindex(_df.index, method='ffill')
+                        _df['htf_bull']  = (_rsi_htf > 52) & (_c_htfc > _ema200_htf_r)
+                        _df['htf_bear']  = (_rsi_htf < 45) | (_c_htfc < _ema200_htf_r * 0.97)
+                        _df['htf_range'] = ~_df['htf_bull'] & ~_df['htf_bear']
+                    except Exception:
+                        _df['htf_bull']  = True
+                        _df['htf_bear']  = False
+                        _df['htf_range'] = False
+
                 _result = sig_fn(_df, p)
 
                 _sig_ser = _result[0] if isinstance(_result, tuple) else _result
@@ -5564,7 +5593,25 @@ def _compute_signals():
 
         print(f'[PROMOTE_SLOT ERROR] {_e_ps}', flush=True)
 
-
+    # 2026-06-18: anotar si la estrategia NO es la champion del slot. Sin esto
+    # el dashboard/HUD muestra ACTIVAR/CONDICIONAL para una senal que el
+    # champion gate (loop de ejecucion real, mas abajo) va a abortar siempre
+    # -- confunde porque parece que deberia operar y nunca lo hace.
+    try:
+        _cgan_champs = __import__('json').loads(
+            open('/opt/sigma/results/reports/port_snapshot.json').read()
+        ).get('champions', {})
+        for _rfin in results:
+            _cgan_slot = f"{_rfin.get('sym','')}|{_rfin.get('tf','')}"
+            _cgan_val = _cgan_champs.get(_cgan_slot, '')
+            _cgan_strat = _cgan_val.split('|')[0] if _cgan_val else ''
+            _cgan_is_champ = (not _cgan_strat) or (_rfin.get('strategy') == _cgan_strat)
+            _rfin['is_champion'] = _cgan_is_champ
+            if not _cgan_is_champ and _rfin.get('recommendation') in ('ACTIVAR', 'CONDICIONAL'):
+                _cgan_note = f"No es el champion del slot (campeon: {_cgan_strat}) -- no ejecuta aunque señale"
+                _rfin['reason'] = f"{_rfin.get('reason','')} | {_cgan_note}".strip(' |')
+    except Exception as _e_cgan:
+        print(f'[CHAMPION_ANNOTATE ERROR] {_e_cgan}', flush=True)
 
     return {'regime':regime,'models':results,'updated':_strftime_chile('%H:%M:%S'),'circuit_breaker':_cb}
 
@@ -9545,5 +9592,6 @@ httpd = ReusableHTTPServer(('127.0.0.1', PORT), Handler)
 print(f'Dashboard en http://178.104.10.97:{PORT}/dashboard.html', flush=True)
 
 httpd.serve_forever()
+
 
 

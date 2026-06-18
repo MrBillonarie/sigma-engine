@@ -42,6 +42,20 @@ def _sharpe(pnl_list, rf_per_trade=0.0):
     # Annualize: assume ~260 trades/year (5/week for active system)
     return round(per_trade * math.sqrt(260), 2)
 
+def _sortino(pnl_list, rf_per_trade=0.0):
+    # Como _sharpe pero el denominador solo cuenta retornos por debajo de rf_per_trade
+    # (downside deviation) -- no penaliza la volatilidad al alza.
+    if len(pnl_list) < 5:
+        return None
+    mean = sum(pnl_list) / len(pnl_list)
+    downside = [min(0.0, x - rf_per_trade) for x in pnl_list]
+    downside_var = sum(d*d for d in downside) / len(pnl_list)
+    downside_dev = math.sqrt(downside_var)
+    if downside_dev == 0:
+        return None
+    per_trade = (mean - rf_per_trade) / downside_dev
+    return round(per_trade * math.sqrt(260), 2)
+
 def build_report():
     ts    = _load(BASE / 'results/trade_state.json')
     snap  = _load(BASE / 'results/reports/port_snapshot.json')
@@ -78,9 +92,10 @@ def build_report():
     ytd_pnl,   ytd_wr,   ytd_n   = period_pnl(ytd_trades)
     total_pnl, total_wr, total_n  = period_pnl(hist)
 
-    # ─── Sharpe (live) ────────────────────────────────────────────────────────
+    # ─── Sharpe / Sortino (live) ───────────────────────────────────────────────
     pnl_series = [t.get('pnl_pct', 0) or 0 for t in hist]
-    live_sharpe = _sharpe(pnl_series)
+    live_sharpe  = _sharpe(pnl_series)
+    live_sortino = _sortino(pnl_series)
 
     # ─── DD from peak ─────────────────────────────────────────────────────────
     dd_from_peak = round((equity - peak) / peak * 100, 2) if peak > 0 else 0
@@ -143,6 +158,8 @@ def build_report():
     lines.append(f'  Max DD ever: {-max_dd:.2f}%')
     if live_sharpe is not None:
         lines.append(f'  Sharpe live: {live_sharpe:+.2f}  (annualized, {total_n} trades)')
+    if live_sortino is not None:
+        lines.append(f'  Sortino live: {live_sortino:+.2f}  (annualized, downside-only)')
     lines.append('')
 
     lines.append('P&L PERIODS')
@@ -179,6 +196,13 @@ def build_report():
     if kelly_g:
         lines.append(f'  Kelly guidance: {kelly_g.get("recommendation","N/A")}')
     lines.append('')
+
+    stress = pr.get('stress_test', {})
+    if stress:
+        lines.append('STRESS TEST (posiciones reales abiertas hoy)')
+        for sc in stress.values():
+            lines.append(f'  BTC {sc["btc_shock_pct"]:+.0f}%: portafolio {sc["portfolio_pnl_pct"]:+.2f}%  (${sc["portfolio_pnl_usd"]:+,.2f})')
+        lines.append('')
 
     if edges:
         lines.append('BAYESIAN TRACKER')
@@ -251,3 +275,4 @@ if __name__ == '__main__':
                 print('[TG] Exception:', e, flush=True)
         else:
             print('[TG] No token disponible', flush=True)
+
