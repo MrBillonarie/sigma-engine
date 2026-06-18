@@ -878,6 +878,37 @@ def _executor_gate_widget():
         return ''
 
 
+def _stress_test_widget():
+    """HTML: stress test forward-looking sobre las posiciones reales abiertas
+    hoy (shock BTC -10/-20/-30%), calculado en utils/portfolio_risk.py."""
+    try:
+        pr_f = Path('/opt/sigma/results/reports/portfolio_risk.json')
+        if not pr_f.exists():
+            return ''
+        pr = json.loads(pr_f.read_text())
+        stress = pr.get('stress_test', {})
+        if not stress:
+            return ''
+        mono = 'IBM Plex Mono,monospace'
+        rows = ''
+        for sc in stress.values():
+            shock = sc.get('btc_shock_pct', 0)
+            pnl_pct = sc.get('portfolio_pnl_pct', 0)
+            pnl_usd = sc.get('portfolio_pnl_usd', 0)
+            color = '#2ecc71' if pnl_pct >= 0 else '#e74c3c'
+            rows += (f'<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #141b38">'
+                     f'<span style="font-size:10px;color:#b8c5e0">BTC {shock:+.0f}%</span>'
+                     f'<span style="font-size:10px;color:{color};font-family:{mono}">{pnl_pct:+.2f}% (${pnl_usd:+,.2f})</span>'
+                     f'</div>')
+        h  = '<div style="background:#07091c;border:1px solid #1a2240;border-radius:10px;padding:14px 18px;margin-bottom:14px">'
+        h += '<div style="font-size:9px;color:#7a8db5;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Stress Test — Posiciones Reales Abiertas Hoy</div>'
+        h += rows
+        h += '</div>'
+        return h
+    except:
+        return ''
+
+
 def generate_html():
     now = datetime.now().strftime('%Y-%m-%d %H:%M')
     mc     = load_mc()
@@ -935,6 +966,7 @@ def generate_html():
     _dca_html  = _dca_benchmark_widget()
     _cs_html   = _btc_cold_storage_widget()
     _gate_html = _executor_gate_widget()
+    _stress_html = _stress_test_widget()
 
     # Walk-forward stats
     wft_done = len(wft)
@@ -2401,6 +2433,7 @@ table.t tr:hover td{{background:rgba(201,162,39,.025)}}
 {_dca_html}
 {_cs_html}
 {_gate_html}
+{_stress_html}
 
 <div class="section-divider">
   <span class="section-divider-text">Mercado &amp; Modelos</span>
@@ -4307,3 +4340,4 @@ if __name__ == '__main__':
         print(f'[DASHBOARD ERROR] {e}', flush=True)
         traceback.print_exc()
         raise
+
