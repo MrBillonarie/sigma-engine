@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-06-17 06:00:02",
-  "n_trades_used": 27,
-  "n_models_tracked": 9,
+  "updated_at": "2026-06-18 06:00:01",
+  "n_trades_used": 29,
+  "n_models_tracked": 11,
   "current_regime": "BEAR",
   "leaderboard": [
     {
@@ -144,6 +144,28 @@
       },
       "_best_regime": "BEAR",
       "_best_score": -0.661
+    },
+    "HG_1h_lower_lows": {
+      "BEAR": {
+        "n": 1,
+        "wr": 0.0,
+        "avg_pnl": -0.871,
+        "last_seen": "2026-06-17 14:35:52.913769",
+        "score": -0.677
+      },
+      "_best_regime": "BEAR",
+      "_best_score": -0.677
+    },
+    "PL_4h_lower_lows": {
+      "BEAR": {
+        "n": 1,
+        "wr": 0.0,
+        "avg_pnl": -1.1396,
+        "last_seen": "2026-06-17 15:31:35.994120",
+        "score": -0.892
+      },
+      "_best_regime": "BEAR",
+      "_best_score": -0.892
     }
   }
 }

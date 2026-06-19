@@ -56,20 +56,9 @@
     "recommendation_at_init": "ESPERAR"
   },
   "BTC_1h_momentum_short": {
-    "equity": 9980.9,
+    "equity": 9988.66,
     "initial": 10000,
-    "open": {
-      "sym": "BTC",
-      "tf": "1h",
-      "strategy": "momentum_short",
-      "direction": "short",
-      "entry": 64212.4,
-      "sl": 65565.8878,
-      "tp": 63084.4935,
-      "sl_dist_pct_at_open": 2.1078,
-      "kelly_pct": 0.1,
-      "opened_at": "2026-06-17 16:01:24"
-    },
+    "open": null,
     "history": [
       {
         "sym": "BTC",
@@ -89,6 +78,25 @@
         "pnl_dollar": -19.1,
         "equity_after": 9980.9,
         "closed_at": "2026-06-14 17:19:08"
+      },
+      {
+        "sym": "BTC",
+        "tf": "1h",
+        "strategy": "momentum_short",
+        "direction": "short",
+        "entry": 64212.4,
+        "sl": 65565.8878,
+        "tp": 63084.4935,
+        "sl_dist_pct_at_open": 2.1078,
+        "kelly_pct": 0.1,
+        "opened_at": "2026-06-17 16:01:24",
+        "exit_price": 63071.3,
+        "reason": "TP_HIT",
+        "pnl_pct_raw": 1.6371,
+        "pnl_pct": 0.0777,
+        "pnl_dollar": 7.7552,
+        "equity_after": 9988.66,
+        "closed_at": "2026-06-18 11:37:00"
       }
     ],
     "created_at": "2026-05-12 19:09:53",
@@ -98,7 +106,18 @@
   "SOL_1h_breakdown": {
     "equity": 10425.39,
     "initial": 10000,
-    "open": null,
+    "open": {
+      "sym": "SOL",
+      "tf": "1h",
+      "strategy": "breakdown",
+      "direction": "short",
+      "entry": 68.75,
+      "sl": 70.559,
+      "tp": 67.3028,
+      "sl_dist_pct_at_open": 2.6313,
+      "kelly_pct": 0.54,
+      "opened_at": "2026-06-18 12:04:25"
+    },
     "history": [
       {
         "sym": "SOL",
@@ -203,7 +222,18 @@
   "LTC_4h_momentum_short": {
     "equity": 10000,
     "initial": 10000,
-    "open": null,
+    "open": {
+      "sym": "LTC",
+      "tf": "4h",
+      "strategy": "momentum_short",
+      "direction": "short",
+      "entry": 43.19,
+      "sl": 44.3829,
+      "tp": 40.2078,
+      "sl_dist_pct_at_open": 2.762,
+      "kelly_pct": 0.74,
+      "opened_at": "2026-06-18 12:18:48"
+    },
     "history": [],
     "created_at": "2026-05-12 19:09:53",
     "pre_initialized": true,
@@ -1588,7 +1618,18 @@
   "NG_4h_tma_bands": {
     "equity": 10000,
     "initial": 10000,
-    "open": null,
+    "open": {
+      "sym": "NG",
+      "tf": "4h",
+      "strategy": "tma_bands",
+      "direction": "long",
+      "entry": 3.149,
+      "sl": 3.0763,
+      "tp": 3.3428,
+      "sl_dist_pct_at_open": 2.3087,
+      "kelly_pct": 0.78,
+      "opened_at": "2026-06-18 09:36:16"
+    },
     "history": [],
     "created_at": "2026-06-16 15:07:02",
     "pre_initialized": true,
@@ -1633,20 +1674,9 @@
     "recommendation_at_init": "ACTIVAR"
   },
   "PL_4h_ichimoku": {
-    "equity": 9905.03,
+    "equity": 9790.93,
     "initial": 10000,
-    "open": {
-      "sym": "PL",
-      "tf": "4h",
-      "strategy": "ichimoku",
-      "direction": "long",
-      "entry": 1742.7,
-      "sl": 1682.008,
-      "tp": 1803.392,
-      "sl_dist_pct_at_open": 3.4826,
-      "kelly_pct": 1.09,
-      "opened_at": "2026-06-17 17:32:28"
-    },
+    "open": null,
     "history": [
       {
         "sym": "PL",
@@ -1666,6 +1696,25 @@
         "pnl_dollar": -94.97,
         "equity_after": 9905.03,
         "closed_at": "2026-06-17 14:43:54"
+      },
+      {
+        "sym": "PL",
+        "tf": "4h",
+        "strategy": "ichimoku",
+        "direction": "long",
+        "entry": 1742.7,
+        "sl": 1682.008,
+        "tp": 1803.392,
+        "sl_dist_pct_at_open": 3.4826,
+        "kelly_pct": 1.09,
+        "opened_at": "2026-06-17 17:32:28",
+        "exit_price": 1681.0,
+        "reason": "SL_HIT",
+        "pnl_pct_raw": -3.6805,
+        "pnl_pct": -1.1519,
+        "pnl_dollar": -114.096,
+        "equity_after": 9790.93,
+        "closed_at": "2026-06-18 20:17:01"
       }
     ],
     "created_at": "2026-06-16 15:18:36",
@@ -1774,7 +1823,18 @@
   "WTI_1h_hull_cross": {
     "equity": 10000,
     "initial": 10000,
-    "open": null,
+    "open": {
+      "sym": "WTI",
+      "tf": "1h",
+      "strategy": "hull_cross",
+      "direction": "long",
+      "entry": 74.1,
+      "sl": 63.7841,
+      "tp": 81.4685,
+      "sl_dist_pct_at_open": 13.9216,
+      "kelly_pct": 1.39,
+      "opened_at": "2026-06-18 04:37:13"
+    },
     "history": [],
     "created_at": "2026-06-17 15:50:46",
     "pre_initialized": true,

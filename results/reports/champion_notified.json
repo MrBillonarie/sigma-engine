@@ -37,10 +37,10 @@
     "XAU|1h": "regime_adaptive|long",
     "HG|1h": "lower_lows|long"
   },
-  "last_notified_at": "2026-06-18T03:06:54.875864",
+  "last_notified_at": "2026-06-19T03:32:03.671512",
   "changes_summary": {
-    "fresh_discoveries": 0,
-    "discoveries": 1,
+    "fresh_discoveries": 1,
+    "discoveries": 0,
     "rotations": 0
   }
 }

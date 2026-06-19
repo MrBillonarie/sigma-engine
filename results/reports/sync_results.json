@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-18T04:00:01.980707",
+  "timestamp": "2026-06-19T04:00:01.879470",
   "models": {
     "1h": [
       {
@@ -45,10 +45,10 @@
       {
         "file": "eth_lower_high_structure_short.json",
         "strategy": "lower_high_structure_short",
-        "cagr_oos": 176.6,
-        "wr_oos": 75.3,
+        "cagr_oos": 205.0,
+        "wr_oos": 76.6,
         "dd_oos": -28.9,
-        "trades_oos": 93
+        "trades_oos": 94
       },
       {
         "file": "ltc_williams_r.json",
@@ -473,18 +473,18 @@
       {
         "file": "eth_lower_high_structure_short.json",
         "strategy": "lower_high_structure_short",
-        "cagr_oos": 111.4,
-        "wr_oos": 73.3,
+        "cagr_oos": 126.2,
+        "wr_oos": 73.4,
         "dd_oos": -46.3,
-        "trades_oos": 288
+        "trades_oos": 290
       },
       {
         "file": "sol_lower_high_structure_short.json",
         "strategy": "lower_high_structure_short",
-        "cagr_oos": 78.6,
-        "wr_oos": 81.1,
+        "cagr_oos": 82.2,
+        "wr_oos": 81.2,
         "dd_oos": -24.6,
-        "trades_oos": 270
+        "trades_oos": 271
       },
       {
         "file": "eth_volatility_breakout.json",

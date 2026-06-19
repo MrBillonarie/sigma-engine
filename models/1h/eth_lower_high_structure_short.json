@@ -12,36 +12,36 @@
   "metrics_is": {
     "trades": 355,
     "wr": 74.9,
-    "cagr": 92.7,
+    "cagr": 92.6,
     "dd": -28.0,
     "pf": 1.41,
     "trades_year": 50.2
   },
   "metrics_oos": {
-    "trades": 93,
-    "wr": 75.3,
-    "cagr": 176.6,
+    "trades": 94,
+    "wr": 76.6,
+    "cagr": 205.0,
     "dd": -28.9,
-    "pf": 1.89,
-    "trades_year": 52.7
+    "pf": 2.05,
+    "trades_year": 53.3
   },
   "oos_days": 644,
-  "saved_at": "2026-06-18 02:53:03.920631",
+  "saved_at": "2026-06-19 03:29:50.245664",
   "validation": {
     "monte_carlo": {
-      "p_pos": 98.5,
-      "median": 193.3,
-      "ic95_lo": 31.4,
-      "ic95_hi": 299.6,
-      "ic80_lo": 98.9,
-      "ic80_hi": 268.1,
+      "p_pos": 99.6,
+      "median": 220.5,
+      "ic95_lo": 73.4,
+      "ic95_hi": 340.5,
+      "ic80_lo": 128.8,
+      "ic80_hi": 298.9,
       "passed": true
     },
     "walk_forward": {
       "windows": 27,
       "positive": 21,
       "pct_positive": 77.8,
-      "avg_cagr": 142.5,
+      "avg_cagr": 147.3,
       "passed": true
     },
     "cross_asset": {
@@ -59,9 +59,9 @@
         },
         {
           "symbol": "LTC/USDT",
-          "cagr": 7.8,
-          "wr": 65.3,
-          "trades": 101
+          "cagr": 8.8,
+          "wr": 65.7,
+          "trades": 102
         }
       ],
       "passed": true
@@ -69,6 +69,15 @@
     "confidence": "ALTA",
     "passed_steps": 3,
     "max_steps": 3,
-    "validated_at": "2026-06-18 02:54:46.616134"
+    "validated_at": "2026-06-19 03:31:42.177020"
+  },
+  "mc": {
+    "mc_cagr_p05": 180.2,
+    "mc_cagr_p50": 613.2,
+    "mc_cagr_p95": 1453.5,
+    "mc_dd_p50": -17.2,
+    "mc_dd_p95": -9.0,
+    "mc_confidence": 99.9,
+    "mc_sims": 1000
   }
 }

@@ -5289,3 +5289,627 @@
   "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
   "computed_at": "2026-06-18T04:30:01.696753-04:00"
 }
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T05:00:01.844465-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T05:30:01.179467-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T06:00:01.993279-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T06:30:02.021366-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T07:00:01.777295-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T07:30:01.516960-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T08:00:01.962337-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T08:30:01.574744-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T09:00:01.529847-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T09:30:01.332294-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T10:00:01.294128-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T10:30:01.705212-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]
+{
+  "kelly_multiplier": 0.791,
+  "dd_current_pct": -4.44,
+  "dd_from_peak_pct": -4.44,
+  "dd_from_init_pct": 10.49,
+  "equity": 11048.68,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "CAUTION",
+  "note": "DD 4.4% (peak=-4.4% init=10.5%) -> Kelly x0.79 [CAUTION]",
+  "computed_at": "2026-06-18T11:00:01.105687-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T11:30:01.537429-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T12:00:01.625797-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T12:30:01.333327-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T13:00:02.035531-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T13:30:01.589513-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T14:00:01.767858-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T14:30:01.587271-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T15:00:01.253859-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T15:30:01.454323-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T16:00:01.392946-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T16:30:01.403926-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T17:00:01.880661-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T17:30:01.929202-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T18:00:02.008279-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T18:30:01.509175-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T19:00:01.535884-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T19:30:01.826485-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T20:00:01.397158-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T20:30:01.575371-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T21:00:01.909169-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T21:30:01.778933-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T22:00:02.055358-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T22:30:01.523132-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T23:00:01.951047-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-18T23:30:01.504001-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-19T00:00:01.128339-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-19T00:30:01.834198-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-19T01:00:01.208133-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-19T01:30:01.092245-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]
+{
+  "kelly_multiplier": 0.913,
+  "dd_current_pct": -1.73,
+  "dd_from_peak_pct": -1.73,
+  "dd_from_init_pct": 13.62,
+  "equity": 11362.48,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.7% (peak=-1.7% init=13.6%) -> Kelly x0.91 [NORMAL]",
+  "computed_at": "2026-06-19T02:00:01.888164-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.9% (peak=-1.9% init=13.4%) -> Kelly x0.90 [NORMAL]
+{
+  "kelly_multiplier": 0.903,
+  "dd_current_pct": -1.93,
+  "dd_from_peak_pct": -1.93,
+  "dd_from_init_pct": 13.39,
+  "equity": 11338.74,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.9% (peak=-1.9% init=13.4%) -> Kelly x0.90 [NORMAL]",
+  "computed_at": "2026-06-19T02:30:02.009812-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.9% (peak=-1.9% init=13.4%) -> Kelly x0.90 [NORMAL]
+{
+  "kelly_multiplier": 0.903,
+  "dd_current_pct": -1.93,
+  "dd_from_peak_pct": -1.93,
+  "dd_from_init_pct": 13.39,
+  "equity": 11338.74,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.9% (peak=-1.9% init=13.4%) -> Kelly x0.90 [NORMAL]",
+  "computed_at": "2026-06-19T03:00:01.732183-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.9% (peak=-1.9% init=13.4%) -> Kelly x0.90 [NORMAL]
+{
+  "kelly_multiplier": 0.903,
+  "dd_current_pct": -1.93,
+  "dd_from_peak_pct": -1.93,
+  "dd_from_init_pct": 13.39,
+  "equity": 11338.74,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.9% (peak=-1.9% init=13.4%) -> Kelly x0.90 [NORMAL]",
+  "computed_at": "2026-06-19T03:30:01.172644-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.9% (peak=-1.9% init=13.4%) -> Kelly x0.90 [NORMAL]
+{
+  "kelly_multiplier": 0.903,
+  "dd_current_pct": -1.93,
+  "dd_from_peak_pct": -1.93,
+  "dd_from_init_pct": 13.39,
+  "equity": 11338.74,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.9% (peak=-1.9% init=13.4%) -> Kelly x0.90 [NORMAL]",
+  "computed_at": "2026-06-19T04:00:01.874595-04:00"
+}
+[EXPOSURE_GUARDIAN] DD 1.9% (peak=-1.9% init=13.4%) -> Kelly x0.90 [NORMAL]
+{
+  "kelly_multiplier": 0.903,
+  "dd_current_pct": -1.93,
+  "dd_from_peak_pct": -1.93,
+  "dd_from_init_pct": 13.39,
+  "equity": 11338.74,
+  "peak_equity": 11562.3,
+  "initial_capital": 10000,
+  "status": "NORMAL",
+  "note": "DD 1.9% (peak=-1.9% init=13.4%) -> Kelly x0.90 [NORMAL]",
+  "computed_at": "2026-06-19T04:30:01.994937-04:00"
+}

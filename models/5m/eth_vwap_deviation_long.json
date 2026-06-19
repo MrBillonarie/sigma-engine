@@ -48,5 +48,14 @@
     "passed_steps": 2,
     "max_steps": 2,
     "validated_at": "2026-06-18 03:06:22.674563"
+  },
+  "mc": {
+    "mc_cagr_p05": -10.2,
+    "mc_cagr_p50": 17.9,
+    "mc_cagr_p95": 35.1,
+    "mc_dd_p50": -17.5,
+    "mc_dd_p95": -9.2,
+    "mc_confidence": 86.7,
+    "mc_sims": 1000
   }
 }

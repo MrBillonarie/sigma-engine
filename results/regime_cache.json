@@ -1,79 +1,79 @@
 {
   "BTC": {
     "regime": "BEAR",
-    "rsi_w": 36.0,
-    "price": 64584.11,
-    "ema200": 75647.071,
-    "pct_vs_ema": -14.6
+    "rsi_w": 34.4,
+    "price": 62666.01,
+    "ema200": 75454.1679,
+    "pct_vs_ema": -16.9
   },
   "ETH": {
     "regime": "BEAR",
-    "rsi_w": 36.1,
-    "price": 1749.46,
-    "ema200": 2276.1204,
-    "pct_vs_ema": -23.1
+    "rsi_w": 34.4,
+    "price": 1697.04,
+    "ema200": 2270.5035,
+    "pct_vs_ema": -25.3
   },
   "LTC": {
     "regime": "BEAR",
-    "rsi_w": 27.8,
-    "price": 44.53,
-    "ema200": 59.4431,
-    "pct_vs_ema": -25.1
+    "rsi_w": 27.0,
+    "price": 43.51,
+    "ema200": 59.2143,
+    "pct_vs_ema": -26.5
   },
   "SOL": {
     "regime": "BEAR",
-    "rsi_w": 32.7,
-    "price": 71.91,
-    "ema200": 94.3365,
-    "pct_vs_ema": -23.8
+    "rsi_w": 30.9,
+    "price": 68.61,
+    "ema200": 93.9254,
+    "pct_vs_ema": -27.0
   },
   "BNB": {
     "regime": "BEAR",
-    "rsi_w": 42.1,
-    "price": 592.1,
-    "ema200": 688.2776,
-    "pct_vs_ema": -14.0
+    "rsi_w": 40.5,
+    "price": 574.53,
+    "ema200": 687.4182,
+    "pct_vs_ema": -16.4
   },
   "XAU": {
-    "regime": "RANGE",
-    "rsi_w": 44.1,
-    "price": 4308.8999,
-    "ema200": 4392.3422,
-    "pct_vs_ema": -1.9
+    "regime": "BEAR",
+    "rsi_w": 40.2,
+    "price": 4183.6001,
+    "ema200": 4387.7012,
+    "pct_vs_ema": -4.7
   },
   "HG": {
     "regime": "BULL",
-    "rsi_w": 65.6,
-    "price": 6.416,
-    "ema200": 5.7093,
-    "pct_vs_ema": 12.4
+    "rsi_w": 63.5,
+    "price": 6.356,
+    "ema200": 5.7139,
+    "pct_vs_ema": 11.2
   },
   "NG": {
     "regime": "BEAR",
-    "rsi_w": 49.2,
-    "price": 3.144,
-    "ema200": 3.3274,
-    "pct_vs_ema": -5.5
+    "rsi_w": 50.1,
+    "price": 3.2,
+    "ema200": 3.3157,
+    "pct_vs_ema": -3.5
   },
   "WTI": {
     "regime": "BEAR",
-    "rsi_w": 44.6,
-    "price": 74.22,
-    "ema200": 80.0747,
-    "pct_vs_ema": -7.3
+    "rsi_w": 45.6,
+    "price": 76.14,
+    "ema200": 80.0423,
+    "pct_vs_ema": -4.9
   },
   "PL": {
     "regime": "BEAR",
-    "rsi_w": 42.5,
-    "price": 1734.1,
-    "ema200": 1871.2873,
-    "pct_vs_ema": -7.3
+    "rsi_w": 40.7,
+    "price": 1684.3,
+    "ema200": 1865.3344,
+    "pct_vs_ema": -9.7
   },
   "XAG": {
-    "regime": "RANGE",
-    "rsi_w": 46.7,
-    "price": 68.42,
-    "ema200": 67.9661,
-    "pct_vs_ema": 0.7
+    "regime": "BEAR",
+    "rsi_w": 43.8,
+    "price": 64.995,
+    "ema200": 67.8443,
+    "pct_vs_ema": -4.2
   }
 }

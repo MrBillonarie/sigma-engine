@@ -27,15 +27,15 @@
     "trades_year": 14.2
   },
   "oos_days": 644,
-  "saved_at": "2026-06-18 04:20:27.488112",
+  "saved_at": "2026-06-18 11:57:50.174636",
   "validation": {
     "monte_carlo": {
       "p_pos": 77.0,
-      "median": 109.4,
-      "ic95_lo": -86.4,
-      "ic95_hi": 590.7,
-      "ic80_lo": -48.9,
-      "ic80_hi": 390.3,
+      "median": 106.8,
+      "ic95_lo": -91.4,
+      "ic95_hi": 583.0,
+      "ic80_lo": -53.4,
+      "ic80_hi": 384.7,
       "passed": true
     },
     "walk_forward": {
@@ -52,9 +52,9 @@
       "results": [
         {
           "symbol": "ETH/USDT",
-          "cagr": -17.3,
-          "wr": 49.0,
-          "trades": 100
+          "cagr": -14.3,
+          "wr": 49.5,
+          "trades": 101
         },
         {
           "symbol": "LTC/USDT",
@@ -68,6 +68,15 @@
     "confidence": "MEDIA",
     "passed_steps": 2,
     "max_steps": 3,
-    "validated_at": "2026-06-18 04:22:16.736861"
+    "validated_at": "2026-06-18 11:59:57.959763"
+  },
+  "mc": {
+    "mc_cagr_p05": -32.5,
+    "mc_cagr_p50": 42.1,
+    "mc_cagr_p95": 157.8,
+    "mc_dd_p50": -43.6,
+    "mc_dd_p95": -25.2,
+    "mc_confidence": 78.9,
+    "mc_sims": 1000
   }
 }

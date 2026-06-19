@@ -1,7 +1,7 @@
 // [SIGMA-HEADER-START]
 // ╔══════════════════════════════════════════════════════════╗
 // ║  SIGMA TERMINAL v13  —  Auto-generado desde VPS         ║
-// ║  Actualizado : 18/06/2026  04:30 hrs (Chile)             ║
+// ║  Actualizado : 19/06/2026  04:30 hrs (Chile)             ║
 // ║  Modelos     : 36 activos                                ║
 // ║  Top modelos : PL 4h:ICH A+ +156%  XAU 1h:REG A+ +205%  E║
 // ╚══════════════════════════════════════════════════════════╝
@@ -761,13 +761,13 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,2,11.0)
         array.set(_p,3,60.0)
         array.set(_p,5,2.3)
-    // ETH/USDT 15m lower_high_structure_short CAGR:+111.4% WR:73% Grade:A+
+    // ETH/USDT 15m lower_high_structure_short CAGR:+126.2% WR:73% Grade:A+
     if str.contains(_tk,"ETH") and _tf_m==15
         array.set(_p,0,1.9)
         array.set(_p,1,1.5)
         array.set(_p,2,10.0)
         array.set(_p,3,60.0)
-    // ETH/USDT 1h lower_high_structure_short CAGR:+176.6% WR:75% Grade:A+
+    // ETH/USDT 1h lower_high_structure_short CAGR:+205.0% WR:77% Grade:A+
     if str.contains(_tk,"ETH") and _tf_m==60
         array.set(_p,0,1.6)
         array.set(_p,1,1.5)
@@ -869,7 +869,7 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,2.0)
         array.set(_p,2,13.0)
         array.set(_p,3,62.0)
-    // SOL/USDT 15m lower_high_structure_short CAGR:+78.6% WR:81% Grade:A+
+    // SOL/USDT 15m lower_high_structure_short CAGR:+82.2% WR:81% Grade:A+
     if str.contains(_tk,"SOL") and _tf_m==15
         array.set(_p,0,3.5)
         array.set(_p,1,1.7)
@@ -979,7 +979,7 @@ f_meta(_tk, _tf_m) =>
     if str.contains(_tk,"ETH") and _tf_m==15
         _r := "A+|0|73|OK"
     if str.contains(_tk,"ETH") and _tf_m==60
-        _r := "A+|0|75|--"
+        _r := "A+|0|77|--"
     if str.contains(_tk,"ETH") and _tf_m==240
         _r := "A|0|59|--"
     if str.contains(_tk,"ETH") and _tf_m==5

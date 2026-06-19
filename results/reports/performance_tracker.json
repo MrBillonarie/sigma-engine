@@ -1,22 +1,22 @@
 {
-  "computed_at": "2026-06-18 04:00",
+  "computed_at": "2026-06-19 04:00",
   "portfolio": {
-    "equity": 11048.68,
+    "equity": 11338.74,
     "initial": 10000,
-    "return_pct": 10.49,
-    "total_trades": 29,
-    "total_wins": 15,
+    "return_pct": 13.39,
+    "total_trades": 30,
+    "total_wins": 16,
     "total_losses": 14,
-    "portfolio_wr": 51.7,
+    "portfolio_wr": 53.3,
     "days_elapsed": 30,
-    "profit_factor": 1.597,
+    "profit_factor": 1.705,
     "max_dd_pct": -8.74
   },
   "gate_summary": {
     "live_gate": 30,
     "strategies_ready": 0,
-    "tracking": 11,
-    "no_data": 70,
+    "tracking": 12,
+    "no_data": 69,
     "beating_backtest": 0
   },
   "strategies": [
@@ -257,6 +257,33 @@
       "wr_delta": -58.1,
       "wr_ci_lo": 0,
       "wr_ci_hi": 73.0,
+      "wr_within_ci": true,
+      "beating_bt": null,
+      "progress_pct": 3.3,
+      "trades_needed": 29,
+      "days_to_gate": 870.0
+    },
+    {
+      "key": "LTC/4h/bearish_rsi_divergence",
+      "sym": "LTC",
+      "tf": "4h",
+      "strat": "bearish_rsi_divergence",
+      "direction": "short",
+      "action": "PASS_LIVE",
+      "grade": "?",
+      "bt_wr": 73.3,
+      "bt_cagr": 39.7,
+      "bt_trades": 45,
+      "bt_dd": -28.7,
+      "live_n": 1,
+      "live_wins": 1,
+      "live_losses": 0,
+      "live_wr": 100.0,
+      "live_pnl": 2.79,
+      "live_avg_pnl": 2.79,
+      "wr_delta": 26.7,
+      "wr_ci_lo": 27.0,
+      "wr_ci_hi": 100,
       "wr_within_ci": true,
       "beating_bt": null,
       "progress_pct": 3.3,
@@ -603,7 +630,7 @@
       "live_wins": 0,
       "live_losses": 0,
       "live_wr": null,
-      "live_pnl": 0,
+      "live_pnl": -0.21,
       "live_avg_pnl": null,
       "wr_delta": null,
       "wr_ci_lo": 0.0,
@@ -865,9 +892,9 @@
       "direction": "short",
       "action": "PASS_LIVE",
       "grade": "?",
-      "bt_wr": 73.3,
-      "bt_cagr": 111.4,
-      "bt_trades": 288,
+      "bt_wr": 73.4,
+      "bt_cagr": 126.2,
+      "bt_trades": 290,
       "bt_dd": -46.3,
       "live_n": 0,
       "live_wins": 0,
@@ -946,9 +973,9 @@
       "direction": "short",
       "action": "PASS_LIVE",
       "grade": "?",
-      "bt_wr": 75.3,
-      "bt_cagr": 176.6,
-      "bt_trades": 93,
+      "bt_wr": 76.6,
+      "bt_cagr": 205.0,
+      "bt_trades": 94,
       "bt_dd": -28.9,
       "live_n": 0,
       "live_wins": 0,
@@ -1425,33 +1452,6 @@
       "days_to_gate": null
     },
     {
-      "key": "LTC/4h/bearish_rsi_divergence",
-      "sym": "LTC",
-      "tf": "4h",
-      "strat": "bearish_rsi_divergence",
-      "direction": "short",
-      "action": "PASS_LIVE",
-      "grade": "?",
-      "bt_wr": 73.3,
-      "bt_cagr": 39.7,
-      "bt_trades": 45,
-      "bt_dd": -28.7,
-      "live_n": 0,
-      "live_wins": 0,
-      "live_losses": 0,
-      "live_wr": null,
-      "live_pnl": -0.05,
-      "live_avg_pnl": null,
-      "wr_delta": null,
-      "wr_ci_lo": 0.0,
-      "wr_ci_hi": 100.0,
-      "wr_within_ci": null,
-      "beating_bt": null,
-      "progress_pct": 0.0,
-      "trades_needed": 30,
-      "days_to_gate": null
-    },
-    {
       "key": "LTC/4h/momentum_short",
       "sym": "LTC",
       "tf": "4h",
@@ -1702,9 +1702,9 @@
       "direction": "short",
       "action": "PASS_LIVE",
       "grade": "?",
-      "bt_wr": 81.1,
-      "bt_cagr": 78.6,
-      "bt_trades": 270,
+      "bt_wr": 81.2,
+      "bt_cagr": 82.2,
+      "bt_trades": 271,
       "bt_dd": -24.6,
       "live_n": 0,
       "live_wins": 0,
@@ -2211,21 +2211,21 @@
   "gate_evaluation": {
     "verdict": "NO-GO",
     "passed": [
+      "trades",
       "days",
       "max_dd",
       "pf",
       "equity"
     ],
     "failed": [
-      "trades",
       "wr",
       "beating_bt"
     ],
     "checks": {
       "trades": {
-        "val": 29,
+        "val": 30,
         "req": ">= 30",
-        "ok": false
+        "ok": true
       },
       "days": {
         "val": 30,
@@ -2233,7 +2233,7 @@
         "ok": true
       },
       "wr": {
-        "val": "51.7%",
+        "val": "53.3%",
         "req": ">= 55.0%",
         "ok": false
       },
@@ -2243,12 +2243,12 @@
         "ok": true
       },
       "pf": {
-        "val": "1.60",
+        "val": "1.71",
         "req": ">= 1.2",
         "ok": true
       },
       "equity": {
-        "val": "$11,049",
+        "val": "$11,339",
         "req": ">= $9,000",
         "ok": true
       },
@@ -2260,13 +2260,13 @@
     }
   },
   "kelly": {
-    "n": 33,
-    "wr_pct": 57.6,
-    "avg_win_pct": 1.927,
-    "avg_loss_pct": 1.638,
-    "profit_factor": 1.597,
-    "kelly_full_pct": 13.14,
-    "kelly_half_pct": 6.57,
+    "n": 35,
+    "wr_pct": 57.1,
+    "avg_win_pct": 1.973,
+    "avg_loss_pct": 1.542,
+    "profit_factor": 1.705,
+    "kelly_full_pct": 15.32,
+    "kelly_half_pct": 7.66,
     "recommended_pct": 5.0
   },
   "divergence_alerts": []

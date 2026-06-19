@@ -4,9 +4,9 @@
 0 3 * * 1 cd /opt/sigma && /opt/sigma_env/bin/python -u engine/optimization/walk_forward_v2.py --tf 1h --trials 60 > results/reports/wft_eth.log 2>&1
 0 * * * * cd /opt/sigma && /opt/sigma_env/bin/python sync_models.py >> results/reports/sync.log 2>&1
 */15 * * * * systemctl is-active sigma-pipeline || systemctl start sigma-pipeline
-*/2 * * * * curl -sf --max-time 10 http://localhost:8080/api/stats > /dev/null 2>&1 || (sleep 30 && curl -sf --max-time 10 http://localhost:8080/api/stats > /dev/null 2>&1) || (fuser -k 8080/tcp 2>/dev/null; sleep 1; systemctl start sigma-web) # web watchdog
+*/2 * * * * curl -sf --max-time 10 http://localhost:8080/api/stats > /dev/null 2>&1 || (sleep 30 && curl -sf --max-time 10 http://localhost:8080/api/stats > /dev/null 2>&1) || systemctl restart sigma-web # web watchdog (graceful, 2026-06-17: antes usaba fuser -k que mataba con SIGKILL sin avisar)
 30 0 * * * cd /opt/sigma && /opt/sigma_env/bin/python update_data.py >> results/reports/update_data.log 2>&1
-30 3 1 * * cd /opt/sigma && /opt/sigma_env/bin/python engine/live/decay_monitor.py --days 90 >> results/reports/decay_cron.log 2>&1
+30 3 * * 0 cd /opt/sigma && /opt/sigma_env/bin/python engine/live/decay_monitor.py --days 90 >> results/reports/decay_cron.log 2>&1
 # Actualizar datos BTC diario 00:30 UTC
 # Monte Carlo y correlacion cada semana (domingo 03:00)
 # Reactivar sigma-trainer tras aceleracion pipeline
@@ -35,7 +35,7 @@ CRON_TZ=America/Santiago
 # Adaptive Grade-A pusher — corre cada hora si load < 7
 30 * * * * /opt/sigma_env/bin/python /opt/sigma/scripts/adaptive_push_launcher.py
 # IBKR positions fetcher (Read-Only API, datos filtrados sin USD)
-*/5 * * * * /opt/sigma_env/bin/python /opt/sigma/ibkr/ibkr_fetcher.py >> /opt/sigma/ibkr/logs/cron.log 2>&1
+0 * * * * /opt/sigma_env/bin/python /opt/sigma/ibkr/ibkr_fetcher.py >> /opt/sigma/ibkr/logs/cron.log 2>&1
 0 1 * * * /opt/sigma_env/bin/python /opt/sigma/update_xau_data.py >> /opt/sigma/results/reports/xau_update.log 2>&1
 # Backup nocturno de codigo: git commit + code tar.gz (04:30)
 30 4 * * * /opt/sigma/scripts/nightly_backup.sh
@@ -70,3 +70,11 @@ CRON_TZ=America/Santiago
 # Agente 7: Volatility Targeting - cada 30min
 */30 * * * * /opt/sigma_env/bin/python /opt/sigma/engine/live/vol_targeting.py >> /opt/sigma/logs/vol_target.log 2>&1
 30 3 * * 0 sqlite3 /opt/sigma/models/optuna_studies.db 'PRAGMA wal_checkpoint(TRUNCATE);' >> /opt/sigma/logs/vacuum.log 2>&1
+0 6 * * * /opt/sigma_env/bin/python3 /opt/sigma/engine/live/regime_memory.py >> /opt/sigma/results/reports/regime_memory.log 2>&1
+0 7 * * 1 /opt/sigma_env/bin/python3 /opt/sigma/engine/live/lifespan_tracker.py >> /opt/sigma/results/reports/lifespan.log 2>&1
+0 */6 * * * /opt/sigma_env/bin/python /opt/sigma/scripts/freeze_champion.py auto >> /opt/sigma/results/reports/freeze_monitor.log 2>&1
+# EIA inventory — Wed/Thu 14:30 UTC (post-report)
+30 14 * * 3,4 /opt/sigma_env/bin/python /opt/sigma/engine/commodities/eia_fetcher.py >> /opt/sigma/results/reports/eia_fetcher.log 2>&1
+30 1 * * * /opt/sigma_env/bin/python3 /opt/sigma/update_eia_data.py >> /opt/sigma/results/reports/eia_update.log 2>&1
+# Regenera port_snapshot M1+M2 cada 30min
+*/30 * * * * cd /opt/sigma && /opt/sigma_env/bin/python champion_watcher.py --seed-only >> results/reports/champion_watcher.log 2>&1

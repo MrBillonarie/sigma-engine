@@ -1,24 +1,5 @@
 {
   "open": {
-    "LTC_4h": {
-      "sym": "LTC",
-      "tf": "4h",
-      "direction": "short",
-      "entry": 44.91,
-      "sl": 44.8651,
-      "tp": 43.7323,
-      "sl_dist_pct_at_open": 3.7909,
-      "strategy": "bearish_rsi_divergence",
-      "grade": "A",
-      "wr": 73.3,
-      "cagr": 39.7,
-      "kelly_pct": 4.29,
-      "mode": "LIVE",
-      "opened_at": "2026-06-17 21:26:12.752588",
-      "status": "open",
-      "pnl_pct": 1.0079,
-      "be_set": true
-    },
     "WTI_1d": {
       "sym": "WTI",
       "tf": "1d",
@@ -35,7 +16,25 @@
       "mode": "PAPER",
       "opened_at": "2026-06-17 22:56:16.274000",
       "status": "open",
-      "pnl_pct": 0.1259
+      "pnl_pct": -0.1057
+    },
+    "SOL_4h": {
+      "sym": "SOL",
+      "tf": "4h",
+      "direction": "short",
+      "entry": 68.77,
+      "sl": 73.9804,
+      "tp": 65.1034,
+      "sl_dist_pct_at_open": 7.5766,
+      "strategy": "supply_zone_rejection",
+      "grade": "A+",
+      "wr": 70.4,
+      "cagr": 28.3,
+      "kelly_pct": 1.26,
+      "mode": "LIVE",
+      "opened_at": "2026-06-18 12:17:52.978788",
+      "status": "open",
+      "pnl_pct": 0.0629
     }
   },
   "history": [
@@ -1038,6 +1037,65 @@
       "equity_after": 11048.68,
       "regime_at_close": "BEAR",
       "cooldown_seconds": 3600
+    },
+    {
+      "sym": "LTC",
+      "tf": "4h",
+      "direction": "short",
+      "entry": 44.91,
+      "sl": 44.8651,
+      "tp": 43.7323,
+      "sl_dist_pct_at_open": 3.7909,
+      "strategy": "bearish_rsi_divergence",
+      "grade": "A",
+      "wr": 73.3,
+      "cagr": 39.7,
+      "kelly_pct": 4.29,
+      "mode": "LIVE",
+      "opened_at": "2026-06-17 21:26:12.752588",
+      "status": "TP_HIT",
+      "pnl_pct": 2.8402,
+      "be_set": true,
+      "exit_price": 43.72,
+      "pnl_pct_raw": 2.6497,
+      "pnl_dollar": 313.8046,
+      "kelly_pct_used": 4.29,
+      "reason": "TP_HIT",
+      "closed_at": "2026-06-18 11:17:24.834095",
+      "commission": 0.0355,
+      "funding": 0.0,
+      "equity_after": 11362.48,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 1800
+    },
+    {
+      "sym": "BTC",
+      "tf": "15m",
+      "direction": "short",
+      "entry": 62634.3,
+      "sl": 63650.6991,
+      "tp": 61705.0208,
+      "sl_dist_pct_at_open": 1.6228,
+      "strategy": "dmi_bear",
+      "grade": "A",
+      "wr": 64.8,
+      "cagr": 40.4,
+      "kelly_pct": 1.0,
+      "mode": "PAPER",
+      "opened_at": "2026-06-18 14:08:02.291083",
+      "status": "TIME_LIMIT",
+      "pnl_pct": -0.2089,
+      "exit_price": 62758.9,
+      "pnl_pct_raw": -0.1989,
+      "pnl_dollar": -23.7362,
+      "kelly_pct_used": 1.0,
+      "reason": "TIME_LIMIT",
+      "closed_at": "2026-06-19 02:08:02.839053",
+      "commission": 50.1573,
+      "funding": 0.0,
+      "equity_after": 11338.74,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 3600
     }
   ],
   "circuit_breaker": {
@@ -1049,10 +1107,10 @@
   "cooldowns": {},
   "portfolio": {
     "initial_capital": 10000,
-    "equity": 11048.68,
+    "equity": 11338.74,
     "start_date": "2026-05-10",
     "max_dd_pct": -7.3,
-    "total_commission": 60.1047,
+    "total_commission": 110.2975,
     "peak_equity": 11562.3,
     "equity_history": [
       {
@@ -1118,6 +1176,14 @@
       {
         "eq": 11048.68,
         "date": "2026-06-17"
+      },
+      {
+        "eq": 11362.48,
+        "date": "2026-06-18"
+      },
+      {
+        "eq": 11338.74,
+        "date": "2026-06-19"
       }
     ]
   },

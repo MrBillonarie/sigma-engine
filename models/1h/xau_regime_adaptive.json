@@ -63,7 +63,7 @@
     "validated_at": "2026-06-07 15:41:16.286473"
   },
   "mc": {
-    "mc_cagr_p05": 1007.9,
+    "mc_cagr_p05": 891.1,
     "mc_cagr_p50": 2061.6,
     "mc_cagr_p95": 4614.4,
     "mc_dd_p50": -21.3,
@@ -76,6 +76,6 @@
     "reasons": [
       "[WARN] FEW_TRADES: 20 trades OOS (estadistica debil)"
     ],
-    "validated_at": "2026-06-17T20:30:01.691412-04:00"
+    "validated_at": "2026-06-18T21:00:02.055962-04:00"
   }
 }

@@ -1,14 +1,14 @@
 {
-  "port_cagr": 65.0984,
-  "port_cagr_kelly_boost": 1.4361,
-  "port_cagr_with_kelly": 66.5345,
-  "port_wr": 68.5461296129613,
-  "port_dd": -27.35922592259226,
-  "port_pf": 1.73,
-  "port_calmar": 2.38,
-  "total_trades": 2222,
+  "port_cagr": 68.7618,
+  "port_cagr_kelly_boost": 1.547,
+  "port_cagr_with_kelly": 70.3088,
+  "port_wr": 68.63917340521114,
+  "port_dd": -27.375696316262356,
+  "port_pf": 1.75,
+  "port_calmar": 2.51,
+  "total_trades": 2226,
   "n_grade_a": 25,
-  "snapshot_at": "2026-06-18T08:30:01.759828Z",
+  "snapshot_at": "2026-06-19T08:30:02.101630Z",
   "trigger": "champion_watcher refresh",
   "champions": {
     "XAU|1d": "ichimoku|long",
@@ -48,9 +48,9 @@
     "XAU|1h": "regime_adaptive|long",
     "HG|1h": "lower_lows|long"
   },
-  "port_cagr_operational": 65.1,
-  "port_cagr_pass_live": 74.56,
-  "port_cagr_all_inc_blocked": 65.1,
+  "port_cagr_operational": 68.76,
+  "port_cagr_pass_live": 79.14,
+  "port_cagr_all_inc_blocked": 68.76,
   "n_pass_live": 29,
   "n_blocked": 0
 }
