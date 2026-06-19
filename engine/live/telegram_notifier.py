@@ -818,6 +818,94 @@ def cmd_nuevas(chat_id):
 
 
 
+# ── AUM total (capital propio + seguidores de Copy Trading) ──────────────
+# Binance no expone el AUM de seguidores por API (probado 2026-06-19: el
+# endpoint publico esta detras de AWS WAF challenge, y el SAPI de copy
+# trading autenticado no trae ese dato) -- se actualiza a mano via /aum N
+# leyendo https://www.binance.com/.../copy-trading/lead-details/<id>
+_AUM_FILE = '/opt/sigma/results/reports/aum.json'
+
+def _aum_own_balance():
+    """Balance real de Binance, consultado en vivo -- no usar
+    _fire_current_equity() aca: su fallback (equity_after del ultimo trade
+    LIVE en history) quedo corrupto con un valor de paper equity para el
+    primer trade LIVE (LTC, 2026-06-17), asi que no es confiable para AUM."""
+    try:
+        import sys as _sys
+        if '/opt/sigma' not in _sys.path:
+            _sys.path.insert(0, '/opt/sigma')
+        from engine.live.live_executor import _get_exchange
+        ex = _get_exchange()
+        bal = ex.fetch_balance()
+        return float(bal.get('USDT', {}).get('total', 0))
+    except Exception as e:
+        print(f"[AUM] No se pudo leer balance real: {e}", flush=True)
+        return None
+
+def _aum_load():
+    import json as _j, os as _os
+    if not _os.path.exists(_AUM_FILE):
+        return {"aum_total": None, "updated_at": None}
+    try:
+        with open(_AUM_FILE) as f:
+            return _j.load(f)
+    except Exception:
+        return {"aum_total": None, "updated_at": None}
+
+def _aum_save(value):
+    import json as _j, os as _os, datetime as _dt
+    _os.makedirs(_os.path.dirname(_AUM_FILE), exist_ok=True)
+    data = {"aum_total": value, "updated_at": _dt.datetime.now().strftime('%Y-%m-%d %H:%M')}
+    with open(_AUM_FILE, 'w') as f:
+        _j.dump(data, f, indent=2)
+    return data
+
+def cmd_aum(chat_id, args):
+    """/aum -> muestra AUM total guardado. /aum N -> actualiza el AUM total."""
+    args = (args or "").strip()
+    if args:
+        try:
+            value = float(args.replace(',', '').replace('$', ''))
+        except ValueError:
+            send(f"No pude leer ese numero: <code>{args}</code>\nUso: <code>/aum 1337.95</code>", chat_id=chat_id)
+            return
+        data = _aum_save(value)
+        own = _aum_own_balance()
+        own_txt = f"${own:,.2f}" if own is not None else "— (no se pudo leer Binance)"
+        followers_txt = f"${max(0.0, value - own):,.2f}" if own is not None else "—"
+        send(
+            f"✅ <b>AUM actualizado</b>\n"
+            f"Total gestionado: <b>${value:,.2f}</b>\n"
+            f"Capital propio (Binance): {own_txt}\n"
+            f"Capital de seguidores (estimado): {followers_txt}\n\n"
+            f"Fuente: pagina publica de Copy Trading (manual, Binance no la expone por API).",
+            chat_id=chat_id
+        )
+        return
+
+    data = _aum_load()
+    aum_total = data.get('aum_total')
+    if aum_total is None:
+        send(
+            "Todavia no hay AUM guardado.\n"
+            "Usa <code>/aum 1337.95</code> con el numero que ves en tu pagina de Copy Trading.",
+            chat_id=chat_id
+        )
+        return
+    own = _aum_own_balance()
+    own_txt = f"${own:,.2f}" if own is not None else "— (no se pudo leer Binance)"
+    followers_txt = f"${max(0.0, aum_total - own):,.2f}" if own is not None else "—"
+    send(
+        f"💰 <b>AUM TOTAL GESTIONADO</b>\n\n"
+        f"Total: <b>${aum_total:,.2f}</b>\n"
+        f"Capital propio (Binance): {own_txt}\n"
+        f"Capital de seguidores (estimado): {followers_txt}\n\n"
+        f"Ultima actualizacion: {data.get('updated_at','?')}\n"
+        f"Actualizar: <code>/aum 1337.95</code>",
+        chat_id=chat_id
+    )
+
+
 # ── FIRE Tracker (Financial Independence Retire Early) ───────────────────
 _FIRE_CONFIG_PATH = '/opt/sigma/results/fire_config.json'
 
@@ -839,16 +927,21 @@ def _fire_save_config(cfg):
         _j.dump(cfg, f, indent=2)
 
 def _fire_current_equity():
-    """Lee equity actual del paper trader principal."""
+    """Equity actual: balance real de Binance si ya hay trades LIVE,
+    si no, simulacion de paper trading (compounding de pnl_pct desde starting_equity)."""
     import json as _j
     try:
         with open('/opt/sigma/results/trade_state.json') as f:
             state = _j.load(f)
-        # Calcular equity desde history (suma de pnl_pct sobre starting)
         cfg = _fire_load_config()
-        start = cfg.get('starting_equity', 10000)
         history = state.get('history', [])
-        # Compounding: cada trade pnl_pct% acumulado
+        # 2026-06-19: una vez que hay capital real en juego, el balance real de
+        # Binance es la verdad -- no la formula de paper (que asumia $10k ficticios
+        # y nunca se conecto a la cuenta real cuando se activo LIVE el 06-17).
+        live_with_equity = [t for t in history if t.get('mode') == 'LIVE' and t.get('equity_after')]
+        if live_with_equity:
+            return float(live_with_equity[-1]['equity_after'])
+        start = cfg.get('starting_equity', 10000)
         eq = start
         for t in history:
             pnl = t.get('pnl_pct', 0) / 100
@@ -1109,6 +1202,8 @@ def cmd_ayuda(chat_id):
         "/portfolio     3 vistas del CAGR ponderado (real/top/simple)\n"
         "/fire          Tracker FIRE: progreso al objetivo de portafolio\n"
         "/fire set N D  Configurar meta FIRE ($N en D días)\n"
+        "/aum           AUM total gestionado (propio + seguidores)\n"
+        "/aum N         Actualizar el AUM total (manual)\n"
         f"/checklist    Checklist para activar live trading\n"
         f"/salud        Health check del sistema\n"
         "/performance  Performance live vs backtest\n"
@@ -1144,6 +1239,8 @@ def handle_command(text, chat_id, signals, trades):
             cmd_fire_set(chat_id, args[3:].strip())
         else:
             cmd_fire(chat_id)
+    elif cmd_raw == "/aum":
+        cmd_aum(chat_id, args)
     elif cmd_raw in ("/modelo", "/model"):
         cmd_modelo(chat_id, args, signals)
     elif cmd_raw in ("/checklist", "/live"):
@@ -1941,3 +2038,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         send("🔴 <b>SIGMA Notifier detenido.</b>", silent=True)
         print("\nDetenido.")
+

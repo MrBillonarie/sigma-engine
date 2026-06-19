@@ -909,6 +909,49 @@ def _stress_test_widget():
         return ''
 
 
+def _aum_widget():
+    """HTML: AUM total gestionado (capital propio + seguidores de Copy
+    Trading). El AUM total es manual (Binance no lo expone por API,
+    actualizado via /aum N en Telegram); el capital propio se lee en vivo
+    de Binance directo, no del historial (ver _aum_own_balance en
+    telegram_notifier.py)."""
+    try:
+        aum_f = Path('/opt/sigma/results/reports/aum.json')
+        if not aum_f.exists():
+            return ''
+        aum = json.loads(aum_f.read_text())
+        aum_total = aum.get('aum_total')
+        if aum_total is None:
+            return ''
+        try:
+            import sys as _sys_aum
+            if '/opt/sigma' not in _sys_aum.path:
+                _sys_aum.path.insert(0, '/opt/sigma')
+            from engine.live.live_executor import _get_exchange as _aum_get_ex
+            own = float(_aum_get_ex().fetch_balance().get('USDT', {}).get('total', 0))
+        except Exception:
+            own = None
+        mono = 'IBM Plex Mono,monospace'
+        own_txt = f'${own:,.2f}' if own is not None else '—'
+        followers_txt = f'${max(0.0, aum_total - own):,.2f}' if own is not None else '—'
+        h  = '<div style="background:#07091c;border:1px solid #1a2240;border-radius:10px;padding:14px 18px;margin-bottom:14px">'
+        h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">'
+        h += '<div style="font-size:9px;color:#7a8db5;letter-spacing:1px;text-transform:uppercase">AUM Total Gestionado</div>'
+        h += f'<div style="font-size:9px;color:#7a8db5;font-family:{mono}">act. {aum.get("updated_at","?")}</div>'
+        h += '</div>'
+        h += f'<div style="font-size:22px;font-weight:800;color:#d4af37;font-family:{mono};margin-bottom:8px">${aum_total:,.2f}</div>'
+        h += (f'<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #141b38">'
+              f'<span style="font-size:10px;color:#b8c5e0">Capital propio (Binance)</span>'
+              f'<span style="font-size:10px;color:#2ecc71;font-family:{mono}">{own_txt}</span></div>')
+        h += (f'<div style="display:flex;justify-content:space-between;padding:4px 0">'
+              f'<span style="font-size:10px;color:#b8c5e0">Capital de seguidores (Copy Trading)</span>'
+              f'<span style="font-size:10px;color:#378ADD;font-family:{mono}">{followers_txt}</span></div>')
+        h += '</div>'
+        return h
+    except:
+        return ''
+
+
 def generate_html():
     now = datetime.now().strftime('%Y-%m-%d %H:%M')
     mc     = load_mc()
@@ -967,6 +1010,7 @@ def generate_html():
     _cs_html   = _btc_cold_storage_widget()
     _gate_html = _executor_gate_widget()
     _stress_html = _stress_test_widget()
+    _aum_html = _aum_widget()
 
     # Walk-forward stats
     wft_done = len(wft)
@@ -2434,6 +2478,7 @@ table.t tr:hover td{{background:rgba(201,162,39,.025)}}
 {_cs_html}
 {_gate_html}
 {_stress_html}
+{_aum_html}
 
 <div class="section-divider">
   <span class="section-divider-text">Mercado &amp; Modelos</span>
@@ -4340,4 +4385,5 @@ if __name__ == '__main__':
         print(f'[DASHBOARD ERROR] {e}', flush=True)
         traceback.print_exc()
         raise
+
 

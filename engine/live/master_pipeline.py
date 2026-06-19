@@ -72,7 +72,7 @@ TRIALS_BY_TF = {'4h': 250, '1h': 300, '15m': 300, '5m': 150, '1m': 35}  # 2026-0
 # Con 60 trials Optuna TPE igual encuentra buenas soluciones
 
 # 4 slots paralelos — sigma-trainer pausado, tenemos 3.5+ cores libres
-MAX_PARALLEL = 4   # subido 2026-06-19 (era 2 desde 2026-06-17): load se mantuvo 5.3-5.6/8 varios dias, hay margen sin repetir el incidente de load 22.7
+MAX_PARALLEL = 2   # revertido 2026-06-19: subir a 4 sumado a gap_auto_launcher+adaptive_push_launcher (no coordinados) llevo load a 13.12/8, mismo patron del incidente del 17-06. Investigar coordinacion global antes de volver a subir.
 MIN_RAM_GB  = 2.0   # No lanzar si RAM libre < 2.0GB
 
 running_procs = {}

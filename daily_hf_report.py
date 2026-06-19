@@ -162,6 +162,21 @@ def build_report():
         lines.append(f'  Sortino live: {live_sortino:+.2f}  (annualized, downside-only)')
     lines.append('')
 
+    aum = _load(BASE / 'results/reports/aum.json')
+    aum_total = aum.get('aum_total')
+    if aum_total is not None:
+        try:
+            from engine.live.live_executor import _get_exchange as _aum_ex
+            own_real = float(_aum_ex().fetch_balance().get('USDT', {}).get('total', 0))
+        except Exception:
+            own_real = None
+        lines.append('AUM TOTAL GESTIONADO')
+        lines.append(f'  Total: ${aum_total:,.2f}  (manual, act. {aum.get("updated_at","?")})')
+        if own_real is not None:
+            lines.append(f'  Capital propio (Binance): ${own_real:,.2f}')
+            lines.append(f'  Capital de seguidores (Copy Trading): ${max(0.0, aum_total - own_real):,.2f}')
+        lines.append('')
+
     lines.append('P&L PERIODS')
     lines.append(f'  Hoy ({today_n} trades) : {today_pnl:+.2f}%  WR {today_wr:.0f}%')
     lines.append(f'  MTD ({mtd_n} trades)   : {mtd_pnl:+.2f}%  WR {mtd_wr:.0f}%')
@@ -275,4 +290,5 @@ if __name__ == '__main__':
                 print('[TG] Exception:', e, flush=True)
         else:
             print('[TG] No token disponible', flush=True)
+
 
