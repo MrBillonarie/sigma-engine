@@ -30,21 +30,21 @@
   "oos_days": 637,
   "saved_at": "2026-05-10 17:37:29.638228",
   "wft": {
-    "oos_win_rate": 62.5,
-    "n_windows": 8,
-    "positive_windows": 5,
-    "avg_cagr_oos": 22.12,
-    "avg_cagr_pos": 39.58,
+    "oos_win_rate": 66.7,
+    "n_windows": 9,
+    "positive_windows": 6,
+    "avg_cagr_oos": 18.72,
+    "avg_cagr_pos": 31.55,
     "verdict": "PASS",
-    "date": "2026-06-14 02:19"
+    "date": "2026-06-21 02:04"
   },
   "mc": {
     "mc_cagr_p05": -35.2,
     "mc_cagr_p50": 5.9,
     "mc_cagr_p95": 73.0,
     "mc_dd_p50": -40.5,
-    "mc_dd_p95": -16.7,
-    "mc_confidence": 62.9,
+    "mc_dd_p95": -17.9,
+    "mc_confidence": 61.1,
     "mc_sims": 1000
   },
   "validation": {

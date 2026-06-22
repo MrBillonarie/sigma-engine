@@ -211,6 +211,88 @@ def position_correlation_gate(open_positions, new_signal, cluster_map=None, max_
     }
 
 
+# ========================================================================
+# 5. SELECTION BIAS / MULTIPLE-TESTING DIAGNOSTIC
+# ========================================================================
+# Agregado 2026-06-20 — el robustness gate (utils/robustness.py) ya filtra
+# overfit IS/OOS por modelo individual, pero no corrige por el hecho de que
+# cada champion es "el mejor de N intentos" de busqueda Optuna (N tipico
+# 1000-7000 trials por slot). Con N grande, el maximo esperado por pura
+# varianza de muestreo ya es alto aunque ninguna config tenga skill real
+# diferenciado — hay que comparar el mejor valor contra ESE piso, no contra
+# cero. Metodologia: extreme value approx de Lopez de Prado/Bailey (2014),
+# aplicada aqui sobre la distribucion empirica de scores Optuna en vez de
+# Sharpe puro (no tenemos retornos trade-a-trade por trial).
+
+def expected_max_order_statistic(mu, sigma, n):
+    """E[max de n variables iid ~ N(mu,sigma)] -- aproximacion extreme value.
+
+    Formula de Bailey & Lopez de Prado (2014): el maximo esperado de n draws
+    independientes de una normal crece con log(n), no con n -- pero crece, y
+    hay que restarlo antes de creer que "el mejor de N" tiene skill real.
+    """
+    if n < 2 or sigma <= 0:
+        return mu
+    from scipy.stats import norm
+    gamma = 0.5772156649015329  # constante de Euler-Mascheroni
+    z1 = float(norm.ppf(1 - 1.0 / n))
+    z2 = float(norm.ppf(1 - 1.0 / (n * math.e)))
+    return mu + sigma * ((1 - gamma) * z1 + gamma * z2)
+
+
+def selection_bias_test(trial_values, best_value=None, invalid_floor=-9000):
+    """Dado el conjunto completo de scores Optuna de una busqueda (incluye
+    trials descalificados con valor invalid_floor, se filtran), testea si el
+    mejor resultado (el que se convirtio en champion) es un outlier genuino
+    o esta dentro de lo que se esperaria por pura varianza de muestreo dado
+    cuantas configuraciones se probaron.
+
+    No es un test de "skill vs no-skill" clasico -- las configuraciones SI
+    difieren en performance real. Es un diagnostico de cuanto del "mejor
+    resultado" ya se explica solo por haber probado muchas configuraciones
+    parecidas, vs. ser un outlier que sobresale incluso contra esa varianza.
+    """
+    vals = [v for v in trial_values if v is not None and v > invalid_floor]
+    n = len(vals)
+    if n < 10:
+        return {"status": "INSUFFICIENT_TRIALS", "n": n}
+
+    if best_value is None:
+        best_value = max(vals)
+
+    rest = [v for v in vals if v != best_value]
+    if len(rest) < 5:
+        rest = vals  # poblacion "resto" muy chica -> usa la poblacion completa
+
+    mu = mean(rest)
+    sigma = stdev(rest) if len(rest) > 1 else 0.0
+    if sigma == 0:
+        return {"status": "ZERO_VARIANCE", "n": n, "mu": round(mu, 4)}
+
+    expected_max = expected_max_order_statistic(mu, sigma, n)
+    z_above_expected = (best_value - expected_max) / sigma
+
+    if z_above_expected < 0.0:
+        verdict = "SELECTION_NOISE_LIKELY"
+    elif z_above_expected < 0.5:
+        verdict = "WEAK_SIGNAL"
+    elif z_above_expected < 1.5:
+        verdict = "MODERATE_SIGNAL"
+    else:
+        verdict = "GENUINE_STANDOUT"
+
+    return {
+        "status": "OK",
+        "n_trials": n,
+        "best_value": round(best_value, 4),
+        "population_mean": round(mu, 4),
+        "population_std": round(sigma, 4),
+        "expected_max_by_luck": round(expected_max, 4),
+        "z_above_expected_luck": round(z_above_expected, 3),
+        "verdict": verdict,
+    }
+
+
 if __name__ == "__main__":
     print("=" * 60)
     print(" SIGMA QUANT TOOLKIT - Self-tests")
@@ -241,4 +323,12 @@ if __name__ == "__main__":
     opens = [{"sym": "BTC", "direction": "long"}, {"sym": "ETH", "direction": "long"}]
     print("  LTC long w/ BTC+ETH long:", position_correlation_gate(opens, {"sym": "LTC", "type": "long"}))
     print("  SOL long w/ BTC+ETH long:", position_correlation_gate(opens, {"sym": "SOL", "type": "long"}))
+
+    print("\n[5] Selection Bias Test:")
+    import random
+    random.seed(42)
+    noise_only = [random.gauss(0.30, 0.05) for _ in range(2000)]
+    print("  2000 trials, sin outlier real:", selection_bias_test(noise_only))
+    real_edge = noise_only[:-1] + [0.30 + 0.05 * 4]  # un trial 4-sigma por encima
+    print("  2000 trials, 1 outlier 4-sigma:", selection_bias_test(real_edge))
 

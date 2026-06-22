@@ -12,50 +12,59 @@
   "metrics_is": {
     "trades": 1000,
     "wr": 75.6,
-    "cagr": 131.4,
+    "cagr": 131.2,
     "dd": -51.0,
     "pf": 1.29,
-    "trades_year": 141.5
+    "trades_year": 141.4
   },
   "metrics_oos": {
-    "trades": 290,
-    "wr": 73.4,
-    "cagr": 126.2,
+    "trades": 293,
+    "wr": 73.7,
+    "cagr": 147.5,
     "dd": -46.3,
-    "pf": 1.4,
-    "trades_year": 164.5
+    "pf": 1.49,
+    "trades_year": 166.2
   },
   "oos_days": 644,
-  "saved_at": "2026-06-18 17:09:18.452547",
+  "saved_at": "2026-06-21 01:05:19.836433",
   "validation": {
     "monte_carlo": {
-      "p_pos": 96.4,
-      "median": 32.3,
-      "ic95_lo": -7.5,
-      "ic95_hi": 48.6,
-      "ic80_lo": 14.1,
-      "ic80_hi": 43.3,
+      "p_pos": 98.5,
+      "median": 35.9,
+      "ic95_lo": 5.9,
+      "ic95_hi": 50.0,
+      "ic80_lo": 20.4,
+      "ic80_hi": 45.7,
       "passed": true
     },
     "walk_forward": {
       "windows": 29,
-      "positive": 23,
-      "pct_positive": 79.3,
-      "avg_cagr": 556.5,
+      "positive": 21,
+      "pct_positive": 72.4,
+      "avg_cagr": 625.5,
       "passed": true
     },
     "confidence": "ALTA",
     "passed_steps": 2,
     "max_steps": 2,
-    "validated_at": "2026-06-18 17:09:19.588133"
+    "validated_at": "2026-06-21 01:05:20.911656"
   },
   "mc": {
-    "mc_cagr_p05": 1378.0,
-    "mc_cagr_p50": 7881.8,
-    "mc_cagr_p95": 36315.5,
+    "mc_cagr_p05": 1338.9,
+    "mc_cagr_p50": 7670.8,
+    "mc_cagr_p95": 35352.5,
     "mc_dd_p50": -34.1,
-    "mc_dd_p95": -25.4,
+    "mc_dd_p95": -24.1,
     "mc_confidence": 100.0,
     "mc_sims": 1000
+  },
+  "wft": {
+    "oos_win_rate": 80.0,
+    "n_windows": 10,
+    "positive_windows": 8,
+    "avg_cagr_oos": 89.0,
+    "avg_cagr_pos": 120.78,
+    "verdict": "PASS",
+    "date": "2026-06-21 02:02"
   }
 }

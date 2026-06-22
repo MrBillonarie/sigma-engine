@@ -16,6 +16,8 @@ import json, sqlite3, re, time
 from pathlib import Path
 from datetime import datetime, date, timezone
 
+from utils.snapshot_schema import merge_snapshot
+
 OUTPUT_DIR = Path(__file__).parent.parent.parent
 
 ASSETS    = ['BTC','ETH','LTC','SOL','BNB','XAU','XAG']
@@ -49,6 +51,12 @@ def _funding_kelly_boost_estimate(champions_data):
 
 def _write_snapshot(path, cagr, wr, dd, pf, calmar, trades, n_grade_a, champions, trigger):
     path.parent.mkdir(parents=True, exist_ok=True)
+    _prev_snap = {}
+    if path.exists():
+        try:
+            _prev_snap = json.loads(path.read_text())
+        except Exception:
+            _prev_snap = {}
     # Calcular funding Kelly boost (alpha esperado del Kelly v2 sobre shorts)
     _kelly_boost = 0.0
     try:
@@ -71,15 +79,29 @@ def _write_snapshot(path, cagr, wr, dd, pf, calmar, trades, n_grade_a, champions
         print(f'[KELLY BOOST ERROR] {_e_kb}', flush=True)
     # Preservar boost previo si nuestro cálculo dio 0 pero el snapshot anterior tenía valor
     if _kelly_boost == 0.0:
-        try:
-            if path.exists():
-                _prev = json.loads(path.read_text())
-                _prev_boost = _prev.get('port_cagr_kelly_boost', 0)
-                if _prev_boost and _prev_boost > 0:
-                    _kelly_boost = _prev_boost
-        except Exception:
-            pass
-    snap = {
+        _prev_boost = _prev_snap.get('port_cagr_kelly_boost', 0)
+        if _prev_boost and _prev_boost > 0:
+            _kelly_boost = _prev_boost
+
+    # Merge M2 champions (XAU/XAG/WTI/NG/HG/PL) del snapshot anterior en los
+    # que este calculo (M1) no toco -- esto es merge PARCIAL del dict
+    # 'champions', no preservacion de campo completo, asi que sigue siendo
+    # logica explicita aqui (merge_snapshot no puede saber esto).
+    _M2_ASSETS = {'XAU', 'XAG', 'WTI', 'NG', 'HG', 'PL'}
+    champions = dict(champions or {})
+    for _m2_slot, _m2_val in _prev_snap.get('champions', {}).items():
+        _m2_sym = _m2_slot.split('|')[0]
+        if _m2_sym in _M2_ASSETS and _m2_slot not in champions:
+            champions[_m2_slot] = _m2_val
+
+    # Preservar métricas M1+M2 calculadas por champion_watcher si son mas
+    # completas que el calculo M1-only de este modulo (mismo criterio que antes).
+    if _prev_snap.get('total_trades', 0) > trades:
+        cagr = _prev_snap['port_cagr']
+        trades = _prev_snap['total_trades']
+        n_grade_a = _prev_snap.get('n_grade_a', n_grade_a)
+
+    updates = {
         'port_cagr':    cagr,
         'port_cagr_kelly_boost': _kelly_boost,
         'port_cagr_with_kelly':  round(cagr + _kelly_boost, 4),
@@ -93,22 +115,11 @@ def _write_snapshot(path, cagr, wr, dd, pf, calmar, trades, n_grade_a, champions
         'trigger':      trigger,
         'champions':    champions,
     }
-    # Preservar M2 champions del snapshot anterior (M2 = XAU/XAG/WTI/NG/HG/PL)
-    _M2_ASSETS = {'XAU', 'XAG', 'WTI', 'NG', 'HG', 'PL'}
-    try:
-        if path.exists():
-            _prev_snap = json.loads(path.read_text())
-            for _m2_slot, _m2_val in _prev_snap.get('champions', {}).items():
-                _m2_sym = _m2_slot.split('|')[0]
-                if _m2_sym in _M2_ASSETS and _m2_slot not in snap['champions']:
-                    snap['champions'][_m2_slot] = _m2_val
-            # Preservar métricas M1+M2 calculadas por champion_watcher (no M1-only)
-            if _prev_snap.get('total_trades', 0) > snap.get('total_trades', 0):
-                snap['port_cagr'] = _prev_snap['port_cagr']
-                snap['total_trades'] = _prev_snap['total_trades']
-                snap['n_grade_a'] = _prev_snap.get('n_grade_a', snap['n_grade_a'])
-    except Exception:
-        pass
+    # merge_snapshot preserva automaticamente cualquier campo que dashboard.py
+    # no calcule (champions_secondary, champions_countertrend cuando exista,
+    # o cualquier campo futuro) -- sin necesidad de un parche ad-hoc por campo
+    # nuevo, que era la causa raiz del bug de 2026-06-20.
+    snap = merge_snapshot(_prev_snap, updates, owner='dashboard')
     path.write_text(json.dumps(snap, indent=2))
 
 

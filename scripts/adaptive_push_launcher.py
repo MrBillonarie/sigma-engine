@@ -16,6 +16,15 @@ import os, sys, json, time, subprocess, urllib.request
 from pathlib import Path
 from datetime import datetime
 
+if '/opt/sigma' not in sys.path:
+    sys.path.insert(0, '/opt/sigma')
+try:
+    from utils.parallel_guard import global_slots_available
+except Exception as _e_guard:
+    print(f'[WARN] No se pudo importar utils.parallel_guard: {_e_guard}. Sin tope global.')
+    def global_slots_available(cap=7):
+        return cap
+
 # --- SIGMA VITRINA push hook ---
 def _vitrina_log_push(kind, sym, tf, **kw):
     try:
@@ -28,7 +37,7 @@ def _vitrina_log_push(kind, sym, tf, **kw):
 
 
 LOAD_MAX = 11.0  # 2026-06-16: master_pipeline base load es 10-12, ajustar para que push pueda entrar
-TRIALS          = 600
+TRIALS          = 300  # 2026-06-19: bajado de 600 -- mismo presupuesto total/dia pero recambio 2x mas rapido, libera CPU antes para gap_auto_launcher
 COOLDOWN_HOURS  = 12       # no re-pushear el mismo slot por X horas
 STATE_FILE      = Path('/opt/sigma/state/adaptive_push.json')
 LOG_FILE        = Path('/opt/sigma/results/reports/adaptive_push_launcher.log')
@@ -147,6 +156,10 @@ def main():
 
     if load > LOAD_MAX:
         log(f'SKIP: load too high')
+        return
+
+    if global_slots_available() <= 0:
+        log('SKIP: tope global de paralelismo alcanzado (master_pipeline/gap_auto_launcher/trainer ocupan el resto)')
         return
 
     if is_push_running():

@@ -118,6 +118,13 @@ import sys as _sys_pkg
 if '/opt/sigma' not in _sys_pkg.path:
     _sys_pkg.path.insert(0, '/opt/sigma')
 try:
+    from utils.parallel_guard import global_slots_available
+except Exception as _e_guard:
+    print(f'[WARN] No se pudo importar utils.parallel_guard: {_e_guard}. Sin tope global.')
+    def global_slots_available(cap=7):
+        return cap
+
+try:
     from utils.strategies import SHORT_STRATEGIES as _PIPE_SHORTS
 except Exception as _e_imp:
     print(f'[WARN] No se pudo importar utils.strategies: {_e_imp}. Usando fallback minimo.')
@@ -314,9 +321,14 @@ def run():
         # Process queue
         idx = 0
         while idx < len(queue):
-            # Fill up to MAX_PARALLEL slots
+            # Fill up to MAX_PARALLEL slots, sin pasar el tope GLOBAL compartido
+            # con gap_auto_launcher y el pipeline de commodities (ver utils/parallel_guard.py)
             launched_this_round = []
             while len([k for k,p in running_procs.items() if p.poll() is None]) < MAX_PARALLEL and idx < len(queue):
+                if global_slots_available() <= 0:
+                    log('  Tope global de paralelismo alcanzado (gap_auto_launcher/commodities ocupan el resto) - pausa 30s')
+                    time.sleep(30)
+                    continue
                 ram_avail = psutil.virtual_memory().available / 1073741824
                 if ram_avail < MIN_RAM_GB:
                     log('  RAM baja (' + str(round(ram_avail, 1)) + 'GB libre) - pausa 60s')

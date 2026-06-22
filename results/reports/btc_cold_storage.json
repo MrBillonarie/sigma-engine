@@ -29,10 +29,20 @@
       "btc_price": 63442.8,
       "btc": 0.00074194,
       "sats": 74194
+    },
+    {
+      "date": "2026-06-21 05:26:45",
+      "trade": "SOL_15m",
+      "reason": "TRAIL_HIT",
+      "pnl_usd": 183.6,
+      "alloc_usd": 27.5397,
+      "btc_price": 64043.9,
+      "btc": 0.00043001,
+      "sats": 43001
     }
   ],
-  "total_btc": 0.00111763,
+  "total_btc": 0.00154764,
   "goal_btc": 1.0,
   "note": "Agregar entrada cada vez que se envie BTC a cold storage",
-  "total_usd": 71.8219
+  "total_usd": 99.3616
 }

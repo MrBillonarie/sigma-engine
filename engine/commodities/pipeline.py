@@ -12,6 +12,12 @@ os.chdir('/opt/sigma')
 from pathlib import Path
 from datetime import datetime, timezone
 
+try:
+    from utils.parallel_guard import global_slots_available
+except Exception:
+    def global_slots_available(cap=7):
+        return cap
+
 # ── Config ────────────────────────────────────────────────────────────────────
 def _has_15m_data(asset, min_rows=50000):  # 50k: solo XAU/XAG tienen 15m real (491k/479k rows)
     """True si tenemos suficientes datos 15m para este activo."""
@@ -136,6 +142,13 @@ def run():
             time.sleep(30)
             continue
 
+        # Tope global compartido con master_pipeline y gap_auto_launcher
+        # (ninguno veia los procesos del otro -- ver utils/parallel_guard.py)
+        if global_slots_available() <= 0:
+            log('Tope global de paralelismo alcanzado (M1/gap_auto ocupan el resto) - pausa 30s')
+            time.sleep(30)
+            continue
+
         queue = build_queue()
         log(f'--- Ciclo {cycle} | Running={len(running)} | Queue={len(queue)} ---')
 
@@ -144,6 +157,8 @@ def run():
             if key in running:
                 continue
             if len(running) >= MAX_PARALLEL:
+                break
+            if global_slots_available() <= 0:
                 break
 
             csv  = CSV_PATHS[asset].format(tf=tf)

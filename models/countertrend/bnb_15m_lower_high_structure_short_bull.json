@@ -1,0 +1,32 @@
+{
+  "symbol": "BNB/USDT",
+  "tf": "15m",
+  "strategy": "lower_high_structure_short",
+  "regime": "bull",
+  "direction": "short",
+  "params": {
+    "sl_mult": 3.2,
+    "tp_mult": 1.5,
+    "cooldown": 6,
+    "rsi_w_thr": 55
+  },
+  "risk_pct": 4.7,
+  "n_trials": 150,
+  "best_score": 0.9499,
+  "n_trades": 1332,
+  "wr": 79.6,
+  "pnl_total": 43403.12,
+  "n_segments_qualified": 14,
+  "n_segments_total": 17,
+  "selection_bias": {
+    "status": "OK",
+    "n_trials": 150,
+    "best_value": 0.9499,
+    "population_mean": 0.8857,
+    "population_std": 0.0988,
+    "expected_max_by_luck": 1.1494,
+    "z_above_expected_luck": -2.02,
+    "verdict": "SELECTION_NOISE_LIKELY"
+  },
+  "trained_at": "2026-06-21T02:32:21.575423"
+}

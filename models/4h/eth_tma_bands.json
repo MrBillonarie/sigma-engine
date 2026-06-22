@@ -75,9 +75,18 @@
     "mc_cagr_p05": 8.2,
     "mc_cagr_p50": 86.7,
     "mc_cagr_p95": 252.6,
-    "mc_dd_p50": -32.0,
+    "mc_dd_p50": -33.1,
     "mc_dd_p95": -20.9,
-    "mc_confidence": 96.5,
+    "mc_confidence": 96.6,
     "mc_sims": 1000
+  },
+  "wft": {
+    "oos_win_rate": 70.0,
+    "n_windows": 10,
+    "positive_windows": 7,
+    "avg_cagr_oos": 26.36,
+    "avg_cagr_pos": 55.19,
+    "verdict": "PASS",
+    "date": "2026-06-21 02:04"
   }
 }

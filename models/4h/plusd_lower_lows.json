@@ -60,10 +60,10 @@
     "reasons": [
       "[WARN] IS_OOS_WARN: OOS/IS=0.39 — degradacion moderada"
     ],
-    "validated_at": "2026-06-18T16:00:01.427772-04:00"
+    "validated_at": "2026-06-21T16:30:01.139312-04:00"
   },
   "mc": {
-    "mc_cagr_p05": 20.5,
+    "mc_cagr_p05": 36.7,
     "mc_cagr_p50": 191.5,
     "mc_cagr_p95": 700.1,
     "mc_dd_p50": -45.0,

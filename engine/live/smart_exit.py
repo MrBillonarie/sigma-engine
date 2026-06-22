@@ -1,16 +1,23 @@
 #!/usr/bin/env python3
 """
-SIGMA ENGINE — Smart Exit Monitor v1.0
+SIGMA ENGINE — Smart Exit Monitor v1.1
 Mejora las salidas mas alla de SL/TP fijo:
 1. Trailing stop: mueve SL a break-even cuando trade llega al 60% del TP
 2. Limite de tiempo: cierra posiciones abiertas > 96 horas
 3. Regimen adverso: cierra si el regimen cambia fuerte contra la posicion
-"""
-import json, time
-from datetime import datetime, timezone, timedelta
-from pathlib import Path
 
-BASE  = Path('/opt/sigma')
+Fix v1.1 (2026-06-19): run_smart_exit ya no mantiene su propia copia de
+trade_state.json. Mantenia un load() al inicio del ciclo y un save() al
+final con esa misma copia -- si en el medio close_fn() (close_trade) cerraba
+otro trade y guardaba su propio resultado, ese save final pisaba el cierre
+con la version vieja (el trade "revivia"). Mismo patron que el bug LTC/PL
+2026-06-17 ya resuelto en el watcher de web_server.py. Ahora usa el MISMO
+lock + load/save de web_server.py, releyendo fresco antes de cada mutacion
+y guardando una sola vez por trade, nunca una copia abierta antes de llamar
+a close_fn.
+"""
+from datetime import datetime, timezone, timedelta
+
 CHILE = timezone(timedelta(hours=-4))
 
 TRAILING_TRIGGER  = 0.60   # activar BE cuando precio llega al 60% del camino al TP
@@ -27,16 +34,6 @@ BE_BUFFER         = 0.001  # 0.1% buffer sobre entry para el SL en BE
 
 def _now():
     return datetime.now(CHILE)
-
-def _load_state():
-    try:
-        return json.loads((BASE / 'results/trade_state.json').read_text())
-    except:
-        return {'open': {}, 'history': []}
-
-def _save_state(state):
-    (BASE / 'results/trade_state.json').write_text(
-        json.dumps(state, indent=2), encoding='utf-8')
 
 def _hours_open(trade):
     try:
@@ -99,38 +96,49 @@ def check_regime_exit(key, trade, regime):
         return True
     return False
 
-def run_smart_exit(current_prices: dict, regime: str, close_fn):
+def run_smart_exit(current_prices: dict, regime: str, close_fn, load_fn, save_fn, lock):
     """
     Punto de entrada principal.
     current_prices: {sym: float}
     regime: 'BULL' | 'BEAR' | 'RANGE'
-    close_fn: close_trade(sym, tf, price, reason)
+    close_fn:  close_trade(sym, tf, price, reason) de web_server.py -- hace su
+               propio load/save atomico bajo el mismo lock (RLock reentrante).
+    load_fn:   _load_trades de web_server.py.
+    save_fn:   _save_trades de web_server.py.
+    lock:      _TRADE_LOCK de web_server.py.
+
+    Cada trade se procesa en su propia critica seccion: releer fresco -> evaluar
+    -> mutar/cerrar -> guardar. Nunca se reusa un dict leido antes de invocar
+    close_fn, asi que un cierre de otro trade en el mismo ciclo no puede
+    pisarse con un save tardio de una copia vieja.
     """
-    state    = _load_state()
-    open_t   = state.get('open', {})
-    modified = False
+    with lock:
+        keys = list(load_fn().get('open', {}).keys())
 
-    for key, trade in list(open_t.items()):
-        if trade.get('status') != 'open':
-            continue
-        sym   = trade.get('sym', '')
-        tf    = trade.get('tf', '')
-        price = current_prices.get(sym, 0)
-        if not price:
-            continue
+    for key in keys:
+        with lock:
+            state = load_fn()
+            trade = state.get('open', {}).get(key)
+            if not trade or trade.get('status') != 'open':
+                continue
+            sym, tf = trade.get('sym', ''), trade.get('tf', '')
+            price = current_prices.get(sym, 0)
+            if not price:
+                continue
 
-        # 1. Trailing stop (modifica SL en state)
-        if check_trailing(key, trade, price):
-            modified = True
+            trail_changed = check_trailing(key, trade, price)
 
-        # 2. Tiempo limite
-        if check_time_limit(key, trade):
-            close_fn(sym, tf, price, 'TIME_LIMIT')
-            continue
+            if check_time_limit(key, trade):
+                if trail_changed:
+                    save_fn(state)   # persistir el BE antes de cerrar
+                close_fn(sym, tf, price, 'TIME_LIMIT')
+                continue
 
-        # 3. Regimen adverso (solo si BEAR o BULL fuerte, no RANGE)
-        if regime in ('BULL', 'BEAR') and check_regime_exit(key, trade, regime):
-            close_fn(sym, tf, price, 'REGIME_EXIT')
+            if regime in ('BULL', 'BEAR') and check_regime_exit(key, trade, regime):
+                if trail_changed:
+                    save_fn(state)
+                close_fn(sym, tf, price, 'REGIME_EXIT')
+                continue
 
-    if modified:
-        _save_state(state)
+            if trail_changed:
+                save_fn(state)

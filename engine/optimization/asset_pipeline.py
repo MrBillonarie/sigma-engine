@@ -32,6 +32,11 @@ if "/opt/sigma" not in _sigma_sys.path:
     _sigma_sys.path.insert(0, "/opt/sigma")
 from utils.secrets import get_tg_token as _sigma_get_tg_token
 # --- end SIGMA secrets loader ---
+try:
+    from utils.optuna_stagnation import is_stagnant as _sigma_is_stagnant
+except Exception:
+    def _sigma_is_stagnant(*a, **k):
+        return False
 
 import sys, os, argparse, time, json, fcntl
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -108,6 +113,24 @@ def fetch_asset(symbol, tf='1h', days=4000):
     con datos recientes si hay diferencia. Para BTC usa spot (8.7yr).
     Para alts: spot da 2+ años extra vs futuros.
     """
+    # Cache en disco: evita re-descargar 5-8 anios de historial completo en
+    # CADA subprocess de trial (decenas al dia por master_pipeline/gap_auto_launcher).
+    # 2026-06-19: ETH/SOL/BNB/LTC no tenian ningun cache -- a diferencia de XAU/commodities
+    # (que usan CSV pre-descargado via load_asset_csv) o de BTC en core/data.py
+    # (data_{tf}_max.csv, refrescado por el cron diario update_data.py).
+    asset_code = symbol.split('/')[0].upper()
+    cache_path = Path('/opt/sigma/models') / f'data_{asset_code}_{tf}_max.csv'
+    if cache_path.exists():
+        try:
+            cached = pd.read_csv(cache_path, index_col=0, parse_dates=True)
+            cached.index.name = 'ts'
+            age_h = (pd.Timestamp.now() - cached.index[-1]).total_seconds() / 3600
+            if age_h <= 2 and len(cached) > 100:
+                print(f'  [{symbol} {tf}] CACHE: {len(cached):,} velas (disco, {age_h:.1f}h)', flush=True)
+                return cached
+        except Exception:
+            pass
+
     import ccxt
     ex_spot = ccxt.binance({'timeout': 30000})
     ex_fut  = ccxt.binance({'timeout': 30000, 'options': {'defaultType': 'future'}})
@@ -165,6 +188,13 @@ def fetch_asset(symbol, tf='1h', days=4000):
     print(f'  [{symbol} {tf}] {len(combined):,} velas | '
           f'{combined.index[0].strftime("%Y-%m-%d")} -> {combined.index[-1].strftime("%Y-%m-%d")} '
           f'({(combined.index[-1]-combined.index[0]).days}d)', flush=True)
+
+    try:
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        combined.to_csv(cache_path)
+    except Exception as _e_cache:
+        print(f'  [{symbol} {tf}] WARN no se pudo guardar cache: {_e_cache}', flush=True)
+
     return combined
 
 
@@ -222,11 +252,23 @@ def add_features(df):
     df['macd']   = c.ewm(span=12, adjust=False).mean() - c.ewm(span=26, adjust=False).mean()
     df['macd_s'] = df['macd'].ewm(span=9, adjust=False).mean()
     df['macd_h'] = df['macd'] - df['macd_s']
+    # EMA200 SEMANAL (independiente de df['ema200'], que sigue nativa al TF y la
+    # usan ~90 estrategias sig_xxx para su propia logica -- NO TOCAR esa columna).
+    # 2026-06-21: a TF nativo, ema200 de 15m/5m representa solo ~2 dias / ~17h de
+    # historia -- no es "tendencia de largo plazo" en absoluto, asi que regime_bull/
+    # bear se fragmentaba en miles de micro-tramos de ruido (confirmado: BTC/15m
+    # pasaba de 1588 segmentos bear a 109 al usar esta EMA semanal, igual de
+    # consistente que rsi_w). Esto NO afecta al gate en vivo (web_server.py inyecta
+    # tradeable_long/short=True y bypassea apply_regime_gate ahi, el regimen real en
+    # vivo es _compute_regime()/recommend(), separado) -- solo afecta backtesting/
+    # entrenamiento (Optuna) y el diagnostico de countertrend.
+    ew200 = cw.ewm(span=200, adjust=False).mean()
+    ema200_w = ew200.reindex(df.index, method='ffill').fillna(c)
     # Regimen del activo (bull/range/bear) calculado sobre sus propios datos
     # INDEPENDIENTE por activo — ETH puede ser bull mientras BNB es bear
-    df['regime_bull']  = (df['rsi_w'] > 55) & (c > df['ema200'])
+    df['regime_bull']  = (df['rsi_w'] > 55) & (c > ema200_w)
     df['regime_range'] = (df['rsi_w'] >= 40) & (df['rsi_w'] <= 55)
-    df['regime_bear']  = (df['rsi_w'] < 40) | (c < df['ema200'] * 0.97)
+    df['regime_bear']  = (df['rsi_w'] < 40) | (c < ema200_w * 0.97)
     # Gate de trading bidireccional
     # Long: solo en bull/range | Short: solo en bear/range
     df['tradeable_long']  = df['regime_bull'] | df['regime_range']
@@ -2721,6 +2763,14 @@ def run_pipeline(symbol, tf, n_trials=350, loop=False, max_cycles=99, csv_path=N
                 df_opt = df_is
                 days_opt = days_is
                 n_trials_this = n_trials
+
+            # 2026-06-21: skip estrategias ya convergidas -- el loop de ciclos le
+            # daba n_trials_this MAS por SIEMPRE a cada estrategia sin chequear si
+            # ya dejo de mejorar. Hallazgo: 60.8% de 1820 studies estancados, ~27%
+            # de todos los trials historicos desperdiciados (ver utils/optuna_stagnation.py).
+            if _sigma_is_stagnant(symbol, tf, strategy):
+                log(symbol, tf, f'  {strategy}: estudio ya convergido (sin mejora en ultimo 40%), skip')
+                continue
 
             log(symbol, tf, f'Probando: {strategy} ({n_trials_this} trials)...')
             try:

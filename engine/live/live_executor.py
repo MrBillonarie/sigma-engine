@@ -19,6 +19,10 @@ Fixes v1.1 (2026-06-17):
 - FIX M2: amount_to_precision() para respetar stepSize de Binance
 - FIX M3: Safety checks fail-safe (except->return False, no pass)
 - FIX M4: newClientOrderId para idempotencia (evita doble ejecucion)
+
+Fixes v1.2 (2026-06-21):
+- FIX M5: piso de MIN_NOTIONAL_USD -- evita rechazo -4164 de Binance cuando
+  equity*kelly cae bajo el minimo de orden (visto en SOL/15m con equity bajo)
 """
 import json, os, time
 from pathlib import Path
@@ -29,10 +33,14 @@ LIVE_MODE = True   # <- False = paper | True = Binance live
 DRY_RUN   = False    # <- True = loguea ordenes pero no ejecuta (solo con LIVE_MODE=True)
 
 # Limites de seguridad
-MAX_KELLY_PCT   = 6.0    # maximo 6% del capital por trade
-MAX_LEVERAGE    = 5      # maximo 5x
-MAX_OPEN_SLOTS  = 3      # maximo 3 posiciones simultaneas
-MIN_GATE_SCORE  = 85     # gate minimo para operar live
+MAX_KELLY_PCT       = 6.0    # maximo 6% del capital por trade (sizing normal)
+MAX_KELLY_HARD_CAP  = 15.0   # techo ABSOLUTO incluso forzando el minimo de notional del
+                              # exchange -- nunca arriesgar mas que esto en un solo trade,
+                              # pase lo que pase con el minimo que exija Binance
+MAX_LEVERAGE        = 5      # maximo 5x
+MAX_OPEN_SLOTS      = 3      # maximo 3 posiciones simultaneas
+MIN_GATE_SCORE      = 85     # gate minimo para operar live
+MIN_NOTIONAL_USD    = 5.5    # piso de Binance es 5.0 USDT -- margen por slippage de fetch_ticker a fill
 
 CHILE        = timezone(timedelta(hours=-4))
 BASE         = Path('/opt/sigma')
@@ -268,10 +276,13 @@ def _api_open_trade(sym, tf, direction, price, sl, tp, strategy, paper, grade, w
     })
 
 
-def _api_close_trade(sym, tf, exit_price, reason):
-    return _record_trade('/api/trades/close', {
-        'sym': sym, 'tf': tf, 'exit_price': exit_price, 'reason': reason,
-    })
+def _api_close_trade(sym, tf, exit_price, reason, contracts=None, real_equity=None):
+    payload = {'sym': sym, 'tf': tf, 'exit_price': exit_price, 'reason': reason}
+    if contracts is not None:
+        payload['contracts'] = contracts
+    if real_equity is not None:
+        payload['real_equity'] = real_equity
+    return _record_trade('/api/trades/close', payload)
 
 
 # -- Entry --------------------------------------------------------------------
@@ -309,10 +320,48 @@ def execute_entry(sym, tf, direction, price, sl, tp,
     try:
         size_usd  = equity * min(kelly_pct / 100, MAX_KELLY_PCT / 100)
         cur_price = ex.fetch_ticker(symbol)['last']
-        raw_qty   = size_usd / cur_price
+        # FIX M5: piso de notional -- evita el rechazo -4164 de Binance cuando
+        # equity*kelly cae bajo el minimo de la orden. El minimo NO es igual para
+        # todos los simbolos (BTC=$50, ETH/LTC=$20, SOL/BNB=$5) -- se lee del
+        # propio mercado en vez de asumir un valor fijo, con 5% de margen propio
+        # encima del piso real (slippage de precio + perdida por redondeo de step).
+        market       = ex.market(symbol)
+        step         = market.get('precision', {}).get('amount') or 0.0
+        min_amount   = market.get('limits', {}).get('amount', {}).get('min') or 0.0
+        min_notional = market.get('limits', {}).get('cost', {}).get('min') or MIN_NOTIONAL_USD
+        min_notional = max(min_notional, MIN_NOTIONAL_USD)
+        target_usd    = max(size_usd, min_notional * 1.05)
+        max_size_usd  = equity * MAX_KELLY_PCT / 100
+        hard_cap_usd  = equity * MAX_KELLY_HARD_CAP / 100
+        if target_usd > max_size_usd:
+            # FIX M6: el minimo de notional manda sobre el tope normal de Kelly --
+            # se usa el minimo INDISPENSABLE para que el exchange acepte la orden,
+            # nunca mas que eso, y nunca por encima del techo absoluto de seguridad.
+            if target_usd > hard_cap_usd:
+                _log(f"Equity insuficiente (${equity:.2f}) -- ni forzando el Kelly al "
+                     f"techo absoluto ({MAX_KELLY_HARD_CAP}%) se alcanza el minimo de "
+                     f"Binance para {symbol} (${min_notional}). Trade no ejecutable en LIVE.")
+                return False
+            _log(f"Kelly {kelly_pct}% -> size ${size_usd:.2f} bajo minimo Binance para "
+                 f"{symbol} (${min_notional}) -- FORZANDO tamano minimo ${target_usd:.2f} "
+                 f"(kelly efectivo {target_usd / equity * 100:.2f}%, excede el tope normal "
+                 f"{MAX_KELLY_PCT}% pero es lo minimo para que Binance acepte la orden)")
+        elif target_usd > size_usd:
+            _log(f"Kelly {kelly_pct}% -> size ${size_usd:.2f} bajo minimo Binance "
+                 f"para {symbol} (${min_notional}) -- elevando a ${target_usd:.2f} "
+                 f"(kelly efectivo {target_usd / equity * 100:.2f}%)")
+        raw_qty = target_usd / cur_price
+        if step > 0:
+            # redondeo ARRIBA al step -- amount_to_precision trunca hacia abajo y
+            # puede dejar el notional final por debajo del minimo real
+            import math as _math
+            raw_qty = _math.ceil(raw_qty / step) * step
+        raw_qty   = max(raw_qty, min_amount)
         contracts = float(ex.amount_to_precision(symbol, raw_qty))
         if contracts <= 0:
             _log("Tamano de contrato = 0"); return False
+        if contracts * cur_price < min_notional:
+            contracts = float(ex.amount_to_precision(symbol, raw_qty + step))
     except Exception as e:
         _log(f"Error calculando size: {e}"); return False
 
@@ -439,7 +488,17 @@ def execute_exit(sym, tf, reason='MANUAL'):
         exit_price = order.get('average', 0)
         _log(f"CLOSED @ {exit_price:.4f}")
 
-        _rec = _api_close_trade(sym, tf, exit_price, reason)
+        # Balance real post-cierre -- usado para registrar pnl/equity reales,
+        # no la formula de paper trading (que asume equity simulada de $10k).
+        real_equity = None
+        try:
+            bal = ex.fetch_balance()
+            real_equity = float(bal.get('USDT', {}).get('total', 0) or 0)
+        except Exception as e:
+            _log(f"WARNING: no se pudo leer balance real post-close: {e}")
+
+        _rec = _api_close_trade(sym, tf, exit_price, reason,
+                                contracts=contracts, real_equity=real_equity)
         if _rec is None:
             _log(f"ALERTA: posicion LIVE {sym}/{tf} cerrada en Binance pero el registro en "
                  f"trade_state.json FALLO -- revisar manualmente")

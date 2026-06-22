@@ -31,21 +31,21 @@
   "saved_at": "2026-05-09 19:16:54.505021",
   "mc": {
     "mc_cagr_p05": -29.9,
-    "mc_cagr_p50": 45.8,
+    "mc_cagr_p50": 25.9,
     "mc_cagr_p95": 161.8,
-    "mc_dd_p50": -48.5,
+    "mc_dd_p50": -49.3,
     "mc_dd_p95": -28.3,
-    "mc_confidence": 75.7,
+    "mc_confidence": 75.9,
     "mc_sims": 1000
   },
   "wft": {
     "oos_win_rate": 66.7,
     "n_windows": 6,
     "positive_windows": 4,
-    "avg_cagr_oos": 30.78,
-    "avg_cagr_pos": 54.02,
+    "avg_cagr_oos": 28.33,
+    "avg_cagr_pos": 50.3,
     "verdict": "PASS",
-    "date": "2026-06-14 02:19"
+    "date": "2026-06-21 02:04"
   },
   "validation": {
     "monte_carlo": {

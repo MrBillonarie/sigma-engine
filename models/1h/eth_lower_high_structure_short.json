@@ -10,38 +10,38 @@
   },
   "risk_pct": 5.0,
   "metrics_is": {
-    "trades": 355,
-    "wr": 74.9,
-    "cagr": 92.6,
-    "dd": -28.0,
-    "pf": 1.41,
-    "trades_year": 50.2
+    "trades": 256,
+    "wr": 73.8,
+    "cagr": 38.7,
+    "dd": -35.6,
+    "pf": 1.35,
+    "trades_year": 36.2
   },
   "metrics_oos": {
-    "trades": 94,
-    "wr": 76.6,
-    "cagr": 205.0,
-    "dd": -28.9,
-    "pf": 2.05,
-    "trades_year": 53.3
+    "trades": 76,
+    "wr": 77.6,
+    "cagr": 149.9,
+    "dd": -29.6,
+    "pf": 1.96,
+    "trades_year": 43.0
   },
-  "oos_days": 644,
-  "saved_at": "2026-06-19 03:29:50.245664",
+  "oos_days": 645,
+  "saved_at": "2026-06-21 15:40:05.028899",
   "validation": {
     "monte_carlo": {
-      "p_pos": 99.6,
-      "median": 220.5,
-      "ic95_lo": 73.4,
-      "ic95_hi": 340.5,
-      "ic80_lo": 128.8,
-      "ic80_hi": 298.9,
+      "p_pos": 98.7,
+      "median": 230.9,
+      "ic95_lo": 33.6,
+      "ic95_hi": 384.6,
+      "ic80_lo": 105.9,
+      "ic80_hi": 338.1,
       "passed": true
     },
     "walk_forward": {
-      "windows": 27,
-      "positive": 21,
-      "pct_positive": 77.8,
-      "avg_cagr": 147.3,
+      "windows": 22,
+      "positive": 16,
+      "pct_positive": 72.7,
+      "avg_cagr": 142.7,
       "passed": true
     },
     "cross_asset": {
@@ -53,15 +53,15 @@
       "results": [
         {
           "symbol": "BTC/USDT",
-          "cagr": -11.0,
-          "wr": 63.3,
-          "trades": 79
+          "cagr": -6.2,
+          "wr": 66.7,
+          "trades": 60
         },
         {
           "symbol": "LTC/USDT",
-          "cagr": 8.8,
-          "wr": 65.7,
-          "trades": 102
+          "cagr": 8.2,
+          "wr": 64.3,
+          "trades": 70
         }
       ],
       "passed": true
@@ -69,15 +69,15 @@
     "confidence": "ALTA",
     "passed_steps": 3,
     "max_steps": 3,
-    "validated_at": "2026-06-19 03:31:42.177020"
+    "validated_at": "2026-06-21 15:41:03.759817"
   },
   "mc": {
-    "mc_cagr_p05": 180.2,
-    "mc_cagr_p50": 613.2,
-    "mc_cagr_p95": 1453.5,
-    "mc_dd_p50": -17.2,
-    "mc_dd_p95": -9.0,
-    "mc_confidence": 99.9,
+    "mc_cagr_p05": 196.1,
+    "mc_cagr_p50": 410.7,
+    "mc_cagr_p95": 714.8,
+    "mc_dd_p50": -22.1,
+    "mc_dd_p95": -15.4,
+    "mc_confidence": 100.0,
     "mc_sims": 1000
   }
 }

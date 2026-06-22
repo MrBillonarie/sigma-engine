@@ -1,27 +1,27 @@
 {
-  "computed_at": "2026-06-19 04:10",
+  "computed_at": "2026-06-22 04:10",
   "status": "ON_TARGET",
   "recommendation": "No change needed",
   "portfolio": {
-    "equity": 11338.74,
-    "return_pct": 13.39,
-    "n_trades": 30,
-    "days_elapsed": 39.5
+    "equity": 11376.57,
+    "return_pct": 13.77,
+    "n_trades": 31,
+    "days_elapsed": 42.5
   },
   "vol_metrics": {
-    "trade_std_pct": 2.566,
-    "trades_per_year": 277.3,
-    "annual_vol_pct": 42.7,
-    "recent_10t_annual_pct": 21.0,
+    "trade_std_pct": 2.543,
+    "trades_per_year": 266.3,
+    "annual_vol_pct": 41.5,
+    "recent_10t_annual_pct": 21.4,
     "vol_target_pct": 30.0,
     "vol_budget_high_pct": 50.0,
     "vol_budget_low_pct": 15.0,
-    "utilization_pct": 142.4
+    "utilization_pct": 138.3
   },
   "kelly_guidance": {
     "current_pct": 3.3,
-    "vol_multiplier": 0.702,
-    "vol_adjusted_suggestion": 2.32,
+    "vol_multiplier": 0.723,
+    "vol_adjusted_suggestion": 2.39,
     "note": "Suggestion based purely on vol budget. Apply only at 30+ trade gate."
   }
 }

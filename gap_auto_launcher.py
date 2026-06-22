@@ -18,6 +18,11 @@ def _vitrina_log_gap(sym, tf, direction, strategy=None):
 
 sys.path.insert(0, '/opt/sigma')
 
+try:
+    from utils.parallel_guard import GLOBAL_TRAINING_CAP
+except Exception:
+    GLOBAL_TRAINING_CAP = 7
+
 LOG = '/opt/sigma/results/reports/gap_auto_launcher.log'
 def log(msg):
     ts = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -30,7 +35,7 @@ def log(msg):
 
 # Config
 MIN_RAM_FREE_MB = 4000  # 4GB avail minimo
-MAX_PARALLEL = 2  # reducido temporalmente 2026-06-17 mientras LIVE trading esta activo (era 9)
+MAX_PARALLEL = 4  # 2026-06-19: subido de 2 a 4 tras auditoria de correlacion sin hallazgos de riesgo en live (era 9 pre-live, 2 el dia que activo live 17/06)
 TRIALS_BY_TF = {'5m': 80, '15m': 120, '1h': 150, '4h': 150}  # per-TF: 5m menor (noisier pero rapido), 1h/4h mayor calidad
 TRIALS_PER_SLOT = 150  # fallback
 CSV_PATHS = {
@@ -77,7 +82,7 @@ r = subprocess.run(['ps','-eo','pid,cmd'], capture_output=True, text=True)
 active_slots = set()
 n_active = 0
 for line in r.stdout.split(chr(10)):
-    if 'asset_pipeline.py' not in line or 'grep' in line: continue
+    if ('asset_pipeline.py' not in line and 'push_grade_a.py' not in line) or 'grep' in line: continue
     n_active += 1
     ts = line.split()
     sym = tf = focus = None
@@ -131,7 +136,9 @@ if not todo:
     sys.exit(0)
 
 # 5. Lanzar
-MAX_TOTAL_HARD = 12
+# Techo absoluto alineado con utils/parallel_guard.py (antes 12, sin relacion con
+# los 8 nucleos reales; ahora el mismo numero que master_pipeline y commodities)
+MAX_TOTAL_HARD = GLOBAL_TRAINING_CAP
 if n_active >= MAX_TOTAL_HARD:
     log('STOP: techo absoluto (' + str(n_active) + ' >= ' + str(MAX_TOTAL_HARD) + ' procesos totales)')
     import sys as _sys; _sys.exit(0)

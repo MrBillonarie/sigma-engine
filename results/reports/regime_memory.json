@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-06-18 06:00:01",
-  "n_trades_used": 29,
-  "n_models_tracked": 11,
+  "updated_at": "2026-06-21 06:00:01",
+  "n_trades_used": 31,
+  "n_models_tracked": 12,
   "current_regime": "BEAR",
   "leaderboard": [
     {
@@ -43,6 +43,14 @@
       "avg_pnl": -0.1653,
       "n": 5,
       "score": -0.441
+    },
+    {
+      "model": "SOL_4h_supply_zone_rejection",
+      "regime": "BEAR",
+      "wr": 33.3,
+      "avg_pnl": -0.6722,
+      "n": 3,
+      "score": -1.493
     }
   ],
   "memory": {
@@ -103,14 +111,14 @@
     },
     "SOL_4h_supply_zone_rejection": {
       "BEAR": {
-        "n": 2,
-        "wr": 50.0,
-        "avg_pnl": -0.3655,
-        "last_seen": "2026-06-15 07:19:43.883142",
-        "score": -0.485
+        "n": 3,
+        "wr": 33.3,
+        "avg_pnl": -0.6722,
+        "last_seen": "2026-06-20 18:33:21.683453",
+        "score": -1.493
       },
       "_best_regime": "BEAR",
-      "_best_score": -0.485
+      "_best_score": -1.493
     },
     "BTC_4h_three_candles_short": {
       "BEAR": {
@@ -166,6 +174,17 @@
       },
       "_best_regime": "BEAR",
       "_best_score": -0.892
+    },
+    "LTC_4h_bearish_rsi_divergence": {
+      "BEAR": {
+        "n": 1,
+        "wr": 100.0,
+        "avg_pnl": 2.8402,
+        "last_seen": "2026-06-18 11:17:24.834095",
+        "score": 2.352
+      },
+      "_best_regime": "BEAR",
+      "_best_score": 2.352
     }
   }
 }

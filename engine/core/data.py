@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 import json
 import os
+import time
 import hashlib
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -17,8 +18,20 @@ CACHE_DIR = Path(__file__).parent.parent / "results" / "cache"
 CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 CONFIG_PATH = Path(__file__).parent.parent / "config" / "settings.json"
-with open(CONFIG_PATH) as f:
-    CONFIG = json.load(f)
+# 2026-06-19: varios scripts (autonomous.py, pine_generator.py, etc) escriben este
+# archivo con open(path,'w') sin escritura atomica -- truncan a 0 bytes antes de
+# volver a escribir. Cualquier proceso que importe este modulo justo en esa ventana
+# (milisegundos) recibia JSONDecodeError y crasheaba entero (asi fallaba update_data.py
+# en su cron diario). Reintenta unas pocas veces en vez de fallar de inmediato.
+for _attempt in range(5):
+    try:
+        with open(CONFIG_PATH) as f:
+            CONFIG = json.load(f)
+        break
+    except (json.JSONDecodeError, OSError):
+        if _attempt == 4:
+            raise
+        time.sleep(0.3)
 
 
 def _cache_key(symbol, tf, days):
@@ -50,10 +63,18 @@ def fetch_ohlcv(symbol=None, tf="15m", days=None, use_cache=True):
     tf_cfg = CONFIG["timeframes"].get(tf, {})
     days   = days or tf_cfg.get("days_history", 180)
 
-    # Preferir max CSV si disponible y tiene suficientes dias
+    # Preferir max CSV si disponible y tiene suficientes dias.
+    # 2026-06-19: data_{tf}_max.csv es un archivo COMPARTIDO sin simbolo en el
+    # nombre (es el de BTC, el unico activo para el que update_data.py lo genera).
+    # Antes este fast-path no verificaba que `symbol` fuera el mismo activo --
+    # llamar fetch_ohlcv(symbol='ETH/USDT', ...) devolvia silenciosamente precios
+    # de BTC. Ningun caller de produccion pasa symbol explicito hoy (confirmado
+    # via grep), pero la funcion lo acepta como parametro publico, asi que el
+    # bug es real aunque dormido. Restringir el fast-path al simbolo default.
     models_dir = Path(__file__).parent.parent.parent / "models"
     max_path = models_dir / f"data_{tf}_max.csv"
-    if max_path.exists():
+    is_default_symbol = symbol == CONFIG["identity"]["symbol"]
+    if max_path.exists() and is_default_symbol:
         df_max = pd.read_csv(max_path, index_col=0)
         df_max.index.name = "timestamp"
         # Convertir indice a DatetimeIndex timezone-naive (rapido)

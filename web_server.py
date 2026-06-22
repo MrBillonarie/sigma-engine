@@ -1514,7 +1514,15 @@ def open_trade(sym, tf, direction, price, sl, tp, strategy='',
 
 
 @_locked_trade_op
-def close_trade(sym, tf, exit_price, reason='MANUAL'):
+def _last_live_equity(state):
+    """Ultimo equity_after real conocido de un trade LIVE (fallback si fetch_balance falla al cerrar)."""
+    for t in reversed(state.get('history', [])):
+        if t.get('mode') == 'LIVE' and t.get('equity_after'):
+            return t['equity_after']
+    return 0.0
+
+
+def close_trade(sym, tf, exit_price, reason='MANUAL', contracts=None, real_equity=None):
 
     """Cierra un trade y registra resultado en historial."""
 
@@ -1535,6 +1543,8 @@ def close_trade(sym, tf, exit_price, reason='MANUAL'):
     direction = trade.get('direction', 'long')
 
     kelly_pct = trade.get('kelly_pct', 2.2)
+
+    is_live   = trade.get('mode') == 'LIVE' and contracts is not None
 
 
 
@@ -1595,47 +1605,67 @@ def close_trade(sym, tf, exit_price, reason='MANUAL'):
 
 
 
-    commission = round((entry + exit_price) * 0.0004, 4) if entry > 0 else 0.0
-
     funding    = 0.0
-
-
-
-    port = state.setdefault('portfolio', {
-
-        'initial_capital': 10000, 'equity': 10000,
-
-        'start_date': _strftime_chile('%Y-%m-%d'), 'equity_history': [],
-
-        'peak_equity': 10000, 'max_dd_pct': 0,
-
-        'total_commission': 0, 'total_funding': 0,
-
-    })
-
-    eq_before   = port.get('equity', 10000)
-
-    eq_after    = round(eq_before * (1 + pnl_pct / 100), 2)
-
-    port['equity'] = eq_after
-
-    port['total_commission'] = round(port.get('total_commission', 0) + commission, 4)
-
-    peak = max(port.get('peak_equity', eq_after), eq_after)
-
-    port['peak_equity'] = peak
-
-    dd = round((eq_after - peak) / peak * 100, 2) if peak > 0 else 0
-
-    port['max_dd_pct'] = min(port.get('max_dd_pct', 0), dd)
 
     now = _strftime_chile('%Y-%m-%d %H:%M:%S.%f')
 
-    hist_eq = port.get('equity_history', [])
 
-    hist_eq.append({'eq': eq_after, 'date': now[:10]})
 
-    port['equity_history'] = hist_eq[-100:]
+    if is_live:
+
+        # Trade LIVE: pnl/equity en dolares reales (cantidad real ejecutada en
+        # Binance + balance real post-cierre), no la formula de paper trading.
+        # pnl_pct arriba sigue la formula backtest -- se mantiene para que el
+        # gate (WR/PF/DD) compare LIVE contra backtest con la misma metodologia.
+        sign        = 1 if direction == 'long' else -1
+        commission  = round(contracts * (entry + exit_price) * 0.0004, 4)
+        pnl_dollar  = round((exit_price - entry) * contracts * sign - commission, 4)
+        # Si fetch_balance() fallo en el momento del cierre (raro, ya queda
+        # WARNING en executor.log), no inventar un numero -- dejar el ultimo
+        # equity LIVE conocido para no romper /fire ni el dashboard con None.
+        equity_after = round(real_equity, 2) if real_equity is not None else _last_live_equity(state)
+
+    else:
+
+        commission = round((entry + exit_price) * 0.0004, 4) if entry > 0 else 0.0
+
+        port = state.setdefault('portfolio', {
+
+            'initial_capital': 10000, 'equity': 10000,
+
+            'start_date': _strftime_chile('%Y-%m-%d'), 'equity_history': [],
+
+            'peak_equity': 10000, 'max_dd_pct': 0,
+
+            'total_commission': 0, 'total_funding': 0,
+
+        })
+
+        eq_before   = port.get('equity', 10000)
+
+        eq_after    = round(eq_before * (1 + pnl_pct / 100), 2)
+
+        port['equity'] = eq_after
+
+        port['total_commission'] = round(port.get('total_commission', 0) + commission, 4)
+
+        peak = max(port.get('peak_equity', eq_after), eq_after)
+
+        port['peak_equity'] = peak
+
+        dd = round((eq_after - peak) / peak * 100, 2) if peak > 0 else 0
+
+        port['max_dd_pct'] = min(port.get('max_dd_pct', 0), dd)
+
+        hist_eq = port.get('equity_history', [])
+
+        hist_eq.append({'eq': eq_after, 'date': now[:10]})
+
+        port['equity_history'] = hist_eq[-100:]
+
+        pnl_dollar   = round(eq_before * (pnl_pct / 100), 4)
+
+        equity_after = eq_after
 
 
 
@@ -1647,7 +1677,7 @@ def close_trade(sym, tf, exit_price, reason='MANUAL'):
 
               'pnl_pct_raw': pnl_pct_raw,
 
-              'pnl_dollar': round(eq_before * (pnl_pct / 100), 4),
+              'pnl_dollar': pnl_dollar,
 
               'kelly_pct_used': kelly_pct,
 
@@ -1655,7 +1685,7 @@ def close_trade(sym, tf, exit_price, reason='MANUAL'):
 
               'commission': commission, 'funding': funding,
 
-              'equity_after': eq_after,
+              'equity_after': equity_after,
               'regime_at_close': (_regime_cache.get('BTC', {}).get('regime', 'UNKNOWN')
                                   if _regime_cache else 'UNKNOWN')}
 
@@ -3252,9 +3282,25 @@ def _compute_signals():
 
         # Live aun requiere PASS_LIVE robustness (filtrado por gate aparte)
 
-        if _cagr > 0 and _cagr < 8:         return 'NO_ACTIVAR', f'CAGR {_cagr:.1f}% insuf. (menor 8%)'
+        # 2026-06-19: excepcion puntual de CAGR (no umbral global) -- mismo criterio que
+        # _DD_OVERRIDE_ACTIVAR pero para el check de CAGR<8%. XAG/1d dmi_trend: CAGR 6.8%
+        # (deficit relativo ~15%, comparable al de los casos de DD ya aprobados), pero
+        # WR 72% y DD -14% son fuertes -- el riesgo real es bajo, el unico tema es edge
+        # delgado, que el Kelly sizing ya amortigua. Nombrada por estrategia, no por slot.
+        # NOTA: es 'long' -- hoy sigue en CONDICIONAL por el gate de regimen BEAR, no
+        # por CAGR (eso ya esta resuelto). Mismo principio que XAU en _DD_OVERRIDE_ACTIVAR:
+        # no se extiende el override al gate de regimen. Activa solo si el regimen cambia.
+        _CAGR_OVERRIDE_ACTIVAR = {
+            ('XAG', '1d', 'dmi_trend', 'long'),
+        }
+        _cov_sym = str(m.get('_symbol','')).replace('/USDT','').replace('/USD','').upper()
+        _cov_key = (_cov_sym, str(m.get('_tf','')), str(m.get('_strategy','')), mtype)
 
-        if _cagr > 0 and _cagr < 12:        return 'CONDICIONAL', f'CAGR {_cagr:.1f}% bajo (paper-only)'
+        if _cagr > 0 and _cagr < 8 and _cov_key not in _CAGR_OVERRIDE_ACTIVAR:
+            return 'NO_ACTIVAR', f'CAGR {_cagr:.1f}% insuf. (menor 8%)'
+
+        if _cagr > 0 and _cagr < 12 and _cov_key not in _CAGR_OVERRIDE_ACTIVAR:
+            return 'CONDICIONAL', f'CAGR {_cagr:.1f}% bajo (paper-only)'
 
         if _tr < 10:                         return 'NO_ACTIVAR', f'Solo {int(_tr)} trades OOS'
 
@@ -3266,11 +3312,31 @@ def _compute_signals():
         _no_act_dd = -50.0 if _is_15m else -35.0
         _cond_dd   = -35.0 if _is_15m else -25.0
 
+        # 2026-06-19: excepcion puntual revisada con el usuario -- 2 estrategias con DD
+        # apenas sobre el umbral (-25% no-15m) pero fuertes en todo lo demas (grade A+/A,
+        # WR alto). No relaja el umbral general -- es nombrada por estrategia especifica,
+        # no por slot, para que un campeon futuro distinto en el mismo slot no herede la
+        # excepcion sin revision propia.
+        _DD_OVERRIDE_ACTIVAR = {
+            ('ETH', '1h', 'lower_high_structure_short', 'short'),
+            ('LTC', '4h', 'bearish_rsi_divergence', 'short'),
+            # 2026-06-19: mismo criterio aplicado a M2 (analisis de frecuencia commodities).
+            # NOTA: ambas son 'long' y hoy siguen en CONDICIONAL por el gate de regimen
+            # BEAR (no por DD -- ese ya esta resuelto por este override). Es intencional:
+            # no se extiende el override al gate de regimen, misma decision tomada para
+            # los longs de M1. Si el regimen pasa a BULL/RANGE, activan solas sin tocar nada mas.
+            ('XAU', '4h', 'hull_cross', 'long'),
+            ('XAU', '1d', 'ichimoku', 'long'),
+        }
+        _ov_sym = str(m.get('_symbol','')).replace('/USDT','').replace('/USD','').upper()
+        _ov_key = (_ov_sym, str(_tf_raw), str(m.get('_strategy','')), mtype)
+
         if _dd < _no_act_dd:                 return 'NO_ACTIVAR', f'DD {_dd:.0f}% excesivo'
 
         if _g == 'C':                        return 'CONDICIONAL', 'Grade C'
 
-        if _dd < _cond_dd:                   return 'CONDICIONAL', f'DD {_dd:.0f}% alto'
+        if _dd < _cond_dd and _ov_key not in _DD_OVERRIDE_ACTIVAR:
+            return 'CONDICIONAL', f'DD {_dd:.0f}% alto'
 
         if _ty > 0 and _ty < 4:             return 'CONDICIONAL', f'{_ty:.0f} trades/ano — pocas senales'
 
@@ -3280,7 +3346,21 @@ def _compute_signals():
 
         if regime == 'BULL' and mtype == 'short': return "CONDICIONAL", "Régimen BULL — paper-only para shorts (live: solo si gana en bull)"
 
-        if regime == 'BEAR' and mtype == 'long':  return "CONDICIONAL", "Régimen BEAR — paper-only para longs (live: solo si gana en bear)"
+        # 2026-06-19: excepcion nombrada por evidencia historica real -- test retroactivo
+        # desbloqueando el regime gate sobre el backtest completo (no solo en vivo). De 13
+        # longs bloqueados por BEAR, ETH/4h tma_bands fue el unico con muestra grande (n=88
+        # trades en tramos historicos BEAR) y PnL limpio positivo (+$5,055 sobre $1000 base,
+        # WR 53.4%). Los otros 12 o tuvieron 0 trades en bear (la propia logica de la senal
+        # ya los excluye) o muestra/PnL insuficiente para confiar. Nombrada por estrategia,
+        # no por slot -- mismo principio que _DD_OVERRIDE_ACTIVAR / _CAGR_OVERRIDE_ACTIVAR.
+        _REGIME_OVERRIDE_ACTIVAR = {
+            ('ETH', '4h', 'tma_bands', 'long'),
+        }
+        _orv_sym = str(m.get('_symbol','')).replace('/USDT','').replace('/USD','').upper()
+        _orv_key = (_orv_sym, str(m.get('_tf','')), str(m.get('_strategy','')), mtype)
+
+        if regime == 'BEAR' and mtype == 'long' and _orv_key not in _REGIME_OVERRIDE_ACTIVAR:
+            return "CONDICIONAL", "Régimen BEAR — paper-only para longs (live: solo si gana en bear)"
 
         return 'ACTIVAR', f'Grade {_g} | WR {_wr:.0f}% | DD {_dd:.0f}%'
 
@@ -3929,7 +4009,7 @@ def _compute_signals():
 
         from smart_exit import run_smart_exit as _smart_exit
 
-        _smart_exit(_current_prices, regime, close_trade)
+        _smart_exit(_current_prices, regime, close_trade, _load_trades, _save_trades, _TRADE_LOCK)
 
     except Exception as _se_err:
 
@@ -5055,10 +5135,15 @@ def _compute_signals():
         try:
             _cg2_snap = __import__('json').loads(open('/opt/sigma/results/reports/port_snapshot.json').read())
             _cg2_champs = _cg2_snap.get('champions', {})
+            _cg2_champs_sec = _cg2_snap.get('champions_secondary', {})
             _cg2_key = _c['sym'] + '|' + _c['tf']
             _cg2_champ = _cg2_champs.get(_cg2_key, '')
+            _cg2_champ_sec = _cg2_champs_sec.get(_cg2_key, '')
             _cg2_strat = _cg2_champ.split('|')[0] if _cg2_champ else ''
-            if _cg2_strat and _c['strat'] != _cg2_strat:
+            _cg2_strat_sec = _cg2_champ_sec.split('|')[0] if _cg2_champ_sec else ''
+            # 2026-06-20: el secundario (direccion opuesta, ver champion_watcher.py) ya
+            # es un champion valido -- no redirigir ni abortar si _c['strat'] coincide.
+            if _cg2_strat and _c['strat'] != _cg2_strat and _c['strat'] != _cg2_strat_sec:
                 # buscar en results el modelo champion con signal activa
                 _cg2_champ_m = next((r for r in results if r.get('sym')==_c['sym'] and r.get('tf')==_c['tf'] and r.get('strategy')==_cg2_strat and r.get('signal')), None)
                 if _cg2_champ_m:
@@ -8239,6 +8324,15 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             except Exception as _ex:
                 _send_json(self, {"error": str(_ex)})
 
+        elif self.path == '/api/selection_bias':
+            try:
+                import json as _json3b, os as _os3b
+                _fp = "/opt/sigma/results/reports/selection_bias.json"
+                _d  = _json3b.load(open(_fp)) if _os3b.path.exists(_fp) else {"error":"not_computed_yet"}
+                _send_json(self, _d)
+            except Exception as _ex:
+                _send_json(self, {"error": str(_ex)})
+
 
         elif self.path == '/api/motors':
             try:
@@ -8748,7 +8842,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
             body = json.loads(self.rfile.read(length) or b'{}')
 
-            t = close_trade(body['sym'], body['tf'], body.get('exit_price', 0), body.get('reason','MANUAL'))
+            t = close_trade(body['sym'], body['tf'], body.get('exit_price', 0), body.get('reason','MANUAL'),
+                            contracts=body.get('contracts'), real_equity=body.get('real_equity'))
 
             _send_json(self, {'ok': True, 'trade': t})
 
@@ -9366,11 +9461,16 @@ def _proactive_trade_opener():
                     import json as _jcg
                     _cg_snap = _jcg.loads(open('/opt/sigma/results/reports/port_snapshot.json').read())
                     _cg_champs = _cg_snap.get('champions', {})
+                    _cg_champs_sec = _cg_snap.get('champions_secondary', {})
                     _cg_sym = sig.get('sym','').replace('/USDT','').replace('/USD','').upper()
                     _cg_key = f"{_cg_sym}|{sig.get('tf','?')}"
                     _cg_champ = _cg_champs.get(_cg_key, '')
-                    if _cg_champ and sig.get('strategy','?') != _cg_champ.split('|')[0]:
-                        continue  # no es el champion: solo per-model testing
+                    _cg_champ_sec = _cg_champs_sec.get(_cg_key, '')
+                    _cg_strat_ok = bool(_cg_champ) and sig.get('strategy','?') == _cg_champ.split('|')[0]
+                    _cg_strat_ok_sec = bool(_cg_champ_sec) and sig.get('strategy','?') == _cg_champ_sec.split('|')[0]
+                    # 2026-06-20: secundario (direccion opuesta) tambien es champion valido
+                    if _cg_champ and not _cg_strat_ok and not _cg_strat_ok_sec:
+                        continue  # no es el champion primario ni secundario: solo per-model testing
                 except Exception:
                     continue  # fallo lectura port_snapshot: NO abrir (fail-safe)
 
@@ -9581,17 +9681,18 @@ def _graceful_shutdown(signum, frame):
 
 
 
-signal.signal(signal.SIGTERM, _graceful_shutdown)
+if __name__ == "__main__":
+    signal.signal(signal.SIGTERM, _graceful_shutdown)
 
-signal.signal(signal.SIGINT,  _graceful_shutdown)
+    signal.signal(signal.SIGINT,  _graceful_shutdown)
 
 
 
-httpd = ReusableHTTPServer(('127.0.0.1', PORT), Handler)
+    httpd = ReusableHTTPServer(('127.0.0.1', PORT), Handler)
 
-print(f'Dashboard en http://178.104.10.97:{PORT}/dashboard.html', flush=True)
+    print(f'Dashboard en http://178.104.10.97:{PORT}/dashboard.html', flush=True)
 
-httpd.serve_forever()
+    httpd.serve_forever()
 
 
 

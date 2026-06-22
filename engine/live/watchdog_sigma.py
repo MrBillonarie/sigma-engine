@@ -126,6 +126,36 @@ def main():
 
     state['cpu_idle_since'] = new_cpu_idle
 
+    # 2026-06-19: SINGLETON PROCESS CHECK -- detecta instancias duplicadas de
+    # procesos criticos. Causa raiz del incidente 2026-06-17: import accidental
+    # de web_server.py levanto un segundo listener en :8080 sin que nadie lo
+    # supiera durante ~15h (systemctl is-active no lo detecta porque el proceso
+    # legitimo seguia activo). No mata nada -- solo alerta, la decision de cual
+    # PID matar la toma un humano (mismo principio fail-safe que reconcile()).
+    SINGLETON_PROCESSES = ['web_server.py', 'live_executor.py']
+    dup_alerts = []
+    for _sname in SINGLETON_PROCESSES:
+        _matches = []
+        for _p in psutil.process_iter(['pid', 'cmdline', 'create_time']):
+            try:
+                _cmd = ' '.join(_p.info['cmdline'] or [])
+                if _sname in _cmd:
+                    _matches.append((_p.info['pid'], _p.info['create_time']))
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                continue
+        if len(_matches) > 1:
+            dup_alerts.append((_sname, _matches))
+    if dup_alerts:
+        _nl = chr(10)
+        _parts = ['INSTANCIAS DUPLICADAS DETECTADAS']
+        for _sname, _matches in dup_alerts:
+            _parts.append(f'  {_sname}: {len(_matches)} procesos')
+            for _pid, _ctime in sorted(_matches, key=lambda m: m[1]):
+                _age_min = int((now - _ctime) / 60)
+                _parts.append(f'    PID {_pid} - iniciado hace {_age_min}min')
+        tg(_nl.join(_parts), silent=False)  # sin cooldown: evento critico, no ruido
+        log('ALERT duplicados: ' + str([(n, len(m)) for n, m in dup_alerts]))
+
     # 2026-05-16: SILENT_BUG MONITOR — detecta si los except con logging
     # nuevos (web_server) dispararon. Si > 0 en ultimos 5min, alerta TG.
     silent_bug_count = 0
@@ -156,7 +186,10 @@ def main():
 
     # 2026-05-14: SERVICE HEALTH — alertar solo si un servicio critico cae.
     # NO freshness alerts (eran ruido al grupo publico). Solo SIGKILL real.
-    CRITICAL_SERVICES = ['sigma-web.service', 'sigma-trainer.service',
+    # sigma-trainer.service se sacó de la lista 2026-06-19: se detuvo a
+    # propósito (corría sin coordinarse con master_pipeline/gap_auto_launcher,
+    # ver RISK_POLICY.md/commit de esa fecha) -- no es una caída real.
+    CRITICAL_SERVICES = ['sigma-web.service',
                          'sigma-pipeline.service', 'sigma-telegram.service',
                          'sigma-paper-trader.service']
     import subprocess as _sp
@@ -186,3 +219,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

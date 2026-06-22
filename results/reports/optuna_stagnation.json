@@ -1,0 +1,171 @@
+{
+  "n_studies_judged": 1820,
+  "n_stagnant": 1107,
+  "n_active": 713,
+  "pct_stagnant": 60.8,
+  "total_trials_in_judged_studies": 4230754,
+  "estimated_wasted_trials": 1155394,
+  "pct_wasted": 27.3,
+  "top_20_most_wasted": [
+    {
+      "study": "bnb_4h_fibonacci_retracement_short",
+      "status": "OK",
+      "n_trials": 11683,
+      "best_score": 0.1898,
+      "improvement_last_window": 0.0003,
+      "stagnant": true
+    },
+    {
+      "study": "bnb_4h_momentum_short",
+      "status": "OK",
+      "n_trials": 10790,
+      "best_score": 0.3359,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "bnb_4h_turtle_breakout_short",
+      "status": "OK",
+      "n_trials": 10171,
+      "best_score": 0.2663,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "bnb_4h_bearish_rsi_divergence",
+      "status": "OK",
+      "n_trials": 9917,
+      "best_score": 0.2702,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "bnb_4h_inside_bar_short",
+      "status": "OK",
+      "n_trials": 9529,
+      "best_score": 0.3123,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "bnb_4h_dmi_bear",
+      "status": "OK",
+      "n_trials": 9389,
+      "best_score": 0.3006,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "bnb_4h_lower_high_structure_short",
+      "status": "OK",
+      "n_trials": 8602,
+      "best_score": 0.4504,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "bnb_4h_bb_squeeze_short",
+      "status": "OK",
+      "n_trials": 8591,
+      "best_score": 0.1903,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "bnb_4h_keltner_trend_short",
+      "status": "OK",
+      "n_trials": 8508,
+      "best_score": 0.2681,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "sol_1h_volume_climax_top",
+      "status": "OK",
+      "n_trials": 8320,
+      "best_score": 0.263,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "ltc_1h_engulfing_short",
+      "status": "OK",
+      "n_trials": 8244,
+      "best_score": 0.3461,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "bnb_4h_ng_seasonal_short",
+      "status": "OK",
+      "n_trials": 7949,
+      "best_score": 0.3032,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "bnb_4h_supertrend_short",
+      "status": "OK",
+      "n_trials": 7901,
+      "best_score": 0.2803,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "ltc_1h_supply_zone_rejection",
+      "status": "OK",
+      "n_trials": 7895,
+      "best_score": 0.5199,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "bnb_4h_ema200_rejection_short",
+      "status": "OK",
+      "n_trials": 7768,
+      "best_score": 0.3078,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "bnb_4h_pivot_bounce",
+      "status": "OK",
+      "n_trials": 7746,
+      "best_score": 0.1954,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "bnb_4h_keltner_breakdown_short",
+      "status": "OK",
+      "n_trials": 7738,
+      "best_score": 0.368,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "ltc_1h_macro_momentum_short",
+      "status": "OK",
+      "n_trials": 7709,
+      "best_score": 0.3072,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "bnb_4h_atr_channel_short",
+      "status": "OK",
+      "n_trials": 7402,
+      "best_score": 0.2497,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    },
+    {
+      "study": "btc_4h_keltner_trend_long",
+      "status": "OK",
+      "n_trials": 7347,
+      "best_score": 0.1757,
+      "improvement_last_window": 0.0,
+      "stagnant": true
+    }
+  ]
+}

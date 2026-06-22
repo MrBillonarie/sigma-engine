@@ -188,10 +188,17 @@ def _regen_snapshot():
     if not models_dir.exists():
         return False
     champions = {}
+    champions_secondary = {}  # 2026-06-20: mejor candidato de la direccion OPUESTA al
+    # champion primario, cuando existe. Antes el sistema solo guardaba un ganador por
+    # slot sin importar direccion -- si el ganador era short, el slot quedaba en
+    # silencio durante regimen bull (el regime gate solo deja operar short en bear/
+    # range). Ver project_long_short_dual_champion en memoria. Backward-compatible:
+    # `champions` se sigue calculando exactamente igual que antes.
     cagrs, wrs, dds, pfs, trades = [], [], [], [], 0
     n_grade_a = 0
     # Por slot (asset|tf) elegir el de mayor CAGR OOS y derivar direction del strategy name
     by_slot = {}
+    by_slot_dir = {}  # (key, direction) -> (this_rank, cagr, strat, direction, m)
     for tf_dir in models_dir.iterdir():
         if not tf_dir.is_dir() or tf_dir.name == 'archive':
             continue
@@ -216,13 +223,25 @@ def _regen_snapshot():
                 _rank = 0
             this_rank = (_rank, score)
             key = f'{sym}|{tf}'
+            direction = 'short' if strat in SHORT_STRATEGIES else 'long'
             prev = by_slot.get(key)
             if prev is None or this_rank > prev[0]:
-                direction = 'short' if strat in SHORT_STRATEGIES else 'long'
                 by_slot[key] = (this_rank, cagr, strat, direction, m)
+            # Mejor candidato POR DIRECCION (independiente de cual gana el slot overall)
+            dir_key = (key, direction)
+            prev_dir = by_slot_dir.get(dir_key)
+            if prev_dir is None or this_rank > prev_dir[0]:
+                by_slot_dir[dir_key] = (this_rank, cagr, strat, direction, m)
     trades_per_slot = []  # 2026-05-14: añadido para weighted average
     for key, (_rank, cagr, strat, direction, m) in by_slot.items():
         champions[key] = f'{strat}|{direction}'
+        # Secondary: el mejor de la direccion OPUESTA, si existe -- coexiste con el
+        # primario porque el regime gate ya los mantiene de pisarse en el tiempo
+        # (long solo bull/range, short solo bear/range).
+        _other_dir = 'short' if direction == 'long' else 'long'
+        _sec = by_slot_dir.get((key, _other_dir))
+        if _sec is not None:
+            champions_secondary[key] = f'{_sec[2]}|{_sec[3]}'
         slot_trades = int(m.get('trades', 0) or 0)
         cagrs.append(cagr)
         wrs.append(float(m.get('wr', 0) or 0))
@@ -283,6 +302,10 @@ def _regen_snapshot():
         for _slot, _val in existing['champions'].items():
             if _slot not in champions:
                 champions[_slot] = _val
+    if existing and 'champions_secondary' in existing:
+        for _slot, _val in existing['champions_secondary'].items():
+            if _slot not in champions_secondary:
+                champions_secondary[_slot] = _val
 
     # Calcular vistas multi-nivel M1+M2 por robustness rank
     _cagrs_op, _cagrs_pl, _cagrs_all = [], [], []
@@ -306,6 +329,7 @@ def _regen_snapshot():
 
     snap = dict(existing)
     snap['champions'] = champions
+    snap['champions_secondary'] = champions_secondary
     snap['snapshot_at'] = datetime.now(timezone.utc).replace(tzinfo=None).isoformat() + 'Z'
     snap['trigger'] = 'champion_watcher refresh'
     # Siempre actualizar métricas (M1+M2). web_server.py solo lee port_snapshot, no escribe.
@@ -356,6 +380,19 @@ def main():
         log('Empty champions in snapshot')
         return
 
+    # 2026-06-20: log-only de cambios en champions_secondary (sin Telegram todavia --
+    # ver project_long_short_dual_champion en memoria para wiring completo pendiente)
+    try:
+        _cur_sec = snap.get('champions_secondary', {})
+        _last_sec = {}
+        if NOTIFIED_PATH.exists():
+            _last_sec = json.loads(NOTIFIED_PATH.read_text()).get('champions_secondary', {})
+        for _slot, _val in _cur_sec.items():
+            if _last_sec.get(_slot) != _val:
+                log(f'[SECONDARY] {_slot} -> {_val}')
+    except Exception as _e_sec:
+        log(f'secondary diff error: {_e_sec}')
+
     # Leer último estado notificado
     first_run = not NOTIFIED_PATH.exists()
     last = {}
@@ -369,6 +406,7 @@ def main():
     if first_run:
         NOTIFIED_PATH.write_text(json.dumps({
             'champions': current,
+            'champions_secondary': snap.get('champions_secondary', {}),
             'baseline_set_at': datetime.now().isoformat(),
         }, indent=2))
         log(f'Baseline inicial guardado: {len(current)} slots. No se manda nada.')
@@ -446,6 +484,7 @@ def main():
             log(f'[seed-only] rotation {slot}: {old} -> {new}')
         NOTIFIED_PATH.write_text(json.dumps({
             'champions': current,
+            'champions_secondary': snap.get('champions_secondary', {}),
             'seeded_at': datetime.now().isoformat(),
             'seed_changes_summary': {
                 'discoveries': len(discoveries),
@@ -481,6 +520,7 @@ def main():
     if send_ok:
         NOTIFIED_PATH.write_text(json.dumps({
             'champions': current,
+            'champions_secondary': snap.get('champions_secondary', {}),
             'last_notified_at': datetime.now().isoformat(),
             'changes_summary': {
                 'fresh_discoveries': len(fresh_discoveries),

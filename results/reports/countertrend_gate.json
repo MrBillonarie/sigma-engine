@@ -1,0 +1,277 @@
+{
+  "BNB|15m|lower_high_structure_short|bull": {
+    "n_trades": 1332,
+    "wr": 79.6,
+    "pnl_total": 43403.12,
+    "n_segments_qualified": 14,
+    "n_segments_total": 17,
+    "selection_bias_verdict": "SELECTION_NOISE_LIKELY",
+    "gate_verdict": "BLOCKED",
+    "gate_reasons": [
+      "selection_bias_test = SELECTION_NOISE_LIKELY -- el mejor trial no se distingue de ruido de busqueda"
+    ],
+    "transition_zone": {
+      "transition": {
+        "n": 1,
+        "wr": 100.0,
+        "pnl": 251.74
+      },
+      "established": {
+        "n": 1272,
+        "wr": 79.3,
+        "pnl": 40900.76
+      }
+    },
+    "source_file": "/opt/sigma/models/countertrend/bnb_15m_lower_high_structure_short_bull.json"
+  },
+  "ETH|15m|breakout|bear": {
+    "n_trades": 44,
+    "wr": 61.4,
+    "pnl_total": 808.39,
+    "n_segments_qualified": 3,
+    "n_segments_total": 3,
+    "selection_bias_verdict": "WEAK_SIGNAL",
+    "gate_verdict": "CONDICIONAL",
+    "gate_reasons": [
+      "selection_bias_test = WEAK_SIGNAL -- se\u00f1al real pero no fuerte, requiere paper trading extendido antes de confirmar"
+    ],
+    "transition_zone": {
+      "transition": {
+        "n": 0,
+        "wr": null,
+        "pnl": 0.0
+      },
+      "established": {
+        "n": 29,
+        "wr": 55.2,
+        "pnl": -27.55
+      }
+    },
+    "source_file": "/opt/sigma/models/countertrend/eth_15m_breakout_bear.json"
+  },
+  "ETH|15m|lower_high_structure_short|bull": {
+    "n_trades": 1036,
+    "wr": 72.0,
+    "pnl_total": 93393.54,
+    "n_segments_qualified": 8,
+    "n_segments_total": 11,
+    "selection_bias_verdict": "SELECTION_NOISE_LIKELY",
+    "gate_verdict": "BLOCKED",
+    "gate_reasons": [
+      "selection_bias_test = SELECTION_NOISE_LIKELY -- el mejor trial no se distingue de ruido de busqueda"
+    ],
+    "transition_zone": {
+      "transition": {
+        "n": 0,
+        "wr": null,
+        "pnl": 0.0
+      },
+      "established": {
+        "n": 945,
+        "wr": 71.9,
+        "pnl": 85056.82
+      }
+    },
+    "source_file": "/opt/sigma/models/countertrend/eth_15m_lower_high_structure_short_bull.json"
+  },
+  "ETH|1h|tma_bands|bear": {
+    "n_trades": 248,
+    "wr": 66.5,
+    "pnl_total": 1898.75,
+    "n_segments_qualified": 10,
+    "n_segments_total": 11,
+    "selection_bias_verdict": "SELECTION_NOISE_LIKELY",
+    "gate_verdict": "BLOCKED",
+    "gate_reasons": [
+      "selection_bias_test = SELECTION_NOISE_LIKELY -- el mejor trial no se distingue de ruido de busqueda"
+    ],
+    "transition_zone": {
+      "transition": {
+        "n": 2,
+        "wr": 100.0,
+        "pnl": 37.06
+      },
+      "established": {
+        "n": 218,
+        "wr": 61.0,
+        "pnl": -31.62
+      }
+    },
+    "source_file": "/opt/sigma/models/countertrend/eth_1h_tma_bands_bear.json"
+  },
+  "ETH|4h|tma_bands|bear": {
+    "n_trades": 39,
+    "wr": 79.5,
+    "pnl_total": 1712.12,
+    "n_segments_qualified": 2,
+    "n_segments_total": 14,
+    "selection_bias_verdict": "SELECTION_NOISE_LIKELY",
+    "gate_verdict": "BLOCKED",
+    "gate_reasons": [
+      "selection_bias_test = SELECTION_NOISE_LIKELY -- el mejor trial no se distingue de ruido de busqueda"
+    ],
+    "transition_zone": {
+      "transition": {
+        "n": 0,
+        "wr": null,
+        "pnl": 0.0
+      },
+      "established": {
+        "n": 39,
+        "wr": 69.2,
+        "pnl": 793.49
+      }
+    },
+    "source_file": "/opt/sigma/models/countertrend/eth_4h_tma_bands_bear.json"
+  },
+  "ETH|5m|volatility_breakout|bear": {
+    "n_trades": 83,
+    "wr": 68.7,
+    "pnl_total": 2732.99,
+    "n_segments_qualified": 3,
+    "n_segments_total": 3,
+    "selection_bias_verdict": "SELECTION_NOISE_LIKELY",
+    "gate_verdict": "BLOCKED",
+    "gate_reasons": [
+      "selection_bias_test = SELECTION_NOISE_LIKELY -- el mejor trial no se distingue de ruido de busqueda"
+    ],
+    "transition_zone": {
+      "transition": {
+        "n": 0,
+        "wr": null,
+        "pnl": 0.0
+      },
+      "established": {
+        "n": 60,
+        "wr": 81.7,
+        "pnl": 2289.74
+      }
+    },
+    "source_file": "/opt/sigma/models/countertrend/eth_5m_volatility_breakout_bear.json"
+  },
+  "LTC|15m|psar_flip|bear": {
+    "n_trades": 48,
+    "wr": 75.0,
+    "pnl_total": 574.57,
+    "n_segments_qualified": 2,
+    "n_segments_total": 3,
+    "selection_bias_verdict": "SELECTION_NOISE_LIKELY",
+    "gate_verdict": "BLOCKED",
+    "gate_reasons": [
+      "selection_bias_test = SELECTION_NOISE_LIKELY -- el mejor trial no se distingue de ruido de busqueda"
+    ],
+    "transition_zone": {
+      "transition": {
+        "n": 0,
+        "wr": null,
+        "pnl": 0.0
+      },
+      "established": {
+        "n": 41,
+        "wr": 75.6,
+        "pnl": 525.33
+      }
+    },
+    "source_file": "/opt/sigma/models/countertrend/ltc_15m_psar_flip_bear.json"
+  },
+  "PL|1d|tma_bands|bear": {
+    "n_trades": 87,
+    "wr": 56.3,
+    "pnl_total": 11807.71,
+    "n_segments_qualified": 3,
+    "n_segments_total": 37,
+    "selection_bias_verdict": "SELECTION_NOISE_LIKELY",
+    "gate_verdict": "BLOCKED",
+    "gate_reasons": [
+      "selection_bias_test = SELECTION_NOISE_LIKELY -- el mejor trial no se distingue de ruido de busqueda"
+    ],
+    "transition_zone": {
+      "transition": {
+        "n": 3,
+        "wr": 33.3,
+        "pnl": -360.81
+      },
+      "established": {
+        "n": 118,
+        "wr": 54.2,
+        "pnl": 7485.97
+      }
+    },
+    "source_file": "/opt/sigma/models/countertrend/pl_1d_tma_bands_bear.json"
+  },
+  "SOL|15m|lower_high_structure_short|bull": {
+    "n_trades": 774,
+    "wr": 84.5,
+    "pnl_total": 4374.31,
+    "n_segments_qualified": 10,
+    "n_segments_total": 10,
+    "selection_bias_verdict": "SELECTION_NOISE_LIKELY",
+    "gate_verdict": "BLOCKED",
+    "gate_reasons": [
+      "selection_bias_test = SELECTION_NOISE_LIKELY -- el mejor trial no se distingue de ruido de busqueda"
+    ],
+    "transition_zone": {
+      "transition": {
+        "n": 0,
+        "wr": null,
+        "pnl": 0.0
+      },
+      "established": {
+        "n": 748,
+        "wr": 84.5,
+        "pnl": 4127.3
+      }
+    },
+    "source_file": "/opt/sigma/models/countertrend/sol_15m_lower_high_structure_short_bull.json"
+  },
+  "SOL|4h|tma_bands|bear": {
+    "n_trades": 54,
+    "wr": 55.6,
+    "pnl_total": 3591.02,
+    "n_segments_qualified": 5,
+    "n_segments_total": 15,
+    "selection_bias_verdict": "WEAK_SIGNAL",
+    "gate_verdict": "CONDICIONAL",
+    "gate_reasons": [
+      "selection_bias_test = WEAK_SIGNAL -- se\u00f1al real pero no fuerte, requiere paper trading extendido antes de confirmar"
+    ],
+    "transition_zone": {
+      "transition": {
+        "n": 0,
+        "wr": null,
+        "pnl": 0.0
+      },
+      "established": {
+        "n": 46,
+        "wr": 50.0,
+        "pnl": 1711.32
+      }
+    },
+    "source_file": "/opt/sigma/models/countertrend/sol_4h_tma_bands_bear.json"
+  },
+  "SOL|5m|supertrend_short|bull": {
+    "n_trades": 710,
+    "wr": 56.9,
+    "pnl_total": 21603.29,
+    "n_segments_qualified": 8,
+    "n_segments_total": 8,
+    "selection_bias_verdict": "SELECTION_NOISE_LIKELY",
+    "gate_verdict": "BLOCKED",
+    "gate_reasons": [
+      "selection_bias_test = SELECTION_NOISE_LIKELY -- el mejor trial no se distingue de ruido de busqueda"
+    ],
+    "transition_zone": {
+      "transition": {
+        "n": 1,
+        "wr": 0.0,
+        "pnl": -65.41
+      },
+      "established": {
+        "n": 651,
+        "wr": 56.5,
+        "pnl": 20792.33
+      }
+    },
+    "source_file": "/opt/sigma/models/countertrend/sol_5m_supertrend_short_bull.json"
+  }
+}

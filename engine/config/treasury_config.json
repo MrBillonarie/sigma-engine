@@ -1,0 +1,6 @@
+{
+  "_comment": "Esqueleto de tesoreria/autocustodia. WITHDRAW_PCT y WITHDRAW_EVERY_DAYS en 0 = inactivo (no calcula nada). COLD_STORAGE_ADDRESS vacio a proposito -- completar manualmente en el VPS, nunca pegar la direccion en un chat de IA. Este script NUNCA ejecuta un retiro real, solo calcula y alerta.",
+  "WITHDRAW_PCT": 0.0,
+  "WITHDRAW_EVERY_DAYS": 0,
+  "COLD_STORAGE_ADDRESS": ""
+}

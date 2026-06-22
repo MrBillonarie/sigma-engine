@@ -187,19 +187,23 @@ def get_best_models():
             except:
                 continue
 
-    # Override con signals_cache: misma fuente que pine_sync usa para "vps champion"
+    # Override con signals_cache: usa el campeon real marcado por is_champion.
+    # 2026-06-19: antes se tomaba el de mayor score, pero el score mas alto NO
+    # siempre es el campeon (puede estar demotido por gates que el score crudo
+    # no refleja). Encontrado via auditoria: BNB/1h tenia squeeze_expand_long
+    # score=0.46 is_champion=False vs ichimoku score=0.29 is_champion=True real.
     try:
         _cache = json.loads((BASE / 'results' / 'signals_cache.json').read_text(encoding='utf-8'))
         _cache_models = _cache.get('models', [])
         _cache_best = {}
         for _cm in _cache_models:
+            if not _cm.get('is_champion'): continue
             _sym = _cm.get('sym',''); _tf = _cm.get('tf',''); _st = _cm.get('strategy','')
             _sc = _cm.get('score', 0) or 0
             if not (_sym and _tf and _st): continue
             _full = _sym+'/USDT' if _sym in ['BTC','ETH','SOL','BNB','LTC'] else _sym+'/USD'
             _k = (_full, _tf)
-            if _k not in _cache_best or _sc > _cache_best[_k][1]:
-                _cache_best[_k] = (_st, _sc)
+            _cache_best[_k] = (_st, _sc)
         for _k, (_cst, _csc) in _cache_best.items():
             if _k not in models: continue
             if models[_k][0] == _cst: continue

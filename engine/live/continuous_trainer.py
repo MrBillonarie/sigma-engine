@@ -10,6 +10,13 @@ from pathlib import Path
 from itertools import cycle
 from datetime import datetime
 
+try:
+    from utils.parallel_guard import global_slots_available
+except Exception as _e_guard:
+    print(f'[WARN] No se pudo importar utils.parallel_guard: {_e_guard}. Sin tope global.')
+    def global_slots_available(cap=7):
+        return cap
+
 OUTPUT_DIR = Path('/opt/sigma')
 LOG_PATH   = OUTPUT_DIR / 'results/reports/trainer.log'
 MAX_PAR    = 2  # maximo 2+1 manual = 3 total
@@ -160,7 +167,10 @@ def _get_short_models():
     import glob
     models_dir = OUTPUT_DIR / 'models'
     has_short = set()
-    SHORT_STRATS = {'breakdown', 'pullback_short', 'momentum_short'}
+    try:
+        from utils.strategies import SHORT_STRATEGIES as SHORT_STRATS
+    except Exception:
+        SHORT_STRATS = {'breakdown', 'pullback_short', 'momentum_short'}
     for jf in models_dir.glob('*/*.json'):
         try:
             d = json.loads(jf.read_text(encoding='utf-8'))
@@ -345,6 +355,10 @@ def launch(tf, trials, force_asset=None, focus='all'):
             '--focus', focus]
     env = dict(os.environ)
     env['PYTHONPATH'] = str(OUTPUT_DIR)
+    # Tope global compartido con master_pipeline/gap_auto_launcher/commodities
+    # (ver utils/parallel_guard.py) -- antes continuous_trainer no veia a los otros 3
+    if global_slots_available() <= 0:
+        return None, 'global_cap_reached'
     # RAM Guard: no lanzar si RAM insuficiente
     _rl = _ram_libre_mb()
     _pr = _pipeline_ram_mb()

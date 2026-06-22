@@ -58,15 +58,15 @@
   "mc": {
     "mc_cagr_p05": 11.0,
     "mc_cagr_p50": 644.9,
-    "mc_cagr_p95": 3707.8,
+    "mc_cagr_p95": 2801.2,
     "mc_dd_p50": -47.2,
     "mc_dd_p95": -31.9,
-    "mc_confidence": 97.1,
+    "mc_confidence": 96.2,
     "mc_sims": 1000
   },
   "m2_validation": {
     "status": "PASS",
     "reasons": [],
-    "validated_at": "2026-06-18T21:00:02.084712-04:00"
+    "validated_at": "2026-06-21T21:30:01.817391-04:00"
   }
 }

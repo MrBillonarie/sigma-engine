@@ -535,6 +535,11 @@ def cmd_modelo(chat_id, args, signals):
         msg += f"Kelly: <code>{m.get('eff_risk_pct','?')}%</code>  Regime: <b>{regime}</b>"
     else:
         msg += f"Regime actual: <b>{regime}</b>"
+        msg += (
+            "\n\n<i>¿Viste esta señal anunciada pero no se abrió trade real? "
+            "El bot solo ejecuta con la estrategia campeona vigente de cada slot — "
+            "otras señales se informan pero no operan. La razón de arriba explica el motivo exacto.</i>"
+        )
     send(msg, chat_id=chat_id)
 
 PAUSA_FLAG = "/opt/sigma/results/pausa.flag"
@@ -1072,6 +1077,156 @@ def cmd_fire_set(chat_id, args):
         send(f"Error parsing: {e}\nUso: <code>/fire set 100000 [365]</code>", chat_id=chat_id)
 
 
+# --- RETO tracker (2026-06-19): desafio interno de traders, $1000 de profit ---
+# antes del 28-08-2026, "gana el mas cerca" si nadie llega. Suma profit propio
+# real (Binance income API) + comision de seguidores (manual, Binance no la
+# expone por API -- el usuario la actualiza con /reto comision <monto>).
+_RETO_CONFIG_PATH = '/opt/sigma/results/reto_config.json'
+_RETO_SECRETS_PATH = '/opt/sigma/engine/config/secrets.json'
+
+
+def _reto_load_config():
+    import json as _j, os as _os
+    if not _os.path.exists(_RETO_CONFIG_PATH):
+        return {
+            "target_profit": 1000.0,
+            "deadline_date": "2026-08-28",
+            "baseline_date": "2026-06-17",
+            "manual_commission_usd": 0.0,
+            "manual_commission_updated_at": None,
+        }
+    try:
+        with open(_RETO_CONFIG_PATH) as f:
+            return _j.load(f)
+    except Exception:
+        return {}
+
+
+def _reto_save_config(cfg):
+    import json as _j, os as _os
+    _os.makedirs(_os.path.dirname(_RETO_CONFIG_PATH), exist_ok=True)
+    with open(_RETO_CONFIG_PATH, 'w') as f:
+        _j.dump(cfg, f, indent=2)
+
+
+def _reto_lead_profit(baseline_date):
+    """Profit propio real desde baseline_date: REALIZED_PNL + FUNDING_FEE - |COMMISSION| via Binance income API."""
+    try:
+        import ccxt, json as _j, time as _t
+        from datetime import datetime as _dt
+        secrets = _j.loads(open(_RETO_SECRETS_PATH).read()) if __import__('os').path.exists(_RETO_SECRETS_PATH) else {}
+        ex = ccxt.binance({
+            'apiKey': secrets.get('BINANCE_API_KEY', ''),
+            'secret': secrets.get('BINANCE_API_SECRET', ''),
+            'options': {'defaultType': 'future'},
+            'timeout': 15000,
+        })
+        since_ms = int(_dt.fromisoformat(baseline_date).timestamp() * 1000)
+        total = 0.0
+        for itype in ('REALIZED_PNL', 'FUNDING_FEE', 'COMMISSION'):
+            rows = ex.fapiPrivateGetIncome({'incomeType': itype, 'startTime': since_ms, 'limit': 1000})
+            total += sum(float(r.get('income', 0)) for r in rows)
+        return round(total, 2)
+    except Exception:
+        return None
+
+
+def _reto_build_message(header="🏁 <b>RETO — $1000 antes del 28-08-2026</b>\n"):
+    """Construye el mensaje de estado del RETO. Retorna None si no se pudo leer Binance."""
+    from datetime import datetime as _dt
+    cfg = _reto_load_config()
+    target = cfg.get('target_profit', 1000.0)
+    deadline = cfg.get('deadline_date', '2026-08-28')
+    baseline = cfg.get('baseline_date', '2026-06-17')
+    commission = cfg.get('manual_commission_usd', 0.0)
+    commission_at = cfg.get('manual_commission_updated_at')
+
+    lead_profit = _reto_lead_profit(baseline)
+    if lead_profit is None:
+        return None
+
+    total_progress = lead_profit + commission
+    pct = max(0, min(100, total_progress / target * 100)) if target > 0 else 0
+    bar = _fire_progress_bar(pct, 20)
+
+    try:
+        days_left = (_dt.fromisoformat(deadline) - _dt.now()).days
+        deadline_str = f"{days_left} días restantes" if days_left > 0 else "deadline pasado"
+    except Exception:
+        days_left = None
+        deadline_str = "?"
+
+    try:
+        days_elapsed = max((_dt.now() - _dt.fromisoformat(baseline)).days, 1)
+    except Exception:
+        days_elapsed = 1
+    pace_usd_day = total_progress / days_elapsed
+    if pace_usd_day > 0 and days_left and days_left > 0:
+        projected_at_deadline = total_progress + pace_usd_day * days_left
+    else:
+        projected_at_deadline = total_progress
+
+    lines = [
+        header,
+        f"<code>{bar}</code> <b>{pct:.1f}%</b>\n",
+        f"Profit propio (real, Binance):  <b>${lead_profit:+,.2f}</b>",
+        f"Comisión seguidores (manual):   <b>${commission:+,.2f}</b>",
+        f"<b>Total acumulado:               ${total_progress:+,.2f}</b> / ${target:,.0f}\n",
+        f"Ritmo actual: <code>${pace_usd_day:+.2f}/día</code>",
+        f"Proyección al 28-08 a este ritmo: <b>${projected_at_deadline:+,.2f}</b>",
+        f"\n<i>{deadline_str}</i>",
+    ]
+    if commission_at:
+        lines.append(f"<i>Comisión actualizada manualmente: {commission_at}</i>")
+    else:
+        lines.append(
+            "\n<i>💡 La comisión de seguidores no la expone Binance por API — "
+            "actualízala con <code>/reto comision 5.20</code> cuando la revises en la app.</i>"
+        )
+    lines.append(
+        "\n<i>No es todo-o-nada: si nadie llega a $1000, gana el que esté más cerca. "
+        "Lo que importa es la distancia recorrida, no el número exacto.</i>"
+    )
+    return "\n".join(lines)
+
+
+def cmd_reto(chat_id):
+    """Muestra estado del RETO: profit propio + comision seguidores vs meta $1000, deadline 28-08."""
+    msg = _reto_build_message()
+    if msg is None:
+        send("⚠️ No se pudo leer el profit real de Binance ahora. Probá de nuevo en un momento.", chat_id=chat_id)
+        return
+    send(msg, chat_id=chat_id)
+
+
+def weekly_reto_digest():
+    """Cron semanal (lunes 09:00 Chile): manda el estado del RETO sin que nadie tenga que pedirlo."""
+    msg = _reto_build_message(header="🏁 <b>RETO semanal — $1000 antes del 28-08-2026</b>\n")
+    if msg is None:
+        print("[RETO_DIGEST] No se pudo leer Binance, se omite esta semana", flush=True)
+        return
+    send(msg, silent=True)
+
+
+def cmd_reto_comision(chat_id, args):
+    """Actualiza manualmente la comisión de seguidores: /reto comision <monto>."""
+    from datetime import datetime as _dt
+    cfg = _reto_load_config()
+    try:
+        monto = float((args or "").strip().replace(',', '.').replace('$', ''))
+    except ValueError:
+        send("Uso: <code>/reto comision 5.20</code>", chat_id=chat_id)
+        return
+    cfg['manual_commission_usd'] = monto
+    cfg['manual_commission_updated_at'] = _dt.now().strftime('%Y-%m-%d %H:%M')
+    _reto_save_config(cfg)
+    send(
+        f"✅ Comisión de seguidores actualizada: <b>${monto:+,.2f}</b>\n"
+        f"Usá <code>/reto</code> para ver el progreso total.",
+        chat_id=chat_id
+    )
+
+
 def fire_check_milestone():
     """Llamar periódicamente para notificar cuando se cruza un milestone."""
     cfg = _fire_load_config()
@@ -1198,12 +1353,15 @@ def cmd_ayuda(chat_id):
         "/hoy          Trades del dia y P&L\n"
         "/semana       Performance ultimos 7 dias\n"
         "/modelos       Lista todos los modelos en produccion (26)\n"
+        "/porque SYM TF Por que no se abrio una señal (ej: /porque BTC 1H)\n"
         "/nuevas        Estado de las 23 estrategias short nuevas (14-05)\n"
         "/portfolio     3 vistas del CAGR ponderado (real/top/simple)\n"
         "/fire          Tracker FIRE: progreso al objetivo de portafolio\n"
         "/fire set N D  Configurar meta FIRE ($N en D días)\n"
         "/aum           AUM total gestionado (propio + seguidores)\n"
         "/aum N         Actualizar el AUM total (manual)\n"
+        "/reto          Progreso al reto: $1000 de profit antes del 28-08\n"
+        "/reto comision N  Actualizar comisión de seguidores (manual)\n"
         f"/checklist    Checklist para activar live trading\n"
         f"/salud        Health check del sistema\n"
         "/performance  Performance live vs backtest\n"
@@ -1241,7 +1399,14 @@ def handle_command(text, chat_id, signals, trades):
             cmd_fire(chat_id)
     elif cmd_raw == "/aum":
         cmd_aum(chat_id, args)
-    elif cmd_raw in ("/modelo", "/model"):
+    elif cmd_raw == "/reto":
+        if args.lower().startswith("comision"):
+            cmd_reto_comision(chat_id, args[8:].strip())
+        elif args.lower().startswith("comisión"):
+            cmd_reto_comision(chat_id, args[9:].strip())
+        else:
+            cmd_reto(chat_id)
+    elif cmd_raw in ("/modelo", "/model", "/porque", "/why"):
         cmd_modelo(chat_id, args, signals)
     elif cmd_raw in ("/checklist", "/live"):
         cmd_checklist(chat_id)

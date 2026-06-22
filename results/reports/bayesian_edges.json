@@ -1,5 +1,5 @@
 {
-  "computed_at": "2026-06-19T04:30:02.019297",
+  "computed_at": "2026-06-22T04:30:01.722267",
   "strategies": {
     "breakdown": {
       "n_trades": 6,
@@ -27,6 +27,19 @@
       "sharpe_lower_ci": 2.662,
       "last_trade": "2026-06-13 17:42"
     },
+    "supply_zone_rejection": {
+      "n_trades": 3,
+      "wins": 1,
+      "losses": 2,
+      "posterior_mean_wr": 0.4,
+      "credible_lower_95": 0.008,
+      "credible_upper_95": 0.792,
+      "prob_above_55": 0.2,
+      "edge_confirmed": false,
+      "live_sharpe": null,
+      "sharpe_lower_ci": null,
+      "last_trade": "2026-06-20 18:33"
+    },
     "three_candles_short": {
       "n_trades": 4,
       "wins": 4,
@@ -39,6 +52,19 @@
       "live_sharpe": null,
       "sharpe_lower_ci": null,
       "last_trade": "2026-06-06 23:19"
+    },
+    "regime_adaptive": {
+      "n_trades": 3,
+      "wins": 2,
+      "losses": 1,
+      "posterior_mean_wr": 0.6,
+      "credible_lower_95": 0.208,
+      "credible_upper_95": 0.992,
+      "prob_above_55": 0.6,
+      "edge_confirmed": false,
+      "live_sharpe": null,
+      "sharpe_lower_ci": null,
+      "last_trade": "2026-06-21 05:26"
     },
     "volatility_breakout": {
       "n_trades": 4,
@@ -67,6 +93,6 @@
       "last_trade": "2026-06-17 15:31"
     }
   },
-  "total_strategies_tracked": 5,
+  "total_strategies_tracked": 7,
   "edge_confirmed_count": 1
 }

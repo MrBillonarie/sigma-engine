@@ -55,18 +55,18 @@
     "mc_cagr_p05": -61.1,
     "mc_cagr_p50": 207.4,
     "mc_cagr_p95": 2328.6,
-    "mc_dd_p50": -62.6,
+    "mc_dd_p50": -61.6,
     "mc_dd_p95": -39.9,
-    "mc_confidence": 77.6,
+    "mc_confidence": 80.7,
     "mc_sims": 1000
   },
   "wft": {
     "oos_win_rate": 66.7,
     "n_windows": 6,
     "positive_windows": 4,
-    "avg_cagr_oos": 52.73,
-    "avg_cagr_pos": 93.27,
+    "avg_cagr_oos": 39.9,
+    "avg_cagr_pos": 73.93,
     "verdict": "PASS",
-    "date": "2026-06-14 02:08"
+    "date": "2026-06-21 02:02"
   }
 }

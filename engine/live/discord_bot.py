@@ -312,6 +312,62 @@ async def cmd_modelos(interaction: discord.Interaction):
     await interaction.followup.send(embed=embed)
 
 
+@bot.tree.command(name="porque", description="Por que una senal no se convirtio en trade real (ej: BTC 1h)")
+@app_commands.describe(sym="Simbolo, ej: BTC", tf="Timeframe, ej: 1h")
+async def cmd_porque(interaction: discord.Interaction, sym: str, tf: str):
+    await interaction.response.defer(thinking=True)
+    signals = fetch_json("/api/signals") or {}
+    regime  = signals.get("regime", "?")
+    models  = signals.get("models", [])
+    sym_u   = sym.upper()
+    tf_l    = tf.lower()
+    found   = [m for m in models if m.get("sym", "").upper() == sym_u and m.get("tf", "").lower() == tf_l]
+
+    if not found:
+        disponibles = sorted({f"{m.get('sym')} {m.get('tf','').upper()}" for m in models})
+        embed = discord.Embed(
+            title=f"No encontré {sym_u} {tf_l.upper()}",
+            description="Modelos disponibles:\n" + "\n".join(f"• {s}" for s in disponibles[:30]),
+            color=SIGMA_BLUE,
+        )
+        await interaction.followup.send(embed=embed)
+        return
+
+    m      = found[0]
+    sig    = m.get("signal", False)
+    slot   = m.get("slot", 0)
+    reason = m.get("reason", "—")
+    rec    = m.get("recommendation", "—")
+    mtype  = m.get("type", "?")
+    arrow  = "🟢 LONG" if mtype != "short" else "🔴 SHORT"
+
+    if sig and slot > 0:
+        estado = "⚡ Señal activa — slot ocupado"
+    elif sig:
+        estado = "👁 Señal detectada (slot lleno por otro modelo)"
+    else:
+        estado = "💤 Sin señal activa"
+
+    embed = discord.Embed(
+        title=f"🔍 {sym_u} {tf_l.upper()} · {m.get('strategy','?')}",
+        description=f"{arrow}  ·  {estado}",
+        color=SIGMA_GOLD,
+    )
+    embed.add_field(name="Recomendación", value=rec, inline=False)
+    embed.add_field(name="Razón", value=str(reason)[:1000], inline=False)
+    if not sig:
+        embed.add_field(
+            name="¿Por qué no abrió trade real?",
+            value=(
+                "El bot solo ejecuta con la estrategia campeona vigente de cada slot — "
+                "otras señales se informan pero no operan. La razón de arriba explica el motivo exacto."
+            ),
+            inline=False,
+        )
+    embed.set_footer(text=f"Régimen actual: {regime}")
+    await interaction.followup.send(embed=embed)
+
+
 @bot.tree.command(name="nuevas", description="Estrategias agregadas recientemente al motor")
 async def cmd_nuevas(interaction: discord.Interaction):
     await interaction.response.defer(thinking=True)
@@ -417,6 +473,7 @@ async def cmd_ayuda(interaction: discord.Interaction):
         ("/status",      "Estado general del sistema (regime, champions, posiciones)"),
         ("/portfolio",   "3 vistas del CAGR (real weighted, top 5, simple)"),
         ("/modelos",     "Top 10 champions ordenados por score"),
+        ("/porque",      "Por qué una señal no se abrió como trade real (sym + tf)"),
         ("/nuevas",      "Estrategias agregadas recientemente al motor"),
         ("/fire",        "Progreso hacia el objetivo de capital FIRE"),
         ("/performance", "Rendimiento histórico de trades cerrados"),

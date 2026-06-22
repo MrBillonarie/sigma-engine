@@ -58,6 +58,55 @@ def _cvar_historical(returns, confidence=0.95):
     return round(sum(tail)/len(tail), 4)
 
 
+def _compute_effective_bets(by_strat, min_overlap=3):
+    """Numero efectivo de apuestas independientes (Meucci 2009) a partir de
+    la matriz de correlacion REAL entre estrategias -- no clusters hardcoded
+    como el cluster_map de utils/quant.py:position_correlation_gate.
+
+    Si N estrategias estan nominalmente activas pero su correlacion de
+    retornos es alta, el numero EFECTIVO de apuestas independientes puede
+    ser mucho menor (ej. 8 ideas repetidas con distinto parametro se ven
+    como N lineas en el dashboard pero diversifican como 8).
+
+    Metodologia: eigen-decomposicion de la matriz de correlacion, entropia
+    de Shannon sobre la distribucion de autovalores normalizada (Meucci,
+    "Managing Diversification", 2009). ENB=n si todo decorrelacionado,
+    ENB=1 si todo perfectamente correlacionado. Capa informativa -- no
+    toca el champion gate ni el sizing de Kelly.
+    """
+    try:
+        import numpy as np
+    except ImportError:
+        return {"status": "NUMPY_UNAVAILABLE"}
+
+    keys = [k for k, v in by_strat.items() if len(v) >= min_overlap]
+    n = len(keys)
+    if n < 3:
+        return {"status": "INSUFFICIENT_STRATEGIES", "n_nominal": n}
+
+    corr = np.eye(n)
+    for i in range(n):
+        for j in range(i + 1, n):
+            s1, s2 = by_strat[keys[i]], by_strat[keys[j]]
+            m = min(len(s1), len(s2))
+            c = _pearson(s1[:m], s2[:m]) if m >= min_overlap else None
+            corr[i, j] = corr[j, i] = c if c is not None else 0.0
+
+    eigvals = np.linalg.eigvalsh(corr)
+    eigvals = np.clip(eigvals, 1e-9, None)  # ruido numerico puede dar autovalores <=0
+    p = eigvals / eigvals.sum()
+    entropy = -float(np.sum(p * np.log(p)))
+    enb = float(math.exp(entropy))
+
+    return {
+        "status": "OK",
+        "n_nominal_strategies": n,
+        "effective_independent_bets": round(enb, 2),
+        "diversification_ratio": round(enb / n, 3),
+        "interpretation": f"{n} estrategias nominales diversifican como ~{round(enb,1)} apuestas independientes",
+    }
+
+
 def _simple_beta(strat_returns, mkt_returns):
     """OLS beta: cov(S,M)/var(M)."""
     n = min(len(strat_returns), len(mkt_returns))
@@ -239,6 +288,9 @@ def compute():
     # High correlation pairs (|r| > 0.5)
     high_corr = {k:v for k,v in corr_matrix.items() if abs(v) > 0.5}
 
+    # ── Apuestas independientes efectivas (factor decomposition real) ───────
+    effective_bets = _compute_effective_bets(by_strat)
+
     # ── Portfolio VaR ───────────────────────────────────────────────────────
     var_95  = _var_historical(all_pnl, 0.95)
     cvar_95 = _cvar_historical(all_pnl, 0.95)
@@ -344,6 +396,7 @@ def compute():
             "high_pairs":high_corr,
             "n_high":    len(high_corr),
         },
+        "diversification_factors": effective_bets,
         "alpha_per_strategy": strat_alpha,
         "stress_test": stress_scenarios(open_trades, equity),
     }
@@ -371,6 +424,14 @@ if __name__ == "__main__":
         print(f"  {d}: {v['n']} trades ({v['weight_pct']}%) | WR={v['wr']}% | PnL={v['total_pnl']:+.1f}%")
     print()
     print("High correlation pairs:", r["correlations"]["high_pairs"])
+    print()
+    eb = r["diversification_factors"]
+    if eb.get("status") == "OK":
+        print(f"Effective independent bets: {eb['effective_independent_bets']} "
+              f"de {eb['n_nominal_strategies']} estrategias nominales "
+              f"(ratio={eb['diversification_ratio']})")
+    else:
+        print(f"Effective independent bets: {eb.get('status')}")
     print()
     print("Alpha per strategy (vs direction avg):")
     for k, v in sorted(r["alpha_per_strategy"].items(), key=lambda x:-x[1]["alpha"]):

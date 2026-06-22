@@ -33,18 +33,18 @@
     "oos_win_rate": 50.0,
     "n_windows": 6,
     "positive_windows": 3,
-    "avg_cagr_oos": 196.23,
-    "avg_cagr_pos": 418.03,
+    "avg_cagr_oos": 157.88,
+    "avg_cagr_pos": 339.87,
     "verdict": "FAIL",
-    "date": "2026-06-14 02:16"
+    "date": "2026-06-21 02:03"
   },
   "mc": {
     "mc_cagr_p05": -29.3,
     "mc_cagr_p50": 63.9,
     "mc_cagr_p95": 280.1,
-    "mc_dd_p50": -53.4,
-    "mc_dd_p95": -35.9,
-    "mc_confidence": 82.9,
+    "mc_dd_p50": -53.8,
+    "mc_dd_p95": -35.3,
+    "mc_confidence": 83.6,
     "mc_sims": 1000
   }
 }

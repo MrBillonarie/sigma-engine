@@ -1,11 +1,11 @@
 {
-  "computed_at": "2026-06-19T02:00:01.928279-04:00",
-  "n_sl_hits": 14,
-  "n_calibrated": 13,
-  "global_mult": 1.105,
+  "computed_at": "2026-06-22T02:00:01.159760-04:00",
+  "n_sl_hits": 15,
+  "n_calibrated": 14,
+  "global_mult": 1.098,
   "per_asset": {
-    "SOL": 1.175,
+    "SOL": 1.153,
     "BTC": 1.031
   },
-  "note": "Default 1.5x cuando <3 datos. Basado en 13 SL hits."
+  "note": "Default 1.5x cuando <3 datos. Basado en 14 SL hits."
 }

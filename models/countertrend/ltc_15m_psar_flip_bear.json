@@ -1,0 +1,33 @@
+{
+  "symbol": "LTC/USDT",
+  "tf": "15m",
+  "strategy": "psar_flip",
+  "regime": "bear",
+  "direction": "long",
+  "params": {
+    "sl_mult": 2.8,
+    "tp_mult": 1.9,
+    "cooldown": 7,
+    "rsi_w_thr": 58,
+    "psar_mult": 2.0
+  },
+  "risk_pct": 4.0,
+  "n_trials": 150,
+  "best_score": 0.305,
+  "n_trades": 48,
+  "wr": 75.0,
+  "pnl_total": 574.57,
+  "n_segments_qualified": 2,
+  "n_segments_total": 3,
+  "selection_bias": {
+    "status": "OK",
+    "n_trials": 68,
+    "best_value": 0.305,
+    "population_mean": 0.2053,
+    "population_std": 0.0603,
+    "expected_max_by_luck": 0.3495,
+    "z_above_expected_luck": -0.738,
+    "verdict": "SELECTION_NOISE_LIKELY"
+  },
+  "trained_at": "2026-06-21T02:39:55.618201"
+}

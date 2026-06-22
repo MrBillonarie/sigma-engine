@@ -1,0 +1,299 @@
+{
+  "BTC|5m": {
+    "bear_long_candidates": [],
+    "bull_short_candidates": [
+      {
+        "status": "OK",
+        "strategy": "momentum_short",
+        "direction": "short",
+        "n_trades": 32,
+        "wr": 37.5,
+        "pnl_total": -690.76,
+        "n_segments_qualified": 3,
+        "n_segments_total": 10,
+        "n_segments_raw": 98,
+        "segments": [
+          {
+            "segment": 1,
+            "n_trades": 3,
+            "wr": 66.7,
+            "pnl": 20.63,
+            "qualified": false
+          },
+          {
+            "segment": 3,
+            "n_trades": 5,
+            "wr": 60.0,
+            "pnl": -40.27,
+            "qualified": true
+          },
+          {
+            "segment": 5,
+            "n_trades": 1,
+            "wr": 0.0,
+            "pnl": -69.99,
+            "qualified": false
+          },
+          {
+            "segment": 6,
+            "n_trades": 1,
+            "wr": 0.0,
+            "pnl": -61.87,
+            "qualified": false
+          },
+          {
+            "segment": 7,
+            "n_trades": 1,
+            "wr": 0.0,
+            "pnl": -50.76,
+            "qualified": false
+          },
+          {
+            "segment": 8,
+            "n_trades": 5,
+            "wr": 60.0,
+            "pnl": -78.55,
+            "qualified": true
+          },
+          {
+            "segment": 10,
+            "n_trades": 4,
+            "wr": 0.0,
+            "pnl": -189.34,
+            "qualified": false
+          },
+          {
+            "segment": 12,
+            "n_trades": 1,
+            "wr": 0.0,
+            "pnl": -43.77,
+            "qualified": false
+          },
+          {
+            "segment": 13,
+            "n_trades": 2,
+            "wr": 50.0,
+            "pnl": -18.83,
+            "qualified": false
+          },
+          {
+            "segment": 14,
+            "n_trades": 5,
+            "wr": 20.0,
+            "pnl": -159.43,
+            "qualified": true
+          }
+        ]
+      }
+    ]
+  },
+  "ETH|5m": {
+    "bear_long_candidates": [
+      {
+        "status": "OK",
+        "strategy": "volatility_breakout",
+        "direction": "long",
+        "n_trades": 28,
+        "wr": 60.7,
+        "pnl_total": 3158.42,
+        "n_segments_qualified": 3,
+        "n_segments_total": 3,
+        "n_segments_raw": 471,
+        "segments": [
+          {
+            "segment": 0,
+            "n_trades": 6,
+            "wr": 50.0,
+            "pnl": -215.11,
+            "qualified": true
+          },
+          {
+            "segment": 1,
+            "n_trades": 7,
+            "wr": 71.4,
+            "pnl": 1000.27,
+            "qualified": true
+          },
+          {
+            "segment": 2,
+            "n_trades": 5,
+            "wr": 80.0,
+            "pnl": 407.22,
+            "qualified": true
+          }
+        ]
+      },
+      {
+        "status": "OK",
+        "strategy": "vwap_deviation_long",
+        "direction": "long",
+        "n_trades": 108,
+        "wr": 57.4,
+        "pnl_total": -585.36,
+        "n_segments_qualified": 3,
+        "n_segments_total": 3,
+        "n_segments_raw": 471,
+        "segments": [
+          {
+            "segment": 0,
+            "n_trades": 17,
+            "wr": 70.6,
+            "pnl": -23.36,
+            "qualified": true
+          },
+          {
+            "segment": 1,
+            "n_trades": 5,
+            "wr": 40.0,
+            "pnl": -22.43,
+            "qualified": true
+          },
+          {
+            "segment": 2,
+            "n_trades": 18,
+            "wr": 61.1,
+            "pnl": -55.22,
+            "qualified": true
+          }
+        ]
+      }
+    ],
+    "bull_short_candidates": []
+  },
+  "SOL|5m": {
+    "bear_long_candidates": [],
+    "bull_short_candidates": [
+      {
+        "status": "OK",
+        "strategy": "supertrend_short",
+        "direction": "short",
+        "n_trades": 708,
+        "wr": 60.2,
+        "pnl_total": 23600.7,
+        "n_segments_qualified": 9,
+        "n_segments_total": 9,
+        "n_segments_raw": 27,
+        "segments": [
+          {
+            "segment": 0,
+            "n_trades": 16,
+            "wr": 62.5,
+            "pnl": 242.83,
+            "qualified": true
+          },
+          {
+            "segment": 1,
+            "n_trades": 123,
+            "wr": 56.1,
+            "pnl": 1018.8,
+            "qualified": true
+          },
+          {
+            "segment": 2,
+            "n_trades": 118,
+            "wr": 61.0,
+            "pnl": 1922.12,
+            "qualified": true
+          },
+          {
+            "segment": 3,
+            "n_trades": 166,
+            "wr": 55.4,
+            "pnl": 1085.93,
+            "qualified": true
+          },
+          {
+            "segment": 5,
+            "n_trades": 24,
+            "wr": 62.5,
+            "pnl": 426.55,
+            "qualified": true
+          },
+          {
+            "segment": 6,
+            "n_trades": 38,
+            "wr": 60.5,
+            "pnl": 1060.41,
+            "qualified": true
+          },
+          {
+            "segment": 7,
+            "n_trades": 36,
+            "wr": 66.7,
+            "pnl": 4325.8,
+            "qualified": true
+          },
+          {
+            "segment": 8,
+            "n_trades": 46,
+            "wr": 71.7,
+            "pnl": 9842.72,
+            "qualified": true
+          },
+          {
+            "segment": 9,
+            "n_trades": 84,
+            "wr": 61.9,
+            "pnl": 2814.02,
+            "qualified": true
+          }
+        ]
+      },
+      {
+        "status": "OK",
+        "strategy": "roc_negative_short",
+        "direction": "short",
+        "n_trades": 68,
+        "wr": 27.9,
+        "pnl_total": -525.84,
+        "n_segments_qualified": 4,
+        "n_segments_total": 6,
+        "n_segments_raw": 27,
+        "segments": [
+          {
+            "segment": 0,
+            "n_trades": 2,
+            "wr": 0.0,
+            "pnl": -78.79,
+            "qualified": false
+          },
+          {
+            "segment": 1,
+            "n_trades": 32,
+            "wr": 25.0,
+            "pnl": -339.89,
+            "qualified": true
+          },
+          {
+            "segment": 2,
+            "n_trades": 5,
+            "wr": 60.0,
+            "pnl": 397.55,
+            "qualified": true
+          },
+          {
+            "segment": 3,
+            "n_trades": 8,
+            "wr": 12.5,
+            "pnl": -250.2,
+            "qualified": true
+          },
+          {
+            "segment": 6,
+            "n_trades": 5,
+            "wr": 40.0,
+            "pnl": -27.68,
+            "qualified": true
+          },
+          {
+            "segment": 9,
+            "n_trades": 4,
+            "wr": 50.0,
+            "pnl": 27.26,
+            "qualified": false
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -46,7 +46,12 @@ def parse_pine_f_strat(pine_path: Path) -> dict:
 def read_vps_champions(models_dir: Path) -> dict:
     """Lee el champion VENCEDOR de cada slot (sym, tf) usando la API /api/signals.
 
-    La API ya hace la seleccion correcta por score canonico (CAGR + WR + PF + DD + validation).
+    La API devuelve TODOS los modelos candidatos por slot, cada uno con el flag
+    explicito 'is_champion'. El campeon real no es necesariamente el de mayor
+    score canonico -- puede estar demotido por gates de robustness/regimen que
+    el score crudo no refleja (encontrado 2026-06-19: PL/1h reportaba tema_cross
+    score=0.939 CAGR=6387% como "campeon" via max-score, cuando el campeon real
+    marcado por is_champion=true era volume_exhaustion score=0.42 CAGR=27%).
     Fallback a CAGR si la API no responde.
     """
     import urllib.request
@@ -54,24 +59,21 @@ def read_vps_champions(models_dir: Path) -> dict:
         r = urllib.request.urlopen("http://localhost:8080/api/signals", timeout=15)
         data = json.loads(r.read())
         models = data.get("models", [])
-        # API returns ALL models per slot. Pick the one with highest score per (sym, tf).
         out = {}
         for m in models:
+            if not m.get("is_champion"):
+                continue
             sym = (m.get("sym") or "").upper()
             tf  = m.get("tf") or ""
             strat = m.get("strategy") or ""
             if not (sym and tf and strat):
                 continue
-            score = m.get("score", 0) or 0
-            key = (sym, tf)
-            prev = out.get(key)
-            if prev is None or score > prev["score"]:
-                out[key] = {
-                    "strategy": strat,
-                    "cagr": m.get("cagr", 0),
-                    "score": score,
-                    "grade": m.get("grade", "?"),
-                }
+            out[(sym, tf)] = {
+                "strategy": strat,
+                "cagr": m.get("cagr", 0),
+                "score": m.get("score", 0) or 0,
+                "grade": m.get("grade", "?"),
+            }
         if out:
             return out
     except Exception as e:

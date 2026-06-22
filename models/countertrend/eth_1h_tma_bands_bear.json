@@ -1,0 +1,34 @@
+{
+  "symbol": "ETH/USDT",
+  "tf": "1h",
+  "strategy": "tma_bands",
+  "regime": "bear",
+  "direction": "long",
+  "params": {
+    "sl_mult": 2.9000000000000004,
+    "tp_mult": 2.1,
+    "cooldown": 10,
+    "rsi_w_thr": 60,
+    "tma_period": 18,
+    "atr_mult": 1.2
+  },
+  "risk_pct": 4.1,
+  "n_trials": 250,
+  "best_score": 0.5104,
+  "n_trades": 248,
+  "wr": 66.5,
+  "pnl_total": 1898.75,
+  "n_segments_qualified": 10,
+  "n_segments_total": 11,
+  "selection_bias": {
+    "status": "OK",
+    "n_trials": 202,
+    "best_value": 0.5104,
+    "population_mean": 0.3799,
+    "population_std": 0.0605,
+    "expected_max_by_luck": 0.5474,
+    "z_above_expected_luck": -0.612,
+    "verdict": "SELECTION_NOISE_LIKELY"
+  },
+  "trained_at": "2026-06-21T00:43:29.626916"
+}
