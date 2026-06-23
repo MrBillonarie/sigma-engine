@@ -1,5 +1,5 @@
 # SIGMA — Snapshot de Arquitectura
-> Generado automaticamente: 2026-06-22 00:00:00
+> Generado automaticamente: 2026-06-23 00:00:00
 > Este archivo se regenera cada dia. No editar a mano.
 
 ## Servicios systemd (sigma-*)

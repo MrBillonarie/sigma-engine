@@ -7,13 +7,14 @@
     "NG|1d": "zscore_rich_short|short",
     "WTI|1d": "heikin_ashi_short|short",
     "BTC|5m": "momentum_short|short",
-    "ETH|5m": "vwap_deviation_long|long",
+    "ETH|5m": "volatility_breakout|long",
     "SOL|5m": "roc_negative_short|short",
     "BTC|15m": "dmi_bear|short",
     "ETH|15m": "lower_high_structure_short|short",
     "SOL|15m": "lower_high_structure_short|short",
     "LTC|15m": "psar_flip|long",
     "BNB|15m": "lower_high_structure_short|short",
+    "XAG|15m": "pullback|long",
     "BTC|4h": "tick_follow_short|short",
     "ETH|4h": "tma_bands|long",
     "HG|4h": "vwap_overpriced_short|short",
@@ -59,10 +60,10 @@
     "SOL|countertrend": "tma_bands|long",
     "ETH|countertrend": "lower_high_structure_short|short"
   },
-  "last_notified_at": "2026-06-21T15:41:42.274210",
+  "last_notified_at": "2026-06-22T09:49:43.396174",
   "changes_summary": {
-    "fresh_discoveries": 1,
-    "discoveries": 0,
+    "fresh_discoveries": 0,
+    "discoveries": 1,
     "rotations": 0
   }
 }

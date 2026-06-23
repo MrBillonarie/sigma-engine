@@ -3,70 +3,61 @@
   "tf": "5m",
   "strategy": "volatility_breakout",
   "params": {
-    "sl_mult": 3.3,
-    "tp_mult": 3.5,
-    "cooldown": 3,
-    "rsi_w_thr": 61,
-    "vb_period": 11,
-    "vol_expand": 1.4000000000000001
+    "sl_mult": 3.2,
+    "tp_mult": 3.9000000000000004,
+    "cooldown": 5,
+    "rsi_w_thr": 47,
+    "vb_period": 14,
+    "vol_expand": 1.5
   },
-  "risk_pct": 5.0,
+  "risk_pct": 4.7,
   "metrics_is": {
-    "trades": 126,
-    "wr": 63.5,
-    "cagr": 52.3,
-    "dd": -30.0,
-    "pf": 1.43,
-    "trades_year": 17.9
+    "trades": 107,
+    "wr": 62.6,
+    "cagr": 44.1,
+    "dd": -56.2,
+    "pf": 1.24,
+    "trades_year": 15.1
   },
   "metrics_oos": {
-    "trades": 22,
-    "wr": 72.7,
-    "cagr": 21.4,
-    "dd": -14.9,
-    "pf": 1.86,
-    "trades_year": 12.5
+    "trades": 26,
+    "wr": 69.2,
+    "cagr": 41.7,
+    "dd": -14.8,
+    "pf": 1.82,
+    "trades_year": 14.7
   },
-  "oos_days": 641,
-  "saved_at": "2026-06-05 22:04:53.896308",
+  "oos_days": 645,
+  "saved_at": "2026-06-22 09:49:08.536778",
   "validation": {
     "monte_carlo": {
-      "p_pos": 89.3,
-      "median": 100.1,
-      "ic95_lo": -39.0,
-      "ic95_hi": 299.0,
-      "ic80_lo": -1.7,
-      "ic80_hi": 224.6,
+      "p_pos": 88.6,
+      "median": 254.2,
+      "ic95_lo": -80.1,
+      "ic95_hi": 951.2,
+      "ic80_lo": -11.4,
+      "ic80_hi": 673.0,
       "passed": true
     },
     "walk_forward": {
-      "windows": 14,
-      "positive": 10,
-      "pct_positive": 71.4,
-      "avg_cagr": 57.3,
+      "windows": 12,
+      "positive": 8,
+      "pct_positive": 66.7,
+      "avg_cagr": 97.5,
       "passed": true
     },
     "confidence": "ALTA",
     "passed_steps": 2,
     "max_steps": 2,
-    "validated_at": "2026-06-05 22:04:58.186954"
+    "validated_at": "2026-06-22 09:49:11.145025"
   },
   "mc": {
-    "mc_cagr_p05": 14.7,
-    "mc_cagr_p50": 127.1,
-    "mc_cagr_p95": 349.7,
-    "mc_dd_p50": -31.6,
-    "mc_dd_p95": -16.5,
-    "mc_confidence": 97.3,
+    "mc_cagr_p05": 33.2,
+    "mc_cagr_p50": 158.5,
+    "mc_cagr_p95": 401.4,
+    "mc_dd_p50": -38.0,
+    "mc_dd_p95": -15.0,
+    "mc_confidence": 99.1,
     "mc_sims": 1000
-  },
-  "wft": {
-    "oos_win_rate": 40.0,
-    "n_windows": 5,
-    "positive_windows": 2,
-    "avg_cagr_oos": 28.24,
-    "avg_cagr_pos": 110.6,
-    "verdict": "FAIL",
-    "date": "2026-06-21 02:05"
   }
 }

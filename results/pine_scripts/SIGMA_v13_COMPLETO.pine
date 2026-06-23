@@ -1,8 +1,8 @@
 // [SIGMA-HEADER-START]
 // ╔══════════════════════════════════════════════════════════╗
 // ║  SIGMA TERMINAL v13  —  Auto-generado desde VPS         ║
-// ║  Actualizado : 22/06/2026  04:30 hrs (Chile)             ║
-// ║  Modelos     : 36 activos                                ║
+// ║  Actualizado : 23/06/2026  04:30 hrs (Chile)             ║
+// ║  Modelos     : 37 activos                                ║
 // ║  Top modelos : PL 4h:ICH A+ +156%  XAU 1h:REG A+ +205%  E║
 // ╚══════════════════════════════════════════════════════════╝
 // [SIGMA-HEADER-END]
@@ -679,6 +679,8 @@ f_strat(_tk, _tf_m) =>
         _r := "chaikin_mf"
     if str.contains(_tk,"WTI") and _tf_m==240
         _r := "vwap_deviation_short"
+    if str.contains(_tk,"XAG") and _tf_m==15
+        _r := "pullback"
     if str.contains(_tk,"XAG") and _tf_m==1440
         _r := "dmi_trend"
     if str.contains(_tk,"XAG") and _tf_m==60
@@ -782,12 +784,12 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,3,46.0)
         array.set(_p,6,18.0)
         array.set(_p,7,1.3)
-    // ETH/USDT 5m volatility_breakout CAGR:+21.4% WR:73% Grade:C
+    // ETH/USDT 5m volatility_breakout CAGR:+41.7% WR:69% Grade:B
     if str.contains(_tk,"ETH") and _tf_m==5
-        array.set(_p,0,3.3)
-        array.set(_p,1,3.5)
-        array.set(_p,2,3.0)
-        array.set(_p,3,61.0)
+        array.set(_p,0,3.2)
+        array.set(_p,1,3.9)
+        array.set(_p,2,5.0)
+        array.set(_p,3,47.0)
     // HG/USD 1d pin_bar CAGR:+3.2% WR:75% Grade:D
     if str.contains(_tk,"HG") and _tf_m==1440
         array.set(_p,0,3.4)
@@ -912,6 +914,14 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,3.8)
         array.set(_p,2,12.0)
         array.set(_p,3,56.0)
+    // XAG/USD 15m pullback CAGR:+1.3% WR:75% Grade:D
+    if str.contains(_tk,"XAG") and _tf_m==15
+        array.set(_p,0,3.4)
+        array.set(_p,1,2.9)
+        array.set(_p,2,12.0)
+        array.set(_p,3,44.0)
+        array.set(_p,8,21.0)
+        array.set(_p,9,33.0)
     // XAG/USD 1d dmi_trend CAGR:+6.8% WR:72% Grade:C
     if str.contains(_tk,"XAG") and _tf_m==1440
         array.set(_p,0,3.3)
@@ -982,7 +992,7 @@ f_meta(_tk, _tf_m) =>
     if str.contains(_tk,"ETH") and _tf_m==240
         _r := "A|0|59|OK"
     if str.contains(_tk,"ETH") and _tf_m==5
-        _r := "C|0|73|FAIL"
+        _r := "B|0|69|--"
     if str.contains(_tk,"HG") and _tf_m==1440
         _r := "D|0|75|--"
     if str.contains(_tk,"HG") and _tf_m==60
@@ -1021,6 +1031,8 @@ f_meta(_tk, _tf_m) =>
         _r := "A+|0|71|--"
     if str.contains(_tk,"WTI") and _tf_m==240
         _r := "C|0|56|--"
+    if str.contains(_tk,"XAG") and _tf_m==15
+        _r := "D|0|75|--"
     if str.contains(_tk,"XAG") and _tf_m==1440
         _r := "C|0|72|--"
     if str.contains(_tk,"XAG") and _tf_m==60

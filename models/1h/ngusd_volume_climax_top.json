@@ -61,15 +61,15 @@
     "reasons": [
       "[WARN] FEW_TRADES: 22 trades OOS (estadistica debil)"
     ],
-    "validated_at": "2026-06-21T21:30:01.675338-04:00"
+    "validated_at": "2026-06-22T22:00:01.683320-04:00"
   },
   "mc": {
     "mc_cagr_p05": -12.8,
     "mc_cagr_p50": 91.9,
-    "mc_cagr_p95": 429.1,
-    "mc_dd_p50": -48.7,
-    "mc_dd_p95": -33.0,
-    "mc_confidence": 90.0,
+    "mc_cagr_p95": 372.8,
+    "mc_dd_p50": -49.5,
+    "mc_dd_p95": -32.8,
+    "mc_confidence": 91.5,
     "mc_sims": 1000
   }
 }

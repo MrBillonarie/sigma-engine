@@ -14374,3 +14374,1155 @@
   HG: BEAR_QUIET       mom= 10.8 vol= 22.7 mac= 50.0 x0.7
   NG: NEUTRAL          mom= 55.5 vol= 31.8 mac= 50.0 x0.9
   PL: BULL_QUIET       mom= 71.2 vol= 22.7 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 12.5 vol= 97.7 mac= 50.0 x0.55
+  XAG: NEUTRAL_VOLATILE mom= 54.0 vol=100.0 mac= 50.0 x0.9
+  WTI: BULL_QUIET       mom= 72.4 vol= 20.5 mac= 50.0 x1.25
+  HG: BEAR_QUIET       mom= 11.0 vol= 15.9 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 56.2 vol= 20.5 mac= 50.0 x0.9
+  PL: NEUTRAL_QUIET    mom= 46.8 vol= 13.6 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 12.5 vol= 97.7 mac= 50.0 x0.55
+  XAG: NEUTRAL_VOLATILE mom= 54.0 vol=100.0 mac= 50.0 x0.9
+  WTI: BULL_QUIET       mom= 72.4 vol= 20.5 mac= 50.0 x1.25
+  HG: BEAR_QUIET       mom= 11.0 vol= 15.9 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 56.2 vol= 20.5 mac= 50.0 x0.9
+  PL: NEUTRAL_QUIET    mom= 46.8 vol= 13.6 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 12.1 vol= 97.7 mac= 50.0 x0.55
+  XAG: NEUTRAL_VOLATILE mom= 53.7 vol=100.0 mac= 50.0 x0.9
+  WTI: BULL_QUIET       mom= 72.4 vol= 20.5 mac= 50.0 x1.25
+  HG: BEAR_QUIET       mom= 11.0 vol= 15.9 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 56.2 vol= 20.5 mac= 50.0 x0.9
+  PL: NEUTRAL_QUIET    mom= 46.8 vol= 13.6 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 12.1 vol= 97.7 mac= 50.0 x0.55
+  XAG: NEUTRAL_VOLATILE mom= 53.7 vol=100.0 mac= 50.0 x0.9
+  WTI: BULL_QUIET       mom= 72.4 vol= 20.5 mac= 50.0 x1.25
+  HG: BEAR_QUIET       mom= 11.0 vol= 15.9 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 56.2 vol= 20.5 mac= 50.0 x0.9
+  PL: NEUTRAL_QUIET    mom= 46.8 vol= 13.6 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 12.3 vol= 97.7 mac= 50.0 x0.55
+  XAG: NEUTRAL_VOLATILE mom= 53.3 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL_QUIET    mom= 48.3 vol= 25.0 mac= 50.0 x0.9
+  HG: BEAR_QUIET       mom= 11.9 vol= 15.9 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 56.3 vol= 20.5 mac= 50.0 x0.9
+  PL: NEUTRAL_QUIET    mom= 47.8 vol= 13.6 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 12.3 vol= 97.7 mac= 50.0 x0.55
+  XAG: NEUTRAL_VOLATILE mom= 53.3 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL_QUIET    mom= 48.3 vol= 25.0 mac= 50.0 x0.9
+  HG: BEAR_QUIET       mom= 11.9 vol= 15.9 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 56.3 vol= 20.5 mac= 50.0 x0.9
+  PL: NEUTRAL_QUIET    mom= 47.8 vol= 13.6 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 12.4 vol= 97.7 mac= 50.0 x0.55
+  XAG: NEUTRAL_VOLATILE mom= 53.6 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL_QUIET    mom= 48.3 vol= 25.0 mac= 50.0 x0.9
+  HG: BEAR_QUIET       mom= 11.9 vol= 15.9 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 56.3 vol= 20.5 mac= 50.0 x0.9
+  PL: NEUTRAL_QUIET    mom= 47.8 vol= 13.6 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 12.4 vol= 97.7 mac= 50.0 x0.55
+  XAG: NEUTRAL_VOLATILE mom= 53.6 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL_QUIET    mom= 48.3 vol= 25.0 mac= 50.0 x0.9
+  HG: BEAR_QUIET       mom= 11.9 vol= 15.9 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 56.3 vol= 20.5 mac= 50.0 x0.9
+  PL: NEUTRAL_QUIET    mom= 47.8 vol= 13.6 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: NEUTRAL_VOLATILE mom= 37.4 vol=100.0 mac= 50.0 x0.9
+  XAG: NEUTRAL_VOLATILE mom= 54.7 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL          mom= 47.5 vol= 34.1 mac= 50.0 x0.9
+  HG: NEUTRAL_QUIET    mom= 37.2 vol= 27.3 mac= 50.0 x0.9
+  NG: NEUTRAL          mom= 56.2 vol= 34.1 mac= 50.0 x0.9
+  PL: NEUTRAL_QUIET    mom= 48.5 vol= 27.3 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: NEUTRAL_VOLATILE mom= 37.4 vol=100.0 mac= 50.0 x0.9
+  XAG: NEUTRAL_VOLATILE mom= 54.7 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL          mom= 47.5 vol= 34.1 mac= 50.0 x0.9
+  HG: NEUTRAL_QUIET    mom= 37.2 vol= 27.3 mac= 50.0 x0.9
+  NG: NEUTRAL          mom= 56.2 vol= 34.1 mac= 50.0 x0.9
+  PL: NEUTRAL_QUIET    mom= 48.5 vol= 27.3 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: NEUTRAL_VOLATILE mom= 37.4 vol=100.0 mac= 50.0 x0.9
+  XAG: NEUTRAL_VOLATILE mom= 54.6 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL          mom= 47.5 vol= 34.1 mac= 50.0 x0.9
+  HG: NEUTRAL_QUIET    mom= 37.2 vol= 27.3 mac= 50.0 x0.9
+  NG: NEUTRAL          mom= 56.2 vol= 34.1 mac= 50.0 x0.9
+  PL: NEUTRAL_QUIET    mom= 48.5 vol= 27.3 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: NEUTRAL_VOLATILE mom= 37.4 vol=100.0 mac= 50.0 x0.9
+  XAG: NEUTRAL_VOLATILE mom= 54.6 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL          mom= 47.5 vol= 34.1 mac= 50.0 x0.9
+  HG: NEUTRAL_QUIET    mom= 37.2 vol= 27.3 mac= 50.0 x0.9
+  NG: NEUTRAL          mom= 56.2 vol= 34.1 mac= 50.0 x0.9
+  PL: NEUTRAL_QUIET    mom= 48.5 vol= 27.3 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: NEUTRAL_VOLATILE mom= 54.0 vol=100.0 mac= 50.0 x0.9
+  XAG: NEUTRAL_VOLATILE mom= 55.7 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL          mom= 47.5 vol= 34.1 mac= 50.0 x0.9
+  HG: NEUTRAL          mom= 38.4 vol= 31.8 mac= 50.0 x0.9
+  NG: NEUTRAL          mom= 55.8 vol= 34.1 mac= 50.0 x0.9
+  PL: BULL_QUIET       mom= 73.6 vol= 29.5 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: NEUTRAL_VOLATILE mom= 54.0 vol=100.0 mac= 50.0 x0.9
+  XAG: NEUTRAL_VOLATILE mom= 55.7 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL          mom= 47.5 vol= 34.1 mac= 50.0 x0.9
+  HG: NEUTRAL          mom= 38.4 vol= 31.8 mac= 50.0 x0.9
+  NG: NEUTRAL          mom= 55.8 vol= 34.1 mac= 50.0 x0.9
+  PL: BULL_QUIET       mom= 73.6 vol= 29.5 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: NEUTRAL_VOLATILE mom= 53.8 vol=100.0 mac= 50.0 x0.9
+  XAG: NEUTRAL_VOLATILE mom= 55.6 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL          mom= 47.5 vol= 34.1 mac= 50.0 x0.9
+  HG: NEUTRAL          mom= 38.4 vol= 31.8 mac= 50.0 x0.9
+  NG: NEUTRAL          mom= 55.8 vol= 34.1 mac= 50.0 x0.9
+  PL: BULL_QUIET       mom= 73.6 vol= 29.5 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: NEUTRAL_VOLATILE mom= 53.8 vol=100.0 mac= 50.0 x0.9
+  XAG: NEUTRAL_VOLATILE mom= 55.6 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL          mom= 47.5 vol= 34.1 mac= 50.0 x0.9
+  HG: NEUTRAL          mom= 38.4 vol= 31.8 mac= 50.0 x0.9
+  NG: NEUTRAL          mom= 55.8 vol= 34.1 mac= 50.0 x0.9
+  PL: BULL_QUIET       mom= 73.6 vol= 29.5 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: NEUTRAL_VOLATILE mom= 55.9 vol=100.0 mac= 50.0 x0.9
+  XAG: NEUTRAL_VOLATILE mom= 56.8 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL          mom= 47.5 vol= 31.8 mac= 50.0 x0.9
+  HG: NEUTRAL          mom= 39.6 vol= 34.1 mac= 50.0 x0.9
+  NG: NEUTRAL          mom= 55.4 vol= 34.1 mac= 50.0 x0.9
+  PL: BULL             mom= 91.0 vol= 31.8 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: NEUTRAL_VOLATILE mom= 55.9 vol=100.0 mac= 50.0 x0.9
+  XAG: NEUTRAL_VOLATILE mom= 56.8 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL          mom= 47.5 vol= 31.8 mac= 50.0 x0.9
+  HG: NEUTRAL          mom= 39.6 vol= 34.1 mac= 50.0 x0.9
+  NG: NEUTRAL          mom= 55.4 vol= 34.1 mac= 50.0 x0.9
+  PL: BULL             mom= 91.0 vol= 31.8 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: NEUTRAL_VOLATILE mom= 56.2 vol=100.0 mac= 50.0 x0.9
+  XAG: NEUTRAL_VOLATILE mom= 57.3 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL          mom= 47.5 vol= 31.8 mac= 50.0 x0.9
+  HG: NEUTRAL          mom= 39.6 vol= 34.1 mac= 50.0 x0.9
+  NG: NEUTRAL          mom= 55.4 vol= 34.1 mac= 50.0 x0.9
+  PL: BULL             mom= 91.0 vol= 31.8 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: NEUTRAL_VOLATILE mom= 56.2 vol=100.0 mac= 50.0 x0.9
+  XAG: NEUTRAL_VOLATILE mom= 57.3 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL          mom= 47.5 vol= 31.8 mac= 50.0 x0.9
+  HG: NEUTRAL          mom= 39.6 vol= 34.1 mac= 50.0 x0.9
+  NG: NEUTRAL          mom= 55.4 vol= 34.1 mac= 50.0 x0.9
+  PL: BULL             mom= 91.0 vol= 31.8 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 31.2 vol=100.0 mac= 50.0 x0.55
+  XAG: NEUTRAL_VOLATILE mom= 55.8 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL_QUIET    mom= 41.0 vol= 22.7 mac= 50.0 x0.9
+  HG: NEUTRAL_QUIET    mom= 53.8 vol= 20.5 mac= 50.0 x0.9
+  NG: BEAR_QUIET       mom= 27.8 vol= 22.7 mac= 50.0 x0.7
+  PL: BULL_QUIET       mom= 65.7 vol= 22.7 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 31.2 vol=100.0 mac= 50.0 x0.55
+  XAG: NEUTRAL_VOLATILE mom= 55.8 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL_QUIET    mom= 41.0 vol= 22.7 mac= 50.0 x0.9
+  HG: NEUTRAL_QUIET    mom= 53.8 vol= 20.5 mac= 50.0 x0.9
+  NG: BEAR_QUIET       mom= 27.8 vol= 22.7 mac= 50.0 x0.7
+  PL: BULL_QUIET       mom= 65.7 vol= 22.7 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 30.6 vol=100.0 mac= 50.0 x0.55
+  XAG: NEUTRAL_VOLATILE mom= 55.5 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL_QUIET    mom= 41.0 vol= 22.7 mac= 50.0 x0.9
+  HG: NEUTRAL_QUIET    mom= 53.8 vol= 20.5 mac= 50.0 x0.9
+  NG: BEAR_QUIET       mom= 27.8 vol= 22.7 mac= 50.0 x0.7
+  PL: BULL_QUIET       mom= 65.7 vol= 22.7 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 30.6 vol=100.0 mac= 50.0 x0.55
+  XAG: NEUTRAL_VOLATILE mom= 55.5 vol=100.0 mac= 50.0 x0.9
+  WTI: NEUTRAL_QUIET    mom= 41.0 vol= 22.7 mac= 50.0 x0.9
+  HG: NEUTRAL_QUIET    mom= 53.8 vol= 20.5 mac= 50.0 x0.9
+  NG: BEAR_QUIET       mom= 27.8 vol= 22.7 mac= 50.0 x0.7
+  PL: BULL_QUIET       mom= 65.7 vol= 22.7 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 32.4 vol=100.0 mac= 50.0 x0.55
+  XAG: NEUTRAL_VOLATILE mom= 57.4 vol=100.0 mac= 50.0 x0.9
+  WTI: BEAR_QUIET       mom= 19.5 vol= 27.3 mac= 50.0 x0.7
+  HG: NEUTRAL_QUIET    mom= 55.7 vol= 22.7 mac= 50.0 x0.9
+  NG: BEAR_QUIET       mom= 31.5 vol= 22.7 mac= 50.0 x0.7
+  PL: BULL_QUIET       mom= 91.0 vol= 22.7 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 32.4 vol=100.0 mac= 50.0 x0.55
+  XAG: NEUTRAL_VOLATILE mom= 57.4 vol=100.0 mac= 50.0 x0.9
+  WTI: BEAR_QUIET       mom= 19.5 vol= 27.3 mac= 50.0 x0.7
+  HG: NEUTRAL_QUIET    mom= 55.7 vol= 22.7 mac= 50.0 x0.9
+  NG: BEAR_QUIET       mom= 31.5 vol= 22.7 mac= 50.0 x0.7
+  PL: BULL_QUIET       mom= 91.0 vol= 22.7 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: NEUTRAL_VOLATILE mom= 56.4 vol=100.0 mac= 50.0 x0.9
+  XAG: NEUTRAL_VOLATILE mom= 57.2 vol=100.0 mac= 50.0 x0.9
+  WTI: BEAR_QUIET       mom= 19.5 vol= 27.3 mac= 50.0 x0.7
+  HG: NEUTRAL_QUIET    mom= 55.7 vol= 22.7 mac= 50.0 x0.9
+  NG: BEAR_QUIET       mom= 31.5 vol= 22.7 mac= 50.0 x0.7
+  PL: BULL_QUIET       mom= 91.0 vol= 22.7 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: NEUTRAL_VOLATILE mom= 56.4 vol=100.0 mac= 50.0 x0.9
+  XAG: NEUTRAL_VOLATILE mom= 57.2 vol=100.0 mac= 50.0 x0.9
+  WTI: BEAR_QUIET       mom= 19.5 vol= 27.3 mac= 50.0 x0.7
+  HG: NEUTRAL_QUIET    mom= 55.7 vol= 22.7 mac= 50.0 x0.9
+  NG: BEAR_QUIET       mom= 31.5 vol= 22.7 mac= 50.0 x0.7
+  PL: BULL_QUIET       mom= 91.0 vol= 22.7 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: NEUTRAL_VOLATILE mom= 52.3 vol=100.0 mac= 50.0 x0.9
+  XAG: BEAR_VOLATILE    mom= 27.3 vol=100.0 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 41.0 vol= 36.4 mac= 50.0 x0.9
+  HG: BEAR             mom= 29.0 vol= 36.4 mac= 50.0 x0.7
+  NG: NEUTRAL          mom= 53.5 vol= 36.4 mac= 50.0 x0.9
+  PL: NEUTRAL          mom= 63.4 vol= 36.4 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: NEUTRAL_VOLATILE mom= 52.3 vol=100.0 mac= 50.0 x0.9
+  XAG: BEAR_VOLATILE    mom= 27.3 vol=100.0 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 41.0 vol= 36.4 mac= 50.0 x0.9
+  HG: BEAR             mom= 29.0 vol= 36.4 mac= 50.0 x0.7
+  NG: NEUTRAL          mom= 53.5 vol= 36.4 mac= 50.0 x0.9
+  PL: NEUTRAL          mom= 63.4 vol= 36.4 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.9 vol=100.0 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 27.2 vol=100.0 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 41.0 vol= 36.4 mac= 50.0 x0.9
+  HG: BEAR             mom= 29.0 vol= 36.4 mac= 50.0 x0.7
+  NG: NEUTRAL          mom= 53.5 vol= 36.4 mac= 50.0 x0.9
+  PL: NEUTRAL          mom= 63.4 vol= 36.4 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.9 vol=100.0 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 27.2 vol=100.0 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 41.0 vol= 36.4 mac= 50.0 x0.9
+  HG: BEAR             mom= 29.0 vol= 36.4 mac= 50.0 x0.7
+  NG: NEUTRAL          mom= 53.5 vol= 36.4 mac= 50.0 x0.9
+  PL: NEUTRAL          mom= 63.4 vol= 36.4 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 10.4 vol=100.0 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 10.0 vol=100.0 mac= 50.0 x0.55
+  WTI: BEAR             mom= 21.7 vol= 36.4 mac= 50.0 x0.7
+  HG: BEAR             mom= 12.7 vol= 36.4 mac= 50.0 x0.7
+  NG: NEUTRAL          mom= 53.0 vol= 36.4 mac= 50.0 x0.9
+  PL: BEAR             mom= 27.9 vol= 36.4 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 10.4 vol=100.0 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 10.0 vol=100.0 mac= 50.0 x0.55
+  WTI: BEAR             mom= 21.7 vol= 36.4 mac= 50.0 x0.7
+  HG: BEAR             mom= 12.7 vol= 36.4 mac= 50.0 x0.7
+  NG: NEUTRAL          mom= 53.0 vol= 36.4 mac= 50.0 x0.9
+  PL: BEAR             mom= 27.9 vol= 36.4 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.3 vol=100.0 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 10.6 vol=100.0 mac= 50.0 x0.55
+  WTI: BEAR             mom= 21.7 vol= 36.4 mac= 50.0 x0.7
+  HG: BEAR             mom= 12.7 vol= 36.4 mac= 50.0 x0.7
+  NG: NEUTRAL          mom= 53.0 vol= 36.4 mac= 50.0 x0.9
+  PL: BEAR             mom= 27.9 vol= 36.4 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.3 vol=100.0 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 10.6 vol=100.0 mac= 50.0 x0.55
+  WTI: BEAR             mom= 21.7 vol= 36.4 mac= 50.0 x0.7
+  HG: BEAR             mom= 12.7 vol= 36.4 mac= 50.0 x0.7
+  NG: NEUTRAL          mom= 53.0 vol= 36.4 mac= 50.0 x0.9
+  PL: BEAR             mom= 27.9 vol= 36.4 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.6 vol=100.0 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 11.4 vol=100.0 mac= 50.0 x0.55
+  WTI: BEAR             mom= 23.1 vol= 34.1 mac= 50.0 x0.7
+  HG: BEAR             mom= 17.4 vol= 34.1 mac= 50.0 x0.7
+  NG: NEUTRAL          mom= 53.4 vol= 36.4 mac= 50.0 x0.9
+  PL: BEAR             mom= 29.0 vol= 36.4 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.6 vol=100.0 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 11.4 vol=100.0 mac= 50.0 x0.55
+  WTI: BEAR             mom= 23.1 vol= 34.1 mac= 50.0 x0.7
+  HG: BEAR             mom= 17.4 vol= 34.1 mac= 50.0 x0.7
+  NG: NEUTRAL          mom= 53.4 vol= 36.4 mac= 50.0 x0.9
+  PL: BEAR             mom= 29.0 vol= 36.4 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 12.3 vol=100.0 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 11.8 vol=100.0 mac= 50.0 x0.55
+  WTI: BEAR             mom= 23.1 vol= 34.1 mac= 50.0 x0.7
+  HG: BEAR             mom= 17.4 vol= 34.1 mac= 50.0 x0.7
+  NG: NEUTRAL          mom= 53.4 vol= 36.4 mac= 50.0 x0.9
+  PL: BEAR             mom= 29.0 vol= 36.4 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 12.3 vol=100.0 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 11.8 vol=100.0 mac= 50.0 x0.55
+  WTI: BEAR             mom= 23.1 vol= 34.1 mac= 50.0 x0.7
+  HG: BEAR             mom= 17.4 vol= 34.1 mac= 50.0 x0.7
+  NG: NEUTRAL          mom= 53.4 vol= 36.4 mac= 50.0 x0.9
+  PL: BEAR             mom= 29.0 vol= 36.4 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 13.3 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 11.1 vol= 97.7 mac= 50.0 x0.55
+  WTI: BEAR_QUIET       mom= 21.2 vol= 25.0 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom= 16.2 vol= 18.2 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 53.9 vol= 22.7 mac= 50.0 x0.9
+  PL: BEAR_QUIET       mom= 28.7 vol= 25.0 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 13.3 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 11.1 vol= 97.7 mac= 50.0 x0.55
+  WTI: BEAR_QUIET       mom= 21.2 vol= 25.0 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom= 16.2 vol= 18.2 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 53.9 vol= 22.7 mac= 50.0 x0.9
+  PL: BEAR_QUIET       mom= 28.7 vol= 25.0 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 13.3 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 11.2 vol= 97.7 mac= 50.0 x0.55
+  WTI: BEAR_QUIET       mom= 21.2 vol= 25.0 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom= 16.2 vol= 18.2 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 53.9 vol= 22.7 mac= 50.0 x0.9
+  PL: BEAR_QUIET       mom= 28.7 vol= 25.0 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 13.3 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 11.2 vol= 97.7 mac= 50.0 x0.55
+  WTI: BEAR_QUIET       mom= 21.2 vol= 25.0 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom= 16.2 vol= 18.2 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 53.9 vol= 22.7 mac= 50.0 x0.9
+  PL: BEAR_QUIET       mom= 28.7 vol= 25.0 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 13.2 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 10.0 vol= 97.7 mac= 50.0 x0.55
+  WTI: NEUTRAL_QUIET    mom= 44.3 vol= 29.5 mac= 50.0 x0.9
+  HG: BEAR_QUIET       mom= 16.3 vol= 20.5 mac= 50.0 x0.7
+  NG: BEAR_QUIET       mom= 28.2 vol= 22.7 mac= 50.0 x0.7
+  PL: NEUTRAL_QUIET    mom= 49.2 vol= 22.7 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 13.2 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 10.0 vol= 97.7 mac= 50.0 x0.55
+  WTI: NEUTRAL_QUIET    mom= 44.3 vol= 29.5 mac= 50.0 x0.9
+  HG: BEAR_QUIET       mom= 16.3 vol= 20.5 mac= 50.0 x0.7
+  NG: BEAR_QUIET       mom= 28.2 vol= 22.7 mac= 50.0 x0.7
+  PL: NEUTRAL_QUIET    mom= 49.2 vol= 22.7 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 13.1 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 11.7 vol= 97.7 mac= 50.0 x0.55
+  WTI: NEUTRAL_QUIET    mom= 44.3 vol= 29.5 mac= 50.0 x0.9
+  HG: BEAR_QUIET       mom= 16.3 vol= 20.5 mac= 50.0 x0.7
+  NG: BEAR_QUIET       mom= 28.2 vol= 22.7 mac= 50.0 x0.7
+  PL: NEUTRAL_QUIET    mom= 49.2 vol= 22.7 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 13.1 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom= 11.7 vol= 97.7 mac= 50.0 x0.55
+  WTI: NEUTRAL_QUIET    mom= 44.3 vol= 29.5 mac= 50.0 x0.9
+  HG: BEAR_QUIET       mom= 16.3 vol= 20.5 mac= 50.0 x0.7
+  NG: BEAR_QUIET       mom= 28.2 vol= 22.7 mac= 50.0 x0.7
+  PL: NEUTRAL_QUIET    mom= 49.2 vol= 22.7 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.1 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  7.8 vol= 97.7 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 45.4 vol= 38.6 mac= 50.0 x0.9
+  HG: BEAR             mom= 14.6 vol= 31.8 mac= 50.0 x0.7
+  NG: BEAR             mom= 27.6 vol= 36.4 mac= 50.0 x0.7
+  PL: NEUTRAL          mom= 48.2 vol= 36.4 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.1 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  7.8 vol= 97.7 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 45.4 vol= 38.6 mac= 50.0 x0.9
+  HG: BEAR             mom= 14.6 vol= 31.8 mac= 50.0 x0.7
+  NG: BEAR             mom= 27.6 vol= 36.4 mac= 50.0 x0.7
+  PL: NEUTRAL          mom= 48.2 vol= 36.4 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.8 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  7.8 vol= 97.7 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 45.4 vol= 38.6 mac= 50.0 x0.9
+  HG: BEAR             mom= 14.6 vol= 31.8 mac= 50.0 x0.7
+  NG: BEAR             mom= 27.6 vol= 36.4 mac= 50.0 x0.7
+  PL: NEUTRAL          mom= 48.2 vol= 36.4 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.8 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  7.8 vol= 97.7 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 45.4 vol= 38.6 mac= 50.0 x0.9
+  HG: BEAR             mom= 14.6 vol= 31.8 mac= 50.0 x0.7
+  NG: BEAR             mom= 27.6 vol= 36.4 mac= 50.0 x0.7
+  PL: NEUTRAL          mom= 48.2 vol= 36.4 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.8 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  7.8 vol= 97.7 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 45.4 vol= 38.6 mac= 50.0 x0.9
+  HG: BEAR             mom= 14.6 vol= 31.8 mac= 50.0 x0.7
+  NG: BEAR             mom= 27.6 vol= 36.4 mac= 50.0 x0.7
+  PL: NEUTRAL          mom= 48.2 vol= 36.4 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.8 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  7.8 vol= 97.7 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 45.4 vol= 38.6 mac= 50.0 x0.9
+  HG: BEAR             mom= 14.6 vol= 31.8 mac= 50.0 x0.7
+  NG: BEAR             mom= 27.6 vol= 36.4 mac= 50.0 x0.7
+  PL: NEUTRAL          mom= 48.2 vol= 36.4 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.8 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  7.8 vol= 97.7 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 45.4 vol= 38.6 mac= 50.0 x0.9
+  HG: BEAR             mom= 14.6 vol= 31.8 mac= 50.0 x0.7
+  NG: BEAR             mom= 27.6 vol= 36.4 mac= 50.0 x0.7
+  PL: NEUTRAL          mom= 48.2 vol= 36.4 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.8 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  7.8 vol= 97.7 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 45.4 vol= 38.6 mac= 50.0 x0.9
+  HG: BEAR             mom= 14.6 vol= 31.8 mac= 50.0 x0.7
+  NG: BEAR             mom= 27.6 vol= 36.4 mac= 50.0 x0.7
+  PL: NEUTRAL          mom= 48.2 vol= 36.4 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  8.0 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  6.1 vol= 95.5 mac= 50.0 x0.55
+  WTI: BULL             mom= 74.1 vol= 38.6 mac= 50.0 x1.25
+  HG: BEAR             mom= 11.0 vol= 36.4 mac= 50.0 x0.7
+  NG: BEAR             mom=  9.1 vol= 36.4 mac= 50.0 x0.7
+  PL: BEAR             mom= 25.5 vol= 34.1 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  8.0 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  6.1 vol= 95.5 mac= 50.0 x0.55
+  WTI: BULL             mom= 74.1 vol= 38.6 mac= 50.0 x1.25
+  HG: BEAR             mom= 11.0 vol= 36.4 mac= 50.0 x0.7
+  NG: BEAR             mom=  9.1 vol= 36.4 mac= 50.0 x0.7
+  PL: BEAR             mom= 25.5 vol= 34.1 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  8.0 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  6.1 vol= 95.5 mac= 50.0 x0.55
+  WTI: BULL             mom= 74.1 vol= 38.6 mac= 50.0 x1.25
+  HG: BEAR             mom= 11.0 vol= 36.4 mac= 50.0 x0.7
+  NG: BEAR             mom=  9.1 vol= 36.4 mac= 50.0 x0.7
+  PL: BEAR             mom= 25.5 vol= 34.1 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  8.0 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  6.1 vol= 95.5 mac= 50.0 x0.55
+  WTI: BULL             mom= 74.1 vol= 38.6 mac= 50.0 x1.25
+  HG: BEAR             mom= 11.0 vol= 36.4 mac= 50.0 x0.7
+  NG: BEAR             mom=  9.1 vol= 36.4 mac= 50.0 x0.7
+  PL: BEAR             mom= 25.5 vol= 34.1 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.9 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  7.6 vol= 95.5 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 62.2 vol= 36.4 mac= 50.0 x0.9
+  HG: BEAR             mom= 12.7 vol= 34.1 mac= 50.0 x0.7
+  NG: BEAR             mom=  9.1 vol= 34.1 mac= 50.0 x0.7
+  PL: BULL             mom= 72.7 vol= 31.8 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.9 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  7.6 vol= 95.5 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 62.2 vol= 36.4 mac= 50.0 x0.9
+  HG: BEAR             mom= 12.7 vol= 34.1 mac= 50.0 x0.7
+  NG: BEAR             mom=  9.1 vol= 34.1 mac= 50.0 x0.7
+  PL: BULL             mom= 72.7 vol= 31.8 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 12.0 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  7.9 vol= 95.5 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 62.2 vol= 36.4 mac= 50.0 x0.9
+  HG: BEAR             mom= 12.7 vol= 34.1 mac= 50.0 x0.7
+  NG: BEAR             mom=  9.1 vol= 34.1 mac= 50.0 x0.7
+  PL: BULL             mom= 72.7 vol= 31.8 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 12.0 vol= 97.7 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  7.9 vol= 95.5 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 62.2 vol= 36.4 mac= 50.0 x0.9
+  HG: BEAR             mom= 12.7 vol= 34.1 mac= 50.0 x0.7
+  NG: BEAR             mom=  9.1 vol= 34.1 mac= 50.0 x0.7
+  PL: BULL             mom= 72.7 vol= 31.8 mac= 50.0 x1.25
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.3 vol= 95.5 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  7.5 vol= 93.2 mac= 50.0 x0.55
+  WTI: NEUTRAL_QUIET    mom= 62.5 vol= 27.3 mac= 50.0 x0.9
+  HG: BEAR_QUIET       mom= 10.8 vol= 18.2 mac= 50.0 x0.7
+  NG: BEAR_QUIET       mom=  8.4 vol= 22.7 mac= 50.0 x0.7
+  PL: NEUTRAL_QUIET    mom= 47.1 vol= 20.5 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.3 vol= 95.5 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  7.5 vol= 93.2 mac= 50.0 x0.55
+  WTI: NEUTRAL_QUIET    mom= 62.5 vol= 27.3 mac= 50.0 x0.9
+  HG: BEAR_QUIET       mom= 10.8 vol= 18.2 mac= 50.0 x0.7
+  NG: BEAR_QUIET       mom=  8.4 vol= 22.7 mac= 50.0 x0.7
+  PL: NEUTRAL_QUIET    mom= 47.1 vol= 20.5 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.2 vol= 95.5 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  7.6 vol= 93.2 mac= 50.0 x0.55
+  WTI: NEUTRAL_QUIET    mom= 62.5 vol= 27.3 mac= 50.0 x0.9
+  HG: BEAR_QUIET       mom= 10.8 vol= 18.2 mac= 50.0 x0.7
+  NG: BEAR_QUIET       mom=  8.4 vol= 22.7 mac= 50.0 x0.7
+  PL: NEUTRAL_QUIET    mom= 47.1 vol= 20.5 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 11.2 vol= 95.5 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  7.6 vol= 93.2 mac= 50.0 x0.55
+  WTI: NEUTRAL_QUIET    mom= 62.5 vol= 27.3 mac= 50.0 x0.9
+  HG: BEAR_QUIET       mom= 10.8 vol= 18.2 mac= 50.0 x0.7
+  NG: BEAR_QUIET       mom=  8.4 vol= 22.7 mac= 50.0 x0.7
+  PL: NEUTRAL_QUIET    mom= 47.1 vol= 20.5 mac= 50.0 x0.9
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 10.4 vol= 95.5 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  6.7 vol= 90.9 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 62.4 vol= 31.8 mac= 50.0 x0.9
+  HG: BEAR_QUIET       mom= 10.1 vol= 13.6 mac= 50.0 x0.7
+  NG: BEAR_QUIET       mom=  8.2 vol= 20.5 mac= 50.0 x0.7
+  PL: BEAR_QUIET       mom= 26.9 vol= 15.9 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 10.4 vol= 95.5 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  6.7 vol= 90.9 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 62.4 vol= 31.8 mac= 50.0 x0.9
+  HG: BEAR_QUIET       mom= 10.1 vol= 13.6 mac= 50.0 x0.7
+  NG: BEAR_QUIET       mom=  8.2 vol= 20.5 mac= 50.0 x0.7
+  PL: BEAR_QUIET       mom= 26.9 vol= 15.9 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 34.7 vol= 95.5 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  6.7 vol= 90.9 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 62.4 vol= 31.8 mac= 50.0 x0.9
+  HG: BEAR_QUIET       mom= 10.1 vol= 13.6 mac= 50.0 x0.7
+  NG: BEAR_QUIET       mom=  8.2 vol= 20.5 mac= 50.0 x0.7
+  PL: BEAR_QUIET       mom= 26.9 vol= 15.9 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom= 34.7 vol= 95.5 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  6.7 vol= 90.9 mac= 50.0 x0.55
+  WTI: NEUTRAL          mom= 62.4 vol= 31.8 mac= 50.0 x0.9
+  HG: BEAR_QUIET       mom= 10.1 vol= 13.6 mac= 50.0 x0.7
+  NG: BEAR_QUIET       mom=  8.2 vol= 20.5 mac= 50.0 x0.7
+  PL: BEAR_QUIET       mom= 26.9 vol= 15.9 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  8.5 vol= 95.5 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  5.1 vol= 93.2 mac= 50.0 x0.55
+  WTI: BEAR             mom= 26.1 vol= 38.6 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  7.6 vol= 27.3 mac= 50.0 x0.7
+  NG: BEAR             mom=  9.2 vol= 34.1 mac= 50.0 x0.7
+  PL: BEAR             mom= 24.1 vol= 36.4 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  8.5 vol= 95.5 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  5.1 vol= 93.2 mac= 50.0 x0.55
+  WTI: BEAR             mom= 26.1 vol= 38.6 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  7.6 vol= 27.3 mac= 50.0 x0.7
+  NG: BEAR             mom=  9.2 vol= 34.1 mac= 50.0 x0.7
+  PL: BEAR             mom= 24.1 vol= 36.4 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  9.0 vol= 95.5 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  5.3 vol= 93.2 mac= 50.0 x0.55
+  WTI: BEAR             mom= 26.1 vol= 38.6 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  7.6 vol= 27.3 mac= 50.0 x0.7
+  NG: BEAR             mom=  9.2 vol= 34.1 mac= 50.0 x0.7
+  PL: BEAR             mom= 24.1 vol= 36.4 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  9.0 vol= 95.5 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  5.3 vol= 93.2 mac= 50.0 x0.55
+  WTI: BEAR             mom= 26.1 vol= 38.6 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  7.6 vol= 27.3 mac= 50.0 x0.7
+  NG: BEAR             mom=  9.2 vol= 34.1 mac= 50.0 x0.7
+  PL: BEAR             mom= 24.1 vol= 36.4 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  8.5 vol= 93.2 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  4.4 vol= 93.2 mac= 50.0 x0.55
+  WTI: BEAR             mom= 26.5 vol= 38.6 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  6.8 vol= 29.5 mac= 50.0 x0.7
+  NG: BEAR             mom=  9.5 vol= 31.8 mac= 50.0 x0.7
+  PL: BEAR             mom= 23.0 vol= 34.1 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  8.5 vol= 93.2 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  4.4 vol= 93.2 mac= 50.0 x0.55
+  WTI: BEAR             mom= 26.5 vol= 38.6 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  6.8 vol= 29.5 mac= 50.0 x0.7
+  NG: BEAR             mom=  9.5 vol= 31.8 mac= 50.0 x0.7
+  PL: BEAR             mom= 23.0 vol= 34.1 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  8.5 vol= 93.2 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  4.4 vol= 93.2 mac= 50.0 x0.55
+  WTI: BEAR             mom= 26.5 vol= 38.6 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  6.8 vol= 29.5 mac= 50.0 x0.7
+  NG: BEAR             mom=  9.5 vol= 31.8 mac= 50.0 x0.7
+  PL: BEAR             mom= 23.0 vol= 34.1 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  8.5 vol= 93.2 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  4.4 vol= 93.2 mac= 50.0 x0.55
+  WTI: BEAR             mom= 26.5 vol= 38.6 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  6.8 vol= 29.5 mac= 50.0 x0.7
+  NG: BEAR             mom=  9.5 vol= 31.8 mac= 50.0 x0.7
+  PL: BEAR             mom= 23.0 vol= 34.1 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  8.4 vol= 90.9 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  4.2 vol= 75.0 mac= 50.0 x0.55
+  WTI: BEAR             mom= 26.7 vol= 36.4 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  6.0 vol= 18.2 mac= 50.0 x0.7
+  NG: BEAR             mom= 11.5 vol= 31.8 mac= 50.0 x0.7
+  PL: BEAR_QUIET       mom= 24.0 vol= 25.0 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  8.4 vol= 90.9 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  4.2 vol= 75.0 mac= 50.0 x0.55
+  WTI: BEAR             mom= 26.7 vol= 36.4 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  6.0 vol= 18.2 mac= 50.0 x0.7
+  NG: BEAR             mom= 11.5 vol= 31.8 mac= 50.0 x0.7
+  PL: BEAR_QUIET       mom= 24.0 vol= 25.0 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  8.4 vol= 90.9 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  4.2 vol= 75.0 mac= 50.0 x0.55
+  WTI: BEAR             mom= 26.7 vol= 36.4 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  6.0 vol= 18.2 mac= 50.0 x0.7
+  NG: BEAR             mom= 11.5 vol= 31.8 mac= 50.0 x0.7
+  PL: BEAR_QUIET       mom= 24.0 vol= 25.0 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  8.4 vol= 90.9 mac= 50.0 x0.55
+  XAG: BEAR_VOLATILE    mom=  4.2 vol= 75.0 mac= 50.0 x0.55
+  WTI: BEAR             mom= 26.7 vol= 36.4 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  6.0 vol= 18.2 mac= 50.0 x0.7
+  NG: BEAR             mom= 11.5 vol= 31.8 mac= 50.0 x0.7
+  PL: BEAR_QUIET       mom= 24.0 vol= 25.0 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  7.7 vol= 84.1 mac= 50.0 x0.55
+  XAG: BEAR             mom=  2.8 vol= 61.4 mac= 50.0 x0.55
+  WTI: BEAR_QUIET       mom= 28.0 vol= 25.0 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  4.3 vol= 11.4 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 38.2 vol= 18.2 mac= 50.0 x0.9
+  PL: BEAR_QUIET       mom= 21.2 vol=  6.8 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  7.7 vol= 84.1 mac= 50.0 x0.55
+  XAG: BEAR             mom=  2.8 vol= 61.4 mac= 50.0 x0.55
+  WTI: BEAR_QUIET       mom= 28.0 vol= 25.0 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  4.3 vol= 11.4 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 38.2 vol= 18.2 mac= 50.0 x0.9
+  PL: BEAR_QUIET       mom= 21.2 vol=  6.8 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=59.1 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  6.9 vol= 86.4 mac= 50.0 x0.55
+  XAG: BEAR             mom=  2.6 vol= 65.9 mac= 50.0 x0.55
+  WTI: BEAR_QUIET       mom= 28.0 vol= 25.0 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  4.3 vol= 11.4 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 38.2 vol= 18.2 mac= 50.0 x0.9
+  PL: BEAR_QUIET       mom= 21.2 vol=  6.8 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=61.4 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  6.9 vol= 86.4 mac= 50.0 x0.55
+  XAG: BEAR             mom=  2.6 vol= 65.9 mac= 50.0 x0.55
+  WTI: BEAR_QUIET       mom= 28.0 vol= 25.0 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  4.3 vol= 11.4 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 38.2 vol= 18.2 mac= 50.0 x0.9
+  PL: BEAR_QUIET       mom= 21.2 vol=  6.8 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=61.4 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  7.2 vol= 79.5 mac= 50.0 x0.55
+  XAG: BEAR             mom=  3.2 vol= 54.5 mac= 50.0 x0.55
+  WTI: BEAR_QUIET       mom= 26.6 vol= 29.5 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  4.0 vol=  6.8 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 52.1 vol= 15.9 mac= 50.0 x0.9
+  PL: BEAR_QUIET       mom= 22.4 vol=  4.5 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=61.4 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  7.2 vol= 79.5 mac= 50.0 x0.55
+  XAG: BEAR             mom=  3.2 vol= 54.5 mac= 50.0 x0.55
+  WTI: BEAR_QUIET       mom= 26.6 vol= 29.5 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  4.0 vol=  6.8 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 52.1 vol= 15.9 mac= 50.0 x0.9
+  PL: BEAR_QUIET       mom= 22.4 vol=  4.5 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=61.4 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  7.2 vol= 79.5 mac= 50.0 x0.55
+  XAG: BEAR             mom=  2.9 vol= 54.5 mac= 50.0 x0.55
+  WTI: BEAR_QUIET       mom= 26.6 vol= 29.5 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  4.0 vol=  6.8 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 52.1 vol= 15.9 mac= 50.0 x0.9
+  PL: BEAR_QUIET       mom= 22.4 vol=  4.5 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=61.4 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  7.2 vol= 79.5 mac= 50.0 x0.55
+  XAG: BEAR             mom=  2.9 vol= 54.5 mac= 50.0 x0.55
+  WTI: BEAR_QUIET       mom= 26.6 vol= 29.5 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  4.0 vol=  6.8 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 52.1 vol= 15.9 mac= 50.0 x0.9
+  PL: BEAR_QUIET       mom= 22.4 vol=  4.5 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=61.4 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  7.7 vol= 70.5 mac= 50.0 x0.55
+  XAG: BEAR             mom=  3.2 vol= 50.0 mac= 50.0 x0.7
+  WTI: BEAR             mom= 27.2 vol= 36.4 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  4.2 vol= 15.9 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 51.0 vol= 18.2 mac= 50.0 x0.9
+  PL: BEAR_QUIET       mom= 22.7 vol= 11.4 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=61.4 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 22.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 25.0 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  7.7 vol= 70.5 mac= 50.0 x0.55
+  XAG: BEAR             mom=  3.2 vol= 50.0 mac= 50.0 x0.7
+  WTI: BEAR             mom= 27.2 vol= 36.4 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  4.2 vol= 15.9 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 51.0 vol= 18.2 mac= 50.0 x0.9
+  PL: BEAR_QUIET       mom= 22.7 vol= 11.4 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=61.4 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  7.6 vol= 70.5 mac= 50.0 x0.55
+  XAG: BEAR             mom=  3.0 vol= 52.3 mac= 50.0 x0.55
+  WTI: BEAR             mom= 27.2 vol= 36.4 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  4.2 vol= 15.9 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 51.0 vol= 18.2 mac= 50.0 x0.9
+  PL: BEAR_QUIET       mom= 22.7 vol= 11.4 mac= 50.0 x0.7
+[REGIME_MULTI] global=BEAR corr=61.4 11 assets
+  BTC: BEAR             mom= 15.0 vol= 45.0 mac= 50.0 x0.7
+  ETH: BEAR             mom= 20.0 vol= 45.0 mac= 50.0 x0.7
+  SOL: BEAR             mom= 10.0 vol= 45.0 mac= 50.0 x0.7
+  BNB: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  LTC: BEAR             mom= 23.3 vol= 45.0 mac= 50.0 x0.7
+  XAU: BEAR_VOLATILE    mom=  7.6 vol= 70.5 mac= 50.0 x0.55
+  XAG: BEAR             mom=  3.0 vol= 52.3 mac= 50.0 x0.55
+  WTI: BEAR             mom= 27.2 vol= 36.4 mac= 50.0 x0.7
+  HG: BEAR_QUIET       mom=  4.2 vol= 15.9 mac= 50.0 x0.7
+  NG: NEUTRAL_QUIET    mom= 51.0 vol= 18.2 mac= 50.0 x0.9
+  PL: BEAR_QUIET       mom= 22.7 vol= 11.4 mac= 50.0 x0.7

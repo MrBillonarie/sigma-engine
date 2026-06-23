@@ -37,3 +37,6 @@
 [SLIPPAGE] global=1.10x | 14/15 calibrados
   BTC: 1.03x
   SOL: 1.15x
+[SLIPPAGE] global=1.10x | 14/15 calibrados
+  BTC: 1.03x
+  SOL: 1.15x

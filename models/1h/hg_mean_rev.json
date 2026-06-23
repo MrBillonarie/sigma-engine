@@ -58,8 +58,8 @@
   "mc": {
     "mc_cagr_p05": -11.4,
     "mc_cagr_p50": 110.4,
-    "mc_cagr_p95": 302.5,
-    "mc_dd_p50": -51.1,
+    "mc_cagr_p95": 348.5,
+    "mc_dd_p50": -49.4,
     "mc_dd_p95": -33.2,
     "mc_confidence": 91.0,
     "mc_sims": 1000
@@ -69,6 +69,6 @@
     "reasons": [
       "[WARN] FEW_TRADES: 24 trades OOS (estadistica debil)"
     ],
-    "validated_at": "2026-06-21T21:30:01.705815-04:00"
+    "validated_at": "2026-06-22T22:00:01.705729-04:00"
   }
 }

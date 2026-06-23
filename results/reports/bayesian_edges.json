@@ -1,5 +1,5 @@
 {
-  "computed_at": "2026-06-22T04:30:01.722267",
+  "computed_at": "2026-06-23T04:30:01.277305",
   "strategies": {
     "breakdown": {
       "n_trades": 6,
@@ -28,17 +28,17 @@
       "last_trade": "2026-06-13 17:42"
     },
     "supply_zone_rejection": {
-      "n_trades": 3,
-      "wins": 1,
+      "n_trades": 4,
+      "wins": 2,
       "losses": 2,
-      "posterior_mean_wr": 0.4,
-      "credible_lower_95": 0.008,
-      "credible_upper_95": 0.792,
-      "prob_above_55": 0.2,
+      "posterior_mean_wr": 0.5,
+      "credible_lower_95": 0.1296,
+      "credible_upper_95": 0.8704,
+      "prob_above_55": 0.25,
       "edge_confirmed": false,
       "live_sharpe": null,
       "sharpe_lower_ci": null,
-      "last_trade": "2026-06-20 18:33"
+      "last_trade": "2026-06-23 02:18"
     },
     "three_candles_short": {
       "n_trades": 4,

@@ -9,21 +9,30 @@
     "recommendation_at_init": "ESPERAR"
   },
   "SOL_4h_momentum_short": {
-    "equity": 10000,
+    "equity": 9977.24,
     "initial": 10000,
-    "open": {
-      "sym": "SOL",
-      "tf": "4h",
-      "strategy": "momentum_short",
-      "direction": "short",
-      "entry": 71.89,
-      "sl": 74.9359,
-      "tp": 67.8822,
-      "sl_dist_pct_at_open": 4.2369,
-      "kelly_pct": 0.22,
-      "opened_at": "2026-06-17 16:11:51"
-    },
-    "history": [],
+    "open": null,
+    "history": [
+      {
+        "sym": "SOL",
+        "tf": "4h",
+        "strategy": "momentum_short",
+        "direction": "short",
+        "entry": 71.89,
+        "sl": 74.9359,
+        "tp": 67.8822,
+        "sl_dist_pct_at_open": 4.2369,
+        "kelly_pct": 0.22,
+        "opened_at": "2026-06-17 16:11:51",
+        "exit_price": 74.94,
+        "reason": "SL_HIT",
+        "pnl_pct_raw": -4.3826,
+        "pnl_pct": -0.2276,
+        "pnl_dollar": -22.76,
+        "equity_after": 9977.24,
+        "closed_at": "2026-06-22 09:59:28"
+      }
+    ],
     "created_at": "2026-05-12 19:09:53",
     "pre_initialized": true,
     "recommendation_at_init": "ACTIVAR"
@@ -230,7 +239,18 @@
   "LTC_4h_momentum_short": {
     "equity": 9921.81,
     "initial": 10000,
-    "open": null,
+    "open": {
+      "sym": "LTC",
+      "tf": "4h",
+      "strategy": "momentum_short",
+      "direction": "short",
+      "entry": 43.73,
+      "sl": 44.7309,
+      "tp": 41.2278,
+      "sl_dist_pct_at_open": 2.2888,
+      "kelly_pct": 0.63,
+      "opened_at": "2026-06-23 04:09:01"
+    },
     "history": [
       {
         "sym": "LTC",
@@ -266,10 +286,30 @@
     "recommendation_at_init": "ESPERAR"
   },
   "BTC_1h_momentum": {
-    "equity": 10000,
+    "equity": 9968.28,
     "initial": 10000,
     "open": null,
-    "history": [],
+    "history": [
+      {
+        "sym": "BTC",
+        "tf": "1h",
+        "strategy": "momentum",
+        "direction": "long",
+        "entry": 64780.0,
+        "sl": 63766.6346,
+        "tp": 65868.4296,
+        "sl_dist_pct_at_open": 1.5643,
+        "kelly_pct": 0.29,
+        "opened_at": "2026-06-22 08:02:50",
+        "exit_price": 63762.2,
+        "reason": "SL_HIT",
+        "pnl_pct_raw": -1.7112,
+        "pnl_pct": -0.3172,
+        "pnl_dollar": -31.72,
+        "equity_after": 9968.28,
+        "closed_at": "2026-06-23 00:50:46"
+      }
+    ],
     "created_at": "2026-05-12 19:09:53",
     "pre_initialized": true,
     "recommendation_at_init": "ESPERAR"
@@ -1197,21 +1237,30 @@
     "recommendation_at_init": "NO_ACTIVAR"
   },
   "ETH_15m_volatility_breakout": {
-    "equity": 10000,
+    "equity": 9888.02,
     "initial": 10000,
-    "open": {
-      "sym": "ETH",
-      "tf": "15m",
-      "strategy": "volatility_breakout",
-      "direction": "long",
-      "entry": 1752.48,
-      "sl": 1721.8981,
-      "tp": 1777.6651,
-      "sl_dist_pct_at_open": 1.7451,
-      "kelly_pct": 0.99,
-      "opened_at": "2026-06-21 21:30:43"
-    },
-    "history": [],
+    "open": null,
+    "history": [
+      {
+        "sym": "ETH",
+        "tf": "15m",
+        "strategy": "volatility_breakout",
+        "direction": "long",
+        "entry": 1752.48,
+        "sl": 1721.8981,
+        "tp": 1777.6651,
+        "sl_dist_pct_at_open": 1.7451,
+        "kelly_pct": 0.99,
+        "opened_at": "2026-06-21 21:30:43",
+        "exit_price": 1720.34,
+        "reason": "SL_HIT",
+        "pnl_pct_raw": -1.974,
+        "pnl_pct": -1.1198,
+        "pnl_dollar": -111.98,
+        "equity_after": 9888.02,
+        "closed_at": "2026-06-22 18:28:13"
+      }
+    ],
     "created_at": "2026-05-12 19:09:53",
     "pre_initialized": true,
     "recommendation_at_init": "ESPERAR"
@@ -1219,7 +1268,18 @@
   "ETH_4h_momentum_short": {
     "equity": 10096.3,
     "initial": 10000,
-    "open": null,
+    "open": {
+      "sym": "ETH",
+      "tf": "4h",
+      "strategy": "momentum_short",
+      "direction": "short",
+      "entry": 1680.23,
+      "sl": 1766.3856,
+      "tp": 1625.4037,
+      "sl_dist_pct_at_open": 5.1276,
+      "kelly_pct": 0.77,
+      "opened_at": "2026-06-23 04:09:02"
+    },
     "history": [
       {
         "sym": "ETH",
@@ -1246,20 +1306,9 @@
     "recommendation_at_init": "NO_ACTIVAR"
   },
   "BNB_1h_break_of_structure": {
-    "equity": 9694.31,
+    "equity": 9652.07,
     "initial": 10000,
-    "open": {
-      "sym": "BNB",
-      "tf": "1h",
-      "strategy": "break_of_structure",
-      "direction": "long",
-      "entry": 594.63,
-      "sl": 584.5111,
-      "tp": 606.8953,
-      "sl_dist_pct_at_open": 1.7017,
-      "kelly_pct": 0.4,
-      "opened_at": "2026-06-21 22:01:43"
-    },
+    "open": null,
     "history": [
       {
         "sym": "BNB",
@@ -1317,6 +1366,25 @@
         "pnl_dollar": 72.1565,
         "equity_after": 9694.31,
         "closed_at": "2026-06-14 20:10:34"
+      },
+      {
+        "sym": "BNB",
+        "tf": "1h",
+        "strategy": "break_of_structure",
+        "direction": "long",
+        "entry": 594.63,
+        "sl": 584.5111,
+        "tp": 606.8953,
+        "sl_dist_pct_at_open": 1.7017,
+        "kelly_pct": 0.4,
+        "opened_at": "2026-06-21 22:01:43",
+        "exit_price": 584.44,
+        "reason": "SL_HIT",
+        "pnl_pct_raw": -1.8537,
+        "pnl_pct": -0.4357,
+        "pnl_dollar": -42.2381,
+        "equity_after": 9652.07,
+        "closed_at": "2026-06-23 02:07:14"
       }
     ],
     "created_at": "2026-05-12 19:09:53",
@@ -1324,7 +1392,7 @@
     "recommendation_at_init": "ESPERAR"
   },
   "BNB_1h_ichimoku": {
-    "equity": 10498.74,
+    "equity": 10477.58,
     "initial": 10000,
     "open": null,
     "history": [
@@ -1460,6 +1528,25 @@
         "pnl_dollar": -63.4045,
         "equity_after": 10498.74,
         "closed_at": "2026-06-21 19:32:23"
+      },
+      {
+        "sym": "BNB",
+        "tf": "1h",
+        "strategy": "ichimoku",
+        "direction": "long",
+        "entry": 593.62,
+        "sl": 583.2483,
+        "tp": 603.9917,
+        "sl_dist_pct_at_open": 1.7472,
+        "kelly_pct": 0.17,
+        "opened_at": "2026-06-22 05:04:49",
+        "exit_price": 582.16,
+        "reason": "SL_HIT",
+        "pnl_pct_raw": -2.0705,
+        "pnl_pct": -0.2015,
+        "pnl_dollar": -21.155,
+        "equity_after": 10477.58,
+        "closed_at": "2026-06-23 02:08:56"
       }
     ],
     "created_at": "2026-05-12 19:09:53",
@@ -1476,20 +1563,9 @@
     "recommendation_at_init": "NO_ACTIVAR"
   },
   "BNB_1h_dmi_trend": {
-    "equity": 10074.93,
+    "equity": 10059.23,
     "initial": 10000,
-    "open": {
-      "sym": "BNB",
-      "tf": "1h",
-      "strategy": "dmi_trend",
-      "direction": "long",
-      "entry": 594.61,
-      "sl": 583.8778,
-      "tp": 606.8753,
-      "sl_dist_pct_at_open": 1.8049,
-      "kelly_pct": 0.14,
-      "opened_at": "2026-06-21 22:01:43"
-    },
+    "open": null,
     "history": [
       {
         "sym": "BNB",
@@ -1582,6 +1658,25 @@
         "pnl_dollar": -32.8706,
         "equity_after": 10074.93,
         "closed_at": "2026-06-21 19:37:03"
+      },
+      {
+        "sym": "BNB",
+        "tf": "1h",
+        "strategy": "dmi_trend",
+        "direction": "long",
+        "entry": 594.61,
+        "sl": 583.8778,
+        "tp": 606.8753,
+        "sl_dist_pct_at_open": 1.8049,
+        "kelly_pct": 0.14,
+        "opened_at": "2026-06-21 22:01:43",
+        "exit_price": 583.5,
+        "reason": "SL_HIT",
+        "pnl_pct_raw": -2.0085,
+        "pnl_pct": -0.1558,
+        "pnl_dollar": -15.6967,
+        "equity_after": 10059.23,
+        "closed_at": "2026-06-23 02:08:17"
       }
     ],
     "created_at": "2026-05-12 19:09:53",
@@ -1690,21 +1785,30 @@
     "recommendation_at_init": "NO_ACTIVAR"
   },
   "LTC_1h_williams_r": {
-    "equity": 10000,
+    "equity": 9884.16,
     "initial": 10000,
-    "open": {
-      "sym": "LTC",
-      "tf": "1h",
-      "strategy": "williams_r",
-      "direction": "long",
-      "entry": 44.89,
-      "sl": 44.1645,
-      "tp": 45.8463,
-      "sl_dist_pct_at_open": 1.6162,
-      "kelly_pct": 1.06,
-      "opened_at": "2026-06-21 21:04:42"
-    },
-    "history": [],
+    "open": null,
+    "history": [
+      {
+        "sym": "LTC",
+        "tf": "1h",
+        "strategy": "williams_r",
+        "direction": "long",
+        "entry": 44.89,
+        "sl": 44.1645,
+        "tp": 45.8463,
+        "sl_dist_pct_at_open": 1.6162,
+        "kelly_pct": 1.06,
+        "opened_at": "2026-06-21 21:04:42",
+        "exit_price": 44.16,
+        "reason": "SL_HIT",
+        "pnl_pct_raw": -1.7662,
+        "pnl_pct": -1.1584,
+        "pnl_dollar": -115.84,
+        "equity_after": 9884.16,
+        "closed_at": "2026-06-23 02:14:08"
+      }
+    ],
     "created_at": "2026-05-15 09:29:21",
     "pre_initialized": true,
     "recommendation_at_init": "ESPERAR"
@@ -2394,23 +2498,41 @@
     "recommendation_at_init": "CONDICIONAL"
   },
   "BNB_1h_bos_long": {
-    "equity": 10000,
+    "equity": 10033.14,
     "initial": 10000,
-    "open": {
-      "sym": "BNB",
-      "tf": "1h",
-      "strategy": "bos_long",
-      "direction": "long",
-      "entry": 594.63,
-      "sl": 588.804,
-      "tp": 600.1494,
-      "sl_dist_pct_at_open": 0.9798,
-      "kelly_pct": 0.4,
-      "opened_at": "2026-06-21 22:01:43"
-    },
-    "history": [],
+    "open": null,
+    "history": [
+      {
+        "sym": "BNB",
+        "tf": "1h",
+        "strategy": "bos_long",
+        "direction": "long",
+        "entry": 594.63,
+        "sl": 588.804,
+        "tp": 600.1494,
+        "sl_dist_pct_at_open": 0.9798,
+        "kelly_pct": 0.4,
+        "opened_at": "2026-06-21 22:01:43",
+        "exit_price": 600.29,
+        "reason": "TP_HIT",
+        "pnl_pct_raw": 0.8119,
+        "pnl_pct": 0.3314,
+        "pnl_dollar": 33.14,
+        "equity_after": 10033.14,
+        "closed_at": "2026-06-22 08:40:59"
+      }
+    ],
     "created_at": "2026-06-21 10:57:15",
     "pre_initialized": true,
     "recommendation_at_init": "CONDICIONAL"
+  },
+  "XAG_15m_pullback": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-06-22 05:53:53",
+    "pre_initialized": true,
+    "recommendation_at_init": "NO_ACTIVAR"
   }
 }

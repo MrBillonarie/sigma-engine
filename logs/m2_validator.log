@@ -3861,3 +3861,324 @@
   "warned": 0,
   "blocked": 0
 }
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+[2026-06-22 06:00] [PASS] xauusd_dmi_trend (1h) — OK
+[2026-06-22 06:00] [PASS] xagusd_pullback (15m) — OK
+[2026-06-22 06:00] Summary: 2 validated | 2 PASS | 0 WARN | 0 BLOCK
+{
+  "validated": 2,
+  "passed": 2,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+[2026-06-22 07:30] [WARN] xauusd_tema_cross (1h) — [WARN] FEW_TRADES: 24 trades OOS (estadistica debil)
+[2026-06-22 07:30] Summary: 1 validated | 0 PASS | 1 WARN | 0 BLOCK
+{
+  "validated": 1,
+  "passed": 0,
+  "warned": 1,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+[2026-06-22 14:30] [PASS] xauusd_hull_cross (4h) — OK
+[2026-06-22 14:30] Summary: 1 validated | 1 PASS | 0 WARN | 0 BLOCK
+{
+  "validated": 1,
+  "passed": 1,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+[2026-06-22 16:30] [PASS] ngusd_tma_bands (4h) — OK
+[2026-06-22 16:30] [WARN] plusd_ichimoku (4h) — [WARN] FEW_TRADES: 26 trades OOS (estadistica debil)
+[2026-06-22 16:30] [PASS] xagusd_regime_adaptive (4h) — OK
+[2026-06-22 16:30] [WARN] plusd_lower_lows (4h) — [WARN] IS_OOS_WARN: OOS/IS=0.39 — degradacion moderada
+[2026-06-22 16:30] Summary: 4 validated | 2 PASS | 2 WARN | 0 BLOCK
+{
+  "validated": 4,
+  "passed": 2,
+  "warned": 2,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+[2026-06-22 18:30] [BLOCK] wtiusd_vwap_deviation_short (4h) — IS_OOS_GAP: OOS/IS=0.33 (minimo 0.35), [WARN] FEW_TRADES: 16 trades OOS (estadistica debil)
+[2026-06-22 18:30] [BLOCK] wtiusd_hull_cross (1h) — CAGR_INSANE: 811% (max permitido 400%)
+[2026-06-22 18:30] [WARN] wtiusd_chaikin_mf (1h) — [WARN] FEW_TRADES: 28 trades OOS (estadistica debil)
+[2026-06-22 18:30] Summary: 3 validated | 0 PASS | 1 WARN | 2 BLOCK
+{
+  "validated": 3,
+  "passed": 0,
+  "warned": 1,
+  "blocked": 2
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+[2026-06-22 19:30] [WARN] plusd_volume_exhaustion (1h) — [WARN] IS_OOS_WARN: OOS/IS=0.44 — degradacion moderada
+[2026-06-22 19:30] [BLOCK] plusd_hull_cross (1h) — CAGR_INSANE: 3301% (max permitido 400%)
+[2026-06-22 19:30] [BLOCK] plusd_tema_cross (1h) — CAGR_INSANE: 6388% (max permitido 400%)
+[2026-06-22 19:30] [BLOCK] plusd_aroon_cross (1h) — CAGR_INSANE: 847% (max permitido 400%)
+[2026-06-22 19:30] Summary: 4 validated | 0 PASS | 1 WARN | 3 BLOCK
+{
+  "validated": 4,
+  "passed": 0,
+  "warned": 1,
+  "blocked": 3
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+[2026-06-22 22:00] [WARN] hgusd_macro_momentum_long (4h) — [WARN] FEW_TRADES: 17 trades OOS (estadistica debil)
+[2026-06-22 22:00] [WARN] hgusd_keltner_trend_long (4h) — [WARN] FEW_TRADES: 29 trades OOS (estadistica debil), [WARN] IS_OOS_WARN: OOS/IS=0.38 — degradacion moderada
+[2026-06-22 22:00] [WARN] ngusd_volume_climax_top (1h) — [WARN] FEW_TRADES: 22 trades OOS (estadistica debil)
+[2026-06-22 22:00] [WARN] hg_mean_rev (1h) — [WARN] FEW_TRADES: 24 trades OOS (estadistica debil)
+[2026-06-22 22:00] [WARN] xau_regime_adaptive (1h) — [WARN] FEW_TRADES: 20 trades OOS (estadistica debil)
+[2026-06-22 22:00] [PASS] hg_lower_lows (1h) — OK
+[2026-06-22 22:00] Summary: 6 validated | 1 PASS | 5 WARN | 0 BLOCK
+{
+  "validated": 6,
+  "passed": 1,
+  "warned": 5,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+[2026-06-23 00:00] [WARN] hgusd_vwap_overpriced_short (4h) — [WARN] IS_OOS_WARN: OOS/IS=0.37 — degradacion moderada
+[2026-06-23 00:00] [WARN] ngusd_tma_bands (1h) — [WARN] FEW_TRADES: 19 trades OOS (estadistica debil)
+[2026-06-23 00:00] Summary: 2 validated | 0 PASS | 2 WARN | 0 BLOCK
+{
+  "validated": 2,
+  "passed": 0,
+  "warned": 2,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+{
+  "validated": 0,
+  "passed": 0,
+  "warned": 0,
+  "blocked": 0
+}
+[2026-06-23 04:30] [PASS] xagusd_lower_high_structure_short (1h) — OK
+[2026-06-23 04:30] Summary: 1 validated | 1 PASS | 0 WARN | 0 BLOCK
+{
+  "validated": 1,
+  "passed": 1,
+  "warned": 0,
+  "blocked": 0
+}

@@ -39,10 +39,30 @@
       "btc_price": 64043.9,
       "btc": 0.00043001,
       "sats": 43001
+    },
+    {
+      "date": "2026-06-23 02:18:59",
+      "trade": "SOL_4h",
+      "reason": "TP_HIT",
+      "pnl_usd": 102.73,
+      "alloc_usd": 15.4096,
+      "btc_price": 63004.9,
+      "btc": 0.00024458,
+      "sats": 24458
+    },
+    {
+      "date": "2026-06-23 02:23:36",
+      "trade": "BTC_15m",
+      "reason": "TP_HIT",
+      "pnl_usd": 106.85,
+      "alloc_usd": 16.0274,
+      "btc_price": 62549.6,
+      "btc": 0.00025624,
+      "sats": 25624
     }
   ],
-  "total_btc": 0.00154764,
+  "total_btc": 0.00204846,
   "goal_btc": 1.0,
   "note": "Agregar entrada cada vez que se envie BTC a cold storage",
-  "total_usd": 99.3616
+  "total_usd": 130.7986
 }

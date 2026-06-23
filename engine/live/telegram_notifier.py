@@ -1980,7 +1980,6 @@ def main():
             print(f"[INIT] seen_signals cargado de disco: {len(seen_signals)}", flush=True)
     except Exception as _ess:
         print(f"[INIT] err seen_signals: {_ess}", flush=True)
-    last_trade_notify = 0
     prev_regime       = None
     cb_notified       = False
     prev_readiness    = 0
@@ -2138,9 +2137,11 @@ def main():
                     with open(_SEEN_FILE, 'w') as _fsv:
                         _j_sv.dump(list(seen_trades), _fsv)
                 except Exception: pass
-            if nuevos and (now_ts - last_trade_notify) >= 3600:
-                last_trade_notify = now_ts
-                t      = nuevos[0]  # mas reciente con hist[:5]
+            # Notificar TODOS los cierres nuevos, en orden cronologico (hist viene
+            # mas-nuevo-primero) -- antes habia un throttle de 1h que dejaba
+            # cierres marcados como 'vistos' sin avisar nunca por Telegram
+            # (el usuario tenia TP en Binance y no le llegaba el aviso).
+            for t in reversed(nuevos):
                 pnl    = t.get("pnl_pct",0)
                 reason = t.get("reason","")
                 eq     = t.get("equity_after") or port.get("equity",0)
@@ -2151,8 +2152,6 @@ def main():
                     if _card:
                         send(_card, silent=(reason not in ("TP_HIT", "TRAIL_HIT")))
                 except Exception:
-                    pass
-                if False:  # desactivado: sustituido por _rich_trade_card
                     pass
                 # Trade Journal — analisis narrativo del trade
                 try:
