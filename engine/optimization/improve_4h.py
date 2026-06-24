@@ -209,7 +209,11 @@ def backtest(df, sig, sl_m, tp_m, risk=1.0, trail=False, trail_m=2.0):
 
 
 def score(m, min_t=40):
-    if m is None or m['trades']<min_t: return -9999
+    # FIX 2026-06-24: faltaba descalificar CAGR negativo -- un modelo perdedor
+    # podia rankear bien si wr/pf/sharpe eran altos, porque calmar (cagr/dd)
+    # negativo con peso 0.30 no alcanzaba a anular el resto. Mismo criterio que
+    # canonical_score()/asset_pipeline.score() (cagr<=0 -> descalificado).
+    if m is None or m['trades']<min_t or m.get('cagr', 0)<=0: return -9999
     pen = max(0,(80-m['trades'])/80)  # penaliza menos de 80 trades
     cal = min(m['calmar'],5)/5
     wr  = (m['winrate']/100-0.45)/0.35

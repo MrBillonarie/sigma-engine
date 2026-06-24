@@ -23,7 +23,13 @@ MODELS    = BASE / 'models'
 DB_PATH   = MODELS / 'sigma.db'
 
 
-# ── Score formula (mismo que asset_pipeline.py) ──────────────────────────────
+# ── Score formula ─────────────────────────────────────────────────────────────
+# FIX 2026-06-24: este comentario decia "mismo que asset_pipeline.py" pero los
+# pesos NUNCA fueron iguales (40/20/20/15/5 aqui vs 35/25/20/15/5 en
+# asset_pipeline.py, ademas de min_ty=5 vs 3, cap calmar 5 vs 8). Es el "nuevo
+# criterio" deliberado que describe el docstring del archivo (linea 6) para
+# re-evaluar el historial -- no una copia. Comentario corregido, formula sin
+# cambios.
 
 def score(m, min_t=15):
     if m is None: return -9999
