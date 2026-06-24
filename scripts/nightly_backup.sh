@@ -55,6 +55,8 @@ tar czf "$CODE_TAR" \
     --exclude='/opt/sigma/archive' \
     --exclude='/opt/sigma/results/reports' \
     --exclude='/opt/sigma/ibkr/gateway' \
+    --exclude='/opt/sigma/engine/config/secrets.json' \
+    --exclude='/opt/sigma/engine/config/secrets.json.bak*' \
     --exclude='__pycache__' \
     --exclude='*.pyc' \
     /opt/sigma >> $LOG 2>&1

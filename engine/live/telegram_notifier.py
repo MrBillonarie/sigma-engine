@@ -362,6 +362,13 @@ def cmd_status(chat_id, signals, trades):
         + (f" {'✅ LISTO' if score >= 85 else f'— faltan {gate_to_live} pts'}")
     )
 
+    real = _real_live_status()
+    real_line = (
+        f"\n💵 <b>Balance real (Binance)</b>\n"
+        f"Equity: <code>${real['equity']:,.2f}</code>  DD desde pico: <code>{real['dd']:+.2f}%</code>\n"
+        if real else ""
+    )
+
     send(
         f"🤖 <b>SIGMA ENGINE — Estado</b>\n"
         f"{now.strftime('%d %b %Y %H:%M')} (Chile)\n\n"
@@ -369,8 +376,9 @@ def cmd_status(chat_id, signals, trades):
         f"Gate capital: <code>{bar(score)}</code> {score}/100\n"
         f"Modelos activos: <code>{n_activos}</code> | "
         f"Grade A+/A: <code>{n_grade}</code> | "
-        f"Señales: <code>{n_signal}</code>\n\n"
-        f"💰 <b>Portfolio Paper</b>\n"
+        f"Señales: <code>{n_signal}</code>\n"
+        f"{real_line}\n"
+        f"💰 <b>Portfolio Paper</b> (simulacion de todos los modelos, no es el balance real)\n"
         f"Equity: <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>\n"
         f"WR live: {medal(wr)} <code>{wr:.0f}%</code>  ({total} trades)\n"
         f"Profit Factor: <code>{pf:.2f}</code>  Max DD: <code>{maxdd:.1f}%</code>\n\n"
@@ -421,7 +429,7 @@ def cmd_hoy(chat_id, trades):
         f"\n\n{pnl_icon(day_pnl)} P&L dia: <code>{day_pnl:+.2f}%</code>\n"
         f"WR dia: {medal(day_wr)} <code>{day_wr:.0f}%</code>  "
         f"({day_wins}W / {len(hoy)-day_wins}L)\n\n"
-        f"Equity: <code>${eq:,.2f}</code>  <code>{ret:+.2f}%</code> total",
+        f"Equity (paper): <code>${eq:,.2f}</code>  <code>{ret:+.2f}%</code> total",
         chat_id=chat_id
     )
 
@@ -459,7 +467,7 @@ def cmd_semana(chat_id, trades):
         f"\n\n{pnl_icon(pnl_tot)} P&L semana: <code>{pnl_tot:+.2f}%</code>\n"
         f"WR: {medal(wr_sem)} <code>{wr_sem:.0f}%</code>  "
         f"({wins}W / {len(semana)-wins}L / {len(semana)} trades)\n\n"
-        f"Equity: <code>${eq:,.2f}</code>  <code>{ret:+.2f}%</code> total",
+        f"Equity (paper): <code>${eq:,.2f}</code>  <code>{ret:+.2f}%</code> total",
         chat_id=chat_id
     )
 
@@ -725,7 +733,7 @@ def cmd_performance(chat_id, trades):
     BT_DD = -15
 
     lines = [f"📊 <b>SIGMA PERFORMANCE — Live vs Backtest</b>"]
-    lines.append(f"<i>Periodo: {days} dia(s) · {n} trades cerrados</i>")
+    lines.append(f"<i>Portfolio paper (simulacion de todos los modelos) · Periodo: {days} dia(s) · {n} trades cerrados</i>")
     lines.append("")
     def cmp(label, live, bt, unit='%', better_high=True):
         icon = "✅" if (live >= bt if better_high else live <= bt) else "⚠️"
@@ -953,6 +961,27 @@ def _fire_current_equity():
             eq *= (1 + pnl)
         return eq
     except: return 10000.0
+
+def _real_live_status():
+    """Balance LIVE real (Binance) y su DD desde el pico, mismo criterio que el
+    circuit breaker real (web_server.py: state['live_peak_equity']). None si
+    todavia no hay ningun trade LIVE cerrado -- todo el sistema sigue en paper.
+    2026-06-24: el fix de equity real solo habia llegado a /fire: el resto del
+    bot (status, briefings, alertas de DD) seguia mostrando el equity simulado
+    de paper ($10k+compounding) sin avisar que no es el balance real."""
+    import json as _j
+    try:
+        with open('/opt/sigma/results/trade_state.json') as f:
+            state = _j.load(f)
+        live = [t for t in state.get('history', []) if t.get('mode') == 'LIVE' and t.get('equity_after')]
+        if not live:
+            return None
+        eq   = float(live[-1]['equity_after'])
+        peak = float(state.get('live_peak_equity', eq))
+        dd   = round((eq - peak) / peak * 100, 2) if peak > 0 else 0.0
+        return {'equity': eq, 'peak': peak, 'dd': dd}
+    except Exception:
+        return None
 
 def _fire_progress_bar(pct, width=20):
     """Generar barra de progreso visual."""
@@ -1484,10 +1513,13 @@ def morning_briefing(signals, trades):
         signal_block = "\n\n<b>Señales activas:</b>\n" + "\n\n".join(lines)
     else:
         signal_block = "\n\nSin señales activas al momento."
+    real = _real_live_status()
+    real_line = f"\n💵 Balance real (Binance): <code>${real['equity']:,.2f}</code>" if real else ""
     send_pin(
         f"☀️ <b>Briefing Matutino — {now.strftime('%d %b %Y')}</b>\n\n"
-        f"{reg_icon} Regimen: <b>{regime}</b>\n{regime_desc}{cb_line}\n\n"
-        f"<b>Estado del Portfolio</b>\n"
+        f"{reg_icon} Regimen: <b>{regime}</b>\n{regime_desc}{cb_line}\n"
+        f"{real_line}\n"
+        f"<b>Estado del Portfolio (paper)</b>\n"
         f"Equity:    <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>\n"
         f"Win Rate:  {medal(wr)} <code>{wr:.0f}%</code>  ({total} trades)\n"
         f"Gate live: <code>{bar(score)}</code> {score}/100"
@@ -1528,9 +1560,12 @@ def evening_summary(signals, trades):
     records = ""
     if best:  records += f"\n🏆 Mejor: {best.get('sym')} {best.get('tf','').upper()} <code>{best.get('pnl_pct',0):+.2f}%</code>"
     if worst: records += f"\n💀 Peor:  {worst.get('sym')} {worst.get('tf','').upper()} <code>{worst.get('pnl_pct',0):+.2f}%</code>"
+    real = _real_live_status()
+    real_line = f"💵 Balance real (Binance): <code>${real['equity']:,.2f}</code>\n\n" if real else ""
     send(
         f"🌙 <b>Resumen Diario — {now.strftime('%d %b %Y')}</b>\n\n"
-        f"<b>Portfolio</b>\n"
+        f"{real_line}"
+        f"<b>Portfolio (paper)</b>\n"
         f"Equity:         <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>\n"
         f"Win Rate:       {medal(wr)} <code>{wr:.0f}%</code>  ({wins}W / {losses}L / {total} trades)\n"
         f"Avg Win/Loss:   <code>+{avg_w:.2f}%</code> / <code>{avg_l:.2f}%</code>\n"
@@ -1565,12 +1600,15 @@ def weekly_report(signals, trades):
         for t in week_trades[-7:]
     ) or "  Sin trades esta semana."
     cagr_line = f"\nCAGR live: <code>{cagr:+.1f}%</code>" if cagr else ""
+    real = _real_live_status()
+    real_line = f"💵 Balance real (Binance): <code>${real['equity']:,.2f}</code>\n\n" if real else ""
     send(
         f"📅 <b>Reporte Semanal</b>\n\n"
+        f"{real_line}"
         f"<b>Esta semana</b>\n"
         f"Trades: {len(week_trades)} | P&amp;L: <code>{wt_pnl:+.2f}%</code> | WR: <code>{wt_wr:.0f}%</code>\n\n"
         f"<b>Rendimiento:</b>\n{chart}\n\n"
-        f"<b>Portfolio acumulado</b>\n"
+        f"<b>Portfolio acumulado (paper)</b>\n"
         f"Equity:       <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>{cagr_line}\n"
         f"Win Rate:     {medal(wr)} <code>{wr:.0f}%</code>  ({wins}W / {losses}L)\n"
         f"Profit Factor: <code>{pf:.2f}</code>  Max DD: <code>{maxdd:.1f}%</code>\n"
@@ -1589,9 +1627,11 @@ def silent_ping(signals, trades):
     ret    = port.get("return_pct", 0)
     wr     = st.get("win_rate", 0)
     score  = lr.get("score", 0)
+    real = _real_live_status()
+    real_line = f"Real: <code>${real['equity']:,.2f}</code>  " if real else ""
     send(
         f"📊 <b>Update</b> — {now.strftime('%d %b %H:%M')}\n"
-        f"Equity: <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>\n"
+        f"{real_line}Paper: <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>\n"
         f"WR: <code>{wr:.0f}%</code> | Regimen: {regime} | Gate: {score}/100",
         silent=True
     )
@@ -1656,9 +1696,19 @@ def _check_drawdown_alert(trades_data, send_fn):
     try:
         import time as _t
         port = trades_data.get("portfolio",{})
-        max_dd = abs(port.get("max_dd_pct", port.get("max_dd",0)))
-        equity = port.get("equity",10000)
-        ret    = port.get("return_pct",0)
+        # 2026-06-24: esta alerta comparaba el DD del portfolio paper, no el DD
+        # real que de verdad activa el circuit breaker LIVE (live_peak_equity en
+        # web_server.py) -- podia decir "MODERADO, normal" con la cuenta real en
+        # un DD distinto, o viceversa. Usa el DD real si ya hay trades LIVE.
+        real = _real_live_status()
+        if real:
+            max_dd = abs(real['dd'])
+            equity = real['equity']
+            ret    = round((real['equity'] / real['peak'] - 1) * 100, 2) if real['peak'] else 0
+        else:
+            max_dd = abs(port.get("max_dd_pct", port.get("max_dd",0)))
+            equity = port.get("equity",10000)
+            ret    = port.get("return_pct",0)
         if max_dd < 5 or (_t.time() - _last_dd_alert) < 3600: return
 
         st = trades_data.get("stats",{})
@@ -1673,8 +1723,9 @@ def _check_drawdown_alert(trades_data, send_fn):
         else:
             return
 
+        fuente = "balance real Binance" if real else "portfolio paper"
         send_fn(
-            f"{color} <b>Alerta de Drawdown — {nivel}</b>\n\n"
+            f"{color} <b>Alerta de Drawdown — {nivel}</b> ({fuente})\n\n"
             f"Max Drawdown actual: <code>{max_dd:.1f}%</code>\n"
             f"Equity: <code>${equity:,.2f}</code> ({ret:+.1f}% total)\n"
             f"Win Rate live: <code>{wr:.0f}%</code>\n\n"
@@ -1899,6 +1950,32 @@ def _paper_gate_label(sym, tf, strategy):
     return ''
 
 
+def _robustness_gate_label(sym, tf, strategy):
+    """Si el robustness gate va a forzar esta señal a PAPER pese al grade, avisar por qué.
+    La señal en si sigue siendo veridica (slot/grade ya la validaron) -- este es un check
+    aparte de walk-forward/consistencia que protege capital real, no cuestiona la señal."""
+    try:
+        import json as _jj, os as _oj
+        from utils.robustness import robustness_score as _rs
+        base = f'/opt/sigma/models/{tf}/{sym.lower()}_{strategy}.json'
+        if not _oj.path.exists(base):
+            base = f'/opt/sigma/models/{tf}/{sym.lower()}usd_{strategy}.json'
+        if not _oj.path.exists(base):
+            return ''
+        r = _rs(_jj.loads(open(base).read()))
+        if r.get('action') != 'PASS_LIVE':
+            gates = ', '.join(r.get('gates_failed', [])) or r.get('action', '')
+            return (
+                '\n\n🧪 <b>Quedará en PAPER, no LIVE</b> — la señal es válida, '
+                'pero el modelo no pasa el robustness gate ahora mismo '
+                f'(<code>{gates}</code>). El sistema no arriesga capital real '
+                'hasta que el modelo vuelva a pasar.'
+            )
+    except Exception:
+        pass
+    return ''
+
+
 def _paper_gate_update(sym, tf, strategy, won):
     """Actualiza paper gate tras un trade. Envia resultado cuando completa."""
     try:
@@ -2069,6 +2146,7 @@ def main():
                 ens   = m.get("ensemble_count",1)
                 ens_s    = f"\nEnsemble: {ens} modelos votaron esta señal" if ens > 1 else ""
                 paper_lbl = _paper_gate_label(m.get("sym",""), m.get("tf",""), m.get("strategy",""))
+                robust_lbl = _robustness_gate_label(m.get("sym",""), m.get("tf",""), m.get("strategy",""))
                 htf   = "\n⚠️ HTF no confirma — señal de menor confianza" if m.get("htf_penalty") else ""
                 dd_k  = m.get("dd_kelly_mult",1)
                 dd_s  = f"\n📉 Kelly reducido x{dd_k:.2f} por drawdown" if dd_k < 1 else ""
@@ -2083,6 +2161,7 @@ def main():
                     f"Kelly: <code>{m.get('eff_risk_pct','?')}%</code> del capital{ev_s}{ens_s}{htf}{dd_s}\n\n"
                     f"Regimen: <b>{regime}</b> | {now.strftime('%H:%M')} (Chile)"
                     f"{paper_lbl}"
+                    f"{robust_lbl}"
                 )
                 # Signal Explainer — contexto inteligente
                 try:
