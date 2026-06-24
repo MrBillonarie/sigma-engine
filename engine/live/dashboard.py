@@ -773,7 +773,9 @@ def _btc_cold_storage_widget():
             return ''
         cs    = json.loads(cs_f.read_text())
         total = float(cs.get('total_btc', 0))
+        cost_usd = float(cs.get('total_usd', 0))
         goal  = float(cs.get('goal_btc', 1.0))
+        avg_price = (cost_usd / total) if total > 0 else 0.0
         pct   = min(100, total / goal * 100) if goal > 0 else 0
         btc_usd = 0
         try:
@@ -783,20 +785,26 @@ def _btc_cold_storage_widget():
         except:
             pass
         value_usd = total * btc_usd
+        unrealized_pct = ((btc_usd / avg_price - 1) * 100) if (avg_price > 0 and btc_usd > 0) else 0.0
         pc2 = '#2ecc71' if pct >= 50 else ('#f1c40f' if pct >= 20 else '#e74c3c')
+        upc = '#2ecc71' if unrealized_pct >= 0 else '#e74c3c'
         mono = 'IBM Plex Mono,monospace'
         entries  = cs.get('entries', [])
         last_str = ''
         if entries:
             le = entries[-1]
             last_str = (f'<div style="font-size:9px;color:#7a8db5;margin-top:4px">'
-                        f'Ultimo: {le.get("btc",0):.6f} BTC @ ${le.get("price_usd",0):,.0f}</div>')
+                        f'Ultimo: {le.get("btc",0):.6f} BTC @ ${le.get("btc_price",0):,.0f}</div>')
         h  = '<div style="background:#07091c;border:1px solid #1a2240;border-radius:10px;padding:14px 18px;margin-bottom:14px">'
         h += '<div style="font-size:9px;color:#f7931a;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">BTC Cold Storage</div>'
         h += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'
         h += f'<span style="color:#f7931a;font-size:22px;font-weight:800;font-family:{mono}">{total:.6f} BTC</span>'
         h += f'<span style="font-size:11px;color:#7a8db5">${value_usd:,.0f} USD</span>'
         h += '</div>'
+        if avg_price > 0:
+            h += (f'<div style="display:flex;justify-content:space-between;font-size:9px;color:#7a8db5;margin-bottom:5px">'
+                  f'<span>Precio promedio de compra: <b style="color:#dde3f5;font-family:{mono}">${avg_price:,.0f}</b></span>'
+                  f'<span style="color:{upc}">{unrealized_pct:+.1f}%</span></div>')
         h += '<div style="background:#1a2240;border-radius:4px;height:6px;overflow:hidden;margin-bottom:5px">'
         h += f'<div style="background:{pc2};width:{pct:.1f}%;height:100%;border-radius:4px"></div>'
         h += '</div>'
