@@ -1853,8 +1853,18 @@ def close_trade(sym, tf, exit_price, reason='MANUAL', contracts=None, real_equit
             consec_losses = (sum(1 for h in recent if h.get('pnl_pct', 0) < 0) == 3
                              and len(recent) == 3)
 
-        _eq_now   = eq_after
-        _peak_now = port.get('peak_equity', _eq_now)
+        # FIX 2026-06-24: eq_after/port solo existen en la rama PAPER de arriba --
+        # para cierres LIVE esto tiraba UnboundLocalError, silenciado por el except
+        # de abajo, asi que el circuit breaker NUNCA se evaluaba en trades LIVE.
+        # equity_after si esta definido en ambas ramas. Para LIVE se mantiene un
+        # peak separado (state['live_peak_equity']) ya que port['peak_equity'] es
+        # del equity simulado del paper, no comparable al balance real de Binance.
+        _eq_now = equity_after
+        if is_live:
+            _peak_now = max(state.get('live_peak_equity', _eq_now), _eq_now)
+            state['live_peak_equity'] = _peak_now
+        else:
+            _peak_now = port.get('peak_equity', _eq_now)
         _dd_live  = round((_eq_now - _peak_now) / _peak_now * 100, 2) if _peak_now > 0 else 0
         dd_alert  = _dd_live < -8  # DD desde el pico actual, no el historico
 
