@@ -58,16 +58,20 @@ def check_trailing(key, trade, price):
     if direc == 'long':
         progress = (price - entry) / dist
         if progress >= TRAILING_TRIGGER and sl < entry:
+            old_sl = sl
             trade['sl']     = round(entry * (1 + BE_BUFFER), 4)
             trade['be_set'] = True
-            print(f"[SMART EXIT] {key} trailing BE → SL={trade['sl']:.4f}", flush=True)
+            print(f"[SMART EXIT] {key} trailing BE price={price} entry={entry} tp={tp} "
+                  f"progress={progress:.3f} old_sl={old_sl} -> new_sl={trade['sl']:.4f}", flush=True)
             return True
     else:
         progress = (entry - price) / dist
         if progress >= TRAILING_TRIGGER and sl > entry:
+            old_sl = sl
             trade['sl']     = round(entry * (1 - BE_BUFFER), 4)
             trade['be_set'] = True
-            print(f"[SMART EXIT] {key} trailing BE → SL={trade['sl']:.4f}", flush=True)
+            print(f"[SMART EXIT] {key} trailing BE price={price} entry={entry} tp={tp} "
+                  f"progress={progress:.3f} old_sl={old_sl} -> new_sl={trade['sl']:.4f}", flush=True)
             return True
     return False
 
@@ -96,16 +100,21 @@ def check_regime_exit(key, trade, regime):
         return True
     return False
 
-def run_smart_exit(current_prices: dict, regime: str, close_fn, load_fn, save_fn, lock):
+def run_smart_exit(current_prices: dict, regime: str, close_fn, load_fn, save_fn, lock, update_sl_fn=None):
     """
     Punto de entrada principal.
     current_prices: {sym: float}
     regime: 'BULL' | 'BEAR' | 'RANGE'
-    close_fn:  close_trade(sym, tf, price, reason) de web_server.py -- hace su
-               propio load/save atomico bajo el mismo lock (RLock reentrante).
-    load_fn:   _load_trades de web_server.py.
-    save_fn:   _save_trades de web_server.py.
-    lock:      _TRADE_LOCK de web_server.py.
+    close_fn:      close_trade(sym, tf, price, reason) de web_server.py (o un wrapper
+                   compatible, p.ej. _execute_close) -- hace su propio load/save atomico
+                   bajo el mismo lock (RLock reentrante).
+    load_fn:       _load_trades de web_server.py.
+    save_fn:       _save_trades de web_server.py.
+    lock:          _TRADE_LOCK de web_server.py.
+    update_sl_fn:  opcional, update_sl_fn(sym, tf, new_sl, direction). Cuando check_trailing
+                   mueve el SL a break-even, replica el cambio en la orden real de Binance
+                   si el trade es LIVE (antes solo se guardaba en el JSON local -- causa
+                   raiz del cierre fantasma BTC 2026-06-23, ver _execute_close()).
 
     Cada trade se procesa en su propia critica seccion: releer fresco -> evaluar
     -> mutar/cerrar -> guardar. Nunca se reusa un dict leido antes de invocar
@@ -127,6 +136,12 @@ def run_smart_exit(current_prices: dict, regime: str, close_fn, load_fn, save_fn
                 continue
 
             trail_changed = check_trailing(key, trade, price)
+
+            if trail_changed and update_sl_fn and trade.get('mode') == 'LIVE':
+                try:
+                    update_sl_fn(sym, tf, trade['sl'], trade.get('direction', 'long'))
+                except Exception as _eus:
+                    print(f"[SMART EXIT] {key} update_sl_fn fallo: {_eus}", flush=True)
 
             if check_time_limit(key, trade):
                 if trail_changed:

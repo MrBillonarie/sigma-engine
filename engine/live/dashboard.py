@@ -3427,19 +3427,25 @@ async function loadTrades() {{
       const rn = (t.sl && t.tp) ? Math.abs(t.tp-t.entry)/Math.abs(t.entry-t.sl) : 0;
       const rrC = rn>=2?'#00c853':rn>=1.5?'#69f0ae':'#ff9800';
       // Posicion nominal en USD: equity × (kelly% / sl_dist_pct_at_open)
+      // EXCEPTO para trades LIVE con contracts reales conocidos -- ahi se usa
+      // notional real (contracts x precio), no el equity simulado del paper
+      // (antes mostraba miles de USD de margen para una posicion real de ~$60).
       const eq        = port.equity || 10000;
       const slDistPct = t.sl_dist_pct_at_open || (t.entry>0 ? Math.abs(t.sl-t.entry)/t.entry*100 : 0);
       const kelly     = t.kelly_pct || 3.3;
-      const notional  = slDistPct>0 ? eq * (kelly/slDistPct) : 0;
-      const riskUsd   = eq * kelly / 100;
+      const isLiveReal = t.mode === 'LIVE' && t.live_contracts;
+      const notional  = isLiveReal ? t.live_contracts * cp
+                       : (slDistPct>0 ? eq * (kelly/slDistPct) : 0);
+      const riskUsd   = isLiveReal ? notional * slDistPct / 100 : eq * kelly / 100;
       const rewardUsd = (t.tp && t.entry) ? notional * Math.abs(t.tp-t.entry)/t.entry : 0;
       // Margen requerido (lo que sale del wallet) — asume leverage 5x del exchange
       const LEVERAGE_EXCHANGE = 5;
       const margenUsd = notional > 0 ? notional / LEVERAGE_EXCHANGE : 0;
       const notionalTxt = notional>0 ? '$'+Math.round(notional).toLocaleString() : '—';
       const margenTxt   = margenUsd>0 ? '$'+Math.round(margenUsd).toLocaleString() : '—';
-      const notionalTitle = `Posicion nominal (notional). Si SL toca: -$${{Math.round(riskUsd).toLocaleString()}} (-${{kelly}}%). Si TP toca: +$${{Math.round(rewardUsd).toLocaleString()}} (+${{rewardUsd>0?(rewardUsd/eq*100).toFixed(1):0}}%)`;
-      const margenTitle   = `MARGEN — lo que sale de tu wallet con leverage ${{LEVERAGE_EXCHANGE}}x del exchange. Notional/$${{LEVERAGE_EXCHANGE}} = $${{Math.round(margenUsd).toLocaleString()}}. Si usas leverage distinto: con 10x serían $${{Math.round(notional/10).toLocaleString()}}, con 20x $${{Math.round(notional/20).toLocaleString()}}`;
+      const realPrefix = isLiveReal ? 'REAL (Binance, ' + t.live_contracts + ' contratos). ' : '';
+      const notionalTitle = realPrefix + `Posicion nominal (notional). Si SL toca: -$${{Math.round(riskUsd).toLocaleString()}} (-${{kelly}}%). Si TP toca: +$${{Math.round(rewardUsd).toLocaleString()}} (+${{rewardUsd>0?(rewardUsd/eq*100).toFixed(1):0}}%)`;
+      const margenTitle   = realPrefix + `MARGEN — lo que sale de tu wallet con leverage ${{LEVERAGE_EXCHANGE}}x del exchange. Notional/$${{LEVERAGE_EXCHANGE}} = $${{Math.round(margenUsd).toLocaleString()}}. Si usas leverage distinto: con 10x serían $${{Math.round(notional/10).toLocaleString()}}, con 20x $${{Math.round(notional/20).toLocaleString()}}`;
       return `<tr style="${{rStyle}}">
         <td style="${{TD}}"><span style="background:${{dirC}};color:#000;padding:2px 8px;border-radius:4px;font-weight:bold;font-size:11px">${{isLong?'L':'S'}}</span></td>
         <td style="${{TD}}"><b style="color:#b8c5e0">${{t.sym}}</b></td>
@@ -3451,7 +3457,7 @@ async function loadTrades() {{
         <td style="${{TDR}};font-family:monospace;color:#f85149">${{t.sl}}</td>
         <td style="${{TDR}};font-family:monospace;color:#00e676">${{t.tp}}</td>
         <td style="${{TDR}};color:${{rrC}};font-weight:bold">${{rn>0?rn.toFixed(1)+':1':'—'}}</td>
-        <td style="${{TDR}};font-family:'IBM Plex Mono',monospace;color:#e0bb3a;font-weight:600" title="${{notionalTitle}}">${{notionalTxt}}</td>
+        <td style="${{TDR}};font-family:'IBM Plex Mono',monospace;color:${{isLiveReal?'#00bcd4':'#e0bb3a'}};font-weight:600" title="${{notionalTitle}}">${{notionalTxt}}${{isLiveReal?'<br><span style="font-size:9px;color:#00bcd4">REAL</span>':''}}</td>
         <td style="${{TDR}};font-family:'IBM Plex Mono',monospace;color:#00e676;font-weight:700;font-size:13px" title="${{margenTitle}}">${{margenTxt}}</td>
         <td style="${{TDR}};font-family:'IBM Plex Mono',monospace;color:#ff9800;font-weight:700;font-size:13px" title="Apalancamiento del trade: notional/margen = ${{LEVERAGE_EXCHANGE}}x (config Binance). Apalancamiento sobre equity total: ${{notional>0?(notional/eq).toFixed(2):0}}x">${{notional>0?LEVERAGE_EXCHANGE+'x':'—'}}</td>
         <td style="${{TDR}};color:${{pnlCol}};font-weight:bold;font-size:13px">${{pnl>=0?'+':''}}${{pnl.toFixed(2)}}%</td>

@@ -132,6 +132,29 @@ def _read_vol_mult():
     except: return 1.0
 
 _M2_ASSETS_SET = frozenset({'XAU','XAG','WTI','HG','NG','PL'})
+# Simbolos M2 sin perpetuo real en Binance -- usar SOLO para bloquear LIVE,
+# nunca para el gate de correlacion cross-motor (ese usa _M2_ASSETS_SET,
+# que sigue siendo "es un activo del Motor 2" independiente de si puede ir LIVE).
+# Confirmado 2026-06-23: los 6 commodities de SIGMA ya tienen perpetuo USDT en
+# Binance (XAU,XAG,HG->COPPER,NG->NATGAS,WTI->CL,PL->XPT) -- queda vacio a
+# proposito como punto de extension si Binance deslista alguno mas adelante.
+_M2_NO_BINANCE_PAIR = frozenset()
+
+def _model_json_path(sym, tf, strategy):
+    """Ruta del JSON de modelo en /opt/sigma/models/{tf}/. Los modelos M1 se
+    nombran '{sym}_{strategy}.json' pero los de M2 quedaron con el legacy
+    '{sym}usd_{strategy}.json' (xauusd_, xagusd_, hgusd_, ngusd_, plusd_,
+    wtiusd_) -- por eso el gate de robustez nunca encontraba archivo para
+    M2 y los 19 champions de commodities quedaban "sin dato" (fail-safe a
+    PAPER) aunque sus datos de walk-forward/Monte Carlo ya existian.
+    Encontrado y corregido 2026-06-23 al habilitar M2 para LIVE."""
+    base = f'/opt/sigma/models/{tf}/{sym.lower()}_{strategy}.json'
+    if _os.path.exists(base):
+        return base
+    legacy = f'/opt/sigma/models/{tf}/{sym.lower()}usd_{strategy}.json'
+    if _os.path.exists(legacy):
+        return legacy
+    return base
 
 def _check_model_cb(slot):
     try:
@@ -1408,8 +1431,28 @@ def _vol_targeted_kelly(sym, kelly_base, regime="NEUTRAL"):
 def _execute_trade(sym, tf, direction, price, sl, tp,
                    strategy='', grade='B', wr=50.0, cagr=0.0, kelly_pct=2.2):
     """Wrapper paper/live segun LIVE_EXECUTION. SL/TP como ordenes reales cuando LIVE_MODE=True.
-    M2 (commodities) nunca intenta live -- Binance Futures no tiene esos pares."""
-    if LIVE_EXECUTION and sym not in _M2_ASSETS_SET:
+    M2 (commodities): desde 2026-06-23 los 6 tienen perpetuo real en Binance,
+    ver _M2_NO_BINANCE_PAIR -- ya no se bloquean en bloque."""
+    if LIVE_EXECUTION and sym not in _M2_NO_BINANCE_PAIR:
+        # Robustness gate: solo PASS_LIVE arriesga capital real. PAPER_ONLY/BLOCKED
+        # (ver utils/robustness.py: "nada de overfit pasa a live") solo reducian Kelly
+        # antes de este fix, pero igual llegaban a Binance -- fail-safe si no se puede
+        # verificar (modelo sin archivo de robustness todavia).
+        try:
+            import json as _json_rg
+            from utils.robustness import robustness_score as _robust_score_rg
+            _fp_rg = _model_json_path(sym, tf, strategy)
+            _d_rg  = _json_rg.load(open(_fp_rg))
+            _rg    = _robust_score_rg(_d_rg)
+            if _rg.get('action') != 'PASS_LIVE':
+                print(f'[ROBUSTNESS GATE] {sym}/{tf}/{strategy} action={_rg.get("action")} '
+                      f'gates={_rg.get("gates_failed")} -> forzado a PAPER (no LIVE)', flush=True)
+                return open_trade(sym, tf, direction, price, sl, tp, strategy,
+                                  paper=True, grade=grade, wr=wr, cagr=cagr, kelly_pct=kelly_pct)
+        except Exception as _e_rg:
+            print(f'[ROBUSTNESS GATE] {sym}/{tf}/{strategy} check failed ({_e_rg}) -> fail-safe PAPER', flush=True)
+            return open_trade(sym, tf, direction, price, sl, tp, strategy,
+                              paper=True, grade=grade, wr=wr, cagr=cagr, kelly_pct=kelly_pct)
         try:
             import sys as _sys
             _sys.path.insert(0, str(BASE))
@@ -1426,10 +1469,67 @@ def _execute_trade(sym, tf, direction, price, sl, tp,
                       paper=True, grade=grade, wr=wr, cagr=cagr, kelly_pct=kelly_pct)
 
 
+def _execute_close(sym, tf, fallback_price, reason):
+    """Wrapper paper/live para cierres -- mismo orden de argumentos que close_trade()
+    (sym, tf, exit_price, reason) para poder usarse como reemplazo directo en cualquier
+    call-site, incluido el close_fn que recibe smart_exit.run_smart_exit().
+
+    Si el trade abierto es LIVE, cierra de verdad en Binance ANTES de tocar el libro y
+    usa el fill/equity reales devueltos -- nunca solo bookkeeping con un precio adivinado.
+
+    Bug que motivo esto (2026-06-23): nada llamaba a execute_exit()/closing real -- los
+    cierres de trades LIVE eran puro bookkeeping local (close_trade), sin verificar contra
+    Binance. Ademas, smart_exit.check_trailing() mueve el SL a break-even solo en el JSON
+    local, nunca en la orden real de Binance -- cuando el precio toco ese SL ajustado
+    (62395.5, mas cerca que el SL original 63150.9), el bot creyo "SL_HIT" y lo marco
+    cerrado, pero la orden real en Binance seguia en el nivel viejo y nunca se ejecuto.
+    La posicion real siguio abierta, duplicada con la siguiente entrada, sin rastrear.
+
+    Seguro de llamar desde dentro de check_auto_close (que tiene _TRADE_LOCK tomado):
+    close_live_position() solo habla con Binance, nunca hace loopback HTTP hacia este
+    mismo proceso, así que no hay riesgo de deadlock con el RLock."""
+    state = _load_trades()
+    trade = state.get('open', {}).get(f'{sym}_{tf}', {})
+    if trade.get('mode') == 'LIVE' and sym not in _M2_NO_BINANCE_PAIR:
+        try:
+            import sys as _sys
+            _sys.path.insert(0, str(BASE))
+            from engine.live.live_executor import close_live_position as _close_live_fn
+            _r = _close_live_fn(sym, tf, reason)
+            if _r:
+                return close_trade(sym, tf, _r['exit_price'], reason,
+                                   contracts=_r.get('contracts'), real_equity=_r.get('real_equity'))
+            print(f'[EXECUTE_CLOSE] {sym}/{tf} sin posicion real en Binance '
+                  f'(ya cerro por su propia orden SL/TP, o nunca abrio) -- bookkeeping con precio local', flush=True)
+        except Exception as _ecx:
+            print(f'[EXECUTE_CLOSE ERROR] {sym}/{tf}: {_ecx} -- fallback bookkeeping local', flush=True)
+    return close_trade(sym, tf, fallback_price, reason)
+
+
+def _update_live_sl(sym, tf, new_sl, direction):
+    """Wrapper para smart_exit: cuando mueve el SL a break-even, replica el
+    cambio en la orden real de Binance (antes solo se guardaba en el JSON
+    local -- ver _execute_close() para la historia completa del bug).
+    Best-effort: si falla, no aborta nada -- _execute_close ya garantiza que
+    cualquier cierre futuro verifica contra Binance en vez de confiar en el
+    SL local, asi que un fallo aqui no puede volver a generar un fantasma."""
+    state = _load_trades()
+    trade = state.get('open', {}).get(f'{sym}_{tf}', {})
+    if trade.get('mode') != 'LIVE' or sym in _M2_NO_BINANCE_PAIR:
+        return
+    try:
+        import sys as _sys
+        _sys.path.insert(0, str(BASE))
+        from engine.live.live_executor import update_live_sl as _update_sl_fn
+        _update_sl_fn(sym, tf, new_sl, direction)
+    except Exception as _eus:
+        print(f'[UPDATE_LIVE_SL ERROR] {sym}/{tf}: {_eus}', flush=True)
+
+
 @_locked_trade_op
 def open_trade(sym, tf, direction, price, sl, tp, strategy='',
 
-               paper=False, grade='B', wr=50.0, cagr=0.0, kelly_pct=2.2):
+               paper=False, grade='B', wr=50.0, cagr=0.0, kelly_pct=2.2, contracts=None):
 
     """Abre un nuevo trade y aplica guardas de riesgo."""
 
@@ -1490,6 +1590,8 @@ def open_trade(sym, tf, direction, price, sl, tp, strategy='',
         'mode': 'PAPER' if paper else 'LIVE',
 
         'opened_at': now, 'status': 'open',
+
+        'live_contracts': contracts,
 
     }
 
@@ -2765,7 +2867,7 @@ def check_auto_close(sym, tf, current_price):
 
     if hit:
         reason = 'TRAIL_HIT' if trade.get('trail_active') else hit
-        return close_trade(sym, tf, current_price, reason)
+        return _execute_close(sym, tf, current_price, reason)
     return None
 @_locked_trade_op
 def is_blocked(sym, tf):
@@ -3290,8 +3392,17 @@ def _compute_signals():
         # NOTA: es 'long' -- hoy sigue en CONDICIONAL por el gate de regimen BEAR, no
         # por CAGR (eso ya esta resuelto). Mismo principio que XAU en _DD_OVERRIDE_ACTIVAR:
         # no se extiende el override al gate de regimen. Activa solo si el regimen cambia.
+        # 2026-06-23: 2 overrides mas, mismo criterio (deficit de CAGR chico, WR/DD
+        # fuertes, muestra OOS suficiente >=20 trades) -- analisis pedido por el usuario
+        # para destrabar campeones de M2 atascados en NO_ACTIVAR:
+        # NG/1d zscore_rich_short: CAGR 5.8% (deficit ~27%), WR 71.4%, DD -11.8%, 21 trades.
+        # HG/1d pin_bar: CAGR 3.2% (deficit ~60%, el mas grande aprobado hasta ahora), pero
+        # WR 75% y DD -11.2% son los mas fuertes de los dos -- el Kelly sizing amortigua el
+        # edge delgado igual que en los casos anteriores.
         _CAGR_OVERRIDE_ACTIVAR = {
             ('XAG', '1d', 'dmi_trend', 'long'),
+            ('NG', '1d', 'zscore_rich_short', 'short'),
+            ('HG', '1d', 'pin_bar', 'long'),
         }
         _cov_sym = str(m.get('_symbol','')).replace('/USDT','').replace('/USD','').upper()
         _cov_key = (_cov_sym, str(m.get('_tf','')), str(m.get('_strategy','')), mtype)
@@ -4009,7 +4120,8 @@ def _compute_signals():
 
         from smart_exit import run_smart_exit as _smart_exit
 
-        _smart_exit(_current_prices, regime, close_trade, _load_trades, _save_trades, _TRADE_LOCK)
+        _smart_exit(_current_prices, regime, _execute_close, _load_trades, _save_trades, _TRADE_LOCK,
+                   update_sl_fn=_update_live_sl)
 
     except Exception as _se_err:
 
@@ -4194,19 +4306,19 @@ def _compute_signals():
 
                             try:
 
-                                if sym in ('XAU', 'XAG'):
+                                # Precio real de Binance para TODOS los simbolos (incluido M2,
+                                # que desde 2026-06-23 tiene perpetuo real -- ver _SYM_TICKER_MAP
+                                # en live_executor.py). Antes XAU/XAG usaban yfinance GC=F para
+                                # ambos (bug: XAG debia ser SI=F), y HG/NG/WTI/PL fallaban
+                                # silenciosamente a precio de cierre de vela por ticker mal armado.
 
-                                    import yfinance as _yf_p
+                                import urllib.request as _ur_e, json as _j_e
 
-                                    price = round(float(_yf_p.Ticker('GC=F').fast_info.last_price), 4)
+                                _bsym_e = {'HG':'COPPER', 'NG':'NATGAS', 'WTI':'CL', 'PL':'XPT'}.get(sym, sym)
 
-                                else:
+                                _url_e = f'https://fapi.binance.com/fapi/v1/ticker/price?symbol={_bsym_e}USDT'
 
-                                    import urllib.request as _ur_e, json as _j_e
-
-                                    _url_e = f'https://fapi.binance.com/fapi/v1/ticker/price?symbol={sym}USDT'
-
-                                    price  = round(float(_j_e.loads(_ur_e.urlopen(_url_e, timeout=3).read())['price']), 4)
+                                price  = round(float(_j_e.loads(_ur_e.urlopen(_url_e, timeout=3).read())['price']), 4)
 
                             except:
 
@@ -4271,7 +4383,7 @@ def _compute_signals():
 
                     _rg_sym = reg_per_asset.get(sym, regime)
 
-                    if (_rg_sym=='BEAR' and open_t['direction']=='long') or                        (_rg_sym=='BULL' and open_t['direction']=='short'): close_trade(sym, tf, price, 'REGIME_CHANGE')
+                    if (_rg_sym=='BEAR' and open_t['direction']=='long') or                        (_rg_sym=='BULL' and open_t['direction']=='short'): _execute_close(sym, tf, price, 'REGIME_CHANGE')
 
                 # Circuit breaker + abrir nuevo trade
 
@@ -5479,7 +5591,7 @@ def _compute_signals():
 
             _strat_r = _rmodel.get('strategy','')
 
-            _fp_r = '/opt/sigma/models/' + _tf_r + '/' + _sym_r.lower() + '_' + _strat_r + '.json'
+            _fp_r = _model_json_path(_sym_r, _tf_r, _strat_r)
 
             if not _os_rb.path.exists(_fp_r):
 
@@ -8341,27 +8453,39 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     import os as _os_mc
                     total = len(syms) * len(tfs) * 2
                     filled = 0
+                    active = []
                     for s in syms:
                         for tf in tfs:
                             td = f'/opt/sigma/models/{tf}'
                             if not _os_mc.path.isdir(td): continue
-                            has_long  = bool([f for f in _mg.glob(f'{td}/{s.lower()}_*.json') if 'short' not in _os_mc.path.basename(f)])
-                            has_short = bool(_mg.glob(f'{td}/{s.lower()}_*short*.json'))
-                            if has_long:  filled += 1
-                            if has_short: filled += 1
-                    return total, filled
+                            # los modelos de commodities se guardan como '{sym}usd_*.json'
+                            # (xauusd_, xagusd_, wtiusd_...) mientras que crypto usa el
+                            # simbolo pelado (btc_, eth_) -- hay que matchear ambos patrones
+                            files = (_mg.glob(f'{td}/{s.lower()}_*.json') +
+                                     _mg.glob(f'{td}/{s.lower()}usd_*.json'))
+                            has_long  = bool([f for f in files if 'short' not in _os_mc.path.basename(f)])
+                            has_short = bool([f for f in files if 'short' in _os_mc.path.basename(f)])
+                            if has_long:
+                                filled += 1
+                                active.append(f'{s}/{tf}/long')
+                            if has_short:
+                                filled += 1
+                                active.append(f'{s}/{tf}/short')
+                    return total, filled, active
 
-                m1_t, m1_f = _motor_coverage(['BTC','ETH','SOL','BNB','LTC'], ['5m','15m','1h','4h'])
-                m2_t, m2_f = _motor_coverage(['XAU','XAG','WTI','HG','NG','PL'], ['1d','4h','1h','15m'])
+                m1_t, m1_f, m1_active = _motor_coverage(['BTC','ETH','SOL','BNB','LTC'], ['5m','15m','1h','4h'])
+                m2_t, m2_f, m2_active = _motor_coverage(['XAU','XAG','WTI','HG','NG','PL'], ['1d','4h','1h','15m'])
                 _send_json(self, {
                     'motor1': {'name':'Crypto','assets':['BTC','ETH','SOL','BNB','LTC'],
                                'timeframes':['5m','15m','1h','4h'],
                                'total_slots':m1_t,'filled_slots':m1_f,
-                               'coverage_pct':round(100*m1_f/m1_t,1) if m1_t else 0},
+                               'coverage_pct':round(100*m1_f/m1_t,1) if m1_t else 0,
+                               'active_slots':m1_active},
                     'motor2': {'name':'SIGMA MACRO','assets':['XAU','XAG','WTI','HG','NG','PL'],
                                'timeframes':['1d','4h','1h','15m'],
                                'total_slots':m2_t,'filled_slots':m2_f,
-                               'coverage_pct':round(100*m2_f/m2_t,1) if m2_t else 0},
+                               'coverage_pct':round(100*m2_f/m2_t,1) if m2_t else 0,
+                               'active_slots':m2_active},
                     'total': {'slots':m1_t+m2_t,'filled':m1_f+m2_f,
                               'coverage_pct':round(100*(m1_f+m2_f)/(m1_t+m2_t),1) if (m1_t+m2_t) else 0},
                 })
@@ -8828,7 +8952,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                           body['entry'], body['sl'], body['tp'], body.get('strategy',''),
                           paper=body.get('paper', False), grade=body.get('grade','B'),
                           wr=body.get('wr', 50.0), cagr=body.get('cagr', 0.0),
-                          kelly_pct=body.get('kelly_pct', 2.2))
+                          kelly_pct=body.get('kelly_pct', 2.2), contracts=body.get('contracts'))
 
             _send_json(self, {'ok': True, 'trade': t})
 
@@ -8842,8 +8966,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
             body = json.loads(self.rfile.read(length) or b'{}')
 
-            t = close_trade(body['sym'], body['tf'], body.get('exit_price', 0), body.get('reason','MANUAL'),
-                            contracts=body.get('contracts'), real_equity=body.get('real_equity'))
+            # Si el caller YA hizo el cierre real (p.ej. execute_exit() llamando de
+            # vuelta con contracts/real_equity reales), no repetir -- solo bookkeeping.
+            # Si no, y el trade abierto es LIVE (p.ej. boton manual del dashboard),
+            # cerrar de verdad en Binance primero -- ver _execute_close().
+            _already_real = body.get('contracts') is not None and body.get('real_equity') is not None
+            if _already_real:
+                t = close_trade(body['sym'], body['tf'], body.get('exit_price', 0), body.get('reason','MANUAL'),
+                                contracts=body.get('contracts'), real_equity=body.get('real_equity'))
+            else:
+                t = _execute_close(body['sym'], body['tf'], body.get('exit_price', 0), body.get('reason','MANUAL'))
 
             _send_json(self, {'ok': True, 'trade': t})
 
@@ -9148,16 +9280,27 @@ def _watch_open_trades():
                 try:
 
                     _M2_YF = {'XAU':'GC=F','XAG':'SI=F','HG':'HG=F','NG':'NG=F','WTI':'CL=F','PL':'PL=F'}
+                    # Mismo mapeo que _SYM_TICKER_MAP en live_executor.py -- XAU/XAG
+                    # calzan 1:1 con Binance, el resto usa otro ticker (COPPER/NATGAS/CL/XPT).
+                    _M2_BINANCE_TICKER = {'HG':'COPPER', 'NG':'NATGAS', 'WTI':'CL', 'PL':'XPT'}
 
-                    if sym in _M2_YF:
+                    if sym in _M2_YF and tr.get('mode') != 'LIVE':
 
+                        # PAPER en M2: yfinance para ser consistente con la fuente de
+                        # datos del backtest/señal (no necesariamente el mismo precio
+                        # que el perpetuo de Binance para el mismo commodity).
                         import yfinance as _yf_w
 
                         cp = float(_yf_w.Ticker(_M2_YF[sym]).fast_info.last_price)
 
                     else:
 
-                        url = f'https://fapi.binance.com/fapi/v1/ticker/price?symbol={sym}USDT'
+                        # LIVE (cualquier sym, incluido M2 desde 2026-06-23): precio real
+                        # de Binance -- el mismo feed que dispara las ordenes SL/TP reales.
+                        # Usar otro feed aqui repetiria el bug fantasma de BTC (2026-06-23).
+                        _bsym = _M2_BINANCE_TICKER.get(sym, sym)
+
+                        url = f'https://fapi.binance.com/fapi/v1/ticker/price?symbol={_bsym}USDT'
 
                         cp  = float(_jw.loads(_ur.urlopen(url, timeout=5).read())['price'])
 
@@ -9512,7 +9655,9 @@ def _proactive_trade_opener():
 
                 try:
 
-                    url3 = f"https://fapi.binance.com/fapi/v1/ticker/price?symbol={sig['sym']}USDT"
+                    _bsym3 = {'HG':'COPPER', 'NG':'NATGAS', 'WTI':'CL', 'PL':'XPT'}.get(sig['sym'], sig['sym'])
+
+                    url3 = f"https://fapi.binance.com/fapi/v1/ticker/price?symbol={_bsym3}USDT"
 
                     lp   = float(_jw2.loads(_ur2.urlopen(url3, timeout=5).read())['price'])
 

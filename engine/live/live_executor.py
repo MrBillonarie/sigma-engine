@@ -95,7 +95,15 @@ def _get_equity():
         _log(f"Error fetch balance: {e}")
         return 0
 
+# Algunos commodities cotizan en Binance Futures con un ticker distinto al
+# usado internamente en SIGMA (HG/NG/WTI/PL son los tickers COMEX/NYMEX o
+# nombre largo; Binance usa COPPER/NATGAS/CL/XPT). XAU/XAG si calzan 1:1.
+# Confirmado 2026-06-23: los 6 commodities de SIGMA ya tienen perpetuo USDT
+# real en Binance (CL=WTI lanzado 2026-04-01 con 100x leverage).
+_SYM_TICKER_MAP = {'HG': 'COPPER', 'NG': 'NATGAS', 'WTI': 'CL', 'PL': 'XPT'}
+
 def _binance_symbol(sym):
+    sym = _SYM_TICKER_MAP.get(sym, sym)
     return sym.replace('USDT', '') + '/USDT:USDT'
 
 # -- Seguridad pre-trade ------------------------------------------------------
@@ -268,12 +276,15 @@ def _record_trade(endpoint, payload):
     return None
 
 
-def _api_open_trade(sym, tf, direction, price, sl, tp, strategy, paper, grade, wr, cagr, kelly_pct):
-    return _record_trade('/api/trades/open', {
+def _api_open_trade(sym, tf, direction, price, sl, tp, strategy, paper, grade, wr, cagr, kelly_pct, contracts=None):
+    payload = {
         'sym': sym, 'tf': tf, 'direction': direction,
         'entry': price, 'sl': sl, 'tp': tp, 'strategy': strategy,
         'paper': paper, 'grade': grade, 'wr': wr, 'cagr': cagr, 'kelly_pct': kelly_pct,
-    })
+    }
+    if contracts is not None:
+        payload['contracts'] = contracts
+    return _record_trade('/api/trades/open', payload)
 
 
 def _api_close_trade(sym, tf, exit_price, reason, contracts=None, real_equity=None):
@@ -423,18 +434,150 @@ def execute_entry(sym, tf, direction, price, sl, tp,
     except Exception as e:
         _log(f"WARNING TP placement failed: {e} — SL activo, posicion protegida")
 
-    # Registrar la posicion real en trade_state.json para tracking/reconcile
+    # Registrar la posicion real en trade_state.json para tracking/reconcile.
+    # contracts real (no el kelly/equity simulado) -- el dashboard lo usa para
+    # mostrar notional/margen reales en vez del notional fantasma del paper.
     _rec = _api_open_trade(sym, tf, direction, fill, sl, tp, strategy,
-                           False, grade, wr, cagr, kelly_pct)
+                           False, grade, wr, cagr, kelly_pct, contracts=contracts)
     if _rec is None:
         _log(f"ALERTA: posicion LIVE {sym}/{tf} abierta en Binance pero el registro en "
              f"trade_state.json FALLO -- revisar manualmente, reconcile() no la vera")
     return True
 
 # -- Exit ---------------------------------------------------------------------
+def update_live_sl(sym, tf, new_sl, direction):
+    """Reemplaza la orden STOP_MARKET real en Binance por una nueva en new_sl.
+    Usado por smart_exit.check_trailing() cuando mueve el SL a break-even --
+    antes ese movimiento solo se guardaba en trade_state.json, nunca en la
+    orden real, asi que la posicion quedaba protegida por el SL viejo (mas
+    lejano) mientras el bot creia que estaba protegida por el nuevo (mas
+    cerca) -- causa raiz del cierre fantasma de BTC 2026-06-23.
+
+    Solo toca la orden STOP_MARKET (deja el TAKE_PROFIT_MARKET intacto).
+    Si no encuentra una STOP_MARKET real para el symbol (trade es PAPER, o
+    ya se cerro), no hace nada y retorna False -- check_auto_close/
+    _execute_close ya cubren ese caso por su lado."""
+    ex = _get_exchange()
+    if not ex:
+        return False
+    symbol = _binance_symbol(sym)
+
+    try:
+        mkt_id = ex.market(symbol)['id']
+    except Exception as e:
+        _log(f"ERROR update_live_sl market lookup {symbol}: {e}")
+        return False
+
+    try:
+        orders = ex.fapiPrivateGetOpenAlgoOrders()
+    except Exception as e:
+        _log(f"WARNING update_live_sl: no se pudo listar ordenes {symbol}: {e}")
+        return False
+
+    sl_orders = [o for o in orders if o.get('symbol') == mkt_id and o.get('orderType') == 'STOP_MARKET']
+    if not sl_orders:
+        return False
+
+    positions = ex.fetch_positions([symbol])
+    pos = next((p for p in positions if float(p.get('contracts', 0) or 0) > 0), None)
+    if not pos:
+        return False
+    contracts  = float(pos['contracts'])
+    close_side = 'sell' if direction == 'long' else 'buy'
+
+    for o in sl_orders:
+        try:
+            ex.fapiPrivateDeleteAlgoOrder({'algoId': o['algoId']})
+        except Exception as e:
+            _log(f"WARNING update_live_sl: cancel fallo algoId={o.get('algoId')}: {e}")
+
+    try:
+        ts = int(time.time())
+        ex.create_order(symbol, 'stop_market', close_side, contracts,
+                        params={'stopPrice': round(new_sl, 4), 'reduceOnly': True,
+                                'newClientOrderId': f"sigma_{sym}_{tf}_{ts}_sl_be"})
+        _log(f"SL movido a break-even @ {new_sl:.4f} ({symbol})")
+        return True
+    except Exception as e:
+        _log(f"ERROR update_live_sl placement {symbol}: {e}")
+        return False
+
+
+def close_live_position(sym, tf, reason='MANUAL'):
+    """Cierra de verdad la posicion en Binance (cancela ordenes resting, market-close,
+    lee balance real). Retorna {'exit_price','contracts','real_equity'} o None si no
+    hay posicion real (ya cerro por su propia orden SL/TP resting, o nunca abrio).
+
+    A proposito NO hace el bookkeeping (no llama _api_close_trade / HTTP) -- pensado
+    para llamarse IN-PROCESS desde web_server.py mientras _TRADE_LOCK puede estar
+    tomado por el caller (check_auto_close). Un loopback HTTP ahi adentro causaria
+    deadlock (el request handler necesitaria el mismo RLock que el thread ya tiene).
+    El caller hace el bookkeeping llamando close_trade() directo con estos datos.
+
+    Bug que motivo esto (2026-06-23): execute_exit() existia pero nunca se llamaba
+    desde ningun lado -- los cierres LIVE eran puro bookkeeping local, sin verificar
+    contra Binance. Una posicion BTC quedo registrada como cerrada por SL_HIT sin que
+    Binance ejecutara ningun cierre real -- quedo abierta y duplicada por semanas."""
+    ex = _get_exchange()
+    if not ex:
+        return None
+    symbol = _binance_symbol(sym)
+
+    # Cancelar SL/TP pendientes -- cancel_all_orders normal NO cubre algo/conditional
+    # orders (STOP_MARKET/TAKE_PROFIT_MARKET con reduceOnly viven en otro endpoint desde
+    # 2026; confirmado con trade real 2026-06-17). Sin esto quedan huerfanas y podrian
+    # interactuar con la siguiente posicion que abra en el mismo symbol.
+    try:
+        ex.cancel_all_orders(symbol)
+    except Exception:
+        pass
+    try:
+        mkt_id = ex.market(symbol)['id']
+        ex.fapiPrivateDeleteAlgoOpenOrders({'symbol': mkt_id})
+    except Exception as e:
+        _log(f"WARNING cancel algo orders failed {symbol}: {e}")
+
+    positions = ex.fetch_positions([symbol])
+    pos = next((p for p in positions if float(p.get('contracts', 0)) > 0), None)
+    if not pos:
+        _log(f"No hay posicion abierta en {symbol}")
+        return None
+
+    contracts = float(pos['contracts'])
+    side      = 'sell' if pos['side'] == 'long' else 'buy'
+
+    if DRY_RUN:
+        _log(f"DRY_RUN — CLOSE {side.upper()} {contracts} {symbol}")
+        return {'exit_price': float(pos.get('markPrice') or 0), 'contracts': contracts, 'real_equity': None}
+
+    close_ts = int(time.time())
+    order      = ex.create_market_order(symbol, side, contracts,
+                                         params={'reduceOnly': True,
+                                                 'newClientOrderId': f"sigma_{sym}_{tf}_{close_ts}_close"})
+    exit_price = order.get('average', 0)
+    _log(f"CLOSED @ {exit_price:.4f}")
+
+    # Balance real post-cierre -- usado para registrar pnl/equity reales,
+    # no la formula de paper trading (que asume equity simulada de $10k).
+    real_equity = None
+    try:
+        bal = ex.fetch_balance()
+        real_equity = float(bal.get('USDT', {}).get('total', 0) or 0)
+    except Exception as e:
+        _log(f"WARNING: no se pudo leer balance real post-close: {e}")
+
+    return {'exit_price': exit_price, 'contracts': contracts, 'real_equity': real_equity}
+
+
 def execute_exit(sym, tf, reason='MANUAL'):
     """
-    Cierra una posicion. Interfaz unica para paper y live.
+    Cierra una posicion. Interfaz unica para paper y live. Hace tambien el
+    bookkeeping via API HTTP (_api_close_trade) -- pensado para llamarse desde
+    FUERA del proceso web_server.py (scripts externos, comandos manuales).
+
+    Si se llama desde DENTRO de web_server.py mientras _TRADE_LOCK puede estar
+    tomado (p.ej. check_auto_close), usar close_live_position() en su lugar
+    para evitar deadlock por el loopback HTTP -- ver docstring ahi.
     """
     _log(f"[{'PAPER' if not LIVE_MODE else 'LIVE'}] EXIT {sym} {tf} [{reason}]")
 
@@ -450,55 +593,12 @@ def execute_exit(sym, tf, reason='MANUAL'):
 
     # Live
     try:
-        ex     = _get_exchange()
-        if not ex: return False
-        symbol = _binance_symbol(sym)
+        _r = close_live_position(sym, tf, reason)
+        if not _r:
+            return False
 
-        # Cancelar SL/TP pendientes -- cancel_all_orders normal NO cubre algo/conditional
-        # orders (STOP_MARKET/TAKE_PROFIT_MARKET con reduceOnly viven en otro endpoint desde
-        # 2026; confirmado con trade real 2026-06-17). Sin esto quedan huerfanas y podrian
-        # interactuar con la siguiente posicion que abra en el mismo symbol.
-        try:
-            ex.cancel_all_orders(symbol)
-        except:
-            pass
-        try:
-            mkt_id = ex.market(symbol)['id']
-            ex.fapiPrivateDeleteAlgoOpenOrders({'symbol': mkt_id})
-        except Exception as e:
-            _log(f"WARNING cancel algo orders failed {symbol}: {e}")
-
-        # Obtener posicion
-        positions = ex.fetch_positions([symbol])
-        pos = next((p for p in positions if float(p.get('contracts', 0)) > 0), None)
-        if not pos:
-            _log(f"No hay posicion abierta en {symbol}"); return False
-
-        contracts = float(pos['contracts'])
-        side      = 'sell' if pos['side'] == 'long' else 'buy'
-
-        if DRY_RUN:
-            _log(f"DRY_RUN — CLOSE {side.upper()} {contracts} {symbol}")
-            return True
-
-        close_ts = int(time.time())
-        order      = ex.create_market_order(symbol, side, contracts,
-                                             params={'reduceOnly': True,
-                                                     'newClientOrderId': f"sigma_{sym}_{tf}_{close_ts}_close"})
-        exit_price = order.get('average', 0)
-        _log(f"CLOSED @ {exit_price:.4f}")
-
-        # Balance real post-cierre -- usado para registrar pnl/equity reales,
-        # no la formula de paper trading (que asume equity simulada de $10k).
-        real_equity = None
-        try:
-            bal = ex.fetch_balance()
-            real_equity = float(bal.get('USDT', {}).get('total', 0) or 0)
-        except Exception as e:
-            _log(f"WARNING: no se pudo leer balance real post-close: {e}")
-
-        _rec = _api_close_trade(sym, tf, exit_price, reason,
-                                contracts=contracts, real_equity=real_equity)
+        _rec = _api_close_trade(sym, tf, _r['exit_price'], reason,
+                                contracts=_r['contracts'], real_equity=_r['real_equity'])
         if _rec is None:
             _log(f"ALERTA: posicion LIVE {sym}/{tf} cerrada en Binance pero el registro en "
                  f"trade_state.json FALLO -- revisar manualmente")
