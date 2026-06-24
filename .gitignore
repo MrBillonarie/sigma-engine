@@ -35,3 +35,8 @@ sigma_env/
 *.bak.*
 *.bak_*
 .DS_Store
+
+# Secrets -- nunca versionar (incidente 2026-06-24: API keys reales expuestas en historial)
+engine/config/secrets.json
+*.env
+.env
