@@ -2424,11 +2424,33 @@ def close_trade_per_model(sym, tf, strategy, exit_price, reason='AUTO'):
 
 
 @_locked_pm_op
+def _per_model_hours_open(ot):
+    """Horas que lleva abierto un trade per-model. opened_at es string local de
+    Chile sin tz (mismo formato que open_trade_per_model: _strftime_chile)."""
+    try:
+        from datetime import datetime as _dtpm
+        opened = _dtpm.strptime(ot.get('opened_at', ''), '%Y-%m-%d %H:%M:%S')
+        opened = opened.replace(tzinfo=_TZ_CL)
+        return (_now_chile() - opened).total_seconds() / 3600
+    except Exception:
+        return 0
+
+
 def check_auto_close_per_model(sym, tf, current_price):
 
-    """Verifica todos los modelos para sym/tf, cierra los que toquen SL/TP.
+    """Verifica todos los modelos para sym/tf, cierra los que toquen SL/TP o
+    excedan el time-limit por TF. Skipea trades marcados como _fake_test (no
+    contaminar historia real).
 
-    Skipea trades marcados como _fake_test (no contaminar historia real)."""
+    2026-06-25: a diferencia del trade "macro" (smart_exit.run_smart_exit,
+    que sí tiene time-limit adaptativo por TF), el paper trading per-model
+    nunca cerraba por tiempo -- un trade con SL/TP ancho podia quedar
+    abierto indefinidamente si el precio se movia lateral dentro de la
+    banda (encontrado: NG/4h y WTI/1h abiertos desde 2026-06-18 sin
+    resolver). Reusa el mismo MAX_TRADE_HOURS_BY_TF que smart_exit para
+    no tener dos umbrales distintos."""
+
+    from smart_exit import MAX_TRADE_HOURS_BY_TF as _PM_MAX_H
 
     state = _load_per_model()
 
@@ -2465,6 +2487,14 @@ def check_auto_close_per_model(sym, tf, current_price):
             if current_price >= sl:   hit = 'SL_HIT'
 
             elif current_price <= tp: hit = 'TP_HIT'
+
+        if not hit:
+
+            _max_h = _PM_MAX_H.get(tf.lower(), 96)
+
+            if _per_model_hours_open(ot) >= _max_h:
+
+                hit = 'TIME_LIMIT'
 
         if hit:
 
