@@ -9423,13 +9423,26 @@ _funding_cache = {}  # sym → {value, ts}
 
 _FUNDING_MAX_AGE = 3600  # refresh cada 30min; el doble sin exito = no confiable
 
+# Universo que _refresh_funding() efectivamente trackea hoy (ver su loop mas
+# abajo). WTI/XAG/NG/PL/HG (Motor 2 ex-XAU) NUNCA se agregaron ahi pese a que
+# fapi.binance.com si tiene funding rate para sus perpetuos -- no son "datos
+# stale", son simplemente "nunca trackeados". El fail-safe de freshness solo
+# debe aplicar al universo que de verdad se intenta mantener fresco.
+_FUNDING_TRACKED_SYMS = ('BTC', 'ETH', 'SOL', 'BNB', 'LTC', 'XAU')
+
 def _funding_fresh(sym):
-    """False si nunca se obtuvo o si el ultimo fetch exitoso tiene mas de
-    _FUNDING_MAX_AGE segundos -- ej. fapi.binance.com bloqueado/caido para esta
-    IP por horas. 2026-06-24: el campo 'ts' se guardaba pero ningun consumidor
-    lo chequeaba, asi que tanto el funding gate normal como el kill-switch de
-    emergencia (Luna/FTX-like) seguian usando un valor stale como si fuera
-    fresco, sin avisar."""
+    """False si sym esta en el universo trackeado pero el ultimo fetch exitoso
+    tiene mas de _FUNDING_MAX_AGE segundos -- ej. fapi.binance.com
+    bloqueado/caido para esta IP por horas. 2026-06-24: el campo 'ts' se
+    guardaba pero ningun consumidor lo chequeaba, asi que tanto el funding
+    gate normal como el kill-switch de emergencia (Luna/FTX-like) seguian
+    usando un valor stale como si fuera fresco, sin avisar.
+    2026-06-25: el fix de arriba bloqueaba TODA senal de WTI/XAG/NG/PL/HG
+    porque nunca estan en _funding_cache -- no es staleness, es que jamas
+    se trackearon. Para esos simbolos no aplica el fail-safe (mismo
+    comportamiento neutral que tenian antes del fix de ayer)."""
+    if sym not in _FUNDING_TRACKED_SYMS:
+        return True
     ts = _funding_cache.get(sym, {}).get('ts', 0)
     return (time.time() - ts) <= _FUNDING_MAX_AGE
 
