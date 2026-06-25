@@ -1,0 +1,31 @@
+{
+  "motor_name": "SIGMA Futures Indices & Bonds (IBKR)",
+  "asset_class": "futures_index_and_rates",
+  "broker": "ibkr",
+  "auth_shared_module": "../_shared/ibkr_gateway.py",
+  "universe": ["MES", "MNQ", "MYM", "ZN", "ZB"],
+  "universe_notes": {
+    "MES": "Micro E-mini S&P 500 - mismo exposure que SPY pero con margen de futuro",
+    "MNQ": "Micro E-mini Nasdaq 100",
+    "MYM": "Micro E-mini Dow",
+    "ZN": "10-Year Treasury Note future",
+    "ZB": "30-Year Treasury Bond future"
+  },
+  "deferred_fase2": {
+    "DAX_FTSE_NIKKEI_IBOVESPA": "futuros internacionales (Trader 6 de la foto) - requieren margen multi-moneda, dejar para cuando el motor IBKR este ACTIVE en fase 1 (US-only)",
+    "DXY_DX1": "no se trae como posicion propia - ya es input de regimen en motor commodities/M2"
+  },
+  "data_source": "ibkr_live",
+  "exchange": "CME",
+  "timeframes": ["15m", "1h", "4h"],
+  "regime_detector": "vix_yield_curve_spy_ema200",
+  "commission_pct": 0.001,
+  "min_capital_alloc_pct": 0,
+  "max_capital_alloc_pct": 25,
+  "status": "SKELETON",
+  "warnings": [
+    "Usar SIEMPRE contratos micro (MES/MNQ/MYM), nunca full-size - a $10k de capital total el full-size satura el margen de un solo contrato",
+    "Fase 1 = solo CME US (mismo huso horario y moneda que el resto de IBKR). Fase 2 = internacionales, requiere mas capital y margen multi-moneda"
+  ],
+  "next_step": "implementar data_fetcher.py via ib_async + validar margen de micro-contratos en cuenta paper IBKR"
+}

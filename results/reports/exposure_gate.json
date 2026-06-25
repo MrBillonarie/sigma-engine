@@ -1,12 +1,12 @@
 {
-  "kelly_multiplier": 1.0,
-  "dd_current_pct": 0.0,
-  "dd_from_peak_pct": 0.0,
-  "dd_from_init_pct": 15.86,
-  "equity": 11586.15,
-  "peak_equity": 11586.15,
+  "kelly_multiplier": 0.902,
+  "dd_current_pct": -1.95,
+  "dd_from_peak_pct": -1.95,
+  "dd_from_init_pct": 16.33,
+  "equity": 11633.44,
+  "peak_equity": 11864.44,
   "initial_capital": 10000,
   "status": "NORMAL",
-  "note": "DD 0.0% (peak=0.0% init=15.9%) -> Kelly x1.00 [NORMAL]",
-  "computed_at": "2026-06-23T04:30:01.263373-04:00"
+  "note": "DD 1.9% (peak=-1.9% init=16.3%) -> Kelly x0.90 [NORMAL]",
+  "computed_at": "2026-06-25T12:00:01.267471-04:00"
 }

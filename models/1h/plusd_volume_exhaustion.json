@@ -59,17 +59,17 @@
   "m2_validation": {
     "status": "WARN",
     "reasons": [
-      "[WARN] IS_OOS_WARN: OOS/IS=0.44 — degradacion moderada"
+      "[WARN] IS_OOS_WARN: OOS/IS=0.44 \u2014 degradacion moderada"
     ],
-    "validated_at": "2026-06-22T19:30:01.757604-04:00"
+    "validated_at": "2026-06-25T12:00:01.583841-04:00"
   },
   "mc": {
-    "mc_cagr_p05": 10.5,
+    "mc_cagr_p05": -2.9,
     "mc_cagr_p50": 253.7,
     "mc_cagr_p95": 1188.9,
-    "mc_dd_p50": -40.2,
+    "mc_dd_p50": -39.7,
     "mc_dd_p95": -26.9,
-    "mc_confidence": 95.2,
+    "mc_confidence": 94.0,
     "mc_sims": 1000
   }
 }

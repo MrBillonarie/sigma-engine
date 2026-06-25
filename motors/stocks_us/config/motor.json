@@ -1,8 +1,14 @@
 {
-  "motor_name": "SIGMA Stocks US",
+  "motor_name": "SIGMA Equities & ETF (IBKR)",
   "asset_class": "equity_etf_us",
-  "universe": ["SPY", "QQQ", "IWM", "GLD", "TLT"],
-  "data_source": "ibkr_delayed",
+  "broker": "ibkr",
+  "auth_shared_module": "../_shared/ibkr_gateway.py",
+  "universe": ["SPY", "QQQ", "IWM", "GLD", "SLV", "TLT", "HYG", "TBT"],
+  "excluded_by_rule": {
+    "NVDA": "regla no-individual-stocks (idiosyncratic risk) - ver motors/README.md",
+    "AAPL": "regla no-individual-stocks (idiosyncratic risk) - ver motors/README.md"
+  },
+  "data_source": "ibkr_live",
   "exchange": "NYSEARCA",
   "timeframes": ["15m", "1h", "1d"],
   "regime_detector": "vix_yield_curve_spy_ema200",
@@ -10,5 +16,5 @@
   "min_capital_alloc_pct": 5,
   "max_capital_alloc_pct": 40,
   "status": "SKELETON",
-  "next_step": "implement universe.py + data_fetcher.py via IBKR delayed market data"
+  "next_step": "implementar data_fetcher.py via ib_async + validar ibkr_gateway.py en cuenta paper IBKR"
 }

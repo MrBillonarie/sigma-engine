@@ -1,11 +1,11 @@
 {
-  "n_studies_judged": 1820,
-  "n_stagnant": 1107,
-  "n_active": 713,
-  "pct_stagnant": 60.8,
-  "total_trials_in_judged_studies": 4230754,
-  "estimated_wasted_trials": 1155394,
-  "pct_wasted": 27.3,
+  "n_studies_judged": 1852,
+  "n_stagnant": 1197,
+  "n_active": 655,
+  "pct_stagnant": 64.6,
+  "total_trials_in_judged_studies": 4424631,
+  "estimated_wasted_trials": 1244581,
+  "pct_wasted": 28.1,
   "top_20_most_wasted": [
     {
       "study": "bnb_4h_fibonacci_retracement_short",
@@ -160,10 +160,10 @@
       "stagnant": true
     },
     {
-      "study": "btc_4h_keltner_trend_long",
+      "study": "bnb_1h_stoch_rsi_short",
       "status": "OK",
-      "n_trials": 7347,
-      "best_score": 0.1757,
+      "n_trials": 7381,
+      "best_score": 0.3493,
       "improvement_last_window": 0.0,
       "stagnant": true
     }

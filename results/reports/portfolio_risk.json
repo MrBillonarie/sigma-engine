@@ -1,40 +1,40 @@
 {
-  "computed_at": "2026-06-23 04:05",
-  "n_trades": 39,
+  "computed_at": "2026-06-25 12:05",
+  "n_trades": 44,
   "portfolio": {
-    "equity": 11586.15,
+    "equity": 11633.44,
     "initial": 10000,
-    "return_pct": 15.86,
-    "var_95_pct": -3.5549,
-    "cvar_95_pct": -5.2339,
+    "return_pct": 16.33,
+    "var_95_pct": -3.3291,
+    "cvar_95_pct": -4.3944,
     "var_99_pct": -5.2339,
     "max_dd_pct": -8.74,
     "max_losing_streak": 5
   },
   "concentration": {
-    "hhi": 0.2991,
-    "n_effective_assets": 3.34,
+    "hhi": 0.2924,
+    "n_effective_assets": 3.42,
     "ok": true,
     "assets": {
       "SOL": {
-        "n": 17,
-        "weight_pct": 43.6,
-        "wr": 58.8,
-        "total_pnl": 6.58,
-        "avg_pnl": 0.39,
+        "n": 18,
+        "weight_pct": 40.9,
+        "wr": 55.6,
+        "total_pnl": 5.3,
+        "avg_pnl": 0.29,
         "var_95": -5.2339
       },
       "BTC": {
-        "n": 11,
-        "weight_pct": 28.2,
-        "wr": 63.6,
-        "total_pnl": 2.8,
-        "avg_pnl": 0.25,
+        "n": 14,
+        "weight_pct": 31.8,
+        "wr": 64.3,
+        "total_pnl": 4.93,
+        "avg_pnl": 0.35,
         "var_95": -3.5549
       },
       "ETH": {
         "n": 6,
-        "weight_pct": 15.4,
+        "weight_pct": 13.6,
         "wr": 66.7,
         "total_pnl": 7.41,
         "avg_pnl": 1.23,
@@ -42,7 +42,7 @@
       },
       "HG": {
         "n": 2,
-        "weight_pct": 5.1,
+        "weight_pct": 4.5,
         "wr": 50.0,
         "total_pnl": 0.08,
         "avg_pnl": 0.04,
@@ -50,7 +50,7 @@
       },
       "PL": {
         "n": 1,
-        "weight_pct": 2.6,
+        "weight_pct": 2.3,
         "wr": 0.0,
         "total_pnl": -1.14,
         "avg_pnl": -1.14,
@@ -58,26 +58,34 @@
       },
       "LTC": {
         "n": 2,
-        "weight_pct": 5.1,
+        "weight_pct": 4.5,
         "wr": 50.0,
         "total_pnl": 2.79,
         "avg_pnl": 1.39,
         "var_95": -0.0549
+      },
+      "WTI": {
+        "n": 1,
+        "weight_pct": 2.3,
+        "wr": 0.0,
+        "total_pnl": -0.01,
+        "avg_pnl": -0.01,
+        "var_95": -0.0132
       }
     }
   },
   "direction_split": {
     "short": {
-      "n": 29,
-      "weight_pct": 74.4,
-      "wr": 62.1,
-      "total_pnl": 17.92
+      "n": 33,
+      "weight_pct": 75.0,
+      "wr": 60.6,
+      "total_pnl": 20.05
     },
     "long": {
-      "n": 10,
-      "weight_pct": 25.6,
-      "wr": 50.0,
-      "total_pnl": 0.58
+      "n": 11,
+      "weight_pct": 25.0,
+      "wr": 45.5,
+      "total_pnl": -0.7
     }
   },
   "correlations": {
@@ -86,110 +94,123 @@
       "SOL/1h/breakdown\u2194SOL/4h/momentum_short": 0.154,
       "SOL/1h/breakdown\u2194SOL/4h/supply_zone_rejection": -0.686,
       "SOL/1h/breakdown\u2194BTC/4h/three_candles_short": 0.207,
-      "SOL/1h/breakdown\u2194SOL/15m/regime_adaptive": -0.093,
+      "SOL/1h/breakdown\u2194SOL/15m/regime_adaptive": 0.065,
       "SOL/1h/breakdown\u2194ETH/15m/volatility_breakout": 0.997,
+      "SOL/1h/breakdown\u2194BTC/15m/dmi_bear": 0.572,
       "BTC/1h/momentum_short\u2194SOL/4h/momentum_short": 0.427,
       "BTC/1h/momentum_short\u2194SOL/4h/supply_zone_rejection": -0.075,
       "BTC/1h/momentum_short\u2194BTC/4h/three_candles_short": 0.59,
-      "BTC/1h/momentum_short\u2194SOL/15m/regime_adaptive": -0.682,
+      "BTC/1h/momentum_short\u2194SOL/15m/regime_adaptive": -0.035,
       "BTC/1h/momentum_short\u2194ETH/15m/volatility_breakout": -0.381,
+      "BTC/1h/momentum_short\u2194BTC/15m/dmi_bear": -0.393,
       "SOL/4h/momentum_short\u2194SOL/4h/supply_zone_rejection": 0.203,
       "SOL/4h/momentum_short\u2194BTC/4h/three_candles_short": -0.112,
-      "SOL/4h/momentum_short\u2194SOL/15m/regime_adaptive": -0.996,
+      "SOL/4h/momentum_short\u2194SOL/15m/regime_adaptive": -0.825,
       "SOL/4h/momentum_short\u2194ETH/15m/volatility_breakout": 0.231,
+      "SOL/4h/momentum_short\u2194BTC/15m/dmi_bear": -0.396,
       "SOL/4h/supply_zone_rejection\u2194BTC/4h/three_candles_short": -0.823,
-      "SOL/4h/supply_zone_rejection\u2194SOL/15m/regime_adaptive": -0.282,
+      "SOL/4h/supply_zone_rejection\u2194SOL/15m/regime_adaptive": -0.657,
       "SOL/4h/supply_zone_rejection\u2194ETH/15m/volatility_breakout": -0.644,
+      "SOL/4h/supply_zone_rejection\u2194BTC/15m/dmi_bear": -0.782,
+      "BTC/4h/three_candles_short\u2194SOL/15m/regime_adaptive": 0.651,
       "BTC/4h/three_candles_short\u2194ETH/15m/volatility_breakout": 0.172,
-      "SOL/15m/regime_adaptive\u2194ETH/15m/volatility_breakout": -0.168
+      "BTC/4h/three_candles_short\u2194BTC/15m/dmi_bear": 0.307,
+      "SOL/15m/regime_adaptive\u2194ETH/15m/volatility_breakout": -0.014,
+      "SOL/15m/regime_adaptive\u2194BTC/15m/dmi_bear": 0.535,
+      "ETH/15m/volatility_breakout\u2194BTC/15m/dmi_bear": 0.799
     },
     "high_pairs": {
       "SOL/1h/breakdown\u2194SOL/4h/supply_zone_rejection": -0.686,
       "SOL/1h/breakdown\u2194ETH/15m/volatility_breakout": 0.997,
+      "SOL/1h/breakdown\u2194BTC/15m/dmi_bear": 0.572,
       "BTC/1h/momentum_short\u2194BTC/4h/three_candles_short": 0.59,
-      "BTC/1h/momentum_short\u2194SOL/15m/regime_adaptive": -0.682,
-      "SOL/4h/momentum_short\u2194SOL/15m/regime_adaptive": -0.996,
+      "SOL/4h/momentum_short\u2194SOL/15m/regime_adaptive": -0.825,
       "SOL/4h/supply_zone_rejection\u2194BTC/4h/three_candles_short": -0.823,
-      "SOL/4h/supply_zone_rejection\u2194ETH/15m/volatility_breakout": -0.644
+      "SOL/4h/supply_zone_rejection\u2194SOL/15m/regime_adaptive": -0.657,
+      "SOL/4h/supply_zone_rejection\u2194ETH/15m/volatility_breakout": -0.644,
+      "SOL/4h/supply_zone_rejection\u2194BTC/15m/dmi_bear": -0.782,
+      "BTC/4h/three_candles_short\u2194SOL/15m/regime_adaptive": 0.651,
+      "SOL/15m/regime_adaptive\u2194BTC/15m/dmi_bear": 0.535,
+      "ETH/15m/volatility_breakout\u2194BTC/15m/dmi_bear": 0.799
     },
-    "n_high": 7
+    "n_high": 12
   },
   "diversification_factors": {
     "status": "OK",
-    "n_nominal_strategies": 7,
-    "effective_independent_bets": 3.08,
-    "diversification_ratio": 0.44,
-    "interpretation": "7 estrategias nominales diversifican como ~3.1 apuestas independientes"
+    "n_nominal_strategies": 8,
+    "effective_independent_bets": 3.2,
+    "diversification_ratio": 0.4,
+    "interpretation": "8 estrategias nominales diversifican como ~3.2 apuestas independientes"
   },
   "alpha_per_strategy": {
     "SOL/1h/breakdown": {
       "n": 6,
       "avg_pnl": 0.197,
-      "dir_avg": 0.058,
-      "alpha": 0.139,
+      "dir_avg": -0.063,
+      "alpha": 0.26,
       "positive_alpha": true
     },
     "BTC/1h/momentum_short": {
       "n": 5,
       "avg_pnl": -0.165,
-      "dir_avg": 0.618,
-      "alpha": -0.783,
+      "dir_avg": 0.608,
+      "alpha": -0.773,
       "positive_alpha": false
     },
     "SOL/4h/momentum_short": {
       "n": 4,
       "avg_pnl": 1.27,
-      "dir_avg": 0.618,
-      "alpha": 0.652,
+      "dir_avg": 0.608,
+      "alpha": 0.663,
       "positive_alpha": true
     },
     "SOL/4h/supply_zone_rejection": {
       "n": 4,
       "avg_pnl": -0.278,
-      "dir_avg": 0.058,
-      "alpha": -0.336,
+      "dir_avg": -0.063,
+      "alpha": -0.215,
       "positive_alpha": false
     },
     "BTC/4h/three_candles_short": {
       "n": 4,
       "avg_pnl": 0.725,
-      "dir_avg": 0.618,
-      "alpha": 0.107,
+      "dir_avg": 0.608,
+      "alpha": 0.117,
       "positive_alpha": true
     },
     "SOL/15m/regime_adaptive": {
-      "n": 3,
-      "avg_pnl": 0.477,
-      "dir_avg": 0.058,
-      "alpha": 0.419,
+      "n": 4,
+      "avg_pnl": 0.039,
+      "dir_avg": -0.063,
+      "alpha": 0.102,
       "positive_alpha": true
     },
     "ETH/15m/volatility_breakout": {
       "n": 4,
       "avg_pnl": 0.053,
-      "dir_avg": 0.058,
-      "alpha": -0.005,
-      "positive_alpha": false
+      "dir_avg": -0.063,
+      "alpha": 0.117,
+      "positive_alpha": true
     },
     "HG/1h/lower_lows": {
       "n": 2,
       "avg_pnl": 0.038,
-      "dir_avg": 0.058,
-      "alpha": -0.02,
-      "positive_alpha": false
+      "dir_avg": -0.063,
+      "alpha": 0.101,
+      "positive_alpha": true
     },
     "LTC/4h/bearish_rsi_divergence": {
       "n": 2,
       "avg_pnl": 1.393,
-      "dir_avg": 0.058,
-      "alpha": 1.335,
+      "dir_avg": -0.063,
+      "alpha": 1.456,
       "positive_alpha": true
     },
     "BTC/15m/dmi_bear": {
-      "n": 2,
-      "avg_pnl": 0.361,
-      "dir_avg": 0.058,
-      "alpha": 0.303,
+      "n": 5,
+      "avg_pnl": 0.572,
+      "dir_avg": -0.063,
+      "alpha": 0.636,
       "positive_alpha": true
     }
   },
@@ -198,43 +219,19 @@
       "btc_shock_pct": -10.0,
       "portfolio_pnl_pct": 0.0,
       "portfolio_pnl_usd": 0.0,
-      "positions": [
-        {
-          "sym": "WTI",
-          "tf": "1d",
-          "direction": "short",
-          "kelly_pct": 1.0,
-          "pnl_pct": 0.0
-        }
-      ]
+      "positions": []
     },
     "btc_-20pct": {
       "btc_shock_pct": -20.0,
       "portfolio_pnl_pct": 0.0,
       "portfolio_pnl_usd": 0.0,
-      "positions": [
-        {
-          "sym": "WTI",
-          "tf": "1d",
-          "direction": "short",
-          "kelly_pct": 1.0,
-          "pnl_pct": 0.0
-        }
-      ]
+      "positions": []
     },
     "btc_-30pct": {
       "btc_shock_pct": -30.0,
       "portfolio_pnl_pct": 0.0,
       "portfolio_pnl_usd": 0.0,
-      "positions": [
-        {
-          "sym": "WTI",
-          "tf": "1d",
-          "direction": "short",
-          "kelly_pct": 1.0,
-          "pnl_pct": 0.0
-        }
-      ]
+      "positions": []
     }
   }
 }

@@ -1,43 +1,5 @@
 {
-  "open": {
-    "WTI_1d": {
-      "sym": "WTI",
-      "tf": "1d",
-      "direction": "short",
-      "entry": 75.11,
-      "sl": 83.0545,
-      "tp": 67.6621,
-      "sl_dist_pct_at_open": 10.5772,
-      "strategy": "heikin_ashi_short",
-      "grade": "A+",
-      "wr": 81.1,
-      "cagr": 28.1,
-      "kelly_pct": 1.0,
-      "mode": "PAPER",
-      "opened_at": "2026-06-17 22:56:16.274000",
-      "status": "open",
-      "pnl_pct": 0.1938
-    },
-    "BTC_15m": {
-      "sym": "BTC",
-      "tf": "15m",
-      "direction": "short",
-      "entry": 62458.0,
-      "sl": 62395.542,
-      "tp": 61701.1737,
-      "sl_dist_pct_at_open": 1.1095,
-      "strategy": "dmi_bear",
-      "grade": "A",
-      "wr": 64.8,
-      "cagr": 40.4,
-      "kelly_pct": 1.21,
-      "mode": "LIVE",
-      "opened_at": "2026-06-23 04:20:39.052883",
-      "status": "open",
-      "pnl_pct": 0.7952,
-      "be_set": true
-    }
-  },
+  "open": {},
   "history": [
     {
       "sym": "SOL",
@@ -1217,6 +1179,158 @@
       "equity_after": 11586.15,
       "regime_at_close": "BEAR",
       "cooldown_seconds": 1800
+    },
+    {
+      "sym": "BTC",
+      "tf": "15m",
+      "direction": "short",
+      "entry": 62458.0,
+      "sl": 61333.3698,
+      "tp": 61701.1737,
+      "sl_dist_pct_at_open": 1.1095,
+      "strategy": "dmi_bear",
+      "grade": "A",
+      "wr": 64.8,
+      "cagr": 40.4,
+      "kelly_pct": 1.21,
+      "mode": "LIVE",
+      "opened_at": "2026-06-23 04:20:39.052883",
+      "status": "TRAIL_HIT",
+      "pnl_pct": 2.4019,
+      "be_set": true,
+      "trail_low_water": 60995.0,
+      "trail_active": true,
+      "exit_price": 60995.0,
+      "pnl_pct_raw": 2.3424,
+      "pnl_dollar": 278.2877,
+      "kelly_pct_used": 1.21,
+      "reason": "TRAIL_HIT",
+      "closed_at": "2026-06-24 11:23:59.085945",
+      "commission": 49.3812,
+      "funding": 0.0,
+      "equity_after": 11864.44,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 3600
+    },
+    {
+      "sym": "WTI",
+      "tf": "1d",
+      "direction": "short",
+      "entry": 75.11,
+      "sl": 83.0545,
+      "tp": 67.6621,
+      "sl_dist_pct_at_open": 10.5772,
+      "strategy": "heikin_ashi_short",
+      "grade": "A+",
+      "wr": 81.1,
+      "cagr": 28.1,
+      "kelly_pct": 1.0,
+      "mode": "PAPER",
+      "opened_at": "2026-06-17 22:56:16.274000",
+      "status": "STALE_GHOST_CLEANUP_20260624",
+      "pnl_pct": -0.0132,
+      "exit_price": 75.11,
+      "pnl_pct_raw": 0.0,
+      "pnl_dollar": -1.5661,
+      "kelly_pct_used": 1.0,
+      "reason": "STALE_GHOST_CLEANUP_20260624",
+      "closed_at": "2026-06-24 11:49:53.153656",
+      "commission": 0.0601,
+      "funding": 0.0,
+      "equity_after": 11862.87,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 3600
+    },
+    {
+      "sym": "BTC",
+      "tf": "15m",
+      "direction": "short",
+      "entry": 59900.0,
+      "sl": 59856.3837,
+      "tp": 58779.9266,
+      "sl_dist_pct_at_open": 2.0744,
+      "strategy": "dmi_bear",
+      "grade": "A",
+      "wr": 64.8,
+      "cagr": 40.4,
+      "kelly_pct": 1.09,
+      "mode": "LIVE",
+      "opened_at": "2026-06-24 13:09:52.308000",
+      "status": "MANUAL",
+      "live_contracts": 0.001,
+      "pnl_pct": 0.3529,
+      "be_set": true,
+      "exit_price": 59413.9,
+      "pnl_pct_raw": 0.8115,
+      "pnl_dollar": 0.4384,
+      "kelly_pct_used": 1.09,
+      "reason": "MANUAL",
+      "closed_at": "2026-06-24 13:49:43.590000",
+      "commission": 0.0477,
+      "funding": 0.0,
+      "equity_after": 521.96,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 7200
+    },
+    {
+      "sym": "BTC",
+      "tf": "15m",
+      "direction": "short",
+      "entry": 61058.0,
+      "sl": 62278.01107568557,
+      "tp": 59962.661307944865,
+      "sl_dist_pct_at_open": 1.9981,
+      "strategy": "dmi_bear",
+      "grade": "A",
+      "wr": 64.8,
+      "cagr": 40.4,
+      "kelly_pct": 1.0,
+      "mode": "LIVE",
+      "opened_at": "2026-06-24 17:44:22.095291",
+      "status": "TIME_LIMIT",
+      "live_contracts": 0.001,
+      "pnl_pct": -0.6156,
+      "exit_price": 61723.6,
+      "pnl_pct_raw": -1.0901,
+      "pnl_dollar": -72.9915,
+      "kelly_pct_used": 1.0,
+      "reason": "TIME_LIMIT",
+      "closed_at": "2026-06-25 05:44:32.199716",
+      "commission": 49.1126,
+      "funding": 0.0,
+      "equity_after": 11783.98,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 3600
+    },
+    {
+      "sym": "SOL",
+      "tf": "15m",
+      "direction": "long",
+      "entry": 68.57,
+      "sl": 68.0921,
+      "tp": 69.4462,
+      "sl_dist_pct_at_open": 0.697,
+      "strategy": "regime_adaptive",
+      "grade": "B",
+      "wr": 58.2,
+      "cagr": 29.9,
+      "kelly_pct": 1.06,
+      "mode": "PAPER",
+      "opened_at": "2026-06-25 06:30:32.596875",
+      "status": "SL_HIT",
+      "live_contracts": null,
+      "pnl_pct": -1.2775,
+      "exit_price": 68.09,
+      "pnl_pct_raw": -0.7,
+      "pnl_dollar": -150.5403,
+      "kelly_pct_used": 1.06,
+      "reason": "SL_HIT",
+      "closed_at": "2026-06-25 07:06:12.524812",
+      "commission": 0.0547,
+      "funding": 0.0,
+      "equity_after": 11633.44,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 7200
     }
   ],
   "circuit_breaker": {
@@ -1228,11 +1342,11 @@
   "cooldowns": {},
   "portfolio": {
     "initial_capital": 10000,
-    "equity": 11586.15,
+    "equity": 11633.44,
     "start_date": "2026-05-10",
     "max_dd_pct": -7.3,
-    "total_commission": 160.7318,
-    "peak_equity": 11586.15,
+    "total_commission": 307.2626,
+    "peak_equity": 11864.44,
     "equity_history": [
       {
         "eq": 11562.3,
@@ -1321,12 +1435,32 @@
       {
         "eq": 11586.15,
         "date": "2026-06-23"
+      },
+      {
+        "eq": 11864.44,
+        "date": "2026-06-24"
+      },
+      {
+        "eq": 11862.87,
+        "date": "2026-06-24"
+      },
+      {
+        "eq": 11856.97,
+        "date": "2026-06-24"
+      },
+      {
+        "eq": 11783.98,
+        "date": "2026-06-25"
+      },
+      {
+        "eq": 11633.44,
+        "date": "2026-06-25"
       }
     ]
   },
   "model_suspensions": {
     "SOL|15m": {
-      "streak": 1,
+      "streak": 2,
       "suspended_until": null
     },
     "HG|1h": {
@@ -1344,6 +1478,11 @@
     "PL|4h": {
       "streak": 1,
       "suspended_until": null
+    },
+    "BTC|15m": {
+      "streak": 1,
+      "suspended_until": null
     }
-  }
+  },
+  "live_peak_equity": 521.96
 }

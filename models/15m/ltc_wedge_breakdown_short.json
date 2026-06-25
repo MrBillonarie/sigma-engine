@@ -53,12 +53,12 @@
     "validated_at": "2026-05-31 09:02:32.625360"
   },
   "mc": {
-    "mc_cagr_p05": -67.0,
-    "mc_cagr_p50": 297.5,
+    "mc_cagr_p05": -55.0,
+    "mc_cagr_p50": 191.2,
     "mc_cagr_p95": 2471.2,
-    "mc_dd_p50": -64.3,
+    "mc_dd_p50": -65.4,
     "mc_dd_p95": -42.4,
-    "mc_confidence": 81.5,
+    "mc_confidence": 82.0,
     "mc_sims": 1000
   },
   "wft": {

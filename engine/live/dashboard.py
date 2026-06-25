@@ -2593,6 +2593,43 @@ table.t tr:hover td{{background:rgba(201,162,39,.025)}}
   </div>
 
 
+<!-- MOTORES 3-7: en construccion, solo informativo -->
+<div class="card">
+  <div class="card-title">Roadmap &mdash; Pr&oacute;ximos Motores</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:12px">
+    <div style="background:rgba(201,162,39,.035);border:1px solid rgba(201,162,39,.16);border-radius:3px;padding:14px 15px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--gold);margin-bottom:9px">M3 &middot; STOCKS US</div>
+      <div class="pills" style="margin-bottom:9px"><span class="pill" style="font-size:10px;padding:3px 9px">SPY</span><span class="pill" style="font-size:10px;padding:3px 9px">QQQ</span><span class="pill" style="font-size:10px;padding:3px 9px">IWM</span></div>
+      <div style="font-size:10px;color:var(--ts);line-height:1.45;margin-bottom:10px">S&amp;P 500 / Nasdaq 100 / Russell 2000 &mdash; ETFs, sin acciones individuales &middot; Broker IBKR</div>
+      <span class="badge" style="background:rgba(201,162,39,.08);color:var(--gold);border:1px solid rgba(201,162,39,.28)">PR&Oacute;XIMAMENTE</span>
+    </div>
+    <div style="background:rgba(201,162,39,.035);border:1px solid rgba(201,162,39,.16);border-radius:3px;padding:14px 15px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--gold);margin-bottom:9px">M4 &middot; BONOS &amp; MACRO</div>
+      <div class="pills" style="margin-bottom:9px"><span class="pill" style="font-size:10px;padding:3px 9px">TLT</span><span class="pill" style="font-size:10px;padding:3px 9px">HYG</span><span class="pill" style="font-size:10px;padding:3px 9px">TBT</span><span class="pill" style="font-size:10px;padding:3px 9px">ZN</span><span class="pill" style="font-size:10px;padding:3px 9px">ZB</span></div>
+      <div style="font-size:10px;color:var(--ts);line-height:1.45;margin-bottom:10px">Treasury 20Y+ / High Yield / Notas-Bonos 10Y-30Y &middot; Broker IBKR</div>
+      <span class="badge" style="background:rgba(201,162,39,.08);color:var(--gold);border:1px solid rgba(201,162,39,.28)">PR&Oacute;XIMAMENTE</span>
+    </div>
+    <div style="background:rgba(201,162,39,.035);border:1px solid rgba(201,162,39,.16);border-radius:3px;padding:14px 15px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--gold);margin-bottom:9px">M5 &middot; FUTUROS &Iacute;NDICES</div>
+      <div class="pills" style="margin-bottom:9px"><span class="pill" style="font-size:10px;padding:3px 9px">MES</span><span class="pill" style="font-size:10px;padding:3px 9px">MNQ</span><span class="pill" style="font-size:10px;padding:3px 9px">MYM</span></div>
+      <div style="font-size:10px;color:var(--ts);line-height:1.45;margin-bottom:10px">Micro-futuros CME &mdash; S&amp;P/Nasdaq/Dow &middot; Broker IBKR</div>
+      <span class="badge" style="background:rgba(201,162,39,.08);color:var(--gold);border:1px solid rgba(201,162,39,.28)">PR&Oacute;XIMAMENTE</span>
+    </div>
+    <div style="background:rgba(201,162,39,.035);border:1px solid rgba(201,162,39,.16);border-radius:3px;padding:14px 15px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--gold);margin-bottom:9px">M6 &middot; FOREX &amp; &Iacute;NDICES INTL</div>
+      <div class="pills" style="margin-bottom:9px"><span class="pill" style="font-size:10px;padding:3px 9px">EUR/USD</span><span class="pill" style="font-size:10px;padding:3px 9px">GBP/USD</span><span class="pill" style="font-size:10px;padding:3px 9px">USD/JPY</span><span class="pill" style="font-size:10px;padding:3px 9px">USD/CHF</span></div>
+      <div style="font-size:10px;color:var(--ts);line-height:1.45;margin-bottom:10px">Majors v&iacute;a IBKR IDEALPRO &mdash; DAX/FTSE/Nikkei en fase 2</div>
+      <span class="badge" style="background:rgba(201,162,39,.08);color:var(--gold);border:1px solid rgba(201,162,39,.28)">PR&Oacute;XIMAMENTE</span>
+    </div>
+    <div style="background:rgba(201,162,39,.035);border:1px solid rgba(201,162,39,.16);border-radius:3px;padding:14px 15px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--gold);margin-bottom:9px">M7 &middot; LATAM</div>
+      <div class="pills" style="margin-bottom:9px"><span class="pill" style="font-size:10px;padding:3px 9px">CL</span><span class="pill" style="font-size:10px;padding:3px 9px">BR</span><span class="pill" style="font-size:10px;padding:3px 9px">MX</span></div>
+      <div style="font-size:10px;color:var(--ts);line-height:1.45;margin-bottom:10px">Acciones v&iacute;a ETFs de pa&iacute;s &mdash; roadmap a futuro, sin fecha</div>
+      <span class="badge" style="background:rgba(201,162,39,.08);color:var(--gold);border:1px solid rgba(201,162,39,.28)">PR&Oacute;XIMAMENTE</span>
+    </div>
+  </div>
+</div>
+
 <!-- BTC DETAIL + MC CONFIDENCE --><div id="btc-detail">
 {"" if not btc_detail else f'''
 <div class="card">
@@ -4078,8 +4115,8 @@ function _drawEquityFrame() {{
     const colB = Math.max(tw3, tw4);
     const legW = 20 + colA + 18 + colB + 12;  // line+label+gap+value+pad
     const legH = 46;
-    const legX = W - legW - 10;
-    const legY = 8;
+    const legX = 10;
+    const legY = H - legH - 8;
 
     // Caja con sombra y borde sutil
     ctx.shadowColor = 'rgba(0,0,0,0.55)';

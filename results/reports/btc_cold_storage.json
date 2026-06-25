@@ -59,10 +59,20 @@
       "btc_price": 62549.6,
       "btc": 0.00025624,
       "sats": 25624
+    },
+    {
+      "date": "2026-06-24 11:23:59",
+      "trade": "BTC_15m",
+      "reason": "TRAIL_HIT",
+      "pnl_usd": 278.29,
+      "alloc_usd": 41.7432,
+      "btc_price": 60995.0,
+      "btc": 0.00068437,
+      "sats": 68437
     }
   ],
-  "total_btc": 0.00204846,
+  "total_btc": 0.00273283,
   "goal_btc": 1.0,
   "note": "Agregar entrada cada vez que se envie BTC a cold storage",
-  "total_usd": 130.7986
+  "total_usd": 172.5418
 }

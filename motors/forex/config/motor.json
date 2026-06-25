@@ -1,8 +1,13 @@
 {
-  "motor_name": "SIGMA Forex",
+  "motor_name": "SIGMA Forex (IBKR)",
   "asset_class": "forex_majors",
-  "universe": ["EUR.USD", "GBP.USD", "USD.JPY", "AUD.USD", "USD.CAD"],
-  "data_source": "ibkr_forex_or_oanda",
+  "broker": "ibkr",
+  "auth_shared_module": "../_shared/ibkr_gateway.py",
+  "universe": ["EUR.USD", "GBP.USD", "USD.JPY", "USD.CHF"],
+  "excluded_by_rule": {
+    "DXY": "ya es input de regimen en motor commodities/M2 (DXY+10Y) - no duplicar como posicion con capital propio"
+  },
+  "data_source": "ibkr_idealpro",
   "exchange": "IDEALPRO",
   "timeframes": ["15m", "1h", "4h"],
   "regime_detector": "carry_trade_risk_on_off",
@@ -12,8 +17,8 @@
   "status": "SKELETON",
   "warnings": [
     "Forex es el mercado mas competitivo - edge real es dificil",
-    "Considerar como motor #5, ultimo en activarse",
+    "Ultimo sub-universo IBKR en activarse, despues de equities y futures_idx",
     "Riesgo de over-leverage si no se controla margen"
   ],
-  "next_step": "DEJAR PARA EL FINAL - validar primero los otros 4 motores"
+  "next_step": "DEJAR PARA EL FINAL dentro del motor IBKR - validar primero equities y futures_idx"
 }

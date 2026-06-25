@@ -79,6 +79,11 @@
     "0 4 * * 0 cd /opt/sigma && /opt/sigma_env/bin/python engine/live/adversarial_validator.py >> results/reports/adversarial_validator_cron.log 2>&1",
     "0 5 * * * cd /opt/sigma && /opt/sigma_env/bin/python engine/live/treasury_manager.py >> results/reports/treasury_manager_cron.log 2>&1",
     "*/15 * * * * systemctl is-active sigma-trainer || systemctl start sigma-trainer # Watchdog sigma-trainer cada 15min",
-    "0 9 * * 1 cd /opt/sigma && /opt/sigma_env/bin/python scripts/reto_digest_cron.py >> results/reports/reto_digest.log 2>&1"
-  ]
+    "0 9 * * 1 cd /opt/sigma && /opt/sigma_env/bin/python scripts/reto_digest_cron.py >> results/reports/reto_digest.log 2>&1",
+    "0 */6 * * * cd /opt/sigma && /opt/sigma_env/bin/python selection_bias_report.py >> /opt/sigma/results/reports/selection_bias.log 2>&1",
+    "*/5 * * * * curl -s -H \"Authorization: Bearer 0d45863ded29be15ffcac419c1a05b5dc20fa2cd13fc21754a2078caa10df0ac\" http://127.0.0.1:3000/api/cron/copytrading-sync >> /var/log/copytrading-sync-cron.log 2>&1",
+    "*/5 * * * * /opt/sigma_env/bin/python /opt/sigma/scripts/funding_stale_dispatcher.py >> /var/log/funding_stale.log 2>&1"
+  ],
+  "last_reviewed": "2026-06-25",
+  "review_notes": "Auditoria 2026-06-25: 3 lineas nuevas confirmadas (selection_bias_report, copytrading-sync, funding_stale_dispatcher). copytrading-sync es feature real (auto-trading con API keys de terceros via /opt/sigma_web), revisar gate legal/compliance pendiente -- ver SIGMA_ARQUITECTURA_DEPARTAMENTOS.md."
 }

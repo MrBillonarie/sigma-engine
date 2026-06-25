@@ -2630,6 +2630,50 @@ def _load_current_best_score(symbol, tf):
     return best
 
 
+_CHAMPION_RETRY_STATE = Path('/opt/sigma/results/reports/champion_stagnant_retries.json')
+_CHAMPION_RETRY_COOLDOWN_DAYS = 14
+
+
+def _champion_needs_retry(symbol, tf, strategy):
+    """Champions estancados (is_stagnant=True) que siguen en PAPER_ONLY/BLOCKED
+    por el gate de robustez merecen otra chance -- mas trials en el MISMO
+    espacio de busqueda ya probaron no ayudar (por eso esta estancado), pero
+    un sampler/seed nuevo puede converger a otra region de parametros que SI
+    pase el WFT riguroso. Cooldown de 14 dias para no repetir esto en cada
+    ciclo del loop y volver a desperdiciar CPU (ver utils/optuna_stagnation.py).
+    """
+    try:
+        r  = _urlreq.urlopen('http://127.0.0.1:8080/api/signals', timeout=5)
+        sd = json.loads(r.read())
+        sym_short = symbol.split('/')[0]
+        m = next((x for x in sd.get('models', [])
+                  if x.get('sym') == sym_short and x.get('tf') == tf
+                  and x.get('strategy') == strategy), None)
+        if not m or not m.get('is_champion'):
+            return False
+        if m.get('robustness_action') not in ('PAPER_ONLY', 'BLOCKED'):
+            return False
+    except Exception:
+        return False
+
+    try:
+        state = json.loads(_CHAMPION_RETRY_STATE.read_text()) if _CHAMPION_RETRY_STATE.exists() else {}
+    except Exception:
+        state = {}
+    key  = f'{symbol}_{tf}_{strategy}'
+    last = state.get(key)
+    now_ts = time.time()
+    if last and (now_ts - last) < _CHAMPION_RETRY_COOLDOWN_DAYS * 86400:
+        return False
+    state[key] = now_ts
+    try:
+        _CHAMPION_RETRY_STATE.parent.mkdir(parents=True, exist_ok=True)
+        _CHAMPION_RETRY_STATE.write_text(json.dumps(state))
+    except Exception:
+        pass
+    return True
+
+
 def _quick_wft(df, sig_fn, params, n_windows=None, min_pass_rate=0.55):
     """
     Walk-Forward rápido adaptado al TF. Retorna True si >= min_pass_rate ventanas son positivas.
@@ -2769,8 +2813,12 @@ def run_pipeline(symbol, tf, n_trials=350, loop=False, max_cycles=99, csv_path=N
             # ya dejo de mejorar. Hallazgo: 60.8% de 1820 studies estancados, ~27%
             # de todos los trials historicos desperdiciados (ver utils/optuna_stagnation.py).
             if _sigma_is_stagnant(symbol, tf, strategy):
-                log(symbol, tf, f'  {strategy}: estudio ya convergido (sin mejora en ultimo 40%), skip')
-                continue
+                if _champion_needs_retry(symbol, tf, strategy):
+                    log(symbol, tf, f'  {strategy}: estancado pero es CHAMPION sin PASS_LIVE -- '
+                                     f'dando nueva oportunidad de reoptimizacion (cooldown 14d)')
+                else:
+                    log(symbol, tf, f'  {strategy}: estudio ya convergido (sin mejora en ultimo 40%), skip')
+                    continue
 
             log(symbol, tf, f'Probando: {strategy} ({n_trials_this} trials)...')
             try:
