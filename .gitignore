@@ -40,3 +40,11 @@ sigma_env/
 engine/config/secrets.json
 *.env
 .env
+
+# SQLite WAL/SHM -- mutan en sitio (no atomico) mientras Optuna entrena 24/7,
+# causaban 'fatal: confused by unstable object source data' en git add -A
+# del backup nocturno (4 de las ultimas 6 noches fallo 3/3 reintentos).
+# El .db principal si se versiona, estos son solo el log de WAL en curso.
+*.db-shm
+*.db-wal
+*.db-journal
