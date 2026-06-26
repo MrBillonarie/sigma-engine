@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-25T12:00:01.281416",
+  "timestamp": "2026-06-26T04:00:01.787410",
   "models": {
     "1h": [
       {
@@ -395,6 +395,14 @@
         "wr_oos": 57.1,
         "dd_oos": -13.5,
         "trades_oos": 21
+      },
+      {
+        "file": "btc_dxy_strength_short.json",
+        "strategy": "dxy_strength_short",
+        "cagr_oos": 23.5,
+        "wr_oos": 73.3,
+        "dd_oos": -9.3,
+        "trades_oos": 15
       },
       {
         "file": "sol_tma_bands.json",

@@ -61,7 +61,7 @@
     "mc_cagr_p95": 3707.8,
     "mc_dd_p50": -47.2,
     "mc_dd_p95": -31.9,
-    "mc_confidence": 96.4,
+    "mc_confidence": 96.6,
     "mc_sims": 1000
   },
   "m2_validation": {

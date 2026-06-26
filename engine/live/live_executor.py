@@ -276,7 +276,7 @@ def _record_trade(endpoint, payload):
     return None
 
 
-def _api_open_trade(sym, tf, direction, price, sl, tp, strategy, paper, grade, wr, cagr, kelly_pct, contracts=None):
+def _api_open_trade(sym, tf, direction, price, sl, tp, strategy, paper, grade, wr, cagr, kelly_pct, contracts=None, tp2=None):
     payload = {
         'sym': sym, 'tf': tf, 'direction': direction,
         'entry': price, 'sl': sl, 'tp': tp, 'strategy': strategy,
@@ -284,15 +284,19 @@ def _api_open_trade(sym, tf, direction, price, sl, tp, strategy, paper, grade, w
     }
     if contracts is not None:
         payload['contracts'] = contracts
+    if tp2 is not None:
+        payload['tp2'] = tp2
     return _record_trade('/api/trades/open', payload)
 
 
-def _api_close_trade(sym, tf, exit_price, reason, contracts=None, real_equity=None):
+def _api_close_trade(sym, tf, exit_price, reason, contracts=None, real_equity=None, real_pnl_usd=None):
     payload = {'sym': sym, 'tf': tf, 'exit_price': exit_price, 'reason': reason}
     if contracts is not None:
         payload['contracts'] = contracts
     if real_equity is not None:
         payload['real_equity'] = real_equity
+    if real_pnl_usd is not None:
+        payload['real_pnl_usd'] = real_pnl_usd
     return _record_trade('/api/trades/close', payload)
 
 
@@ -410,7 +414,10 @@ def execute_entry(sym, tf, direction, price, sl, tp,
         _log(f"ERROR entry order: {e}")
         return False
 
-    # SL — si falla, emergency close
+    # SL — si falla, emergency close. Una sola orden por el tamano completo:
+    # reduceOnly se cap automaticamente al tamano de posicion que quede en
+    # Binance (nunca abre el lado contrario), asi que sigue protegiendo el
+    # remanente aunque TP1 ya haya cerrado la mitad.
     sl_ok = False
     try:
         sl_side = 'sell' if direction == 'long' else 'buy'
@@ -424,21 +431,53 @@ def execute_entry(sym, tf, direction, price, sl, tp,
         _emergency_close(ex, symbol, contracts, side, f"SL placement failed: {e}")
         return False
 
-    # TP — si falla, solo loguear (SL ya esta activo, posicion protegida)
+    # TP parcial: 50% en TP1 (tp, el nivel que ya veniamos usando) + 50% en TP2
+    # (1.5x esa distancia) -- replica en Binance lo que el backtest ya validaba
+    # (core/backtest.py: tp2 = entry + atr*tp_mult*1.5) en vez de cerrar el 100%
+    # de una sola vez en TP1 y perder el tramo hasta TP2. Fallback a 1 sola orden
+    # si partir el tamano a la mitad cae bajo el minimo de notional de Binance.
+    tp2 = round(price + 1.5 * (tp - price), 4)
+    use_partial_tp = False
+    half_qty = leg2_qty = 0.0
     try:
-        tp_side = 'sell' if direction == 'long' else 'buy'
-        ex.create_order(symbol, 'take_profit_market', tp_side, contracts,
-                        params={'stopPrice': round(tp, 4), 'reduceOnly': True,
-                                'newClientOrderId': tp_cid})
-        _log(f"TP OK @ {tp:.4f}")
+        half_qty = float(ex.amount_to_precision(symbol, contracts / 2))
+        leg2_qty = float(ex.amount_to_precision(symbol, contracts - half_qty))
+        if half_qty > 0 and leg2_qty > 0 and min(half_qty, leg2_qty) * fill >= min_notional:
+            use_partial_tp = True
     except Exception as e:
-        _log(f"WARNING TP placement failed: {e} — SL activo, posicion protegida")
+        _log(f"WARNING no se pudo calcular split TP1/TP2 para {symbol}: {e} -- usando TP unico")
+
+    tp_side = 'sell' if direction == 'long' else 'buy'
+    tp1_ok = False
+    tp2_to_store = tp
+    try:
+        if use_partial_tp:
+            ex.create_order(symbol, 'take_profit_market', tp_side, half_qty,
+                            params={'stopPrice': round(tp, 4), 'reduceOnly': True,
+                                    'newClientOrderId': f"{tp_cid}1"})
+            tp1_ok = True
+            ex.create_order(symbol, 'take_profit_market', tp_side, leg2_qty,
+                            params={'stopPrice': round(tp2, 4), 'reduceOnly': True,
+                                    'newClientOrderId': f"{tp_cid}2"})
+            tp2_to_store = tp2
+            _log(f"TP OK partial: {half_qty}@{tp:.4f}(TP1) + {leg2_qty}@{tp2:.4f}(TP2)")
+        else:
+            ex.create_order(symbol, 'take_profit_market', tp_side, contracts,
+                            params={'stopPrice': round(tp, 4), 'reduceOnly': True,
+                                    'newClientOrderId': tp_cid})
+            _log(f"TP OK @ {tp:.4f} (unico -- notional bajo minimo para partials)")
+    except Exception as e:
+        if use_partial_tp and tp1_ok:
+            tp2_to_store = tp  # TP2 no quedo activo -- el watcher no debe esperarlo
+            _log(f"WARNING TP2 placement failed: {e} -- TP1 si esta activo, SL protege el resto")
+        else:
+            _log(f"WARNING TP placement failed: {e} — SL activo, posicion protegida")
 
     # Registrar la posicion real en trade_state.json para tracking/reconcile.
     # contracts real (no el kelly/equity simulado) -- el dashboard lo usa para
     # mostrar notional/margen reales en vez del notional fantasma del paper.
     _rec = _api_open_trade(sym, tf, direction, fill, sl, tp, strategy,
-                           False, grade, wr, cagr, kelly_pct, contracts=contracts)
+                           False, grade, wr, cagr, kelly_pct, contracts=contracts, tp2=tp2_to_store)
     if _rec is None:
         _log(f"ALERTA: posicion LIVE {sym}/{tf} abierta en Binance pero el registro en "
              f"trade_state.json FALLO -- revisar manualmente, reconcile() no la vera")
@@ -517,11 +556,30 @@ def close_live_position(sym, tf, reason='MANUAL'):
     Bug que motivo esto (2026-06-23): execute_exit() existia pero nunca se llamaba
     desde ningun lado -- los cierres LIVE eran puro bookkeeping local, sin verificar
     contra Binance. Una posicion BTC quedo registrada como cerrada por SL_HIT sin que
-    Binance ejecutara ningun cierre real -- quedo abierta y duplicada por semanas."""
+    Binance ejecutara ningun cierre real -- quedo abierta y duplicada por semanas.
+
+    v1.2 (2026-06-26): si no queda posicion porque ya cerro sola (TP1 parcial +
+    TP2/SL, o cualquier orden resting que gano la carrera contra este watcher),
+    YA NO devuelve None a ciegas -- eso hacia que close_trade() cayera al formato
+    PAPER con equity simulada para un trade que en realidad es LIVE. Ahora siempre
+    suma el PnL real de Binance (fetch_my_trades desde la apertura) para cubrir
+    fills parciales correctamente, ya sea que esta funcion cierre algo o no."""
     ex = _get_exchange()
     if not ex:
         return None
     symbol = _binance_symbol(sym)
+
+    since_ms = None
+    try:
+        _ts_state = json.loads((BASE / 'results' / 'trade_state.json').read_text())
+        _opened_at = _ts_state.get('open', {}).get(f'{sym}_{tf}', {}).get('opened_at')
+        if _opened_at:
+            _dt = datetime.fromisoformat(_opened_at)
+            if _dt.tzinfo is None:
+                _dt = _dt.replace(tzinfo=CHILE)
+            since_ms = int(_dt.timestamp() * 1000)
+    except Exception as e:
+        _log(f"WARNING no se pudo leer opened_at para PnL real {symbol}: {e}")
 
     # Cancelar SL/TP pendientes -- cancel_all_orders normal NO cubre algo/conditional
     # orders (STOP_MARKET/TAKE_PROFIT_MARKET con reduceOnly viven en otro endpoint desde
@@ -539,25 +597,45 @@ def close_live_position(sym, tf, reason='MANUAL'):
 
     positions = ex.fetch_positions([symbol])
     pos = next((p for p in positions if float(p.get('contracts', 0)) > 0), None)
-    if not pos:
-        _log(f"No hay posicion abierta en {symbol}")
-        return None
 
-    contracts = float(pos['contracts'])
-    side      = 'sell' if pos['side'] == 'long' else 'buy'
+    exit_price = None
+    contracts_closed = None
 
-    if DRY_RUN:
-        _log(f"DRY_RUN — CLOSE {side.upper()} {contracts} {symbol}")
-        return {'exit_price': float(pos.get('markPrice') or 0), 'contracts': contracts, 'real_equity': None}
+    if pos:
+        contracts_closed = float(pos['contracts'])
+        side = 'sell' if pos['side'] == 'long' else 'buy'
 
-    close_ts = int(time.time())
-    order      = ex.create_market_order(symbol, side, contracts,
-                                         params={'reduceOnly': True,
-                                                 'newClientOrderId': f"sigma_{sym}_{tf}_{close_ts}_close"})
-    exit_price = order.get('average', 0)
-    _log(f"CLOSED @ {exit_price:.4f}")
+        if DRY_RUN:
+            _log(f"DRY_RUN — CLOSE {side.upper()} {contracts_closed} {symbol}")
+            return {'exit_price': float(pos.get('markPrice') or 0), 'contracts': contracts_closed, 'real_equity': None}
 
-    # Balance real post-cierre -- usado para registrar pnl/equity reales,
+        close_ts = int(time.time())
+        order      = ex.create_market_order(symbol, side, contracts_closed,
+                                             params={'reduceOnly': True,
+                                                     'newClientOrderId': f"sigma_{sym}_{tf}_{close_ts}_close"})
+        exit_price = order.get('average', 0)
+        _log(f"CLOSED @ {exit_price:.4f}")
+    else:
+        _log(f"{symbol}: sin posicion en Binance al cerrar -- ya se cerro por su propia orden (TP1/TP2/SL)")
+
+    # PnL real sumando TODOS los fills desde la apertura -- cubre el caso de
+    # fills parciales (TP1 + TP2/SL) donde un solo par (entry, exit_price) ya
+    # no representa toda la ganancia/perdida real ejecutada en Binance.
+    real_pnl_usd = None
+    if since_ms:
+        try:
+            fills = ex.fetch_my_trades(symbol, since=since_ms, limit=50)
+            closing_fills = [f for f in fills if float(f.get('info', {}).get('realizedPnl', 0) or 0) != 0]
+            if closing_fills:
+                gross = sum(float(f.get('info', {}).get('realizedPnl', 0) or 0) for f in closing_fills)
+                fees  = sum(float(f.get('fee', {}).get('cost', 0) or 0) for f in fills)
+                real_pnl_usd = round(gross - fees, 4)
+                if exit_price is None:
+                    exit_price = closing_fills[-1].get('price', 0)
+        except Exception as e:
+            _log(f"WARNING no se pudo leer fills reales para PnL {symbol}: {e}")
+
+    # Balance real post-cierre -- usado para registrar equity real,
     # no la formula de paper trading (que asume equity simulada de $10k).
     real_equity = None
     try:
@@ -566,7 +644,11 @@ def close_live_position(sym, tf, reason='MANUAL'):
     except Exception as e:
         _log(f"WARNING: no se pudo leer balance real post-close: {e}")
 
-    return {'exit_price': exit_price, 'contracts': contracts, 'real_equity': real_equity}
+    if exit_price is None and real_pnl_usd is None and real_equity is None:
+        return None  # de verdad no hay ningun rastro -- nada que reportar
+
+    return {'exit_price': exit_price or 0, 'contracts': contracts_closed,
+            'real_equity': real_equity, 'real_pnl_usd': real_pnl_usd}
 
 
 def execute_exit(sym, tf, reason='MANUAL'):
@@ -598,7 +680,8 @@ def execute_exit(sym, tf, reason='MANUAL'):
             return False
 
         _rec = _api_close_trade(sym, tf, _r['exit_price'], reason,
-                                contracts=_r['contracts'], real_equity=_r['real_equity'])
+                                contracts=_r.get('contracts'), real_equity=_r.get('real_equity'),
+                                real_pnl_usd=_r.get('real_pnl_usd'))
         if _rec is None:
             _log(f"ALERTA: posicion LIVE {sym}/{tf} cerrada en Binance pero el registro en "
                  f"trade_state.json FALLO -- revisar manualmente")

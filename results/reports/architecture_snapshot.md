@@ -1,5 +1,5 @@
 # SIGMA — Snapshot de Arquitectura
-> Generado automaticamente: 2026-06-25 00:00:00
+> Generado automaticamente: 2026-06-26 00:00:00
 > Este archivo se regenera cada dia. No editar a mano.
 
 ## Servicios systemd (sigma-*)
@@ -30,7 +30,7 @@
 - `sigma-milestone.timer` — Run SIGMA Telegram Milestone Monitor every 10 minutes
 - `sigma-watchdog.timer` — Run SIGMA Watchdog every 5 minutes
 
-## Crontab (56 líneas activas)
+## Crontab (55 líneas activas)
 
 - `0 2 * * 0 cd /opt/sigma && /opt/sigma_env/bin/python engine/optimization/wft_all_models.py >> results/reports/wft_weekly.log 2>&1`
 - `0 2 1 * * cd /opt/sigma && /opt/sigma_env/bin/python -u run_mc_all.py >> results/reports/mc_monthly.log 2>&1`
@@ -86,12 +86,11 @@
 - `*/15 * * * * systemctl is-active sigma-trainer || systemctl start sigma-trainer # Watchdog sigma-trainer cada 15min`
 - `0 9 * * 1 cd /opt/sigma && /opt/sigma_env/bin/python scripts/reto_digest_cron.py >> results/reports/reto_digest.log 2>&1`
 - `0 */6 * * * cd /opt/sigma && /opt/sigma_env/bin/python selection_bias_report.py >> /opt/sigma/results/reports/selection_bias.log 2>&1`
-- `*/5 * * * * curl -s -H "Authorization: Bearer 0d45863ded29be15ffcac419c1a05b5dc20fa2cd13fc21754a2078caa10df0ac" http://127.0.0.1:3000/api/cron/copytrading-sync `
 - `*/5 * * * * /opt/sigma_env/bin/python /opt/sigma/scripts/funding_stale_dispatcher.py >> /var/log/funding_stale.log 2>&1`
 
 ## Manifiesto (baseline conocido)
 
 - Servicios conocidos: 16
 - Timers conocidos: 6
-- Cron lines conocidas: 53
+- Cron lines conocidas: 56
 - Baseline creado: 2026-06-19 16:43:36

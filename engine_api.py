@@ -250,6 +250,7 @@ def get_portfolio_engine() -> dict:
         },
         'backtest': {
             'cagr_weighted': round(snap.get('port_cagr', 0), 2),
+            'cagr_with_kelly': round(snap.get('port_cagr_with_kelly', snap.get('port_cagr', 0)), 2),
             'cagr_pass_live': round(snap.get('port_cagr_pass_live', 0), 2),
             'wr': round(snap.get('port_wr', 0), 2),
             'dd': round(snap.get('port_dd', 0), 2),

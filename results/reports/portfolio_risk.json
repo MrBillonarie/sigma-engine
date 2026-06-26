@@ -1,5 +1,5 @@
 {
-  "computed_at": "2026-06-25 12:05",
+  "computed_at": "2026-06-26 04:05",
   "n_trades": 44,
   "portfolio": {
     "equity": 11633.44,
@@ -219,19 +219,43 @@
       "btc_shock_pct": -10.0,
       "portfolio_pnl_pct": 0.0,
       "portfolio_pnl_usd": 0.0,
-      "positions": []
+      "positions": [
+        {
+          "sym": "WTI",
+          "tf": "1d",
+          "direction": "short",
+          "kelly_pct": 1.0,
+          "pnl_pct": 0.0
+        }
+      ]
     },
     "btc_-20pct": {
       "btc_shock_pct": -20.0,
       "portfolio_pnl_pct": 0.0,
       "portfolio_pnl_usd": 0.0,
-      "positions": []
+      "positions": [
+        {
+          "sym": "WTI",
+          "tf": "1d",
+          "direction": "short",
+          "kelly_pct": 1.0,
+          "pnl_pct": 0.0
+        }
+      ]
     },
     "btc_-30pct": {
       "btc_shock_pct": -30.0,
       "portfolio_pnl_pct": 0.0,
       "portfolio_pnl_usd": 0.0,
-      "positions": []
+      "positions": [
+        {
+          "sym": "WTI",
+          "tf": "1d",
+          "direction": "short",
+          "kelly_pct": 1.0,
+          "pnl_pct": 0.0
+        }
+      ]
     }
   }
 }

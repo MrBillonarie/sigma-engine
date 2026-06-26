@@ -1,0 +1,74 @@
+{
+  "symbol": "BTC/USDT",
+  "tf": "4h",
+  "strategy": "dxy_strength_short",
+  "params": {
+    "sl_mult": 3.4000000000000004,
+    "tp_mult": 3.5,
+    "cooldown": 10,
+    "rsi_w_thr": 54
+  },
+  "risk_pct": 4.7,
+  "metrics_is": {
+    "trades": 43,
+    "wr": 51.2,
+    "cagr": -0.1,
+    "dd": -28.2,
+    "pf": 0.98,
+    "trades_year": 6.1
+  },
+  "metrics_oos": {
+    "trades": 15,
+    "wr": 73.3,
+    "cagr": 23.5,
+    "dd": -9.3,
+    "pf": 2.61,
+    "trades_year": 8.5
+  },
+  "oos_days": 646,
+  "saved_at": "2026-06-25 23:23:22.955140",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 95.5,
+      "median": 110.0,
+      "ic95_lo": -10.3,
+      "ic95_hi": 276.6,
+      "ic80_lo": 21.2,
+      "ic80_hi": 215.6,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 12,
+      "positive": 6,
+      "pct_positive": 50.0,
+      "avg_cagr": 9.8,
+      "passed": false
+    },
+    "cross_asset": {
+      "tested": 2,
+      "positive": 1,
+      "positive_assets": [
+        "ETH/USDT"
+      ],
+      "results": [
+        {
+          "symbol": "ETH/USDT",
+          "cagr": 8.0,
+          "wr": 52.8,
+          "trades": 72
+        },
+        {
+          "symbol": "LTC/USDT",
+          "cagr": -13.0,
+          "wr": 52.9,
+          "trades": 68
+        }
+      ],
+      "passed": true
+    },
+    "confidence": "MEDIA",
+    "passed_steps": 2,
+    "max_steps": 3,
+    "validated_at": "2026-06-25 23:24:08.056437"
+  }
+}

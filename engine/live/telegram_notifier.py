@@ -362,13 +362,6 @@ def cmd_status(chat_id, signals, trades):
         + (f" {'✅ LISTO' if score >= 85 else f'— faltan {gate_to_live} pts'}")
     )
 
-    real = _real_live_status()
-    real_line = (
-        f"\n💵 <b>Balance real (Binance)</b>\n"
-        f"Equity: <code>${real['equity']:,.2f}</code>  DD desde pico: <code>{real['dd']:+.2f}%</code>\n"
-        if real else ""
-    )
-
     send(
         f"🤖 <b>SIGMA ENGINE — Estado</b>\n"
         f"{now.strftime('%d %b %Y %H:%M')} (Chile)\n\n"
@@ -376,9 +369,8 @@ def cmd_status(chat_id, signals, trades):
         f"Gate capital: <code>{bar(score)}</code> {score}/100\n"
         f"Modelos activos: <code>{n_activos}</code> | "
         f"Grade A+/A: <code>{n_grade}</code> | "
-        f"Señales: <code>{n_signal}</code>\n"
-        f"{real_line}\n"
-        f"💰 <b>Portfolio Paper</b> (simulacion de todos los modelos, no es el balance real)\n"
+        f"Señales: <code>{n_signal}</code>\n\n"
+        f"💰 <b>Portfolio Paper</b>\n"
         f"Equity: <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>\n"
         f"WR live: {medal(wr)} <code>{wr:.0f}%</code>  ({total} trades)\n"
         f"Profit Factor: <code>{pf:.2f}</code>  Max DD: <code>{maxdd:.1f}%</code>\n\n"
@@ -429,7 +421,7 @@ def cmd_hoy(chat_id, trades):
         f"\n\n{pnl_icon(day_pnl)} P&L dia: <code>{day_pnl:+.2f}%</code>\n"
         f"WR dia: {medal(day_wr)} <code>{day_wr:.0f}%</code>  "
         f"({day_wins}W / {len(hoy)-day_wins}L)\n\n"
-        f"Equity (paper): <code>${eq:,.2f}</code>  <code>{ret:+.2f}%</code> total",
+        f"Equity: <code>${eq:,.2f}</code>  <code>{ret:+.2f}%</code> total",
         chat_id=chat_id
     )
 
@@ -467,7 +459,7 @@ def cmd_semana(chat_id, trades):
         f"\n\n{pnl_icon(pnl_tot)} P&L semana: <code>{pnl_tot:+.2f}%</code>\n"
         f"WR: {medal(wr_sem)} <code>{wr_sem:.0f}%</code>  "
         f"({wins}W / {len(semana)-wins}L / {len(semana)} trades)\n\n"
-        f"Equity (paper): <code>${eq:,.2f}</code>  <code>{ret:+.2f}%</code> total",
+        f"Equity: <code>${eq:,.2f}</code>  <code>{ret:+.2f}%</code> total",
         chat_id=chat_id
     )
 
@@ -733,7 +725,7 @@ def cmd_performance(chat_id, trades):
     BT_DD = -15
 
     lines = [f"📊 <b>SIGMA PERFORMANCE — Live vs Backtest</b>"]
-    lines.append(f"<i>Portfolio paper (simulacion de todos los modelos) · Periodo: {days} dia(s) · {n} trades cerrados</i>")
+    lines.append(f"<i>Periodo: {days} dia(s) · {n} trades cerrados</i>")
     lines.append("")
     def cmp(label, live, bt, unit='%', better_high=True):
         icon = "✅" if (live >= bt if better_high else live <= bt) else "⚠️"
@@ -962,27 +954,6 @@ def _fire_current_equity():
         return eq
     except: return 10000.0
 
-def _real_live_status():
-    """Balance LIVE real (Binance) y su DD desde el pico, mismo criterio que el
-    circuit breaker real (web_server.py: state['live_peak_equity']). None si
-    todavia no hay ningun trade LIVE cerrado -- todo el sistema sigue en paper.
-    2026-06-24: el fix de equity real solo habia llegado a /fire: el resto del
-    bot (status, briefings, alertas de DD) seguia mostrando el equity simulado
-    de paper ($10k+compounding) sin avisar que no es el balance real."""
-    import json as _j
-    try:
-        with open('/opt/sigma/results/trade_state.json') as f:
-            state = _j.load(f)
-        live = [t for t in state.get('history', []) if t.get('mode') == 'LIVE' and t.get('equity_after')]
-        if not live:
-            return None
-        eq   = float(live[-1]['equity_after'])
-        peak = float(state.get('live_peak_equity', eq))
-        dd   = round((eq - peak) / peak * 100, 2) if peak > 0 else 0.0
-        return {'equity': eq, 'peak': peak, 'dd': dd}
-    except Exception:
-        return None
-
 def _fire_progress_bar(pct, width=20):
     """Generar barra de progreso visual."""
     filled = int(min(max(pct, 0), 100) / 100 * width)
@@ -992,6 +963,7 @@ def cmd_fire(chat_id):
     """Muestra estado FIRE: progreso al target, CAGR, ETA, milestones."""
     from datetime import datetime as _dt
     import math as _math
+    import json as _j
     cfg = _fire_load_config()
     start_eq = cfg.get('starting_equity', 10000)
     target_eq = cfg.get('target_equity', 100000)
@@ -1038,6 +1010,24 @@ def cmd_fire(chat_id):
     else:
         eta_str = "indefinido (CAGR ≤ 0)"
 
+    # CAGR proyectado por el motor: mismo "CAGR efectivo" honesto que muestra /portfolio
+    # (real operativo ponderado por trades + Kelly boost), leído de port_snapshot.json.
+    motor_cagr = None
+    try:
+        with open('/opt/sigma/results/reports/port_snapshot.json') as f:
+            _snap = _j.load(f)
+        motor_cagr = _snap.get('port_cagr_with_kelly', _snap.get('port_cagr'))
+    except Exception:
+        pass
+
+    # ETA proyectado según el motor (en vez del realizado, que es ruidoso con pocos días)
+    if motor_cagr and motor_cagr > 0 and current_eq > 0 and current_eq < target_eq:
+        years_to_target_m = _math.log(target_eq / current_eq) / _math.log(1 + motor_cagr/100)
+        eta_days_m = int(years_to_target_m * 365.25)
+        eta_motor_str = f"{eta_days_m} días" if eta_days_m < 365 else f"{years_to_target_m:.1f} años"
+    else:
+        eta_motor_str = "indefinido"
+
     # Milestone más cercano superior
     milestones = cfg.get('milestones', [25, 50, 75, 100])
     next_ms = next((m for m in sorted(milestones) if m > progress_pct), None)
@@ -1058,10 +1048,14 @@ def cmd_fire(chat_id):
         f"<b>📊 CAGR</b>",
         f"   Realizado: <code>{cagr_realized:+.1f}%</code>",
     ]
+    if motor_cagr is not None:
+        lines.append(f"   Proyectado (motor): <code>{motor_cagr:+.1f}%</code>")
     if cagr_needed is not None:
         lines.append(f"   Necesario para deadline: <code>{cagr_needed:.1f}%</code>")
         lines.append(f"   Deadline: <i>{deadline_str}</i>")
-    lines.append(f"\n<b>⏱ ETA al target al ritmo actual:</b> {eta_str}")
+    lines.append(f"\n<b>⏱ ETA al ritmo actual (realizado):</b> {eta_str}")
+    if motor_cagr is not None:
+        lines.append(f"<b>⏱ ETA proyectado (motor):</b> {eta_motor_str}")
     lines.append(f"\n<b>🎯 Próximo milestone:</b> {ms_str}")
 
     if not deadline_days:
@@ -1513,13 +1507,10 @@ def morning_briefing(signals, trades):
         signal_block = "\n\n<b>Señales activas:</b>\n" + "\n\n".join(lines)
     else:
         signal_block = "\n\nSin señales activas al momento."
-    real = _real_live_status()
-    real_line = f"\n💵 Balance real (Binance): <code>${real['equity']:,.2f}</code>" if real else ""
     send_pin(
         f"☀️ <b>Briefing Matutino — {now.strftime('%d %b %Y')}</b>\n\n"
-        f"{reg_icon} Regimen: <b>{regime}</b>\n{regime_desc}{cb_line}\n"
-        f"{real_line}\n"
-        f"<b>Estado del Portfolio (paper)</b>\n"
+        f"{reg_icon} Regimen: <b>{regime}</b>\n{regime_desc}{cb_line}\n\n"
+        f"<b>Estado del Portfolio</b>\n"
         f"Equity:    <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>\n"
         f"Win Rate:  {medal(wr)} <code>{wr:.0f}%</code>  ({total} trades)\n"
         f"Gate live: <code>{bar(score)}</code> {score}/100"
@@ -1560,12 +1551,9 @@ def evening_summary(signals, trades):
     records = ""
     if best:  records += f"\n🏆 Mejor: {best.get('sym')} {best.get('tf','').upper()} <code>{best.get('pnl_pct',0):+.2f}%</code>"
     if worst: records += f"\n💀 Peor:  {worst.get('sym')} {worst.get('tf','').upper()} <code>{worst.get('pnl_pct',0):+.2f}%</code>"
-    real = _real_live_status()
-    real_line = f"💵 Balance real (Binance): <code>${real['equity']:,.2f}</code>\n\n" if real else ""
     send(
         f"🌙 <b>Resumen Diario — {now.strftime('%d %b %Y')}</b>\n\n"
-        f"{real_line}"
-        f"<b>Portfolio (paper)</b>\n"
+        f"<b>Portfolio</b>\n"
         f"Equity:         <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>\n"
         f"Win Rate:       {medal(wr)} <code>{wr:.0f}%</code>  ({wins}W / {losses}L / {total} trades)\n"
         f"Avg Win/Loss:   <code>+{avg_w:.2f}%</code> / <code>{avg_l:.2f}%</code>\n"
@@ -1600,15 +1588,12 @@ def weekly_report(signals, trades):
         for t in week_trades[-7:]
     ) or "  Sin trades esta semana."
     cagr_line = f"\nCAGR live: <code>{cagr:+.1f}%</code>" if cagr else ""
-    real = _real_live_status()
-    real_line = f"💵 Balance real (Binance): <code>${real['equity']:,.2f}</code>\n\n" if real else ""
     send(
         f"📅 <b>Reporte Semanal</b>\n\n"
-        f"{real_line}"
         f"<b>Esta semana</b>\n"
         f"Trades: {len(week_trades)} | P&amp;L: <code>{wt_pnl:+.2f}%</code> | WR: <code>{wt_wr:.0f}%</code>\n\n"
         f"<b>Rendimiento:</b>\n{chart}\n\n"
-        f"<b>Portfolio acumulado (paper)</b>\n"
+        f"<b>Portfolio acumulado</b>\n"
         f"Equity:       <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>{cagr_line}\n"
         f"Win Rate:     {medal(wr)} <code>{wr:.0f}%</code>  ({wins}W / {losses}L)\n"
         f"Profit Factor: <code>{pf:.2f}</code>  Max DD: <code>{maxdd:.1f}%</code>\n"
@@ -1627,11 +1612,9 @@ def silent_ping(signals, trades):
     ret    = port.get("return_pct", 0)
     wr     = st.get("win_rate", 0)
     score  = lr.get("score", 0)
-    real = _real_live_status()
-    real_line = f"Real: <code>${real['equity']:,.2f}</code>  " if real else ""
     send(
         f"📊 <b>Update</b> — {now.strftime('%d %b %H:%M')}\n"
-        f"{real_line}Paper: <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>\n"
+        f"Equity: <code>${eq:,.2f}</code>  {pnl_icon(ret)} <code>{ret:+.2f}%</code>\n"
         f"WR: <code>{wr:.0f}%</code> | Regimen: {regime} | Gate: {score}/100",
         silent=True
     )
@@ -1696,19 +1679,9 @@ def _check_drawdown_alert(trades_data, send_fn):
     try:
         import time as _t
         port = trades_data.get("portfolio",{})
-        # 2026-06-24: esta alerta comparaba el DD del portfolio paper, no el DD
-        # real que de verdad activa el circuit breaker LIVE (live_peak_equity en
-        # web_server.py) -- podia decir "MODERADO, normal" con la cuenta real en
-        # un DD distinto, o viceversa. Usa el DD real si ya hay trades LIVE.
-        real = _real_live_status()
-        if real:
-            max_dd = abs(real['dd'])
-            equity = real['equity']
-            ret    = round((real['equity'] / real['peak'] - 1) * 100, 2) if real['peak'] else 0
-        else:
-            max_dd = abs(port.get("max_dd_pct", port.get("max_dd",0)))
-            equity = port.get("equity",10000)
-            ret    = port.get("return_pct",0)
+        max_dd = abs(port.get("max_dd_pct", port.get("max_dd",0)))
+        equity = port.get("equity",10000)
+        ret    = port.get("return_pct",0)
         if max_dd < 5 or (_t.time() - _last_dd_alert) < 3600: return
 
         st = trades_data.get("stats",{})
@@ -1723,9 +1696,8 @@ def _check_drawdown_alert(trades_data, send_fn):
         else:
             return
 
-        fuente = "balance real Binance" if real else "portfolio paper"
         send_fn(
-            f"{color} <b>Alerta de Drawdown — {nivel}</b> ({fuente})\n\n"
+            f"{color} <b>Alerta de Drawdown — {nivel}</b>\n\n"
             f"Max Drawdown actual: <code>{max_dd:.1f}%</code>\n"
             f"Equity: <code>${equity:,.2f}</code> ({ret:+.1f}% total)\n"
             f"Win Rate live: <code>{wr:.0f}%</code>\n\n"

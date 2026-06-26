@@ -1498,7 +1498,8 @@ def _execute_close(sym, tf, fallback_price, reason):
             _r = _close_live_fn(sym, tf, reason)
             if _r:
                 return close_trade(sym, tf, _r['exit_price'], reason,
-                                   contracts=_r.get('contracts'), real_equity=_r.get('real_equity'))
+                                   contracts=_r.get('contracts'), real_equity=_r.get('real_equity'),
+                                   real_pnl_usd=_r.get('real_pnl_usd'))
             print(f'[EXECUTE_CLOSE] {sym}/{tf} sin posicion real en Binance '
                   f'(ya cerro por su propia orden SL/TP, o nunca abrio) -- bookkeeping con precio local', flush=True)
         except Exception as _ecx:
@@ -1529,7 +1530,7 @@ def _update_live_sl(sym, tf, new_sl, direction):
 @_locked_trade_op
 def open_trade(sym, tf, direction, price, sl, tp, strategy='',
 
-               paper=False, grade='B', wr=50.0, cagr=0.0, kelly_pct=2.2, contracts=None):
+               paper=False, grade='B', wr=50.0, cagr=0.0, kelly_pct=2.2, contracts=None, tp2=None):
 
     """Abre un nuevo trade y aplica guardas de riesgo."""
 
@@ -1560,15 +1561,7 @@ def open_trade(sym, tf, direction, price, sl, tp, strategy='',
 
     # Regime history guard: reducir kelly en regimenes sin historial live
     try:
-        # 2026-06-24: estaba hardcodeado a 'BTC' para CUALQUIER simbolo -- el gate
-        # de un trade de ETH/SOL/LTC/BNB usaba el regimen de BTC en vez del propio
-        # (_regime_cache si esta indexado por activo, ver _refresh_regime). Los
-        # 5 slots de Motor 2 (commodities) no tienen regimen calculado en absoluto
-        # todavia (_compute_regime solo cubre BTC/ETH/LTC/SOL/BNB/XAU) -- para esos
-        # cae al mismo default 'BEAR' que antes, sin regresion, pendiente como gap
-        # separado (no es un one-line fix, requiere agregar deteccion de regimen
-        # para WTI/XAG/NG/PL/HG).
-        _curr_reg = _regime_cache.get(sym, {}).get('regime', 'BEAR') if _regime_cache else 'BEAR'
+        _curr_reg = _regime_cache.get('BTC', {}).get('regime', 'BEAR') if _regime_cache else 'BEAR'
         _hist_reg = state.get('history', [])
         _reg_n = sum(1 for _t in _hist_reg if _t.get('regime_at_close','BEAR') == _curr_reg)
         if _reg_n < 10:
@@ -1588,6 +1581,12 @@ def open_trade(sym, tf, direction, price, sl, tp, strategy='',
         'sym': sym, 'tf': tf, 'direction': direction,
 
         'entry': price, 'sl': sl, 'tp': tp,
+
+        # tp2: nivel final cuando hay TP parcial real en Binance (50%@tp + 50%@tp2,
+        # ver live_executor.execute_entry). Default = tp para trades sin partials
+        # (paper, o LIVE que cayo al fallback de TP unico) -- asi check_auto_close
+        # puede usar siempre trade['tp2'] sin chequear el modo.
+        'tp2': tp2 if tp2 is not None else tp,
 
         'sl_dist_pct_at_open': sl_dist_pct_at_open,
 
@@ -1632,7 +1631,7 @@ def _last_live_equity(state):
     return 0.0
 
 
-def close_trade(sym, tf, exit_price, reason='MANUAL', contracts=None, real_equity=None):
+def close_trade(sym, tf, exit_price, reason='MANUAL', contracts=None, real_equity=None, real_pnl_usd=None):
 
     """Cierra un trade y registra resultado en historial."""
 
@@ -1654,7 +1653,13 @@ def close_trade(sym, tf, exit_price, reason='MANUAL', contracts=None, real_equit
 
     kelly_pct = trade.get('kelly_pct', 2.2)
 
-    is_live   = trade.get('mode') == 'LIVE' and contracts is not None
+    # No exigir contracts -- un trade LIVE puede haber cerrado solo (TP1/TP2/SL
+    # propio en Binance) sin que close_live_position() encuentre posicion para
+    # market-closear; en ese caso igual llega real_equity y/o real_pnl_usd, y
+    # debe seguir tratandose como LIVE (antes caia al formato PAPER con equity
+    # simulada de $10k para un trade que en realidad es real -- ver close_live_position).
+    is_live   = trade.get('mode') == 'LIVE' and (
+        contracts is not None or real_pnl_usd is not None or real_equity is not None)
 
 
 
@@ -1727,9 +1732,23 @@ def close_trade(sym, tf, exit_price, reason='MANUAL', contracts=None, real_equit
         # Binance + balance real post-cierre), no la formula de paper trading.
         # pnl_pct arriba sigue la formula backtest -- se mantiene para que el
         # gate (WR/PF/DD) compare LIVE contra backtest con la misma metodologia.
-        sign        = 1 if direction == 'long' else -1
-        commission  = round(contracts * (entry + exit_price) * 0.0004, 4)
-        pnl_dollar  = round((exit_price - entry) * contracts * sign - commission, 4)
+        if contracts is not None and entry > 0 and exit_price:
+            sign       = 1 if direction == 'long' else -1
+            commission = round(contracts * (entry + exit_price) * 0.0004, 4)
+        else:
+            commission = 0.0
+        if real_pnl_usd is not None:
+            # PnL real sumado desde los fills de Binance (live_executor.
+            # close_live_position) -- la unica fuente correcta cuando hubo
+            # fills parciales (TP1 50% + TP2/SL 50%), donde un solo par
+            # (entry, exit_price, contracts) ya no representa todo lo realizado.
+            pnl_dollar = real_pnl_usd
+        elif contracts is not None and entry > 0 and exit_price:
+            pnl_dollar = round((exit_price - entry) * contracts * sign - commission, 4)
+        else:
+            pnl_dollar = 0.0
+            print(f"[PNL FALLBACK LIVE] {sym}/{tf}: sin contracts ni real_pnl_usd -- "
+                  f"pnl_dollar=0, revisar manualmente", flush=True)
         # Si fetch_balance() fallo en el momento del cierre (raro, ya queda
         # WARNING en executor.log), no inventar un numero -- dejar el ultimo
         # equity LIVE conocido para no romper /fire ni el dashboard con None.
@@ -1796,7 +1815,7 @@ def close_trade(sym, tf, exit_price, reason='MANUAL', contracts=None, real_equit
               'commission': commission, 'funding': funding,
 
               'equity_after': equity_after,
-              'regime_at_close': (_regime_cache.get(sym, {}).get('regime', 'UNKNOWN')
+              'regime_at_close': (_regime_cache.get('BTC', {}).get('regime', 'UNKNOWN')
                                   if _regime_cache else 'UNKNOWN')}
 
 
@@ -2424,33 +2443,11 @@ def close_trade_per_model(sym, tf, strategy, exit_price, reason='AUTO'):
 
 
 @_locked_pm_op
-def _per_model_hours_open(ot):
-    """Horas que lleva abierto un trade per-model. opened_at es string local de
-    Chile sin tz (mismo formato que open_trade_per_model: _strftime_chile)."""
-    try:
-        from datetime import datetime as _dtpm
-        opened = _dtpm.strptime(ot.get('opened_at', ''), '%Y-%m-%d %H:%M:%S')
-        opened = opened.replace(tzinfo=_TZ_CL)
-        return (_now_chile() - opened).total_seconds() / 3600
-    except Exception:
-        return 0
-
-
 def check_auto_close_per_model(sym, tf, current_price):
 
-    """Verifica todos los modelos para sym/tf, cierra los que toquen SL/TP o
-    excedan el time-limit por TF. Skipea trades marcados como _fake_test (no
-    contaminar historia real).
+    """Verifica todos los modelos para sym/tf, cierra los que toquen SL/TP.
 
-    2026-06-25: a diferencia del trade "macro" (smart_exit.run_smart_exit,
-    que sí tiene time-limit adaptativo por TF), el paper trading per-model
-    nunca cerraba por tiempo -- un trade con SL/TP ancho podia quedar
-    abierto indefinidamente si el precio se movia lateral dentro de la
-    banda (encontrado: NG/4h y WTI/1h abiertos desde 2026-06-18 sin
-    resolver). Reusa el mismo MAX_TRADE_HOURS_BY_TF que smart_exit para
-    no tener dos umbrales distintos."""
-
-    from smart_exit import MAX_TRADE_HOURS_BY_TF as _PM_MAX_H
+    Skipea trades marcados como _fake_test (no contaminar historia real)."""
 
     state = _load_per_model()
 
@@ -2487,14 +2484,6 @@ def check_auto_close_per_model(sym, tf, current_price):
             if current_price >= sl:   hit = 'SL_HIT'
 
             elif current_price <= tp: hit = 'TP_HIT'
-
-        if not hit:
-
-            _max_h = _PM_MAX_H.get(tf.lower(), 96)
-
-            if _per_model_hours_open(ot) >= _max_h:
-
-                hit = 'TIME_LIMIT'
 
         if hit:
 
@@ -2873,6 +2862,14 @@ def check_auto_close(sym, tf, current_price):
     if not (entry and sl and tp and current_price):
         return None
 
+    # tp_final: nivel que de verdad cierra todo. Si el trade tiene TP parcial
+    # real en Binance (tp2 distinto de tp, ver live_executor.execute_entry),
+    # tocar el nivel de TP1 NO debe forzar un cierre local del 100% -- la orden
+    # TP1 ya cerro esa mitad sola en Binance, y la otra mitad sigue corriendo
+    # con SL en break-even hacia TP2. Sin esto, este watcher mataria la segunda
+    # mitad apenas el precio tocara TP1, anulando el sentido del TP parcial.
+    tp_final = trade.get('tp2') or tp
+
     # Trailing stop: activa tras 1xR favorable, sigue a 0.5xR del watermark
     TRAIL_ACTIVATE = 1.0   # multiplicador de sl_dist para activar
     TRAIL_KEEP     = 0.5   # multiplicador de sl_dist para la distancia de trail
@@ -2907,11 +2904,11 @@ def check_auto_close(sym, tf, current_price):
 
     hit = None
     if direction == 'long':
-        if current_price <= sl:    hit = 'SL_HIT'
-        elif current_price >= tp:  hit = 'TP_HIT'
+        if current_price <= sl:          hit = 'SL_HIT'
+        elif current_price >= tp_final:  hit = 'TP_HIT'
     else:
-        if current_price >= sl:    hit = 'SL_HIT'
-        elif current_price <= tp:  hit = 'TP_HIT'
+        if current_price >= sl:          hit = 'SL_HIT'
+        elif current_price <= tp_final:  hit = 'TP_HIT'
 
     if hit:
         reason = 'TRAIL_HIT' if trade.get('trail_active') else hit
@@ -4886,9 +4883,7 @@ def _compute_signals():
 
         # Aplicar SOLO a shorts captura la asimetría del cripto (funding mayormente positivo = shorts ganan).
 
-        # stale (>1h sin fetch exitoso) => tratar como neutral, no usar dato viejo
-        _funding_pct = ((_funding_cache.get(r.get('sym',''), {}).get('value', 0) or 0) * 100
-                        if _funding_fresh(r.get('sym','')) else 0.0)
+        _funding_pct = (_funding_cache.get(r.get('sym',''), {}).get('value', 0) or 0) * 100
 
         _direction = r.get('type', 'long')
 
@@ -5531,23 +5526,13 @@ def _compute_signals():
 
 
 
-    # Detección de evento extremo (cualquier símbolo cruza el umbral) -- solo
-    # sobre datos frescos, un valor stale no puede usarse para decir "no hay
-    # emergencia" ni para disparar una.
+    # Detección de evento extremo (cualquier símbolo cruza el umbral)
 
     _emergency_sym = None
 
     _emergency_val = 0.0
 
-    _stale_funding_syms = []
-
     for _sym_chk, _f_chk in _funding_cache.items():
-
-        if not _funding_fresh(_sym_chk):
-
-            _stale_funding_syms.append(_sym_chk)
-
-            continue
 
         _val_pct_chk = (_f_chk.get('value', 0) or 0) * 100
 
@@ -5556,29 +5541,6 @@ def _compute_signals():
             _emergency_val = _val_pct_chk
 
             _emergency_sym = _sym_chk
-
-    if _stale_funding_syms:
-
-        # 2026-06-24: fapi.binance.com puede bloquear la IP del VPS por horas
-        # (ya paso con fail2ban) -- antes esto era invisible, el kill-switch y
-        # el gate seguian usando el ultimo valor conocido como si fuera fresco.
-        try:
-
-            _sflag = '/opt/sigma/state/funding_stale.flag'
-
-            _snow = time.time()
-
-            _slast = os.path.getmtime(_sflag) if os.path.exists(_sflag) else 0
-
-            if _snow - _slast > 3600:  # cooldown 1h, igual que el de emergencia
-
-                with open(_sflag, 'w') as _sf:
-
-                    _sf.write(','.join(_stale_funding_syms) + '|' + str(int(_snow)))
-
-        except Exception:
-
-            pass
 
     if _emergency_sym and abs(_emergency_val) >= FUNDING_EMERGENCY_THR:
 
@@ -5635,18 +5597,6 @@ def _compute_signals():
             _fsym = _rfd.get('sym')
 
             _fdir = _rfd.get('type', 'long')
-
-            if not _funding_fresh(_fsym):
-
-                # fail-safe: sin dato confiable no se puede evaluar el gate,
-                # bloquear en vez de operar a ciegas con un valor viejo
-                _rfd['signal']           = False
-
-                _rfd['funding_filtered'] = True
-
-                _rfd['reason']           = f'Funding gate: datos stale (>{_FUNDING_MAX_AGE//60}min), bloqueado por seguridad'
-
-                continue
 
             _fcache = _funding_cache.get(_fsym, {})
 
@@ -5890,31 +5840,18 @@ def _compute_signals():
     # champion gate (loop de ejecucion real, mas abajo) va a abortar siempre
     # -- confunde porque parece que deberia operar y nunca lo hace.
     try:
-        _cgan_snap       = __import__('json').loads(
+        _cgan_champs = __import__('json').loads(
             open('/opt/sigma/results/reports/port_snapshot.json').read()
-        )
-        _cgan_champs     = _cgan_snap.get('champions', {})
-        _cgan_champs_sec = _cgan_snap.get('champions_secondary', {})
+        ).get('champions', {})
         for _rfin in results:
             _cgan_slot = f"{_rfin.get('sym','')}|{_rfin.get('tf','')}"
-            _cgan_val      = _cgan_champs.get(_cgan_slot, '')
-            _cgan_val_sec  = _cgan_champs_sec.get(_cgan_slot, '')
-            _cgan_strat     = _cgan_val.split('|')[0] if _cgan_val else ''
-            _cgan_strat_sec = _cgan_val_sec.split('|')[0] if _cgan_val_sec else ''
-            _cgan_is_champ = ((not _cgan_strat) or (_rfin.get('strategy') == _cgan_strat)
-                              or (_rfin.get('strategy') == _cgan_strat_sec))
+            _cgan_val = _cgan_champs.get(_cgan_slot, '')
+            _cgan_strat = _cgan_val.split('|')[0] if _cgan_val else ''
+            _cgan_is_champ = (not _cgan_strat) or (_rfin.get('strategy') == _cgan_strat)
             _rfin['is_champion'] = _cgan_is_champ
             if not _cgan_is_champ and _rfin.get('recommendation') in ('ACTIVAR', 'CONDICIONAL'):
                 _cgan_note = f"No es el champion del slot (campeon: {_cgan_strat}) -- no ejecuta aunque señale"
                 _rfin['reason'] = f"{_rfin.get('reason','')} | {_cgan_note}".strip(' |')
-                # 2026-06-24: ademas de anotar el motivo, bajar el slot a 0 -- mostrar
-                # slot=1/2/3 (igual que un trade que SI va a abrir) en una señal que el
-                # champion gate aborta siempre generaba la confusion ("por que no aparece
-                # en paper/binance si me llego en slot 1"). slot=0 es la misma convencion
-                # que ya usan las demas señales informativas de esta funcion. No tocar si
-                # el modelo ya tiene un trade real abierto (has_open_trade).
-                if not _rfin.get('has_open_trade'):
-                    _rfin['slot'] = 0
     except Exception as _e_cgan:
         print(f'[CHAMPION_ANNOTATE ERROR] {_e_cgan}', flush=True)
 
@@ -6305,7 +6242,7 @@ body{background:radial-gradient(ellipse at top,#11161f 0%,#0a0d12 60%) fixed;col
 
 .badge-grade{display:inline-block;padding:2px 7px;border-radius:10px;font-size:9px;font-weight:700;letter-spacing:.05em;margin-left:6px}
 
-.g-Aplus{background:linear-gradient(135deg,#f2d675,#d4af37 55%,#a9791e);color:#1a1300;box-shadow:0 0 8px rgba(212,175,55,0.55);text-shadow:0 0 4px rgba(255,255,255,0.35)}.g-A{background:#69f0ae;color:#000}.g-B{background:#ffeb3b;color:#000}.g-C{background:#ff9800;color:#000}.g-D{background:#f85149;color:#000}
+.g-Aplus{background:#00c853;color:#000}.g-A{background:#69f0ae;color:#000}.g-B{background:#ffeb3b;color:#000}.g-C{background:#ff9800;color:#000}.g-D{background:#f85149;color:#000}
 
 .open-tag{background:#a78bfa25;color:#a78bfa;font-size:9px;font-weight:700;padding:2px 6px;border-radius:8px;letter-spacing:.05em}
 
@@ -6318,18 +6255,6 @@ body{background:radial-gradient(ellipse at top,#11161f 0%,#0a0d12 60%) fixed;col
 .rec-ESPERAR{background:#58a6ff25;color:#58a6ff}
 
 .rec-NO_ACTIVAR{background:#f8514915;color:#8b949e}
-.champ-wrap{background:linear-gradient(135deg,#1a160a,#0d0e16 55%,#0d0e16);border:1px solid #3a2f10;border-radius:10px;padding:12px 14px;margin-bottom:16px;position:relative;overflow:hidden}
-.champ-wrap::before{content:'';position:absolute;right:-30px;top:-30px;width:140px;height:140px;background:radial-gradient(circle,rgba(212,175,55,0.18),transparent 70%);pointer-events:none}
-.champ-hdr{display:flex;align-items:baseline;gap:8px;margin-bottom:10px}
-.champ-sigma{font-size:18px;color:#d4af37;font-weight:700;text-shadow:0 0 10px rgba(212,175,55,0.6)}
-.champ-title{color:#f2d675;font-size:12px;font-weight:700;letter-spacing:.12em}
-.champ-sub{color:#6e7681;font-size:10px}
-.champ-row{display:flex;gap:8px;flex-wrap:wrap}
-.champ-chip{display:flex;align-items:center;gap:5px;background:#0d0e16;border:1px solid #3a2f10;border-radius:8px;padding:5px 10px;font-size:11px;color:#c9d1d9}
-.champ-chip.champ-first{border-color:#d4af37;box-shadow:0 0 10px rgba(212,175,55,0.35)}
-.champ-rank{color:#6e7681;font-size:9px;font-weight:700}
-.champ-tf{color:#6a737d;font-size:9px}
-.champ-score{color:#d4af37;font-weight:700;font-size:10px;margin-left:2px}
 
 .empty{padding:32px;text-align:center;color:#6e7681;font-size:13px;grid-column:1/-1}
 
@@ -6387,8 +6312,7 @@ body{background:radial-gradient(ellipse at top,#11161f 0%,#0a0d12 60%) fixed;col
 
   </div>
 
-  <!-- HALL OF CHAMPIONS -- vista destacada de modelos recommendation=ACTIVAR -->
-  <div id="champions-strip"></div>
+
 
   <!-- TRADES EN CURSO de TODOS los modelos -->
 
@@ -6550,7 +6474,7 @@ body{background:radial-gradient(ellipse at top,#11161f 0%,#0a0d12 60%) fixed;col
 
 <script>
 
-function sparkSVG(curve, cagrBt, initial, isChampion) {
+function sparkSVG(curve, cagrBt, initial) {
 
   if (!curve || curve.length < 2) {
 
@@ -6622,38 +6546,13 @@ function sparkSVG(curve, cagrBt, initial, isChampion) {
 
   }
 
-  // Glow plasma (mismo lenguaje visual del hero de la landing) + cometa --
-  // el cometa solo corre en cards champion (recommendation ACTIVAR) para no
-  // saturar el render con decenas de animaciones simultaneas en la grilla.
-  const glowId = 'sg' + Math.abs(curve.length*7 + Math.round(last)).toString(36);
-  const pathD = 'M ' + pts.split(' ').join(' L ');
-  const comet = isChampion ? `
-    <circle r="3.2" fill="${color}" opacity="0.30">
-      <animateMotion dur="3.2s" repeatCount="indefinite" path="${pathD}"/>
-    </circle>
-    <circle r="1.4" fill="#fff7d6" opacity="0.95">
-      <animateMotion dur="3.2s" repeatCount="indefinite" path="${pathD}"/>
-    </circle>` : '';
-
   return `<svg viewBox="0 0 100 60" preserveAspectRatio="none">
-
-    <defs><filter id="${glowId}" x="-20%" y="-100%" width="140%" height="300%">
-
-      <feGaussianBlur stdDeviation="${isChampion?1.6:0.9}" result="b"/>
-
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-
-    </filter></defs>
-
-    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="${isChampion?2.4:1.8}" stroke-linejoin="round" opacity="${isChampion?0.5:0.35}" filter="url(#${glowId})"/>
 
     <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round"/>
 
     <polyline points="0,60 ${pts} 100,60" fill="${fill}" stroke="none"/>
 
     ${bt}
-
-    ${comet}
 
   </svg>`;
 
@@ -6667,57 +6566,7 @@ function gradeBadge(g) {
 
   const cls = g==='A+' ? 'g-Aplus' : 'g-'+g.replace(/[^A-Z]/g,'');
 
-  const prefix = g==='A+' ? '&Sigma; ' : '';
-
-  return `<span class="badge-grade ${cls}">${prefix}${g}</span>`;
-
-}
-
-
-
-function renderChampions(arr) {
-
-  const wrap = document.getElementById('champions-strip');
-
-  if (!wrap) return;
-
-  const champs = (arr || []).filter(m => m.recommendation === 'ACTIVAR' && !m.retired)
-
-    .sort((a,b) => b.score - a.score)
-
-    .slice(0, 8);
-
-  if (champs.length === 0) { wrap.innerHTML = ''; return; }
-
-  wrap.innerHTML = `<div class="champ-wrap">
-
-    <div class="champ-hdr">
-
-      <span class="champ-sigma">&Sigma;</span>
-
-      <span class="champ-title">HALL OF CHAMPIONS</span>
-
-      <span class="champ-sub">modelos graduados a ACTIVAR &middot; ordenados por score</span>
-
-    </div>
-
-    <div class="champ-row">
-
-      ${champs.map((m,i) => `<div class="champ-chip${i===0?' champ-first':''}">
-
-        <span class="champ-rank">#${i+1}</span>
-
-        <b>${m.sym}</b><span class="champ-tf">${m.tf.toUpperCase()}</span>
-
-        ${gradeBadge(m.grade_backtest)}
-
-        <span class="champ-score">${m.score.toFixed(0)}</span>
-
-      </div>`).join('')}
-
-    </div>
-
-  </div>`;
+  return `<span class="badge-grade ${cls}">${g}</span>`;
 
 }
 
@@ -6801,9 +6650,13 @@ function renderCard(m, rank) {
 
       const dateShort = (t.closed_at||'').substring(5,16).replace('-','/');
 
+      const tDir = (t.direction||'long') === 'short';
+
+      const dirTag = `<span style="color:${tDir?'#f85149':'#00e676'};font-weight:700;margin-right:4px">${tDir?'S':'L'}</span>`;
+
       return `<div class="mini-trade ${cls}">
 
-        <span>${dateShort}</span>
+        <span>${dirTag}${dateShort}</span>
 
         <span class="dim">${reason}</span>
 
@@ -6865,7 +6718,7 @@ function renderCard(m, rank) {
 
       </div>
 
-      ${sparkSVG(m.equity_curve, m.cagr_backtest, m.initial, m.recommendation === 'ACTIVAR')}
+      ${sparkSVG(m.equity_curve, m.cagr_backtest, m.initial)}
 
     </div>
 
@@ -6967,27 +6820,7 @@ async function _fetchLivePrices(syms) {
 
   const prices = {};
 
-  const _COM_SYMS = new Set(['HG','WTI','XAU','XAG','NG','PL']);
-
-  const comSyms = syms.filter(s => _COM_SYMS.has(s));
-
-  const cryptoSyms = syms.filter(s => !_COM_SYMS.has(s));
-
-  if (comSyms.length > 0) {
-
-    try {
-
-      const r = await fetch('/api/m2_prices');
-
-      const d = await r.json();
-
-      comSyms.forEach(sym => { if (d[sym] != null) prices[sym] = parseFloat(d[sym]); });
-
-    } catch(e) {}
-
-  }
-
-  await Promise.all(cryptoSyms.map(async sym => {
+  await Promise.all(syms.map(async sym => {
 
     try {
 
@@ -7467,8 +7300,6 @@ async function load() {
     document.getElementById('status-summary').style.fontSize = '12px';
 
 
-
-    renderChampions(_cachedArr);
 
     renderAll();
 
@@ -9170,7 +9001,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                           body['entry'], body['sl'], body['tp'], body.get('strategy',''),
                           paper=body.get('paper', False), grade=body.get('grade','B'),
                           wr=body.get('wr', 50.0), cagr=body.get('cagr', 0.0),
-                          kelly_pct=body.get('kelly_pct', 2.2), contracts=body.get('contracts'))
+                          kelly_pct=body.get('kelly_pct', 2.2), contracts=body.get('contracts'),
+                          tp2=body.get('tp2'))
 
             _send_json(self, {'ok': True, 'trade': t})
 
@@ -9188,10 +9020,12 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             # vuelta con contracts/real_equity reales), no repetir -- solo bookkeeping.
             # Si no, y el trade abierto es LIVE (p.ej. boton manual del dashboard),
             # cerrar de verdad en Binance primero -- ver _execute_close().
-            _already_real = body.get('contracts') is not None and body.get('real_equity') is not None
+            _already_real = (body.get('contracts') is not None or body.get('real_pnl_usd') is not None
+                             or body.get('real_equity') is not None)
             if _already_real:
                 t = close_trade(body['sym'], body['tf'], body.get('exit_price', 0), body.get('reason','MANUAL'),
-                                contracts=body.get('contracts'), real_equity=body.get('real_equity'))
+                                contracts=body.get('contracts'), real_equity=body.get('real_equity'),
+                                real_pnl_usd=body.get('real_pnl_usd'))
             else:
                 t = _execute_close(body['sym'], body['tf'], body.get('exit_price', 0), body.get('reason','MANUAL'))
 
@@ -9421,30 +9255,6 @@ def _get_btc_dominance_proxy():
 
 _funding_cache = {}  # sym → {value, ts}
 
-_FUNDING_MAX_AGE = 3600  # refresh cada 30min; el doble sin exito = no confiable
-
-# Universo que _refresh_funding() efectivamente trackea hoy (ver su loop mas
-# abajo). WTI/XAG/NG/PL/HG (Motor 2 ex-XAU) NUNCA se agregaron ahi pese a que
-# fapi.binance.com si tiene funding rate para sus perpetuos -- no son "datos
-# stale", son simplemente "nunca trackeados". El fail-safe de freshness solo
-# debe aplicar al universo que de verdad se intenta mantener fresco.
-_FUNDING_TRACKED_SYMS = ('BTC', 'ETH', 'SOL', 'BNB', 'LTC', 'XAU')
-
-def _funding_fresh(sym):
-    """False si sym esta en el universo trackeado pero el ultimo fetch exitoso
-    tiene mas de _FUNDING_MAX_AGE segundos -- ej. fapi.binance.com
-    bloqueado/caido para esta IP por horas. 2026-06-24: el campo 'ts' se
-    guardaba pero ningun consumidor lo chequeaba, asi que tanto el funding
-    gate normal como el kill-switch de emergencia (Luna/FTX-like) seguian
-    usando un valor stale como si fuera fresco, sin avisar.
-    2026-06-25: el fix de arriba bloqueaba TODA senal de WTI/XAG/NG/PL/HG
-    porque nunca estan en _funding_cache -- no es staleness, es que jamas
-    se trackearon. Para esos simbolos no aplica el fail-safe (mismo
-    comportamiento neutral que tenian antes del fix de ayer)."""
-    if sym not in _FUNDING_TRACKED_SYMS:
-        return True
-    ts = _funding_cache.get(sym, {}).get('ts', 0)
-    return (time.time() - ts) <= _FUNDING_MAX_AGE
 
 
 def _refresh_funding():

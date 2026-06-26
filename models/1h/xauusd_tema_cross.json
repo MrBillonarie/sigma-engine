@@ -63,12 +63,12 @@
     "validated_at": "2026-06-25T12:00:01.752211-04:00"
   },
   "mc": {
-    "mc_cagr_p05": -11.3,
+    "mc_cagr_p05": -21.4,
     "mc_cagr_p50": 134.2,
     "mc_cagr_p95": 518.4,
-    "mc_dd_p50": -55.5,
+    "mc_dd_p50": -55.3,
     "mc_dd_p95": -36.9,
-    "mc_confidence": 92.6,
+    "mc_confidence": 92.1,
     "mc_sims": 1000
   }
 }

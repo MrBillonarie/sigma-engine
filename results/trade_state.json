@@ -1,5 +1,25 @@
 {
-  "open": {},
+  "open": {
+    "WTI_1d": {
+      "sym": "WTI",
+      "tf": "1d",
+      "direction": "short",
+      "entry": 71.7,
+      "sl": 77.4866,
+      "tp": 66.2751,
+      "sl_dist_pct_at_open": 8.0706,
+      "strategy": "heikin_ashi_short",
+      "grade": "A",
+      "wr": 81.1,
+      "cagr": 28.1,
+      "kelly_pct": 1.0,
+      "mode": "LIVE",
+      "opened_at": "2026-06-25 12:32:10.616765",
+      "status": "open",
+      "live_contracts": 0.1,
+      "pnl_pct": 0.4459
+    }
+  },
   "history": [
     {
       "sym": "SOL",

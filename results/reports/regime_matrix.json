@@ -1,5 +1,5 @@
 {
-  "computed_at": "2026-06-25T12:00:01.513103-04:00",
+  "computed_at": "2026-06-26T04:15:01.358196-04:00",
   "global_regime_m1": "BEAR",
   "correlation_global": 62.5,
   "assets": {
@@ -14,11 +14,11 @@
       "source": "global_regime"
     },
     "ETH": {
-      "momentum": 22.0,
+      "momentum": 20.0,
       "volatility": 45.0,
       "correlation": 62.5,
       "macro": 50.0,
-      "composite": 39.3,
+      "composite": 38.6,
       "label": "BEAR",
       "kelly_mult": 0.7,
       "source": "global_regime"
@@ -34,82 +34,82 @@
       "source": "global_regime"
     },
     "BNB": {
-      "momentum": 20.0,
+      "momentum": 23.3,
       "volatility": 45.0,
       "correlation": 62.5,
       "macro": 50.0,
-      "composite": 38.6,
+      "composite": 39.8,
       "label": "BEAR",
       "kelly_mult": 0.7,
       "source": "global_regime"
     },
     "LTC": {
-      "momentum": 25.0,
+      "momentum": 23.3,
       "volatility": 45.0,
       "correlation": 62.5,
       "macro": 50.0,
-      "composite": 40.4,
+      "composite": 39.8,
       "label": "BEAR",
       "kelly_mult": 0.7,
       "source": "global_regime"
     },
     "XAU": {
-      "momentum": 54.3,
-      "volatility": 52.3,
-      "correlation": 30.0,
-      "macro": 50.0,
-      "composite": 54.0,
-      "label": "NEUTRAL",
-      "kelly_mult": 0.9,
-      "source": "csv_based"
-    },
-    "XAG": {
-      "momentum": 37.2,
-      "volatility": 77.3,
-      "correlation": 30.0,
-      "macro": 50.0,
-      "composite": 43.1,
-      "label": "NEUTRAL_VOLATILE",
-      "kelly_mult": 0.9,
-      "source": "csv_based"
-    },
-    "WTI": {
-      "momentum": 54.1,
-      "volatility": 22.7,
-      "correlation": 30.0,
-      "macro": 50.0,
-      "composite": 59.9,
-      "label": "NEUTRAL_QUIET",
-      "kelly_mult": 0.9,
-      "source": "csv_based"
-    },
-    "HG": {
-      "momentum": 75.8,
-      "volatility": 45.5,
-      "correlation": 30.0,
-      "macro": 50.0,
-      "composite": 62.9,
-      "label": "BULL",
-      "kelly_mult": 1.25,
-      "source": "csv_based"
-    },
-    "NG": {
-      "momentum": 25.8,
+      "momentum": 71.0,
       "volatility": 27.3,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 49.1,
+      "composite": 64.9,
+      "label": "BULL_QUIET",
+      "kelly_mult": 1.25,
+      "source": "csv_based"
+    },
+    "XAG": {
+      "momentum": 34.8,
+      "volatility": 61.4,
+      "correlation": 30.0,
+      "macro": 50.0,
+      "composite": 45.4,
+      "label": "BEAR",
+      "kelly_mult": 0.55,
+      "source": "csv_based"
+    },
+    "WTI": {
+      "momentum": 9.1,
+      "volatility": 2.3,
+      "correlation": 30.0,
+      "macro": 50.0,
+      "composite": 48.2,
       "label": "BEAR_QUIET",
       "kelly_mult": 0.7,
       "source": "csv_based"
     },
-    "PL": {
-      "momentum": 91.6,
-      "volatility": 47.7,
+    "HG": {
+      "momentum": 32.5,
+      "volatility": 15.9,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 68.0,
-      "label": "BULL",
+      "composite": 53.7,
+      "label": "BEAR_QUIET",
+      "kelly_mult": 0.7,
+      "source": "csv_based"
+    },
+    "NG": {
+      "momentum": 90.4,
+      "volatility": 22.7,
+      "correlation": 30.0,
+      "macro": 50.0,
+      "composite": 72.6,
+      "label": "BULL_QUIET",
+      "kelly_mult": 1.25,
+      "source": "csv_based"
+    },
+    "PL": {
+      "momentum": 71.6,
+      "volatility": 11.4,
+      "correlation": 30.0,
+      "macro": 50.0,
+      "composite": 68.3,
+      "label": "BULL_QUIET",
       "kelly_mult": 1.25,
       "source": "csv_based"
     }

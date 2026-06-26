@@ -72,7 +72,7 @@ TRIALS_BY_TF = {'4h': 250, '1h': 300, '15m': 300, '5m': 150, '1m': 35}  # 2026-0
 # Con 60 trials Optuna TPE igual encuentra buenas soluciones
 
 # 4 slots paralelos — sigma-trainer pausado, tenemos 3.5+ cores libres
-MAX_PARALLEL = 2   # revertido 2026-06-19: subir a 4 sumado a gap_auto_launcher+adaptive_push_launcher (no coordinados) llevo load a 13.12/8, mismo patron del incidente del 17-06. Investigar coordinacion global antes de volver a subir.
+MAX_PARALLEL = 2   # 2026-06-25: probado subir a 5 -- el cap global SI limita el NUMERO de procesos (max 7), pero no el CPU agregado: con 8 procesos activos el load subio 7.6->11.3 en 2 min (mismo patron del incidente 06-19). Revertido. El cuello de botella real es CPU por trial, no coordinacion de launchers -- no subir sin antes perfilar cuanto CPU usa cada trial tipo (XAU/XAG con macro fetch son mas pesados que crypto puro).
 MIN_RAM_GB  = 2.0   # No lanzar si RAM libre < 2.0GB
 
 running_procs = {}
