@@ -579,23 +579,29 @@ def _get_trade_summary_impl():
 
     all_hist    = state.get('history', [])
 
-    wins        = [t for t in all_hist if t.get('pnl_pct', 0) > 0]
+    # 2026-06-26: excluye trades marcados excluded_from_stats (modelos que
+    # fallan el gate de robustez tan mal que el usuario pidio sacarlos del
+    # WR/PnL agregado puntualmente) -- siguen visibles en el historial crudo,
+    # solo no cuentan en wins/losses/total_pnl/etc.
+    stats_hist  = [t for t in all_hist if not t.get('excluded_from_stats')]
 
-    losses      = [t for t in all_hist if t.get('pnl_pct', 0) < 0]
+    wins        = [t for t in stats_hist if t.get('pnl_pct', 0) > 0]
 
-    n           = len(all_hist)
+    losses      = [t for t in stats_hist if t.get('pnl_pct', 0) < 0]
+
+    n           = len(stats_hist)
 
     live_wr     = round(len(wins) / max(n, 1) * 100, 1)
 
-    total_pnl   = round(sum(t.get('pnl_pct', 0) for t in all_hist), 2)
+    total_pnl   = round(sum(t.get('pnl_pct', 0) for t in stats_hist), 2)
 
     avg_win     = round(sum(t['pnl_pct'] for t in wins) / max(len(wins),1), 2)
 
     avg_loss    = round(sum(t['pnl_pct'] for t in losses) / max(len(losses),1), 2)
 
-    best        = round(max((t.get('pnl_pct',0) for t in all_hist), default=0), 2)
+    best        = round(max((t.get('pnl_pct',0) for t in stats_hist), default=0), 2)
 
-    worst       = round(min((t.get('pnl_pct',0) for t in all_hist), default=0), 2)
+    worst       = round(min((t.get('pnl_pct',0) for t in stats_hist), default=0), 2)
 
     pf          = round(sum(t['pnl_pct'] for t in wins) /
 
@@ -1920,8 +1926,15 @@ def close_trade(sym, tf, exit_price, reason='MANUAL', contracts=None, real_equit
     _save_trades(state)
 
     _update_live_stats(closed)
+    # 2026-06-26: cold storage siempre a escala del equity del HUD (portfolio.equity,
+    # paper) en vez del pnl_dollar real de Binance -- para trades LIVE el profit real
+    # es centavos (posiciones chicas) y desentonaba con los miles de entries previas,
+    # todas construidas sobre la escala paper. Mismo pnl_pct para LIVE y PAPER (se
+    # calcula antes del branch is_live arriba), solo cambia la base en dolares.
+    _cs_equity_base = state.get('portfolio', {}).get('equity', 10000)
+    _cs_pnl_dollar  = round(_cs_equity_base * (closed.get('pnl_pct', 0) / 100), 4)
     _track_btc_cold_storage(
-        closed.get('pnl_dollar', 0), closed.get('sym', ''),
+        _cs_pnl_dollar, closed.get('sym', ''),
         closed.get('tf', ''), reason, exit_price)
 
     return closed
@@ -2334,6 +2347,12 @@ def open_trade_per_model(sym, tf, strategy, direction, entry, sl, tp, kelly_pct=
 
         return None  # ya tiene trade abierto, no duplicar
 
+    if state[key].get('cooldown_until', 0) > time.time():
+
+        return None  # cooldown tras el cierre anterior -- evita reentrada
+        # instantanea (causa raiz del spam SOL/15m regime_adaptive 2026-06-26:
+        # abria y cerraba por SL en menos de 20s, ciclo tras ciclo)
+
     sl_dist = abs(sl - entry) / entry * 100 if entry > 0 else 0
 
     state[key]['open'] = {
@@ -2429,6 +2448,10 @@ def close_trade_per_model(sym, tf, strategy, exit_price, reason='AUTO'):
     state[key]['history'] = (state[key].get('history', []) + [closed])[-200:]
 
     state[key]['open'] = None
+
+    _cd_seconds_pm = 7200 if reason == 'SL_HIT' else 1800 if reason == 'TP_HIT' else 3600
+
+    state[key]['cooldown_until'] = time.time() + _cd_seconds_pm
 
     _save_per_model(state)
 
@@ -8982,6 +9005,30 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
             return
 
+
+
+        if self.path == '/api/aum_update':
+            try:
+                length = int(self.headers.get('Content-Length', 0))
+                body = json.loads(self.rfile.read(length) or b'{}')
+                import hmac as _hmac_aum
+                secrets_path = '/opt/sigma/engine/config/secrets.json'
+                token_real = json.loads(open(secrets_path).read()).get('AUM_UPDATE_TOKEN', '')
+                token_in = str(body.get('token', ''))
+                if not token_real or not _hmac_aum.compare_digest(token_in, token_real):
+                    self.send_response(401); self.end_headers()
+                    return
+                value = float(body['value'])
+                from datetime import datetime as _dt_aum
+                aum_path = '/opt/sigma/results/reports/aum.json'
+                os.makedirs(os.path.dirname(aum_path), exist_ok=True)
+                data = {'aum_total': value, 'updated_at': _dt_aum.now().strftime('%Y-%m-%d %H:%M')}
+                with open(aum_path, 'w') as f:
+                    json.dump(data, f, indent=2)
+                _send_json(self, {'ok': True, **data})
+            except Exception as e:
+                _send_json(self, {'ok': False, 'error': str(e)})
+            return
 
 
         # Resto de POST requieren auth

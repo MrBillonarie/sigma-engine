@@ -1,0 +1,68 @@
+{
+  "symbol": "PL/USD",
+  "tf": "15m",
+  "strategy": "momentum",
+  "params": {
+    "sl_mult": 3.3,
+    "tp_mult": 3.9000000000000004,
+    "cooldown": 6,
+    "rsi_w_thr": 51,
+    "vol_mult": 1.6,
+    "rsi_max": 61
+  },
+  "risk_pct": 2.4,
+  "metrics_is": {
+    "trades": 64,
+    "wr": 57.8,
+    "cagr": 6.9,
+    "dd": -25.7,
+    "pf": 1.36,
+    "trades_year": 17.2
+  },
+  "metrics_oos": {
+    "trades": 58,
+    "wr": 58.6,
+    "cagr": 6.1,
+    "dd": -24.9,
+    "pf": 1.06,
+    "trades_year": 62.3
+  },
+  "oos_days": 340,
+  "saved_at": "2026-06-26 18:11:55.370716",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 58.7,
+      "median": 5.8,
+      "ic95_lo": -49.3,
+      "ic95_hi": 61.0,
+      "ic80_lo": -30.4,
+      "ic80_hi": 43.8,
+      "passed": false
+    },
+    "walk_forward": {
+      "windows": 13,
+      "positive": 8,
+      "pct_positive": 61.5,
+      "avg_cagr": 54.3,
+      "passed": true
+    },
+    "confidence": "MEDIA",
+    "passed_steps": 1,
+    "max_steps": 2,
+    "validated_at": "2026-06-26 18:11:56.106009"
+  },
+  "m2_validation": {
+    "status": "PASS",
+    "reasons": [],
+    "validated_at": "2026-06-26T18:30:01.510836-04:00"
+  },
+  "mc": {
+    "mc_cagr_p05": 4.5,
+    "mc_cagr_p50": 193.2,
+    "mc_cagr_p95": 877.4,
+    "mc_dd_p50": -33.3,
+    "mc_dd_p95": -21.9,
+    "mc_confidence": 96.6,
+    "mc_sims": 1000
+  }
+}

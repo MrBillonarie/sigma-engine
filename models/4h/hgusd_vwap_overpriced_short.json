@@ -61,15 +61,15 @@
     "reasons": [
       "[WARN] IS_OOS_WARN: OOS/IS=0.37 — degradacion moderada"
     ],
-    "validated_at": "2026-06-25T12:00:01.506731-04:00"
+    "validated_at": "2026-06-26T12:00:01.676394-04:00"
   },
   "mc": {
     "mc_cagr_p05": -62.1,
     "mc_cagr_p50": -32.3,
     "mc_cagr_p95": 20.9,
-    "mc_dd_p50": -70.7,
-    "mc_dd_p95": -44.6,
-    "mc_confidence": 12.3,
+    "mc_dd_p50": -71.0,
+    "mc_dd_p95": -43.6,
+    "mc_confidence": 13.9,
     "mc_sims": 1000
   }
 }

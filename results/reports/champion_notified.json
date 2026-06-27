@@ -15,6 +15,7 @@
     "LTC|15m": "psar_flip|long",
     "BNB|15m": "lower_high_structure_short|short",
     "XAG|15m": "pullback|long",
+    "PL|15m": "momentum|long",
     "BTC|4h": "tick_follow_short|short",
     "ETH|4h": "tma_bands|long",
     "HG|4h": "vwap_overpriced_short|short",
@@ -60,10 +61,10 @@
     "SOL|countertrend": "tma_bands|long",
     "ETH|countertrend": "lower_high_structure_short|short"
   },
-  "last_notified_at": "2026-06-22T09:49:43.396174",
+  "last_notified_at": "2026-06-26T18:12:26.062989",
   "changes_summary": {
     "fresh_discoveries": 0,
-    "discoveries": 1,
+    "discoveries": 0,
     "rotations": 0
   }
 }

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-26T04:00:01.787410",
+  "timestamp": "2026-06-27T04:00:01.589578",
   "models": {
     "1h": [
       {
@@ -589,6 +589,14 @@
         "wr_oos": 71.4,
         "dd_oos": -11.1,
         "trades_oos": 28
+      },
+      {
+        "file": "plusd_momentum.json",
+        "strategy": "momentum",
+        "cagr_oos": 6.1,
+        "wr_oos": 58.6,
+        "dd_oos": -24.9,
+        "trades_oos": 58
       },
       {
         "file": "btc_roc_negative_short.json",

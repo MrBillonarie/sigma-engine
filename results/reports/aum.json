@@ -1,1 +1,6 @@
-{"aum_total": 1337.95, "updated_at": "2026-06-19 14:00"}
+{
+  "aum_total": 1780.45908307,
+  "own_capital": 523.39828355,
+  "updated_at": "2026-06-27 04:00",
+  "source": "binance_public_api"
+}

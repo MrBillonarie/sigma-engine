@@ -2497,8 +2497,16 @@ def _check_cooldown_and_set(key, hours=24):
         return True
 
 
-def _tg_new_champion(symbol, tf, strategy, m_oos, prev_cagr, params):
-    """Notifica al grupo cuando se guarda un nuevo campeon."""
+def _tg_new_champion(symbol, tf, strategy, m_oos, prev_cagr, params, confidence=None):
+    """Notifica al grupo cuando se guarda un nuevo campeon.
+
+    confidence viene del gate de robustez completo (auto_validator.validate):
+    ALTA = paso todos los filtros -> SI reemplaza al campeon del dashboard.
+    MEDIA = le falto 1 filtro -> candidato, dashboard decide aparte.
+    BAJA/DESCARTADO -> no se manda (ruido, no aporta a la comunidad).
+    """
+    if confidence in ('BAJA', 'DESCARTADO'):
+        return
     try:
         # Sin cooldown: cada save_model = 1 aviso independiente
         cagr  = m_oos.get('cagr', 0)
@@ -2515,8 +2523,15 @@ def _tg_new_champion(symbol, tf, strategy, m_oos, prev_cagr, params):
         else:
             comp = f"<b>{cagr:.1f}%</b> (primer modelo positivo)"
         grade = "A+" if cagr >= 40 else ("A" if cagr >= 25 else ("B" if cagr >= 15 else "C"))
+        if confidence == 'ALTA':
+            titulo = "⭐ <b>NUEVO CAMPEÓN — "
+            cierre = "Reemplaza al modelo anterior automáticamente."
+        else:
+            titulo = "🔶 <b>CANDIDATO A CAMPEÓN — "
+            cierre = (f"Confianza <b>{confidence or 'pendiente'}</b> — todavía no pasa el gate de "
+                      "robustez completo, no reemplaza al campeón del dashboard hasta lograrlo.")
         msg = (
-            "⭐ <b>NUEVO CAMPEÓN — " + symbol.replace("/USDT","") + " " + tf.upper() + "</b>" + chr(10) + chr(10) +
+            titulo + symbol.replace("/USDT","") + " " + tf.upper() + "</b>" + chr(10) + chr(10) +
             "Estrategia: <code>" + strategy + "</code>" + chr(10) +
             "Grade: <b>" + grade + "</b>" + chr(10) + chr(10) +
             "CAGR OOS: " + comp + chr(10) +
@@ -2524,7 +2539,7 @@ def _tg_new_champion(symbol, tf, strategy, m_oos, prev_cagr, params):
             "Profit Factor: <code>" + str(round(pf, 2)) + "</code>  Trades/año: <code>" + str(round(ty, 1)) + "</code>" + chr(10) +
             "Trades OOS: <code>" + str(int(tr)) + "</code>  Score: <code>" + str(round(score(m_oos), 3)) + "</code>" + chr(10) +
             "sl_mult=" + str(sl_m) + "  tp_mult=" + str(tp_m) + "  (SL/TP se calculan al firmar señal)" + chr(10) + chr(10) +
-            "Reemplaza al modelo anterior automáticamente."
+            cierre
         )
         _ok = _tg_send_champion(msg)
         try:
@@ -2928,14 +2943,10 @@ def run_pipeline(symbol, tf, n_trials=350, loop=False, max_cycles=99, csv_path=N
                     log_event(asset, tf, strategy, 'NUEVO_RECORD',
                               cagr_oos=cagr_oos, wr=m_oos['wr'], note=note,
                               trades_oos=m_oos.get('trades'))
-                    # Notificacion Telegram (con cooldown 2h por key sym_tf_strategy)
-                    try:
-                        _tg_new_champion(symbol, tf, strategy, m_oos, _prev_cagr_tg, bp)
-                    except Exception:
-                        pass
                     log(symbol, tf,
                         f'  NUEVO MEJOR: {strategy} score={new_score:.4f} '
                         f'OOS {cagr_oos:+.1f}% WR{m_oos["wr"]:.0f}% — validando...')
+                    _confidence_tg = None
                     try:
                         from engine.analysis.auto_validator import validate
                         pnl_list   = dt_oos['pnl'].tolist() if not dt_oos.empty else []
@@ -2944,11 +2955,20 @@ def run_pipeline(symbol, tf, n_trials=350, loop=False, max_cycles=99, csv_path=N
                             model_path, df, sig_map[strategy], bp, rp,
                             pnl_list, asset_code, tf
                         )
+                        _confidence_tg = confidence
                         log(symbol, tf, f'  Validacion completa: {confidence}')
                         log_event(asset, tf, strategy, f'VALIDADO_{confidence}',
                                   cagr_oos=cagr_oos, wr=m_oos['wr'])
                     except Exception as e:
                         log(symbol, tf, f'  Validacion error (modelo guardado igual): {e}')
+                    # Notificacion Telegram -- ya con la confianza real del gate de robustez,
+                    # asi no se anuncia "reemplaza al campeon" para modelos que el dashboard
+                    # todavia no va a promover (ver project_champion_telegram_mismatch)
+                    try:
+                        _tg_new_champion(symbol, tf, strategy, m_oos, _prev_cagr_tg, bp,
+                                          confidence=_confidence_tg)
+                    except Exception:
+                        pass
                 else:
                     log(symbol, tf,
                         f'  Positivo score={new_score:.4f} pero no mejor que '

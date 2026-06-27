@@ -312,22 +312,6 @@ def _ram_libre_mb():
     return 9999
 
 
-def _pipeline_ram_mb():
-    """RAM total usada por todos los procesos asset_pipeline activos."""
-    import subprocess as _sp
-    try:
-        out = _sp.check_output(['ps', 'aux'], text=True)
-        total = 0
-        for _l in out.split('\n'):
-            if 'asset_pipeline' in _l and 'grep' not in _l:
-                parts = _l.split()
-                if len(parts) > 5:
-                    total += int(parts[5]) // 1024
-        return total
-    except Exception:
-        return 0
-
-
 def launch(tf, trials, force_asset=None, focus='all'):
     # 2026-05-14: el trainer usa conceptos 'explore'/'new' que asset_pipeline NO acepta.
     # asset_pipeline.argparse solo acepta choices=['long','short','both','all'].
@@ -359,15 +343,18 @@ def launch(tf, trials, force_asset=None, focus='all'):
     # (ver utils/parallel_guard.py) -- antes continuous_trainer no veia a los otros 3
     if global_slots_available() <= 0:
         return None, 'global_cap_reached'
-    # RAM Guard: no lanzar si RAM insuficiente
+    # RAM Guard: no lanzar si RAM disponible del sistema es baja. Mismo criterio
+    # (MemAvailable de /proc/meminfo) que usa gap_auto_launcher via `free -m` --
+    # antes habia un segundo chequeo aqui (_pipeline_ram_mb: suma de RSS de
+    # procesos 'asset_pipeline' especificamente) que ningun otro launcher
+    # replica, no contaba push_grade_a/countertrend_objective, y bloqueaba
+    # lanzamientos (visto 2026-06-26: "Pipelines usan 4373MB" con 9.6GB de RAM
+    # realmente disponible en el sistema) sin aportar una senal mas confiable
+    # que el cap global de procesos (7) + este chequeo de RAM real.
     _rl = _ram_libre_mb()
-    _pr = _pipeline_ram_mb()
     if _rl < 2000:
         log(f'  [RAM GUARD] {_rl}MB libres — skip lanzamiento')
         return None, f'ram_guard({_rl}MB)'
-    if _pr > 3500:
-        log(f'  [RAM GUARD] Pipelines usan {_pr}MB — skip')
-        return None, f'ram_pipelines({_pr}MB)'
     proc = subprocess.Popen(args, env=env, cwd=str(OUTPUT_DIR))
     focus_tag = f' [{focus.upper()}]' if focus != 'all' else ''
     return proc, f'pipeline {symbol} {tf}{focus_tag} t={trials}'

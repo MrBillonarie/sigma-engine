@@ -35,7 +35,6 @@ def log(msg):
 
 # Config
 MIN_RAM_FREE_MB = 4000  # 4GB avail minimo
-MAX_PARALLEL = 4  # 2026-06-19: subido de 2 a 4 tras auditoria de correlacion sin hallazgos de riesgo en live (era 9 pre-live, 2 el dia que activo live 17/06)
 TRIALS_BY_TF = {'5m': 80, '15m': 120, '1h': 150, '4h': 150}  # per-TF: 5m menor (noisier pero rapido), 1h/4h mayor calidad
 TRIALS_PER_SLOT = 150  # fallback
 CSV_PATHS = {
@@ -93,7 +92,7 @@ for line in r.stdout.split(chr(10)):
     if sym and tf and focus and focus in ('long','short'):
         active_slots.add((sym, tf, focus))
 
-log('Trials activos: ' + str(n_active) + ' / max ' + str(MAX_PARALLEL))
+log('Trials activos: ' + str(n_active) + ' / techo global ' + str(GLOBAL_TRAINING_CAP))
 log('  Slots cubiertos por trials: ' + str(sorted(active_slots)))
 
 # 3. RAM check
@@ -142,13 +141,21 @@ MAX_TOTAL_HARD = GLOBAL_TRAINING_CAP
 if n_active >= MAX_TOTAL_HARD:
     log('STOP: techo absoluto (' + str(n_active) + ' >= ' + str(MAX_TOTAL_HARD) + ' procesos totales)')
     import sys as _sys; _sys.exit(0)
-slots_to_launch = MAX_PARALLEL - n_active
+# 2026-06-26: antes usaba MAX_PARALLEL (4) en vez del techo real compartido (7) --
+# eso hacia que gap_auto_launcher se autobloqueara ("ya estamos en max parallel")
+# cuando OTROS launchers (continuous_trainer, master_pipeline, commodities) ya
+# sumaban 4+ procesos, aunque el techo global todavia tuviera cupo libre real.
+# Confirmado en gap_auto_launcher.log: n_active=6 < MAX_TOTAL_HARD=7, pero
+# slots_to_launch con MAX_PARALLEL daba negativo y bloqueaba el ataque a gaps
+# reales (BNB/5m, LTC/5m, etc) que es justamente el trabajo mas valioso de este
+# launcher. Usar el mismo techo compartido que ya respetan todos.
+slots_to_launch = MAX_TOTAL_HARD - n_active
 if avail_mb < MIN_RAM_FREE_MB:
     log('STOP: RAM insuficiente (avail ' + str(avail_mb) + 'MB < ' + str(MIN_RAM_FREE_MB) + 'MB)')
     sys.exit(0)
 
 if slots_to_launch <= 0:
-    log('STOP: ya estamos en max parallel')
+    log('STOP: sin cupo en el techo global')
     sys.exit(0)
 
 launched = 0

@@ -1,5 +1,5 @@
 # SIGMA — Snapshot de Arquitectura
-> Generado automaticamente: 2026-06-26 00:00:00
+> Generado automaticamente: 2026-06-27 00:00:00
 > Este archivo se regenera cada dia. No editar a mano.
 
 ## Servicios systemd (sigma-*)
@@ -30,7 +30,7 @@
 - `sigma-milestone.timer` — Run SIGMA Telegram Milestone Monitor every 10 minutes
 - `sigma-watchdog.timer` — Run SIGMA Watchdog every 5 minutes
 
-## Crontab (55 líneas activas)
+## Crontab (56 líneas activas)
 
 - `0 2 * * 0 cd /opt/sigma && /opt/sigma_env/bin/python engine/optimization/wft_all_models.py >> results/reports/wft_weekly.log 2>&1`
 - `0 2 1 * * cd /opt/sigma && /opt/sigma_env/bin/python -u run_mc_all.py >> results/reports/mc_monthly.log 2>&1`
@@ -87,6 +87,7 @@
 - `0 9 * * 1 cd /opt/sigma && /opt/sigma_env/bin/python scripts/reto_digest_cron.py >> results/reports/reto_digest.log 2>&1`
 - `0 */6 * * * cd /opt/sigma && /opt/sigma_env/bin/python selection_bias_report.py >> /opt/sigma/results/reports/selection_bias.log 2>&1`
 - `*/5 * * * * /opt/sigma_env/bin/python /opt/sigma/scripts/funding_stale_dispatcher.py >> /var/log/funding_stale.log 2>&1`
+- `*/30 * * * * cd /opt/sigma && /opt/sigma_env/bin/python engine/live/sync_binance_lead_stats.py >> /opt/sigma/logs/sync_binance_lead_stats.log 2>&1`
 
 ## Manifiesto (baseline conocido)
 

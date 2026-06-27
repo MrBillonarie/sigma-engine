@@ -431,7 +431,8 @@ def cmd_semana(chat_id, trades):
     hist     = (trades or {}).get("history", [])
     port     = (trades or {}).get("portfolio", {})
     week_ago = (now - timedelta(days=7)).strftime("%Y-%m-%d")
-    semana   = [t for t in hist if str(t.get("closed_at","")) >= week_ago]
+    semana   = [t for t in hist if str(t.get("closed_at","")) >= week_ago
+               and not t.get("excluded_from_stats")]
 
     if not semana:
         send("Sin trades en los ultimos 7 dias.", chat_id=chat_id)
@@ -446,8 +447,9 @@ def cmd_semana(chat_id, trades):
         icon = "🟢" if pnl >= 0 else "🔴"
         blen = min(int(abs(pnl) * 2), 10)
         dia  = str(t.get("closed_at",""))[:10][5:]
+        dirt = "L" if t.get("direction", "long") == "long" else "S"
         lines.append(
-            f"  {icon} {t.get('sym'):<4} {t.get('tf','').upper():<4} "
+            f"  {icon} {t.get('sym'):<4} {t.get('tf','').upper():<4} {dirt} "
             f"{'█'*blen:<10} <code>{pnl:+.2f}%</code>  {dia}"
         )
 
@@ -907,6 +909,66 @@ def cmd_aum(chat_id, args):
         f"Capital de seguidores (estimado): {followers_txt}\n\n"
         f"Ultima actualizacion: {data.get('updated_at','?')}\n"
         f"Actualizar: <code>/aum 1337.95</code>",
+        chat_id=chat_id
+    )
+
+
+# ── Copy traders activos (conteo de seguidores, Binance no lo expone) ────
+# Mismo motivo que AUM: el numero de personas copiando el Lead Trader solo
+# se ve en https://www.binance.com/.../copy-trading/lead-details/<id>,
+# no hay endpoint publico ni autenticado que lo entregue.
+_COPYTRADERS_FILE = '/opt/sigma/results/reports/copytraders.json'
+
+def _copytraders_load():
+    import json as _j, os as _os
+    if not _os.path.exists(_COPYTRADERS_FILE):
+        return {"copytraders_total": None, "updated_at": None}
+    try:
+        with open(_COPYTRADERS_FILE) as f:
+            return _j.load(f)
+    except Exception:
+        return {"copytraders_total": None, "updated_at": None}
+
+def _copytraders_save(value):
+    import json as _j, os as _os, datetime as _dt
+    _os.makedirs(_os.path.dirname(_COPYTRADERS_FILE), exist_ok=True)
+    data = {"copytraders_total": value, "updated_at": _dt.datetime.now().strftime('%Y-%m-%d %H:%M')}
+    with open(_COPYTRADERS_FILE, 'w') as f:
+        _j.dump(data, f, indent=2)
+    return data
+
+def cmd_copytraders(chat_id, args):
+    """/copytraders -> muestra el conteo guardado. /copytraders N -> lo actualiza."""
+    args = (args or "").strip()
+    if args:
+        try:
+            value = int(args.replace(',', ''))
+        except ValueError:
+            send(f"No pude leer ese numero: <code>{args}</code>\nUso: <code>/copytraders 11</code>", chat_id=chat_id)
+            return
+        data = _copytraders_save(value)
+        send(
+            f"✅ <b>Copy traders actualizado</b>\n"
+            f"Total: <b>{value}</b> siguiendo el Lead Trader.\n\n"
+            f"Fuente: pagina publica de Copy Trading (manual, Binance no la expone por API).",
+            chat_id=chat_id
+        )
+        return
+
+    data = _copytraders_load()
+    total = data.get('copytraders_total')
+    if total is None:
+        send(
+            "Todavia no hay copy traders guardados.\n"
+            "Usa <code>/copytraders 11</code> con el numero que ves en tu pagina de Copy Trading.",
+            chat_id=chat_id
+        )
+        return
+    send(
+        f"👥 <b>COPY TRADERS ACTIVOS</b>\n\n"
+        f"Total: <b>{total}</b>\n"
+        f"Ultima actualizacion: {data.get('updated_at','?')}\n"
+        f"Actualizar: <code>/copytraders 11</code>",
         chat_id=chat_id
     )
 
@@ -1383,6 +1445,8 @@ def cmd_ayuda(chat_id):
         "/fire set N D  Configurar meta FIRE ($N en D días)\n"
         "/aum           AUM total gestionado (propio + seguidores)\n"
         "/aum N         Actualizar el AUM total (manual)\n"
+        "/copytraders   Copy traders activos siguiendo el Lead Trader\n"
+        "/copytraders N Actualizar el conteo de copy traders (manual)\n"
         "/reto          Progreso al reto: $1000 de profit antes del 28-08\n"
         "/reto comision N  Actualizar comisión de seguidores (manual)\n"
         f"/checklist    Checklist para activar live trading\n"
@@ -1422,6 +1486,8 @@ def handle_command(text, chat_id, signals, trades):
             cmd_fire(chat_id)
     elif cmd_raw == "/aum":
         cmd_aum(chat_id, args)
+    elif cmd_raw == "/copytraders":
+        cmd_copytraders(chat_id, args)
     elif cmd_raw == "/reto":
         if args.lower().startswith("comision"):
             cmd_reto_comision(chat_id, args[8:].strip())

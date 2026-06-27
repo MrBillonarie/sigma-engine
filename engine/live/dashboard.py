@@ -3005,8 +3005,12 @@ function renderHistTablePage(page) {{
   tbody.innerHTML = slice.map(function(t) {{
     const pnl = t.pnl_pct || 0;
     const col = pnl >= 0 ? '#00e676' : '#f44336';
+    // USD a escala del equity del HUD (paper), NO el dolar real de Binance --
+    // mismo criterio que el cold storage tracker: posiciones LIVE chicas dan
+    // centavos reales que desentonan con la escala que usa el resto del HUD.
+    const pnlUsd = (pnl / 100) * ((_portCache && _portCache.equity) || 10000);
     const icon = t.reason === 'TP_HIT' ? 'TP' : t.reason === 'SL_HIT' ? 'SL' : t.reason === 'TRAIL_HIT' ? 'TRAIL' : (t.reason||'?');
-    const iconCol = t.reason === 'TP_HIT' ? '#00e676' : t.reason === 'SL_HIT' ? '#f44336' : t.reason === 'TRAIL_HIT' ? '#f39c12' : '#555';
+    const iconCol = (t.pnl_pct||0) >= 0 ? '#00e676' : '#f44336';
     return '<tr>'
       + '<td style="' + TD + ';font-weight:bold;color:' + iconCol + '">' + icon + '</td>'
       + '<td style="' + TD + '"><b style="color:#888">' + (t.sym||'') + '</b></td>'
@@ -3017,7 +3021,8 @@ function renderHistTablePage(page) {{
       + '<td style="' + TDR + ';font-family:monospace;color:#666">' + (t.exit_price||'?') + '</td>'
       + '<td style="' + TDR + ';color:' + col + ';font-weight:bold">' + (pnl>=0?'+':'') + pnl.toFixed(2) + '%</td>'
       + '<td style="' + TD + ';color:#444;font-size:10px">' + (t.closed_at||'').substring(5,16) + '</td>'
-      + '<td colspan="2"></td>'
+      + '<td style="' + TDC + '"><span style="background:' + (t.direction==='short'?'#f44336':'#00c853') + ';color:#000;padding:1px 6px;border-radius:8px;font-weight:bold;font-size:10px">' + (t.direction==='short'?'SHORT':'LONG') + '</span></td>'
+      + '<td style="' + TDR + ';font-family:monospace;color:' + col + ';font-weight:bold">' + (pnlUsd>=0?'+$':'-$') + Math.abs(pnlUsd).toFixed(2) + '</td>'
       + '</tr>';
   }}).join('') || '<tr><td colspan="10" style="color:#444;text-align:center;padding:14px">-</td></tr>';
   const pag = document.getElementById('hist-pagination');
@@ -3439,6 +3444,7 @@ async function loadTrades() {{
     const pnlCol  = (st.total_pnl||0) >= 0 ? '#00e676' : '#f44336';
     const wrCol   = (st.win_rate||0) >= 55 ? '#00c853' : (st.win_rate||0) >= 45 ? '#ff9800' : '#f44336';
 
+
     // Precios en vivo: /api/m2_prices para commodities, Binance para crypto
     const _COM_SYMS = new Set(['HG','WTI','XAU','XAG','NG','PL']);
     const _livePrices = {{}};
@@ -3591,7 +3597,7 @@ async function loadTrades() {{
           <th style="${{TH}}">Resultado</th><th style="${{TH}}">Activo</th><th style="${{TH}}">TF</th>
           <th style="${{TH}}">Estrategia</th><th style="${{THC}}">Grade</th>
           <th style="${{THR}}">Entrada</th><th style="${{THR}}">Salida</th>
-          <th style="${{THR}}">P&L</th><th style="${{THR}}">Hora</th><th colspan="2"></th>
+          <th style="${{THR}}">P&L</th><th style="${{THR}}">Hora</th><th style="${{THC}}">Dir</th><th style="${{THR}}">USD</th>
         </tr></thead>
         <tbody id="hist-tbody"></tbody>
       </table>`:'<p style="color:#333;font-size:12px;margin:6px 0">Sin historial aún — los trades cerrarán solos cuando toquen SL o TP</p>'}}

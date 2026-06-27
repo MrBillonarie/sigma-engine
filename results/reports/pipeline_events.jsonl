@@ -1,200 +1,200 @@
-{"ts": "01:13", "asset": "ETH", "tf": "15M", "strategy": "ichimoku", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:16", "asset": "LTC", "tf": "15M", "strategy": "breakdown", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:16", "asset": "BNB", "tf": "15M", "strategy": "lower_high_break_short", "result": "OOS_NEG", "cagr_oos": -20.2, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "01:17", "asset": "XAGUSD", "tf": "15M", "strategy": "vwap_deviation", "result": "OOS_NEG", "cagr_oos": -13.7, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "01:18", "asset": "XAUUSD", "tf": "15M", "strategy": "volatility_breakout", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:20", "asset": "ETH", "tf": "15M", "strategy": "pivot_bounce", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:21", "asset": "BNB", "tf": "15M", "strategy": "supply_zone_rejection", "result": "SIN_TRADES", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "OOS < 5 trades, params muy selectivos"}
-{"ts": "01:23", "asset": "LTC", "tf": "15M", "strategy": "rsi_overbought_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:24", "asset": "XAGUSD", "tf": "15M", "strategy": "volatility_breakout", "result": "OOS_NEG", "cagr_oos": -3.1, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "01:24", "asset": "XAUUSD", "tf": "15M", "strategy": "cci_reversal", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:28", "asset": "BNB", "tf": "15M", "strategy": "stoch_rsi_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:28", "asset": "ETH", "tf": "15M", "strategy": "trend_strength", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:29", "asset": "XAGUSD", "tf": "15M", "strategy": "cci_reversal", "result": "OOS_NEG", "cagr_oos": -2.3, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "01:30", "asset": "XAUUSD", "tf": "15M", "strategy": "williams_r", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:33", "asset": "LTC", "tf": "15M", "strategy": "ema200_rejection_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:33", "asset": "BNB", "tf": "15M", "strategy": "engulfing_short", "result": "OOS_NEG", "cagr_oos": -24.6, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "01:33", "asset": "XAGUSD", "tf": "15M", "strategy": "williams_r", "result": "OOS_NEG", "cagr_oos": -4.5, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "01:35", "asset": "ETH", "tf": "15M", "strategy": "elder_impulse", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:36", "asset": "XAUUSD", "tf": "15M", "strategy": "stoch_rsi", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:39", "asset": "XAGUSD", "tf": "15M", "strategy": "stoch_rsi", "result": "OOS_NEG", "cagr_oos": -15.4, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "01:39", "asset": "XAGUSD", "tf": "15M", "strategy": "engulfing", "result": "OOS_NEG", "cagr_oos": -5.5, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "01:39", "asset": "BNB", "tf": "15M", "strategy": "inside_bar_short", "result": "OOS_NEG", "cagr_oos": -34.5, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "01:41", "asset": "XAUUSD", "tf": "15M", "strategy": "engulfing", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:42", "asset": "ETH", "tf": "15M", "strategy": "squeeze_pro", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:43", "asset": "LTC", "tf": "15M", "strategy": "macd_bear_cross", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:43", "asset": "XAGUSD", "tf": "15M", "strategy": "rsi_divergence", "result": "OOS_NEG", "cagr_oos": -8.7, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "01:45", "asset": "BNB", "tf": "15M", "strategy": "zscore_rich_short", "result": "OOS_NEG", "cagr_oos": -14.9, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "01:47", "asset": "XAUUSD", "tf": "15M", "strategy": "rsi_divergence", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:48", "asset": "ETH", "tf": "15M", "strategy": "obv_divergence", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:49", "asset": "XAGUSD", "tf": "15M", "strategy": "turtle_breakout_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:52", "asset": "BNB", "tf": "15M", "strategy": "heikin_ashi_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:52", "asset": "XAUUSD", "tf": "15M", "strategy": "turtle_breakout_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:53", "asset": "LTC", "tf": "15M", "strategy": "bearish_rsi_divergence", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:55", "asset": "XAGUSD", "tf": "15M", "strategy": "zscore_revert_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:55", "asset": "ETH", "tf": "15M", "strategy": "chaikin_mf", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:57", "asset": "XAUUSD", "tf": "15M", "strategy": "zscore_revert_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "01:57", "asset": "BNB", "tf": "15M", "strategy": "atr_channel_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:00", "asset": "XAGUSD", "tf": "15M", "strategy": "macro_momentum_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:00", "asset": "ETH", "tf": "15M", "strategy": "williams_r", "result": "POSITIVO_NO_MEJOR", "cagr_oos": 8.0, "wr": 59.2, "trades_oos": 49, "note": "No supera score record 0.6936"}
-{"ts": "02:02", "asset": "BNB", "tf": "15M", "strategy": "supertrend_short", "result": "OOS_NEG", "cagr_oos": -47.6, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "02:03", "asset": "XAUUSD", "tf": "15M", "strategy": "macro_momentum_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:04", "asset": "LTC", "tf": "15M", "strategy": "stoch_rsi_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:06", "asset": "XAGUSD", "tf": "15M", "strategy": "keltner_trend_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:08", "asset": "ETH", "tf": "15M", "strategy": "stoch_rsi", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:08", "asset": "XAUUSD", "tf": "15M", "strategy": "keltner_trend_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:08", "asset": "BNB", "tf": "15M", "strategy": "bb_squeeze_short", "result": "OOS_NEG", "cagr_oos": -21.8, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "02:11", "asset": "XAGUSD", "tf": "15M", "strategy": "atr_compression_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:13", "asset": "XAUUSD", "tf": "15M", "strategy": "atr_compression_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:13", "asset": "BNB", "tf": "15M", "strategy": "donchian_breakdown", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:14", "asset": "LTC", "tf": "15M", "strategy": "engulfing_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:14", "asset": "ETH", "tf": "15M", "strategy": "engulfing", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:17", "asset": "XAGUSD", "tf": "15M", "strategy": "bollinger_squeeze_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "rsi_trend_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "aroon_cross_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "bb_bandwidth_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "break_of_structure_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "chaikin_mf_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "consecutive_wick_top", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "elder_impulse_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "ema_ribbon_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "ema_triple_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "htf_divergence_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "ichimoku_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "linear_reg_break_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "lower_lows_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "macd_divergence_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "mean_rev_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "mfi_overbought_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "micro_momentum_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "obv_divergence_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "open_close_cross_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "pin_bar_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "pivot_rejection", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "psar_flip_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "range_scalp_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "session_open_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "squeeze_pro_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "tema_cross_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "tick_follow_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "tma_bands_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "trend_strength_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "volatility_breakdown", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "volume_exhaustion_top", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "vwap_rejection", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "BNB", "tf": "15M", "strategy": "wma_momentum_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:19", "asset": "XAUUSD", "tf": "15M", "strategy": "bollinger_squeeze_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:21", "asset": "ETH", "tf": "15M", "strategy": "turtle_breakout_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:21", "asset": "XAGUSD", "tf": "15M", "strategy": "vwap_deviation_long", "result": "SIN_TRADES", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "OOS < 5 trades, params muy selectivos"}
-{"ts": "02:24", "asset": "XAUUSD", "tf": "15M", "strategy": "vwap_deviation_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:24", "asset": "LTC", "tf": "15M", "strategy": "three_candles_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:24", "asset": "BNB", "tf": "15M", "strategy": "turtle_breakout_short", "result": "OOS_NEG", "cagr_oos": -26.1, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "02:27", "asset": "XAGUSD", "tf": "15M", "strategy": "fibonacci_retracement_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:27", "asset": "ETH", "tf": "15M", "strategy": "ny_session_breakout_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:29", "asset": "XAUUSD", "tf": "15M", "strategy": "fibonacci_retracement_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:29", "asset": "BNB", "tf": "15M", "strategy": "zscore_revert_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:33", "asset": "XAGUSD", "tf": "15M", "strategy": "volume_climax_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:33", "asset": "BNB", "tf": "15M", "strategy": "atr_compression_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:34", "asset": "LTC", "tf": "15M", "strategy": "inside_bar_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:34", "asset": "ETH", "tf": "15M", "strategy": "london_open_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:35", "asset": "XAUUSD", "tf": "15M", "strategy": "volume_climax_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:38", "asset": "XAGUSD", "tf": "15M", "strategy": "higher_low_structure_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:39", "asset": "BNB", "tf": "15M", "strategy": "volume_climax_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:41", "asset": "ETH", "tf": "15M", "strategy": "macro_momentum_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:41", "asset": "XAUUSD", "tf": "15M", "strategy": "higher_low_structure_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:44", "asset": "XAGUSD", "tf": "15M", "strategy": "safe_haven_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:45", "asset": "BNB", "tf": "15M", "strategy": "bollinger_squeeze_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:46", "asset": "LTC", "tf": "15M", "strategy": "heikin_ashi_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:46", "asset": "XAUUSD", "tf": "15M", "strategy": "safe_haven_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:47", "asset": "ETH", "tf": "15M", "strategy": "keltner_trend_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:49", "asset": "XAGUSD", "tf": "15M", "strategy": "dxy_weakness_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:50", "asset": "BNB", "tf": "15M", "strategy": "vwap_deviation_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:51", "asset": "XAUUSD", "tf": "15M", "strategy": "ny_session_breakout_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:53", "asset": "ETH", "tf": "15M", "strategy": "energy_seasonal_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:54", "asset": "LTC", "tf": "15M", "strategy": "dmi_bear", "result": "OOS_NEG", "cagr_oos": -28.6, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "02:55", "asset": "XAGUSD", "tf": "15M", "strategy": "ny_session_breakout_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:55", "asset": "BNB", "tf": "15M", "strategy": "fibonacci_retracement_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "02:56", "asset": "XAUUSD", "tf": "15M", "strategy": "london_open_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:00", "asset": "ETH", "tf": "15M", "strategy": "dxy_weakness_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:01", "asset": "XAGUSD", "tf": "15M", "strategy": "london_open_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:01", "asset": "BNB", "tf": "15M", "strategy": "ng_seasonal_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:02", "asset": "XAUUSD", "tf": "15M", "strategy": "breakdown", "result": "OOS_NEG", "cagr_oos": -2.6, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "03:04", "asset": "LTC", "tf": "15M", "strategy": "keltner_breakdown_short", "result": "OOS_NEG", "cagr_oos": -14.2, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "03:06", "asset": "BNB", "tf": "15M", "strategy": "cot_proxy_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:06", "asset": "ETH", "tf": "15M", "strategy": "copper_cycle_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:06", "asset": "XAGUSD", "tf": "15M", "strategy": "breakdown", "result": "SIN_TRADES", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "OOS < 5 trades, params muy selectivos"}
-{"ts": "03:07", "asset": "XAUUSD", "tf": "15M", "strategy": "pullback_short", "result": "OOS_NEG", "cagr_oos": -8.6, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "03:12", "asset": "ETH", "tf": "15M", "strategy": "atr_compression_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:13", "asset": "XAUUSD", "tf": "15M", "strategy": "momentum_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:13", "asset": "XAGUSD", "tf": "15M", "strategy": "pullback_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:15", "asset": "LTC", "tf": "15M", "strategy": "supertrend_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:18", "asset": "XAUUSD", "tf": "15M", "strategy": "rsi_overbought_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:19", "asset": "ETH", "tf": "15M", "strategy": "higher_low_structure_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:21", "asset": "XAGUSD", "tf": "15M", "strategy": "momentum_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:25", "asset": "XAUUSD", "tf": "15M", "strategy": "death_cross_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:26", "asset": "ETH", "tf": "15M", "strategy": "bollinger_squeeze_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:26", "asset": "LTC", "tf": "15M", "strategy": "bb_squeeze_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:27", "asset": "XAGUSD", "tf": "15M", "strategy": "rsi_overbought_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:31", "asset": "XAUUSD", "tf": "15M", "strategy": "ema200_rejection_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:33", "asset": "ETH", "tf": "15M", "strategy": "fibonacci_retracement_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:34", "asset": "XAGUSD", "tf": "15M", "strategy": "death_cross_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:36", "asset": "LTC", "tf": "15M", "strategy": "donchian_breakdown", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:37", "asset": "XAUUSD", "tf": "15M", "strategy": "macd_bear_cross", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:39", "asset": "ETH", "tf": "15M", "strategy": "rsi_overbought_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:41", "asset": "XAGUSD", "tf": "15M", "strategy": "ema200_rejection_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:44", "asset": "XAUUSD", "tf": "15M", "strategy": "lower_high_break_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "rsi_trend_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "aroon_cross_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "bb_bandwidth_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "break_of_structure_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "chaikin_mf_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "consecutive_wick_top", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "elder_impulse_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "ema_ribbon_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "ema_triple_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "htf_divergence_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "ichimoku_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "linear_reg_break_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "lower_lows_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "macd_divergence_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "mean_rev_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "mfi_overbought_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "micro_momentum_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "obv_divergence_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "open_close_cross_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "pin_bar_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "pivot_rejection", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "psar_flip_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "range_scalp_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "session_open_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "squeeze_pro_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "tema_cross_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "tick_follow_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "tma_bands_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "trend_strength_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "volatility_breakdown", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "volume_exhaustion_top", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "vwap_rejection", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "wma_momentum_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:47", "asset": "ETH", "tf": "15M", "strategy": "death_cross_short", "result": "OOS_NEG", "cagr_oos": -6.9, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "03:48", "asset": "XAGUSD", "tf": "15M", "strategy": "macd_bear_cross", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:50", "asset": "XAUUSD", "tf": "15M", "strategy": "wedge_breakdown_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:56", "asset": "XAGUSD", "tf": "15M", "strategy": "lower_high_break_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:56", "asset": "ETH", "tf": "15M", "strategy": "ema200_rejection_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:56", "asset": "XAUUSD", "tf": "15M", "strategy": "supply_zone_rejection", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "03:56", "asset": "LTC", "tf": "15M", "strategy": "zscore_revert_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "04:03", "asset": "XAUUSD", "tf": "15M", "strategy": "bearish_rsi_divergence", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "04:03", "asset": "ETH", "tf": "15M", "strategy": "cci_reversal_short", "result": "OOS_NEG", "cagr_oos": -9.1, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "04:04", "asset": "XAGUSD", "tf": "15M", "strategy": "wedge_breakdown_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "04:04", "asset": "LTC", "tf": "15M", "strategy": "atr_compression_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "04:09", "asset": "XAUUSD", "tf": "15M", "strategy": "volume_climax_top", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "04:09", "asset": "XAGUSD", "tf": "15M", "strategy": "supply_zone_rejection", "result": "OOS_NEG", "cagr_oos": -0.7, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "04:12", "asset": "ETH", "tf": "15M", "strategy": "engulfing_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "04:14", "asset": "LTC", "tf": "15M", "strategy": "risk_on_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "04:15", "asset": "XAUUSD", "tf": "15M", "strategy": "range_break_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "04:17", "asset": "XAGUSD", "tf": "15M", "strategy": "bearish_rsi_divergence", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "04:21", "asset": "ETH", "tf": "15M", "strategy": "zscore_rich_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "04:21", "asset": "XAUUSD", "tf": "15M", "strategy": "macd_zero_cross_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "04:23", "asset": "XAGUSD", "tf": "15M", "strategy": "volume_climax_top", "result": "OOS_NEG", "cagr_oos": -4.2, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
-{"ts": "04:24", "asset": "LTC", "tf": "15M", "strategy": "volume_climax_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
-{"ts": "04:28", "asset": "XAUUSD", "tf": "15M", "strategy": "stoch_rsi_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:17", "asset": "BNB", "tf": "4H", "strategy": "vwap_rejection", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:17", "asset": "BNB", "tf": "4H", "strategy": "wma_momentum_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:17", "asset": "WTIUSD", "tf": "15M", "strategy": "vwap_deviation_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:17", "asset": "BTC", "tf": "4H", "strategy": "higher_low_structure_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:18", "asset": "ETH", "tf": "4H", "strategy": "vwap_deviation_short", "result": "OOS_NEG", "cagr_oos": -1.5, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:19", "asset": "BTC", "tf": "4H", "strategy": "volume_climax_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:19", "asset": "LTC", "tf": "15M", "strategy": "rsi_overbought_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:20", "asset": "BNB", "tf": "4H", "strategy": "zscore_revert_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:20", "asset": "SOL", "tf": "15M", "strategy": "vwap_deviation_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:20", "asset": "WTIUSD", "tf": "15M", "strategy": "fibonacci_retracement_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:20", "asset": "ETH", "tf": "4H", "strategy": "supply_shock_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:21", "asset": "BNB", "tf": "1H", "strategy": "regime_adaptive", "result": "OOS_NEG", "cagr_oos": -23.5, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:21", "asset": "ETH", "tf": "4H", "strategy": "cot_proxy_short", "result": "OOS_NEG", "cagr_oos": -2.1, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:21", "asset": "SOL", "tf": "15M", "strategy": "regime_adaptive", "result": "OVERFIT", "cagr_oos": 25.8, "wr": 52.9, "trades_oos": null, "note": "IS/OOS ratio 5.6x"}
+{"ts": "03:21", "asset": "XAUUSD", "tf": "15M", "strategy": "bearish_rsi_divergence", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:22", "asset": "BNB", "tf": "4H", "strategy": "ny_session_breakout_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:22", "asset": "BNB", "tf": "1H", "strategy": "tma_bands", "result": "OOS_NEG", "cagr_oos": -24.9, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:23", "asset": "BTC", "tf": "4H", "strategy": "fibonacci_retracement_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:23", "asset": "WTIUSD", "tf": "15M", "strategy": "volume_climax_long", "result": "SIN_TRADES", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "OOS < 5 trades, params muy selectivos"}
+{"ts": "03:24", "asset": "BNB", "tf": "1H", "strategy": "momentum", "result": "SIN_TRADES", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "OOS < 5 trades, params muy selectivos"}
+{"ts": "03:24", "asset": "BNB", "tf": "1H", "strategy": "lower_lows", "result": "OOS_NEG", "cagr_oos": -17.0, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:24", "asset": "BTC", "tf": "4H", "strategy": "supply_shock_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:25", "asset": "BNB", "tf": "4H", "strategy": "macro_momentum_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:25", "asset": "LTC", "tf": "15M", "strategy": "ema200_rejection_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:25", "asset": "WTIUSD", "tf": "15M", "strategy": "higher_low_structure_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:26", "asset": "SOL", "tf": "15M", "strategy": "pullback", "result": "OOS_NEG", "cagr_oos": -3.7, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:26", "asset": "BNB", "tf": "1H", "strategy": "pin_bar", "result": "OOS_NEG", "cagr_oos": -16.8, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:26", "asset": "BTC", "tf": "4H", "strategy": "cot_proxy_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:27", "asset": "XAUUSD", "tf": "15M", "strategy": "volume_climax_top", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:27", "asset": "BNB", "tf": "4H", "strategy": "dxy_strength_short", "result": "POSITIVO_NO_MEJOR", "cagr_oos": 0.6, "wr": 56.2, "trades_oos": 16, "note": "No supera score record 0.5716"}
+{"ts": "03:27", "asset": "BNB", "tf": "4H", "strategy": "copper_cycle_short", "result": "OOS_NEG", "cagr_oos": -11.0, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:28", "asset": "BNB", "tf": "1H", "strategy": "consecutive_wick", "result": "POSITIVO_NO_MEJOR", "cagr_oos": 5.9, "wr": 66.7, "trades_oos": 15, "note": "No supera score record 0.4450"}
+{"ts": "03:28", "asset": "BNB", "tf": "1H", "strategy": "dmi_trend", "result": "OOS_NEG", "cagr_oos": -4.3, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:28", "asset": "WTIUSD", "tf": "15M", "strategy": "energy_seasonal_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:30", "asset": "BNB", "tf": "1H", "strategy": "mfi_reversal", "result": "OOS_NEG", "cagr_oos": -3.7, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:30", "asset": "BNB", "tf": "4H", "strategy": "atr_compression_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:30", "asset": "SOL", "tf": "15M", "strategy": "lower_lows", "result": "OOS_NEG", "cagr_oos": -13.0, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:30", "asset": "LTC", "tf": "15M", "strategy": "macd_bear_cross", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:30", "asset": "WTIUSD", "tf": "15M", "strategy": "ng_seasonal_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:31", "asset": "BNB", "tf": "1H", "strategy": "elder_impulse", "result": "OOS_NEG", "cagr_oos": -26.8, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:32", "asset": "BNB", "tf": "4H", "strategy": "risk_on_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:32", "asset": "XAUUSD", "tf": "15M", "strategy": "range_break_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:33", "asset": "BTC", "tf": "4H", "strategy": "rsi_overbought_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:33", "asset": "WTIUSD", "tf": "15M", "strategy": "supply_shock_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:33", "asset": "BNB", "tf": "1H", "strategy": "htf_divergence", "result": "OOS_NEG", "cagr_oos": -30.3, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:34", "asset": "SOL", "tf": "15M", "strategy": "volume_exhaustion", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:34", "asset": "BNB", "tf": "4H", "strategy": "volume_climax_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:35", "asset": "BNB", "tf": "1H", "strategy": "volatility_breakout", "result": "POSITIVO_NO_MEJOR", "cagr_oos": 27.0, "wr": 62.5, "trades_oos": 24, "note": "No supera score record 0.4450"}
+{"ts": "03:36", "asset": "LTC", "tf": "15M", "strategy": "bearish_rsi_divergence", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:36", "asset": "WTIUSD", "tf": "15M", "strategy": "ny_session_breakout_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:36", "asset": "BTC", "tf": "4H", "strategy": "death_cross_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:37", "asset": "BNB", "tf": "4H", "strategy": "bollinger_squeeze_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:37", "asset": "BNB", "tf": "1H", "strategy": "rsi_divergence", "result": "OOS_NEG", "cagr_oos": -12.2, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:37", "asset": "XAUUSD", "tf": "15M", "strategy": "macd_zero_cross_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:39", "asset": "BNB", "tf": "1H", "strategy": "turtle_breakout_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:39", "asset": "BTC", "tf": "4H", "strategy": "lower_high_break_short", "result": "OOS_NEG", "cagr_oos": -0.8, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:39", "asset": "WTIUSD", "tf": "15M", "strategy": "breakdown", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:39", "asset": "BNB", "tf": "4H", "strategy": "vwap_deviation_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:41", "asset": "BNB", "tf": "1H", "strategy": "energy_seasonal_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:41", "asset": "LTC", "tf": "15M", "strategy": "stoch_rsi_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:42", "asset": "BNB", "tf": "4H", "strategy": "supply_shock_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:42", "asset": "WTIUSD", "tf": "15M", "strategy": "pullback_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:43", "asset": "BNB", "tf": "1H", "strategy": "dxy_weakness_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:43", "asset": "XAUUSD", "tf": "15M", "strategy": "stoch_rsi_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:44", "asset": "BTC", "tf": "4H", "strategy": "wedge_breakdown_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:44", "asset": "BTC", "tf": "4H", "strategy": "supply_zone_rejection", "result": "SIN_TRADES", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "OOS < 5 trades, params muy selectivos"}
+{"ts": "03:44", "asset": "BNB", "tf": "1H", "strategy": "copper_cycle_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:45", "asset": "WTIUSD", "tf": "15M", "strategy": "momentum_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:45", "asset": "SOL", "tf": "15M", "strategy": "hull_cross", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:46", "asset": "BNB", "tf": "1H", "strategy": "atr_compression_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:46", "asset": "BNB", "tf": "4H", "strategy": "lower_lows", "result": "OVERFIT", "cagr_oos": 12.3, "wr": 56.0, "trades_oos": null, "note": "IS/OOS ratio 2.6x"}
+{"ts": "03:47", "asset": "LTC", "tf": "15M", "strategy": "engulfing_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:47", "asset": "BNB", "tf": "4H", "strategy": "break_of_structure", "result": "OOS_NEG", "cagr_oos": -5.6, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:48", "asset": "BNB", "tf": "1H", "strategy": "higher_low_structure_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:48", "asset": "XAUUSD", "tf": "15M", "strategy": "williams_r_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:48", "asset": "WTIUSD", "tf": "15M", "strategy": "rsi_overbought_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:48", "asset": "BTC", "tf": "4H", "strategy": "volume_climax_top", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:49", "asset": "BNB", "tf": "4H", "strategy": "volume_exhaustion", "result": "OOS_NEG", "cagr_oos": -2.7, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:49", "asset": "BNB", "tf": "4H", "strategy": "consecutive_wick", "result": "SIN_TRADES", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "OOS < 5 trades, params muy selectivos"}
+{"ts": "03:49", "asset": "BNB", "tf": "1H", "strategy": "bollinger_squeeze_long", "result": "OOS_NEG", "cagr_oos": -22.3, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:50", "asset": "SOL", "tf": "15M", "strategy": "tema_cross", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:50", "asset": "BNB", "tf": "4H", "strategy": "mfi_reversal", "result": "OOS_NEG", "cagr_oos": -2.6, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:50", "asset": "WTIUSD", "tf": "15M", "strategy": "death_cross_short", "result": "OOS_NEG", "cagr_oos": -5.3, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:51", "asset": "BNB", "tf": "4H", "strategy": "elder_impulse", "result": "OOS_NEG", "cagr_oos": -0.6, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:52", "asset": "BNB", "tf": "1H", "strategy": "ng_seasonal_long", "result": "OOS_NEG", "cagr_oos": -5.5, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:52", "asset": "LTC", "tf": "15M", "strategy": "three_candles_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:53", "asset": "BNB", "tf": "4H", "strategy": "squeeze_pro", "result": "SIN_TRADES", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "OOS < 5 trades, params muy selectivos"}
+{"ts": "03:53", "asset": "BTC", "tf": "4H", "strategy": "range_break_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:53", "asset": "XAUUSD", "tf": "15M", "strategy": "cci_reversal_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:54", "asset": "WTIUSD", "tf": "15M", "strategy": "ema200_rejection_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:54", "asset": "SOL", "tf": "15M", "strategy": "obv_divergence", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:55", "asset": "BNB", "tf": "4H", "strategy": "obv_divergence", "result": "OOS_NEG", "cagr_oos": -0.2, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:56", "asset": "BNB", "tf": "1H", "strategy": "pullback_short", "result": "OOS_NEG", "cagr_oos": -15.6, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:56", "asset": "BNB", "tf": "4H", "strategy": "chaikin_mf", "result": "OOS_NEG", "cagr_oos": -2.4, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:57", "asset": "WTIUSD", "tf": "15M", "strategy": "macd_bear_cross", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:57", "asset": "BTC", "tf": "4H", "strategy": "macd_zero_cross_down", "result": "SIN_TRADES", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "OOS < 5 trades, params muy selectivos"}
+{"ts": "03:58", "asset": "LTC", "tf": "15M", "strategy": "inside_bar_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:58", "asset": "BNB", "tf": "4H", "strategy": "htf_divergence", "result": "OVERFIT", "cagr_oos": 1.2, "wr": 72.2, "trades_oos": null, "note": "IS/OOS ratio 9.8x"}
+{"ts": "03:58", "asset": "XAUUSD", "tf": "15M", "strategy": "engulfing_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:59", "asset": "SOL", "tf": "15M", "strategy": "htf_divergence", "result": "OOS_NEG", "cagr_oos": -34.2, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "03:59", "asset": "BNB", "tf": "1H", "strategy": "rsi_overbought_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "03:59", "asset": "BTC", "tf": "4H", "strategy": "three_candles_short", "result": "WFT_FAIL", "cagr_oos": 30.3, "wr": 61.1, "trades_oos": 18, "note": "Quick WFT < 55% ventanas positivas"}
+{"ts": "04:00", "asset": "WTIUSD", "tf": "15M", "strategy": "lower_high_break_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:00", "asset": "BNB", "tf": "4H", "strategy": "williams_r", "result": "POSITIVO_NO_MEJOR", "cagr_oos": 7.9, "wr": 79.3, "trades_oos": 29, "note": "No supera score record 0.5716"}
+{"ts": "04:01", "asset": "BNB", "tf": "4H", "strategy": "engulfing", "result": "OOS_NEG", "cagr_oos": -6.6, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "04:02", "asset": "BTC", "tf": "4H", "strategy": "atr_channel_short", "result": "OOS_NEG", "cagr_oos": -1.7, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "04:02", "asset": "BTC", "tf": "4H", "strategy": "aroon_cross_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:02", "asset": "BTC", "tf": "4H", "strategy": "break_of_structure_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:02", "asset": "BTC", "tf": "4H", "strategy": "chaikin_mf_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:02", "asset": "BTC", "tf": "4H", "strategy": "elder_impulse_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:02", "asset": "BTC", "tf": "4H", "strategy": "ema_ribbon_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:02", "asset": "BTC", "tf": "4H", "strategy": "ema_triple_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:02", "asset": "BTC", "tf": "4H", "strategy": "ichimoku_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:02", "asset": "BTC", "tf": "4H", "strategy": "micro_momentum_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:02", "asset": "BTC", "tf": "4H", "strategy": "range_scalp_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:02", "asset": "BTC", "tf": "4H", "strategy": "tma_bands_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:02", "asset": "BTC", "tf": "4H", "strategy": "volatility_breakdown", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:02", "asset": "BTC", "tf": "4H", "strategy": "vwap_rejection", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:02", "asset": "BNB", "tf": "1H", "strategy": "lower_high_break_short", "result": "OOS_NEG", "cagr_oos": -3.5, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "04:02", "asset": "BNB", "tf": "4H", "strategy": "zscore_revert_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:03", "asset": "WTIUSD", "tf": "15M", "strategy": "wedge_breakdown_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:04", "asset": "SOL", "tf": "15M", "strategy": "stoch_rsi", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:04", "asset": "BNB", "tf": "4H", "strategy": "ny_session_breakout_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:04", "asset": "XAUUSD", "tf": "15M", "strategy": "three_candles_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:05", "asset": "LTC", "tf": "15M", "strategy": "heikin_ashi_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:05", "asset": "BNB", "tf": "4H", "strategy": "london_open_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:05", "asset": "BTC", "tf": "4H", "strategy": "zscore_revert_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:06", "asset": "BNB", "tf": "1H", "strategy": "supply_zone_rejection", "result": "OOS_NEG", "cagr_oos": -15.8, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "04:06", "asset": "BNB", "tf": "4H", "strategy": "keltner_trend_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:07", "asset": "WTIUSD", "tf": "15M", "strategy": "supply_zone_rejection", "result": "SIN_TRADES", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "OOS < 5 trades, params muy selectivos"}
+{"ts": "04:08", "asset": "BNB", "tf": "4H", "strategy": "dxy_weakness_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:08", "asset": "BTC", "tf": "4H", "strategy": "ny_session_breakout_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:08", "asset": "SOL", "tf": "15M", "strategy": "rsi_divergence", "result": "OOS_NEG", "cagr_oos": -30.6, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "04:09", "asset": "BNB", "tf": "4H", "strategy": "copper_cycle_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:10", "asset": "XAUUSD", "tf": "15M", "strategy": "inside_bar_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:10", "asset": "BTC", "tf": "4H", "strategy": "dxy_strength_short", "result": "NUEVO_RECORD", "cagr_oos": 23.5, "wr": 73.3, "trades_oos": 15, "note": "Supera modelo anterior (score 0.4035)"}
+{"ts": "04:10", "asset": "WTIUSD", "tf": "15M", "strategy": "bearish_rsi_divergence", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:10", "asset": "LTC", "tf": "15M", "strategy": "keltner_breakdown_short", "result": "OOS_NEG", "cagr_oos": -16.0, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "04:10", "asset": "BNB", "tf": "4H", "strategy": "atr_compression_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:11", "asset": "BNB", "tf": "1H", "strategy": "williams_r_short", "result": "OOS_NEG", "cagr_oos": -20.0, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "04:12", "asset": "BTC", "tf": "4H", "strategy": "dxy_strength_short", "result": "VALIDADO_MEDIA", "cagr_oos": 23.5, "wr": 73.3, "trades_oos": null, "note": ""}
+{"ts": "04:12", "asset": "BNB", "tf": "4H", "strategy": "safe_haven_long", "result": "OOS_NEG", "cagr_oos": -2.0, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "04:12", "asset": "SOL", "tf": "15M", "strategy": "turtle_breakout_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:13", "asset": "BNB", "tf": "4H", "strategy": "higher_low_structure_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:13", "asset": "WTIUSD", "tf": "15M", "strategy": "volume_climax_top", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:14", "asset": "BNB", "tf": "1H", "strategy": "heikin_ashi_short", "result": "OOS_NEG", "cagr_oos": -7.0, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "04:14", "asset": "BNB", "tf": "4H", "strategy": "volume_climax_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:14", "asset": "BTC", "tf": "4H", "strategy": "atr_compression_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:15", "asset": "XAUUSD", "tf": "15M", "strategy": "zscore_rich_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:16", "asset": "BNB", "tf": "4H", "strategy": "bollinger_squeeze_long", "result": "OOS_NEG", "cagr_oos": -2.9, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "04:16", "asset": "LTC", "tf": "15M", "strategy": "supertrend_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:17", "asset": "SOL", "tf": "15M", "strategy": "ny_session_breakout_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:17", "asset": "WTIUSD", "tf": "15M", "strategy": "range_break_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:17", "asset": "BNB", "tf": "4H", "strategy": "fibonacci_retracement_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:17", "asset": "BTC", "tf": "4H", "strategy": "risk_on_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:18", "asset": "BNB", "tf": "1H", "strategy": "dmi_bear", "result": "OOS_NEG", "cagr_oos": -14.9, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "04:18", "asset": "BNB", "tf": "4H", "strategy": "supply_shock_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:19", "asset": "BNB", "tf": "4H", "strategy": "cot_proxy_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:20", "asset": "WTIUSD", "tf": "15M", "strategy": "macd_zero_cross_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:20", "asset": "BTC", "tf": "4H", "strategy": "volume_climax_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:20", "asset": "BNB", "tf": "4H", "strategy": "breakdown", "result": "SIN_TRADES", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "OOS < 5 trades, params muy selectivos"}
+{"ts": "04:21", "asset": "SOL", "tf": "15M", "strategy": "london_open_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "vwap_overpriced_short", "result": "OOS_NEG", "cagr_oos": -3.9, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "aroon_cross_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "bb_bandwidth_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "break_of_structure_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "chaikin_mf_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "elder_impulse_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "ema_ribbon_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "ichimoku_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "linear_reg_break_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "mean_rev_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "micro_momentum_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "obv_divergence_bear", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "open_close_cross_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "pin_bar_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "pivot_rejection", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "psar_flip_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "range_scalp_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "tema_cross_down", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "trend_strength_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "volume_exhaustion_top", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "vwap_rejection", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:21", "asset": "BNB", "tf": "1H", "strategy": "wma_momentum_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:22", "asset": "LTC", "tf": "15M", "strategy": "bb_squeeze_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:22", "asset": "XAUUSD", "tf": "15M", "strategy": "heikin_ashi_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:23", "asset": "WTIUSD", "tf": "15M", "strategy": "stoch_rsi_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:24", "asset": "BTC", "tf": "4H", "strategy": "bollinger_squeeze_short", "result": "SIN_TRADES", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "OOS < 5 trades, params muy selectivos"}
+{"ts": "04:24", "asset": "BNB", "tf": "4H", "strategy": "pullback_short", "result": "SIN_TRADES", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "OOS < 5 trades, params muy selectivos"}
+{"ts": "04:24", "asset": "BNB", "tf": "1H", "strategy": "zscore_revert_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:25", "asset": "SOL", "tf": "15M", "strategy": "macro_momentum_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:26", "asset": "WTIUSD", "tf": "15M", "strategy": "williams_r_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:26", "asset": "BTC", "tf": "4H", "strategy": "supply_shock_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:27", "asset": "LTC", "tf": "15M", "strategy": "donchian_breakdown", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:27", "asset": "BNB", "tf": "1H", "strategy": "dxy_strength_short", "result": "OOS_NEG", "cagr_oos": -23.5, "wr": null, "trades_oos": null, "note": "Probando siguiente estrategia"}
+{"ts": "04:27", "asset": "XAUUSD", "tf": "15M", "strategy": "roc_negative_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:27", "asset": "BNB", "tf": "4H", "strategy": "rsi_overbought_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:29", "asset": "WTIUSD", "tf": "15M", "strategy": "cci_reversal_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:29", "asset": "SOL", "tf": "15M", "strategy": "keltner_trend_long", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}
+{"ts": "04:29", "asset": "BNB", "tf": "1H", "strategy": "atr_compression_short", "result": "SIN_EDGE_IS", "cagr_oos": null, "wr": null, "trades_oos": null, "note": "IS score <= 0"}

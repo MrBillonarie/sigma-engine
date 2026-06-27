@@ -80,9 +80,13 @@ def check_paper_trading():
     try:
         d = json.load(open(BASE / "results/trade_state.json"))
         p = d.get("portfolio", {})
+        # 2026-06-26: antes excluia TRAIL_HIT/REGIME_EXIT/TIME_LIMIT del conteo
+        # (subestimaba trades_closed/WR) y mezclaba paper con LIVE -- ahora
+        # incluye todos los cierres y filtra solo paper (mode != LIVE), igual
+        # criterio que el resync de portfolio.equity.
         hist = [t for t in d.get("history", [])
-                if t.get("status") in ("SL_HIT", "TP_HIT", "CLOSED", "MANUAL_CLOSE")]
-        n_wins = sum(1 for t in hist if (t.get("pnl_pct", 0) or 0) > 0)
+                if t.get("mode") != "LIVE" and not t.get("excluded_from_stats")]
+        n_wins = sum(1 for t in hist if (t.get("pnl_pct", 0) or 0) >= 0)
         equity = p.get("equity", 10000)
         initial = p.get("initial_capital", 10000)
         start = p.get("start_date", "2026-05-10")
