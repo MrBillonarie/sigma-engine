@@ -39,6 +39,8 @@ def download_and_merge(ticker, interval, period, tf_name):
 
         if csv_path.exists():
             df_old = pd.read_csv(csv_path, index_col=0, parse_dates=True)
+            if hasattr(df_old.index, 'tz') and df_old.index.tz is not None:
+                df_old.index = df_old.index.tz_localize(None)
             df_merged = pd.concat([df_old, df_new])
             df_merged = df_merged[~df_merged.index.duplicated(keep='last')].sort_index()
         else:

@@ -50,21 +50,21 @@
     "validated_at": "2026-05-20 13:44:37.760668"
   },
   "mc": {
-    "mc_cagr_p05": 9833.6,
-    "mc_cagr_p50": 31416010.6,
+    "mc_cagr_p05": 14228.4,
+    "mc_cagr_p50": 45315259.6,
     "mc_cagr_p95": 143315021420.5,
-    "mc_dd_p50": -93.4,
-    "mc_dd_p95": -82.3,
-    "mc_confidence": 99.6,
+    "mc_dd_p50": -93.2,
+    "mc_dd_p95": -82.1,
+    "mc_confidence": 99.8,
     "mc_sims": 1000
   },
   "wft": {
-    "oos_win_rate": 22.2,
+    "oos_win_rate": 11.1,
     "n_windows": 9,
-    "positive_windows": 2,
-    "avg_cagr_oos": -2.47,
-    "avg_cagr_pos": 182.3,
+    "positive_windows": 1,
+    "avg_cagr_oos": 137.83,
+    "avg_cagr_pos": 1684.2,
     "verdict": "FAIL",
-    "date": "2026-06-21 02:05"
+    "date": "2026-06-28 02:35"
   }
 }

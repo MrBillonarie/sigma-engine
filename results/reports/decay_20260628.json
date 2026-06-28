@@ -1,0 +1,956 @@
+{
+  "date": "2026-06-28 03:34:59.144654",
+  "days": 90,
+  "results": [
+    {
+      "symbol": "BNB/USDT",
+      "tf": "15m",
+      "strategy": "consecutive_wick",
+      "status": "DEGRADED",
+      "oos_wr": 60.8,
+      "recent_wr": 0.0,
+      "recent_trades": 127,
+      "delta": -60.8,
+      "file": "bnb_consecutive_wick.json"
+    },
+    {
+      "symbol": "BNB/USDT",
+      "tf": "15m",
+      "strategy": "lower_high_structure_short",
+      "status": "DEGRADED",
+      "oos_wr": 76.5,
+      "recent_wr": 0.0,
+      "recent_trades": 277,
+      "delta": -76.5,
+      "file": "bnb_lower_high_structure_short.json"
+    },
+    {
+      "symbol": "BTC/USDT",
+      "tf": "15m",
+      "strategy": "dmi_bear",
+      "status": "DEGRADED",
+      "oos_wr": 64.8,
+      "recent_wr": 0.0,
+      "recent_trades": 147,
+      "delta": -64.8,
+      "file": "btc_dmi_bear.json"
+    },
+    {
+      "symbol": "BTC/USDT",
+      "tf": "15m",
+      "strategy": "regime_adaptive",
+      "status": "DEGRADED",
+      "oos_wr": 43.2,
+      "recent_wr": 0.0,
+      "recent_trades": 170,
+      "delta": -43.2,
+      "file": "btc_regime_adaptive.json"
+    },
+    {
+      "symbol": "BTC/USDT",
+      "tf": "15m",
+      "strategy": "roc_negative_short",
+      "status": "DEGRADED",
+      "oos_wr": 80.0,
+      "recent_wr": 0.0,
+      "recent_trades": 230,
+      "delta": -80.0,
+      "file": "btc_roc_negative_short.json"
+    },
+    {
+      "symbol": "ETH/USDT",
+      "tf": "15m",
+      "strategy": "breakout",
+      "status": "DEGRADED",
+      "oos_wr": 59.4,
+      "recent_wr": 0.0,
+      "recent_trades": 42,
+      "delta": -59.4,
+      "file": "eth_breakout.json"
+    },
+    {
+      "symbol": "ETH/USDT",
+      "tf": "15m",
+      "strategy": "lower_high_structure_short",
+      "status": "DEGRADED",
+      "oos_wr": 73.7,
+      "recent_wr": 0.0,
+      "recent_trades": 332,
+      "delta": -73.7,
+      "file": "eth_lower_high_structure_short.json"
+    },
+    {
+      "symbol": "ETH/USDT",
+      "tf": "15m",
+      "strategy": "volatility_breakout",
+      "status": "DEGRADED",
+      "oos_wr": 72.9,
+      "recent_wr": 0.0,
+      "recent_trades": 176,
+      "delta": -72.9,
+      "file": "eth_volatility_breakout.json"
+    },
+    {
+      "symbol": "LTC/USDT",
+      "tf": "15m",
+      "strategy": "macd_zero_cross_down",
+      "status": "DEGRADED",
+      "oos_wr": 71.4,
+      "recent_wr": 0.0,
+      "recent_trades": 329,
+      "delta": -71.4,
+      "file": "ltc_macd_zero_cross_down.json"
+    },
+    {
+      "symbol": "LTC/USDT",
+      "tf": "15m",
+      "strategy": "psar_flip",
+      "status": "DEGRADED",
+      "oos_wr": 72.0,
+      "recent_wr": 0.0,
+      "recent_trades": 242,
+      "delta": -72.0,
+      "file": "ltc_psar_flip.json"
+    },
+    {
+      "symbol": "LTC/USDT",
+      "tf": "15m",
+      "strategy": "wedge_breakdown_short",
+      "status": "DEGRADED",
+      "oos_wr": 60.6,
+      "recent_wr": 0.0,
+      "recent_trades": 158,
+      "delta": -60.6,
+      "file": "ltc_wedge_breakdown_short.json"
+    },
+    {
+      "symbol": "NG/USD",
+      "tf": "15m",
+      "strategy": "lower_high_structure_short",
+      "status": "NO_DATA",
+      "oos_wr": 66.7,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "PL/USD",
+      "tf": "15m",
+      "strategy": "momentum",
+      "status": "NO_DATA",
+      "oos_wr": 58.6,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "SOL/USDT",
+      "tf": "15m",
+      "strategy": "lower_high_structure_short",
+      "status": "DEGRADED",
+      "oos_wr": 81.0,
+      "recent_wr": 0.0,
+      "recent_trades": 200,
+      "delta": -81.0,
+      "file": "sol_lower_high_structure_short.json"
+    },
+    {
+      "symbol": "SOL/USDT",
+      "tf": "15m",
+      "strategy": "regime_adaptive",
+      "status": "DEGRADED",
+      "oos_wr": 58.2,
+      "recent_wr": 0.0,
+      "recent_trades": 236,
+      "delta": -58.2,
+      "file": "sol_regime_adaptive.json"
+    },
+    {
+      "symbol": "SOL/USDT",
+      "tf": "15m",
+      "strategy": "roc_negative_short",
+      "status": "DEGRADED",
+      "oos_wr": 63.0,
+      "recent_wr": 0.0,
+      "recent_trades": 157,
+      "delta": -63.0,
+      "file": "sol_roc_negative_short.json"
+    },
+    {
+      "symbol": "XAG/USD",
+      "tf": "15m",
+      "strategy": "pullback",
+      "status": "NO_DATA",
+      "oos_wr": 74.6,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "HG/USD",
+      "tf": "1d",
+      "strategy": "pin_bar",
+      "status": "NO_DATA",
+      "oos_wr": 75.0,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "HG/USD",
+      "tf": "1d",
+      "strategy": "pullback",
+      "status": "NO_DATA",
+      "oos_wr": 60.0,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "HG/USD",
+      "tf": "1d",
+      "strategy": "trend_strength",
+      "status": "NO_DATA",
+      "oos_wr": 71.8,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "NG/USD",
+      "tf": "1d",
+      "strategy": "energy_seasonal_short",
+      "status": "NO_DATA",
+      "oos_wr": 68.8,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "NG/USD",
+      "tf": "1d",
+      "strategy": "zscore_rich_short",
+      "status": "NO_DATA",
+      "oos_wr": 71.4,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "PL/USD",
+      "tf": "1d",
+      "strategy": "tma_bands",
+      "status": "NO_DATA",
+      "oos_wr": 47.5,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "WTI/USD",
+      "tf": "1d",
+      "strategy": "heikin_ashi_short",
+      "status": "NO_DATA",
+      "oos_wr": 81.1,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "XAG/USD",
+      "tf": "1d",
+      "strategy": "dmi_trend",
+      "status": "NO_DATA",
+      "oos_wr": 72.1,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "XAU/USD",
+      "tf": "1d",
+      "strategy": "ichimoku",
+      "status": "NO_DATA",
+      "oos_wr": 78.3,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "XAU/USD",
+      "tf": "1d",
+      "strategy": "lower_lows",
+      "status": "NO_DATA",
+      "oos_wr": 79.1,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "BNB/USDT",
+      "tf": "1h",
+      "strategy": "bos_long",
+      "status": "DEGRADED",
+      "oos_wr": 73.1,
+      "recent_wr": 0.0,
+      "recent_trades": 75,
+      "delta": -73.1,
+      "file": "bnb_bos_long.json"
+    },
+    {
+      "symbol": "BNB/USDT",
+      "tf": "1h",
+      "strategy": "break_of_structure",
+      "status": "DEGRADED",
+      "oos_wr": 52.9,
+      "recent_wr": 2.7,
+      "recent_trades": 37,
+      "delta": -50.2,
+      "file": "bnb_break_of_structure.json"
+    },
+    {
+      "symbol": "BNB/USDT",
+      "tf": "1h",
+      "strategy": "breakdown",
+      "status": "DEGRADED",
+      "oos_wr": 72.7,
+      "recent_wr": 0.0,
+      "recent_trades": 54,
+      "delta": -72.7,
+      "file": "bnb_breakdown.json"
+    },
+    {
+      "symbol": "BNB/USDT",
+      "tf": "1h",
+      "strategy": "cci_reversal_short",
+      "status": "DEGRADED",
+      "oos_wr": 92.9,
+      "recent_wr": 0.0,
+      "recent_trades": 58,
+      "delta": -92.9,
+      "file": "bnb_cci_reversal_short.json"
+    },
+    {
+      "symbol": "BNB/USDT",
+      "tf": "1h",
+      "strategy": "dmi_trend",
+      "status": "DEGRADED",
+      "oos_wr": 56.0,
+      "recent_wr": 2.7,
+      "recent_trades": 37,
+      "delta": -53.3,
+      "file": "bnb_dmi_trend.json"
+    },
+    {
+      "symbol": "BNB/USDT",
+      "tf": "1h",
+      "strategy": "ichimoku",
+      "status": "DEGRADED",
+      "oos_wr": 58.0,
+      "recent_wr": 2.7,
+      "recent_trades": 37,
+      "delta": -55.3,
+      "file": "bnb_ichimoku.json"
+    },
+    {
+      "symbol": "BNB/USDT",
+      "tf": "1h",
+      "strategy": "mfi_reversal",
+      "status": "DEGRADED",
+      "oos_wr": 81.5,
+      "recent_wr": 0.0,
+      "recent_trades": 54,
+      "delta": -81.5,
+      "file": "bnb_mfi_reversal.json"
+    },
+    {
+      "symbol": "BNB/USDT",
+      "tf": "1h",
+      "strategy": "squeeze_expand_long",
+      "status": "DEGRADED",
+      "oos_wr": 82.1,
+      "recent_wr": 0.0,
+      "recent_trades": 63,
+      "delta": -82.1,
+      "file": "bnb_squeeze_expand_long.json"
+    },
+    {
+      "symbol": "BTC/USDT",
+      "tf": "1h",
+      "strategy": "momentum",
+      "status": "DEGRADED",
+      "oos_wr": 58.0,
+      "recent_wr": 2.0,
+      "recent_trades": 50,
+      "delta": -56.0,
+      "file": "btc_momentum.json"
+    },
+    {
+      "symbol": "BTC/USDT",
+      "tf": "1h",
+      "strategy": "momentum_short",
+      "status": "DEGRADED",
+      "oos_wr": 68.4,
+      "recent_wr": 0.0,
+      "recent_trades": 68,
+      "delta": -68.4,
+      "file": "btc_momentum_short.json"
+    },
+    {
+      "symbol": "BTC/USDT",
+      "tf": "1h",
+      "strategy": "pullback",
+      "status": "INSUF_TRADES",
+      "oos_wr": 51.1,
+      "recent_wr": null,
+      "delta": null,
+      "recent_trades": 3
+    },
+    {
+      "symbol": "ETH/USDT",
+      "tf": "1h",
+      "strategy": "breakout",
+      "status": "DEGRADED",
+      "oos_wr": 84.6,
+      "recent_wr": 0.0,
+      "recent_trades": 11,
+      "delta": -84.6,
+      "file": "eth_breakout.json"
+    },
+    {
+      "symbol": "ETH/USDT",
+      "tf": "1h",
+      "strategy": "lower_high_break_short",
+      "status": "DEGRADED",
+      "oos_wr": 46.2,
+      "recent_wr": 1.6,
+      "recent_trades": 64,
+      "delta": -44.6,
+      "file": "eth_lower_high_break_short.json"
+    },
+    {
+      "symbol": "ETH/USDT",
+      "tf": "1h",
+      "strategy": "lower_high_structure_short",
+      "status": "DEGRADED",
+      "oos_wr": 77.6,
+      "recent_wr": 0.0,
+      "recent_trades": 99,
+      "delta": -77.6,
+      "file": "eth_lower_high_structure_short.json"
+    },
+    {
+      "symbol": "ETH/USDT",
+      "tf": "1h",
+      "strategy": "momentum_short",
+      "status": "DEGRADED",
+      "oos_wr": 78.3,
+      "recent_wr": 0.0,
+      "recent_trades": 48,
+      "delta": -78.3,
+      "file": "eth_momentum_short.json"
+    },
+    {
+      "symbol": "ETH/USDT",
+      "tf": "1h",
+      "strategy": "tma_bands",
+      "status": "DEGRADED",
+      "oos_wr": 69.0,
+      "recent_wr": 0.0,
+      "recent_trades": 40,
+      "delta": -69.0,
+      "file": "eth_tma_bands.json"
+    },
+    {
+      "symbol": "HG/USD",
+      "tf": "1h",
+      "strategy": "lower_lows",
+      "status": "NO_DATA",
+      "oos_wr": 58.1,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "HG/USD",
+      "tf": "1h",
+      "strategy": "mean_rev",
+      "status": "NO_DATA",
+      "oos_wr": 70.8,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "LTC/USDT",
+      "tf": "1h",
+      "strategy": "breakout",
+      "status": "DEGRADED",
+      "oos_wr": 84.2,
+      "recent_wr": 0.0,
+      "recent_trades": 12,
+      "delta": -84.2,
+      "file": "ltc_breakout.json"
+    },
+    {
+      "symbol": "LTC/USDT",
+      "tf": "1h",
+      "strategy": "williams_r",
+      "status": "DEGRADED",
+      "oos_wr": 56.2,
+      "recent_wr": 2.0,
+      "recent_trades": 49,
+      "delta": -54.2,
+      "file": "ltc_williams_r.json"
+    },
+    {
+      "symbol": "NG/USD",
+      "tf": "1h",
+      "strategy": "tma_bands",
+      "status": "NO_DATA",
+      "oos_wr": 73.7,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "NG/USD",
+      "tf": "1h",
+      "strategy": "volume_climax_top",
+      "status": "NO_DATA",
+      "oos_wr": 36.4,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "PL/USD",
+      "tf": "1h",
+      "strategy": "aroon_cross",
+      "status": "NO_DATA",
+      "oos_wr": 70.3,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "PL/USD",
+      "tf": "1h",
+      "strategy": "hull_cross",
+      "status": "NO_DATA",
+      "oos_wr": 100.0,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "PL/USD",
+      "tf": "1h",
+      "strategy": "tema_cross",
+      "status": "NO_DATA",
+      "oos_wr": 98.4,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "PL/USD",
+      "tf": "1h",
+      "strategy": "volume_exhaustion",
+      "status": "NO_DATA",
+      "oos_wr": 55.2,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "SOL/USDT",
+      "tf": "1h",
+      "strategy": "breakdown",
+      "status": "DEGRADED",
+      "oos_wr": 75.0,
+      "recent_wr": 0.0,
+      "recent_trades": 81,
+      "delta": -75.0,
+      "file": "sol_breakdown.json"
+    },
+    {
+      "symbol": "SOL/USDT",
+      "tf": "1h",
+      "strategy": "engulfing_short",
+      "status": "DEGRADED",
+      "oos_wr": 50.7,
+      "recent_wr": 1.3,
+      "recent_trades": 79,
+      "delta": -49.4,
+      "file": "sol_engulfing_short.json"
+    },
+    {
+      "symbol": "WTI/USD",
+      "tf": "1h",
+      "strategy": "chaikin_mf",
+      "status": "NO_DATA",
+      "oos_wr": 71.4,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "WTI/USD",
+      "tf": "1h",
+      "strategy": "hull_cross",
+      "status": "NO_DATA",
+      "oos_wr": 100.0,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "XAG/USD",
+      "tf": "1h",
+      "strategy": "lower_high_structure_short",
+      "status": "NO_DATA",
+      "oos_wr": 88.6,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "XAU/USD",
+      "tf": "1h",
+      "strategy": "regime_adaptive",
+      "status": "NO_DATA",
+      "oos_wr": 70.0,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "XAU/USD",
+      "tf": "1h",
+      "strategy": "dmi_trend",
+      "status": "NO_DATA",
+      "oos_wr": 66.7,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "XAU/USD",
+      "tf": "1h",
+      "strategy": "tema_cross",
+      "status": "NO_DATA",
+      "oos_wr": 54.2,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "BNB/USDT",
+      "tf": "4h",
+      "strategy": "breakout",
+      "status": "DEGRADED",
+      "oos_wr": 77.8,
+      "recent_wr": 0.0,
+      "recent_trades": 7,
+      "delta": -77.8,
+      "file": "bnb_breakout.json"
+    },
+    {
+      "symbol": "BTC/USDT",
+      "tf": "4h",
+      "strategy": "breakout",
+      "status": "DEGRADED",
+      "oos_wr": 62.5,
+      "recent_wr": 0.0,
+      "recent_trades": 6,
+      "delta": -62.5,
+      "file": "btc_breakout.json"
+    },
+    {
+      "symbol": "BTC/USDT",
+      "tf": "4h",
+      "strategy": "dxy_strength_short",
+      "status": "DEGRADED",
+      "oos_wr": 73.3,
+      "recent_wr": 9.1,
+      "recent_trades": 11,
+      "delta": -64.2,
+      "file": "btc_dxy_strength_short.json"
+    },
+    {
+      "symbol": "BTC/USDT",
+      "tf": "4h",
+      "strategy": "psar_flip",
+      "status": "DEGRADED",
+      "oos_wr": 71.4,
+      "recent_wr": 0.0,
+      "recent_trades": 19,
+      "delta": -71.4,
+      "file": "btc_psar_flip.json"
+    },
+    {
+      "symbol": "BTC/USDT",
+      "tf": "4h",
+      "strategy": "three_candles_short",
+      "status": "DEGRADED",
+      "oos_wr": 56.0,
+      "recent_wr": 12.5,
+      "recent_trades": 16,
+      "delta": -43.5,
+      "file": "btc_three_candles_short.json"
+    },
+    {
+      "symbol": "BTC/USDT",
+      "tf": "4h",
+      "strategy": "tick_follow_short",
+      "status": "DEGRADED",
+      "oos_wr": 78.9,
+      "recent_wr": 0.0,
+      "recent_trades": 18,
+      "delta": -78.9,
+      "file": "btc_tick_follow_short.json"
+    },
+    {
+      "symbol": "BTC/USDT",
+      "tf": "4h",
+      "strategy": "tma_bands",
+      "status": "DEGRADED",
+      "oos_wr": 70.8,
+      "recent_wr": 0.0,
+      "recent_trades": 13,
+      "delta": -70.8,
+      "file": "btc_tma_bands.json"
+    },
+    {
+      "symbol": "ETH/USDT",
+      "tf": "4h",
+      "strategy": "lower_high_structure_short",
+      "status": "DEGRADED",
+      "oos_wr": 82.1,
+      "recent_wr": 5.0,
+      "recent_trades": 20,
+      "delta": -77.1,
+      "file": "eth_lower_high_structure_short.json"
+    },
+    {
+      "symbol": "ETH/USDT",
+      "tf": "4h",
+      "strategy": "momentum_short",
+      "status": "DEGRADED",
+      "oos_wr": 72.7,
+      "recent_wr": 12.5,
+      "recent_trades": 16,
+      "delta": -60.2,
+      "file": "eth_momentum_short.json"
+    },
+    {
+      "symbol": "ETH/USDT",
+      "tf": "4h",
+      "strategy": "tma_bands",
+      "status": "DEGRADED",
+      "oos_wr": 58.8,
+      "recent_wr": 4.2,
+      "recent_trades": 24,
+      "delta": -54.6,
+      "file": "eth_tma_bands.json"
+    },
+    {
+      "symbol": "HG/USD",
+      "tf": "4h",
+      "strategy": "keltner_trend_long",
+      "status": "NO_DATA",
+      "oos_wr": 44.8,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "HG/USD",
+      "tf": "4h",
+      "strategy": "macro_momentum_long",
+      "status": "NO_DATA",
+      "oos_wr": 52.9,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "HG/USD",
+      "tf": "4h",
+      "strategy": "vwap_overpriced_short",
+      "status": "NO_DATA",
+      "oos_wr": 36.1,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "LTC/USDT",
+      "tf": "4h",
+      "strategy": "bearish_rsi_divergence",
+      "status": "DEGRADED",
+      "oos_wr": 73.3,
+      "recent_wr": 4.5,
+      "recent_trades": 22,
+      "delta": -68.8,
+      "file": "ltc_bearish_rsi_divergence.json"
+    },
+    {
+      "symbol": "LTC/USDT",
+      "tf": "4h",
+      "strategy": "momentum_short",
+      "status": "DEGRADED",
+      "oos_wr": 48.0,
+      "recent_wr": 12.5,
+      "recent_trades": 16,
+      "delta": -35.5,
+      "file": "ltc_momentum_short.json"
+    },
+    {
+      "symbol": "NG/USD",
+      "tf": "4h",
+      "strategy": "tma_bands",
+      "status": "NO_DATA",
+      "oos_wr": 43.8,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "PL/USD",
+      "tf": "4h",
+      "strategy": "ichimoku",
+      "status": "NO_DATA",
+      "oos_wr": 76.9,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "PL/USD",
+      "tf": "4h",
+      "strategy": "lower_lows",
+      "status": "NO_DATA",
+      "oos_wr": 59.4,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "SOL/USDT",
+      "tf": "4h",
+      "strategy": "momentum_short",
+      "status": "DEGRADED",
+      "oos_wr": 57.1,
+      "recent_wr": 22.2,
+      "recent_trades": 18,
+      "delta": -34.9,
+      "file": "sol_momentum_short.json"
+    },
+    {
+      "symbol": "SOL/USDT",
+      "tf": "4h",
+      "strategy": "pullback",
+      "status": "WARN",
+      "oos_wr": 50.0,
+      "recent_wr": 40.0,
+      "recent_trades": 5,
+      "delta": -10.0,
+      "file": "sol_pullback.json"
+    },
+    {
+      "symbol": "SOL/USDT",
+      "tf": "4h",
+      "strategy": "pullback_short",
+      "status": "DEGRADED",
+      "oos_wr": 61.5,
+      "recent_wr": 26.7,
+      "recent_trades": 15,
+      "delta": -34.8,
+      "file": "sol_pullback_short.json"
+    },
+    {
+      "symbol": "SOL/USDT",
+      "tf": "4h",
+      "strategy": "supply_zone_rejection",
+      "status": "DEGRADED",
+      "oos_wr": 70.4,
+      "recent_wr": 28.6,
+      "recent_trades": 14,
+      "delta": -41.8,
+      "file": "sol_supply_zone_rejection.json"
+    },
+    {
+      "symbol": "SOL/USDT",
+      "tf": "4h",
+      "strategy": "tma_bands",
+      "status": "DEGRADED",
+      "oos_wr": 75.0,
+      "recent_wr": 5.3,
+      "recent_trades": 19,
+      "delta": -69.7,
+      "file": "sol_tma_bands.json"
+    },
+    {
+      "symbol": "WTI/USD",
+      "tf": "4h",
+      "strategy": "vwap_deviation_short",
+      "status": "NO_DATA",
+      "oos_wr": 56.2,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "XAG/USD",
+      "tf": "4h",
+      "strategy": "regime_adaptive",
+      "status": "NO_DATA",
+      "oos_wr": 48.9,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "XAU/USD",
+      "tf": "4h",
+      "strategy": "hull_cross",
+      "status": "NO_DATA",
+      "oos_wr": 67.6,
+      "recent_wr": null,
+      "delta": null
+    },
+    {
+      "symbol": "BTC/USDT",
+      "tf": "5m",
+      "strategy": "momentum_short",
+      "status": "DEGRADED",
+      "oos_wr": 66.7,
+      "recent_wr": 0.0,
+      "recent_trades": 454,
+      "delta": -66.7,
+      "file": "btc_momentum_short.json"
+    },
+    {
+      "symbol": "ETH/USDT",
+      "tf": "5m",
+      "strategy": "volatility_breakout",
+      "status": "DEGRADED",
+      "oos_wr": 69.2,
+      "recent_wr": 0.0,
+      "recent_trades": 398,
+      "delta": -69.2,
+      "file": "eth_volatility_breakout.json"
+    },
+    {
+      "symbol": "ETH/USDT",
+      "tf": "5m",
+      "strategy": "vwap_deviation_long",
+      "status": "DEGRADED",
+      "oos_wr": 80.0,
+      "recent_wr": 0.0,
+      "recent_trades": 720,
+      "delta": -80.0,
+      "file": "eth_vwap_deviation_long.json"
+    },
+    {
+      "symbol": "SOL/USDT",
+      "tf": "5m",
+      "strategy": "roc_negative_short",
+      "status": "DEGRADED",
+      "oos_wr": 45.8,
+      "recent_wr": 0.0,
+      "recent_trades": 624,
+      "delta": -45.8,
+      "file": "sol_roc_negative_short.json"
+    },
+    {
+      "symbol": "SOL/USDT",
+      "tf": "5m",
+      "strategy": "supertrend_short",
+      "status": "DEGRADED",
+      "oos_wr": 57.5,
+      "recent_wr": 0.0,
+      "recent_trades": 378,
+      "delta": -57.5,
+      "file": "sol_supertrend_short.json"
+    },
+    {
+      "symbol": "SOL/USDT",
+      "tf": "4h",
+      "strategy": "tma_bands",
+      "status": "DEGRADED",
+      "oos_wr": 74.4,
+      "recent_wr": 6.7,
+      "recent_trades": 15,
+      "delta": -67.7,
+      "file": "sol_4h_tma_bands_OVERFIT.json"
+    }
+  ]
+}

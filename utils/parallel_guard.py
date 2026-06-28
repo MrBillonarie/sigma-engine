@@ -11,7 +11,12 @@ debe matchear tambien o queda invisible para el resto de los launchers.
 """
 import subprocess
 
-GLOBAL_TRAINING_CAP = 7  # 8 nucleos, 1 reservado para sigma-web (live) + OS + watchdog
+GLOBAL_TRAINING_CAP = 5  # bajado de 7 a 5 el 2026-06-27: mega auditoria reprodujo
+# el incidente de overload SIN tocar este cap -- 7 procesos dieron load 12.08 (peor
+# que el 11.32 que gatillo el revert del 06-25), throughput cayo 57% (38K/hr vs 89K
+# esperado). El mismo conteo de procesos que daba load 7-8 el 06-25 ahora da load 12,
+# senal de que el promedio de trial se puso mas pesado o hay mas presion de recursos
+# (swap en uso, disco 82%). Bajar el cap es la opcion segura -- ver project_mega_audit_2026_06_27.
 
 _PATTERNS = ('asset_pipeline.py', 'push_grade_a.py', 'countertrend_objective.py')
 

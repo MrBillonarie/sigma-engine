@@ -1,8 +1,8 @@
 // [SIGMA-HEADER-START]
 // ╔══════════════════════════════════════════════════════════╗
 // ║  SIGMA TERMINAL v13  —  Auto-generado desde VPS         ║
-// ║  Actualizado : 27/06/2026  04:30 hrs (Chile)             ║
-// ║  Modelos     : 38 activos                                ║
+// ║  Actualizado : 28/06/2026  04:30 hrs (Chile)             ║
+// ║  Modelos     : 39 activos                                ║
 // ║  Top modelos : PL 4h:ICH A+ +156%  XAU 1h:REG A+ +205%  E║
 // ╚══════════════════════════════════════════════════════════╝
 // [SIGMA-HEADER-END]
@@ -622,7 +622,7 @@ f_strat(_tk, _tf_m) =>
     if str.contains(_tk,"BNB") and _tf_m==15
         _r := "lower_high_structure_short"
     if str.contains(_tk,"BNB") and _tf_m==60
-        _r := "break_of_structure"
+        _r := "cci_reversal_short"
     if str.contains(_tk,"BNB") and _tf_m==240
         _r := "breakout"
     if str.contains(_tk,"BTC") and _tf_m==15
@@ -630,7 +630,7 @@ f_strat(_tk, _tf_m) =>
     if str.contains(_tk,"BTC") and _tf_m==60
         _r := "momentum"
     if str.contains(_tk,"BTC") and _tf_m==240
-        _r := "three_candles_short"
+        _r := "tick_follow_short"
     if str.contains(_tk,"BTC") and _tf_m==5
         _r := "momentum_short"
     if str.contains(_tk,"ETH") and _tf_m==15
@@ -653,6 +653,8 @@ f_strat(_tk, _tf_m) =>
         _r := "williams_r"
     if str.contains(_tk,"LTC") and _tf_m==240
         _r := "bearish_rsi_divergence"
+    if str.contains(_tk,"NG") and _tf_m==15
+        _r := "lower_high_structure_short"
     if str.contains(_tk,"NG") and _tf_m==1440
         _r := "zscore_rich_short"
     if str.contains(_tk,"NG") and _tf_m==60
@@ -723,13 +725,12 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,1.7)
         array.set(_p,2,4.0)
         array.set(_p,3,51.0)
-    // BNB/USDT 1h break_of_structure CAGR:+19.5% WR:53% Grade:C
+    // BNB/USDT 1h cci_reversal_short CAGR:+9.0% WR:93% Grade:B
     if str.contains(_tk,"BNB") and _tf_m==60
-        array.set(_p,0,3.3)
-        array.set(_p,1,4.0)
-        array.set(_p,2,4.0)
-        array.set(_p,3,58.0)
-        array.set(_p,5,1.9)
+        array.set(_p,0,3.4)
+        array.set(_p,1,1.5)
+        array.set(_p,2,3.0)
+        array.set(_p,3,51.0)
     // BNB/USDT 4h breakout CAGR:+29.0% WR:78% Grade:A
     if str.contains(_tk,"BNB") and _tf_m==240
         array.set(_p,0,3.0)
@@ -752,13 +753,12 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,3,61.0)
         array.set(_p,5,1.2)
         array.set(_p,11,64.0)
-    // BTC/USDT 4h three_candles_short CAGR:+24.7% WR:56% Grade:C
+    // BTC/USDT 4h tick_follow_short CAGR:+9.8% WR:79% Grade:C
     if str.contains(_tk,"BTC") and _tf_m==240
-        array.set(_p,0,2.7)
-        array.set(_p,1,3.3)
+        array.set(_p,0,3.2)
+        array.set(_p,1,1.5)
         array.set(_p,2,3.0)
         array.set(_p,3,62.0)
-        array.set(_p,5,1.0)
     // BTC/USDT 5m momentum_short CAGR:+6.6% WR:67% Grade:D
     if str.contains(_tk,"BTC") and _tf_m==5
         array.set(_p,0,2.9)
@@ -829,6 +829,12 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,2,8.0)
         array.set(_p,3,53.0)
         array.set(_p,4,17.0)
+    // NG/USD 15m lower_high_structure_short CAGR:+43.5% WR:67% Grade:B
+    if str.contains(_tk,"NG") and _tf_m==15
+        array.set(_p,0,3.4)
+        array.set(_p,1,3.5)
+        array.set(_p,2,3.0)
+        array.set(_p,3,54.0)
     // NG/USD 1d zscore_rich_short CAGR:+5.8% WR:71% Grade:C
     if str.contains(_tk,"NG") and _tf_m==1440
         array.set(_p,0,2.4)
@@ -984,7 +990,7 @@ f_meta(_tk, _tf_m) =>
     if str.contains(_tk,"BNB") and _tf_m==15
         _r := "B|0|76|OK"
     if str.contains(_tk,"BNB") and _tf_m==60
-        _r := "C|0|53|OK"
+        _r := "B|0|93|FAIL"
     if str.contains(_tk,"BNB") and _tf_m==240
         _r := "A|0|78|OK"
     if str.contains(_tk,"BTC") and _tf_m==15
@@ -992,17 +998,17 @@ f_meta(_tk, _tf_m) =>
     if str.contains(_tk,"BTC") and _tf_m==60
         _r := "B|0|58|FAIL"
     if str.contains(_tk,"BTC") and _tf_m==240
-        _r := "C|0|56|--"
+        _r := "C|0|79|OK"
     if str.contains(_tk,"BTC") and _tf_m==5
-        _r := "D|0|67|--"
+        _r := "D|0|67|FAIL"
     if str.contains(_tk,"ETH") and _tf_m==15
         _r := "A+|0|74|OK"
     if str.contains(_tk,"ETH") and _tf_m==60
-        _r := "A+|0|78|--"
+        _r := "A+|0|78|FAIL"
     if str.contains(_tk,"ETH") and _tf_m==240
         _r := "A|0|59|OK"
     if str.contains(_tk,"ETH") and _tf_m==5
-        _r := "B|0|69|--"
+        _r := "B|0|69|OK"
     if str.contains(_tk,"HG") and _tf_m==1440
         _r := "D|0|75|--"
     if str.contains(_tk,"HG") and _tf_m==60
@@ -1012,9 +1018,11 @@ f_meta(_tk, _tf_m) =>
     if str.contains(_tk,"LTC") and _tf_m==15
         _r := "C|0|72|FAIL"
     if str.contains(_tk,"LTC") and _tf_m==60
-        _r := "A+|0|56|OK"
+        _r := "A+|0|56|FAIL"
     if str.contains(_tk,"LTC") and _tf_m==240
         _r := "B|0|73|OK"
+    if str.contains(_tk,"NG") and _tf_m==15
+        _r := "B|0|67|--"
     if str.contains(_tk,"NG") and _tf_m==1440
         _r := "C|0|71|--"
     if str.contains(_tk,"NG") and _tf_m==60
@@ -1036,7 +1044,7 @@ f_meta(_tk, _tf_m) =>
     if str.contains(_tk,"SOL") and _tf_m==240
         _r := "A|0|70|OK"
     if str.contains(_tk,"SOL") and _tf_m==5
-        _r := "C|0|46|OK"
+        _r := "C|0|46|FAIL"
     if str.contains(_tk,"WTI") and _tf_m==1440
         _r := "B|0|81|--"
     if str.contains(_tk,"WTI") and _tf_m==60

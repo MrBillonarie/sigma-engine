@@ -71,12 +71,21 @@
     "validated_at": "2026-06-21 03:29:18.637137"
   },
   "mc": {
-    "mc_cagr_p05": -21.6,
+    "mc_cagr_p05": -32.5,
     "mc_cagr_p50": 42.1,
     "mc_cagr_p95": 157.8,
     "mc_dd_p50": -44.0,
     "mc_dd_p95": -25.2,
-    "mc_confidence": 79.7,
+    "mc_confidence": 79.4,
     "mc_sims": 1000
+  },
+  "wft": {
+    "oos_win_rate": 25.0,
+    "n_windows": 4,
+    "positive_windows": 1,
+    "avg_cagr_oos": -26.1,
+    "avg_cagr_pos": 16.4,
+    "verdict": "FAIL",
+    "date": "2026-06-28 02:12"
   }
 }

@@ -1,26 +1,5 @@
 {
-  "open": {
-    "SOL_4h": {
-      "sym": "SOL",
-      "tf": "4h",
-      "direction": "short",
-      "entry": 72.71,
-      "sl": 79.6051,
-      "tp": 67.9865,
-      "tp2": 67.9865,
-      "sl_dist_pct_at_open": 9.483,
-      "strategy": "supply_zone_rejection",
-      "grade": "A",
-      "wr": 70.4,
-      "cagr": 28.3,
-      "kelly_pct": 1.45,
-      "mode": "LIVE",
-      "opened_at": "2026-06-26 16:14:14.506665",
-      "status": "open",
-      "live_contracts": 0.1,
-      "pnl_pct": 0.122
-    }
-  },
+  "open": {},
   "history": [
     {
       "sym": "SOL",
@@ -1042,15 +1021,16 @@
       "be_set": true,
       "exit_price": 43.72,
       "pnl_pct_raw": 2.6497,
-      "pnl_dollar": 313.8046,
+      "pnl_dollar": 0.2181,
       "kelly_pct_used": 4.29,
       "reason": "TP_HIT",
       "closed_at": "2026-06-18 11:17:24.834095",
       "commission": 0.0355,
       "funding": 0.0,
-      "equity_after": 11362.48,
+      "equity_after": 550.73,
       "regime_at_close": "BEAR",
-      "cooldown_seconds": 1800
+      "cooldown_seconds": 1800,
+      "_reconciled_2026_06_27": "old_pnl=313.8046 old_eq=11362.48 -- corregido con ledger real Binance (REALIZED_PNL+COMMISSION+FUNDING_FEE), ver project_live_pnl_fake_fix_2026_06_19"
     },
     {
       "sym": "BTC",
@@ -1100,15 +1080,16 @@
       "pnl_pct": -1.2856,
       "exit_price": 73.99,
       "pnl_pct_raw": -7.5905,
-      "pnl_dollar": -145.7708,
+      "pnl_dollar": -0.5278,
       "kelly_pct_used": 1.26,
       "reason": "SL_HIT",
       "closed_at": "2026-06-20 18:33:21.683453",
       "commission": 0.0571,
       "funding": 0.0,
-      "equity_after": 11192.97,
+      "equity_after": 550.2,
       "regime_at_close": "BEAR",
-      "cooldown_seconds": 7200
+      "cooldown_seconds": 7200,
+      "_reconciled_2026_06_27": "old_pnl=-145.7708 old_eq=11192.97 -- corregido con ledger real Binance (REALIZED_PNL+COMMISSION+FUNDING_FEE), ver project_live_pnl_fake_fix_2026_06_19"
     },
     {
       "sym": "SOL",
@@ -1161,15 +1142,16 @@
       "be_set": true,
       "exit_price": 70.28,
       "pnl_pct_raw": 4.4979,
-      "pnl_dollar": 102.7304,
+      "pnl_dollar": 0.1471,
       "kelly_pct_used": 1.35,
       "reason": "TP_HIT",
       "closed_at": "2026-06-23 02:18:59.089599",
       "commission": 0.0575,
       "funding": 0.0,
-      "equity_after": 11479.3,
+      "equity_after": 520.35,
       "regime_at_close": "BEAR",
-      "cooldown_seconds": 1800
+      "cooldown_seconds": 1800,
+      "_reconciled_2026_06_27": "old_pnl=102.7304 old_eq=11479.3 -- corregido con ledger real Binance (REALIZED_PNL+COMMISSION+FUNDING_FEE), ver project_live_pnl_fake_fix_2026_06_19"
     },
     {
       "sym": "BTC",
@@ -1191,15 +1173,16 @@
       "be_set": true,
       "exit_price": 62549.6,
       "pnl_pct_raw": 0.8775,
-      "pnl_dollar": 106.8493,
+      "pnl_dollar": 0.439,
       "kelly_pct_used": 1.24,
       "reason": "TP_HIT",
       "closed_at": "2026-06-23 02:23:36.536094",
       "commission": 50.2612,
       "funding": 0.0,
-      "equity_after": 11586.15,
+      "equity_after": 520.79,
       "regime_at_close": "BEAR",
-      "cooldown_seconds": 1800
+      "cooldown_seconds": 1800,
+      "_reconciled_2026_06_27": "old_pnl=106.8493 old_eq=11586.15 -- corregido con ledger real Binance (REALIZED_PNL+COMMISSION+FUNDING_FEE), ver project_live_pnl_fake_fix_2026_06_19"
     },
     {
       "sym": "BTC",
@@ -1223,15 +1206,16 @@
       "trail_active": true,
       "exit_price": 60995.0,
       "pnl_pct_raw": 2.3424,
-      "pnl_dollar": 278.2877,
+      "pnl_dollar": -0.1053,
       "kelly_pct_used": 1.21,
       "reason": "TRAIL_HIT",
       "closed_at": "2026-06-24 11:23:59.085945",
       "commission": 49.3812,
       "funding": 0.0,
-      "equity_after": 11864.44,
+      "equity_after": 520.68,
       "regime_at_close": "BEAR",
-      "cooldown_seconds": 3600
+      "cooldown_seconds": 3600,
+      "_reconciled_2026_06_27": "old_pnl=278.2877 old_eq=11864.44 -- corregido con ledger real Binance (REALIZED_PNL+COMMISSION+FUNDING_FEE), ver project_live_pnl_fake_fix_2026_06_19"
     },
     {
       "sym": "WTI",
@@ -1313,15 +1297,16 @@
       "pnl_pct": -0.6156,
       "exit_price": 61723.6,
       "pnl_pct_raw": -1.0901,
-      "pnl_dollar": -72.9915,
+      "pnl_dollar": -0.7262,
       "kelly_pct_used": 1.0,
       "reason": "TIME_LIMIT",
       "closed_at": "2026-06-25 05:44:32.199716",
       "commission": 49.1126,
       "funding": 0.0,
-      "equity_after": 11783.98,
+      "equity_after": 521.23,
       "regime_at_close": "BEAR",
-      "cooldown_seconds": 3600
+      "cooldown_seconds": 3600,
+      "_reconciled_2026_06_27": "old_pnl=-72.9915 old_eq=11783.98 -- corregido con ledger real Binance (REALIZED_PNL+COMMISSION+FUNDING_FEE), ver project_live_pnl_fake_fix_2026_06_19"
     },
     {
       "sym": "WTI",
@@ -1352,6 +1337,34 @@
       "equity_after": 521.44,
       "regime_at_close": "BEAR",
       "cooldown_seconds": 7200
+    },
+    {
+      "sym": "SOL",
+      "tf": "4h",
+      "direction": "short",
+      "entry": 72.71,
+      "sl": 79.6051,
+      "tp": 67.9865,
+      "tp2": 67.9865,
+      "sl_dist_pct_at_open": 9.483,
+      "strategy": "supply_zone_rejection",
+      "grade": "A",
+      "wr": 70.4,
+      "cagr": 28.3,
+      "kelly_pct": 1.45,
+      "mode": "LIVE",
+      "opened_at": "2026-06-26 16:14:14.506665",
+      "status": "RECONCILE",
+      "live_contracts": 0.1,
+      "pnl_pct": 0.2208,
+      "exit_price": 67.9865,
+      "pnl_pct_raw": 0.2208,
+      "pnl_dollar": 1.9401,
+      "kelly_pct_used": 1.45,
+      "reason": "RECONCILE",
+      "closed_at": "2026-06-27 15:21:35.%f",
+      "equity_after": 523.81,
+      "_reconciled_2026_06_27": "Registro fantasma: marcado open/LIVE pero 0 posiciones reales en Binance confirmado. Cerrado retroactivamente con PnL real reconstruido del ledger Binance (REALIZED_PNL+COMMISSION+FUNDING_FEE desde opened_at), equity_after = balance real fetch_balance() al momento de la auditoria."
     }
   ],
   "circuit_breaker": {

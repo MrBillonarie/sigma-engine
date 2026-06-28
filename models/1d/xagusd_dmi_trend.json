@@ -54,9 +54,9 @@
     "mc_cagr_p05": -20.1,
     "mc_cagr_p50": 16.6,
     "mc_cagr_p95": 54.9,
-    "mc_dd_p50": -27.4,
+    "mc_dd_p50": -27.5,
     "mc_dd_p95": -12.0,
-    "mc_confidence": 74.6,
+    "mc_confidence": 70.3,
     "mc_sims": 1000
   }
 }

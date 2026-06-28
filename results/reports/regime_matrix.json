@@ -1,24 +1,24 @@
 {
-  "computed_at": "2026-06-27T04:15:01.678318-04:00",
+  "computed_at": "2026-06-28T04:15:01.159875-04:00",
   "global_regime_m1": "BEAR",
-  "correlation_global": 66.4,
+  "correlation_global": 67.2,
   "assets": {
     "BTC": {
       "momentum": 15.0,
       "volatility": 45.0,
-      "correlation": 66.4,
+      "correlation": 67.2,
       "macro": 50.0,
-      "composite": 36.3,
+      "composite": 36.2,
       "label": "BEAR",
       "kelly_mult": 0.7,
       "source": "global_regime"
     },
     "ETH": {
-      "momentum": 22.0,
+      "momentum": 20.0,
       "volatility": 45.0,
-      "correlation": 66.4,
+      "correlation": 67.2,
       "macro": 50.0,
-      "composite": 38.7,
+      "composite": 37.9,
       "label": "BEAR",
       "kelly_mult": 0.7,
       "source": "global_regime"
@@ -26,41 +26,41 @@
     "SOL": {
       "momentum": 10.0,
       "volatility": 45.0,
-      "correlation": 66.4,
+      "correlation": 67.2,
       "macro": 50.0,
-      "composite": 34.5,
+      "composite": 34.4,
       "label": "BEAR",
       "kelly_mult": 0.7,
       "source": "global_regime"
     },
     "BNB": {
-      "momentum": 20.0,
+      "momentum": 16.7,
       "volatility": 45.0,
-      "correlation": 66.4,
+      "correlation": 67.2,
       "macro": 50.0,
-      "composite": 38.0,
+      "composite": 36.8,
       "label": "BEAR",
       "kelly_mult": 0.7,
       "source": "global_regime"
     },
     "LTC": {
-      "momentum": 25.0,
+      "momentum": 23.3,
       "volatility": 45.0,
-      "correlation": 66.4,
+      "correlation": 67.2,
       "macro": 50.0,
-      "composite": 39.8,
+      "composite": 39.1,
       "label": "BEAR",
       "kelly_mult": 0.7,
       "source": "global_regime"
     },
     "XAU": {
-      "momentum": 77.8,
-      "volatility": 25.0,
+      "momentum": 73.6,
+      "volatility": 63.6,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 67.7,
-      "label": "BULL_QUIET",
-      "kelly_mult": 1.25,
+      "composite": 58.5,
+      "label": "BULL",
+      "kelly_mult": 1.05,
       "source": "csv_based"
     },
     "XAG": {

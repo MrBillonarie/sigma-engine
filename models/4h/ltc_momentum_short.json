@@ -36,19 +36,19 @@
   "mc": {
     "mc_cagr_p05": 11.7,
     "mc_cagr_p50": 66.3,
-    "mc_cagr_p95": 147.6,
+    "mc_cagr_p95": 173.5,
     "mc_dd_p50": -21.7,
     "mc_dd_p95": -11.5,
-    "mc_confidence": 98.5,
+    "mc_confidence": 97.4,
     "mc_sims": 1000
   },
   "wft": {
     "oos_win_rate": 16.7,
     "n_windows": 6,
     "positive_windows": 1,
-    "avg_cagr_oos": -15.42,
+    "avg_cagr_oos": -8.17,
     "avg_cagr_pos": 33.7,
     "verdict": "FAIL",
-    "date": "2026-06-21 02:05"
+    "date": "2026-06-28 02:12"
   }
 }

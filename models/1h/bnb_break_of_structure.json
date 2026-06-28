@@ -30,22 +30,22 @@
   "oos_days": 621,
   "saved_at": "2026-05-12 18:12:20.014342",
   "mc": {
-    "mc_cagr_p05": -44.1,
+    "mc_cagr_p05": -52.5,
     "mc_cagr_p50": 48.8,
     "mc_cagr_p95": 296.1,
-    "mc_dd_p50": -66.3,
+    "mc_dd_p50": -66.9,
     "mc_dd_p95": -38.3,
-    "mc_confidence": 72.0,
+    "mc_confidence": 70.3,
     "mc_sims": 1000
   },
   "wft": {
-    "oos_win_rate": 57.1,
+    "oos_win_rate": 42.9,
     "n_windows": 7,
-    "positive_windows": 4,
-    "avg_cagr_oos": 185.16,
-    "avg_cagr_pos": 331.7,
+    "positive_windows": 3,
+    "avg_cagr_oos": 114.63,
+    "avg_cagr_pos": 283.63,
     "verdict": "FAIL",
-    "date": "2026-06-21 02:03"
+    "date": "2026-06-28 02:08"
   },
   "validation": {
     "monte_carlo": {

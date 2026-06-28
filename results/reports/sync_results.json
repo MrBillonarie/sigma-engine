@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-27T04:00:01.589578",
+  "timestamp": "2026-06-28T04:00:01.593352",
   "models": {
     "1h": [
       {
@@ -517,6 +517,14 @@
         "wr_oos": 60.6,
         "dd_oos": -49.4,
         "trades_oos": 127
+      },
+      {
+        "file": "ngusd_lower_high_structure_short.json",
+        "strategy": "lower_high_structure_short",
+        "cagr_oos": 43.5,
+        "wr_oos": 66.7,
+        "dd_oos": -26.7,
+        "trades_oos": 201
       },
       {
         "file": "btc_dmi_bear.json",

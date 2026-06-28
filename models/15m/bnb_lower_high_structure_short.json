@@ -59,12 +59,12 @@
     "mc_sims": 1000
   },
   "wft": {
-    "oos_win_rate": 70.0,
-    "n_windows": 10,
-    "positive_windows": 7,
-    "avg_cagr_oos": 352.62,
-    "avg_cagr_pos": 530.81,
+    "oos_win_rate": 62.5,
+    "n_windows": 8,
+    "positive_windows": 5,
+    "avg_cagr_oos": 76.32,
+    "avg_cagr_pos": 158.3,
     "verdict": "PASS",
-    "date": "2026-06-21 02:00"
+    "date": "2026-06-28 02:00"
   }
 }

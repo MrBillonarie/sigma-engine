@@ -753,9 +753,43 @@ def _get_trade_summary_impl():
 
 
 
+    # Motor 2 / per-model paper trading (NG, WTI, XAG, PL, HG, etc.): estas
+    # posiciones viven en per_model_state.json, no en el store legacy de un
+    # slot por simbolo. El HUD principal solo debe mostrar trades del
+    # campeon actual (primario o secundario) de cada slot -- el resto de
+    # estrategias en paper-testing (shadow, no campeonas) viven solo en
+    # /models, no en /api/trades (decision del usuario 2026-06-27).
+    _pm_open_for_trades = []
+    try:
+        _pm_state_ts = _load_per_model()
+        _pm_grade_idx = {f"{sm.get('sym','')}_{sm.get('tf','')}_{sm.get('strategy','')}": sm.get('grade','?')
+                         for sm in _signals_cache.get('models', [])}
+        try:
+            _pm_snap_ts = json.load(open('/opt/sigma/results/reports/port_snapshot.json'))
+        except Exception:
+            _pm_snap_ts = {}
+        _pm_champs_ts     = _pm_snap_ts.get('champions', {})
+        _pm_champs_sec_ts = _pm_snap_ts.get('champions_secondary', {})
+        for _pmk, _pmv in _pm_state_ts.items():
+            _pmo = _pmv.get('open')
+            if not _pmo:
+                continue
+            _pm_sft = f"{_pmo.get('sym','')}|{_pmo.get('tf','')}"
+            _pm_strat = _pmo.get('strategy','')
+            _pm_champ     = _pm_champs_ts.get(_pm_sft, '')
+            _pm_champ_sec = _pm_champs_sec_ts.get(_pm_sft, '')
+            _pm_is_champ     = bool(_pm_champ)     and _pm_strat == _pm_champ.split('|')[0]
+            _pm_is_champ_sec = bool(_pm_champ_sec) and _pm_strat == _pm_champ_sec.split('|')[0]
+            if not (_pm_is_champ or _pm_is_champ_sec):
+                continue  # no es campeon -- queda solo en /models
+            _pm_open_for_trades.append({**_pmo, 'status': 'open', 'grade': _pm_grade_idx.get(_pmk, '?')})
+    except Exception:
+        pass
+
+
     return {
 
-        'open':     open_trades,
+        'open':     open_trades + _pm_open_for_trades,
 
         'cooldowns': cooldowns,
 
@@ -1510,6 +1544,23 @@ def _execute_close(sym, tf, fallback_price, reason):
                   f'(ya cerro por su propia orden SL/TP, o nunca abrio) -- bookkeeping con precio local', flush=True)
         except Exception as _ecx:
             print(f'[EXECUTE_CLOSE ERROR] {sym}/{tf}: {_ecx} -- fallback bookkeeping local', flush=True)
+        # Fix 2026-06-27: NUNCA dejar caer un trade LIVE al bucket PAPER ($10k
+        # simulado) cuando close_live_position() falla -- eso contamino
+        # equity_after/pnl_dollar con valores ~20x reales en 6 cierres entre
+        # 06-18 y 06-25 (ver project_live_pnl_fake_fix_2026_06_19). Ancla al
+        # ultimo equity real conocido (real_equity != None mantiene is_live=True
+        # en close_trade) y deja pnl_dollar=0 con alerta -- mejor que inventar.
+        try:
+            import urllib.request as _ur_ec, urllib.parse as _up_ec
+            _msg_ec = (f"⚠️ {sym}/{tf} LIVE cerrado sin datos reales de Binance "
+                       f"(close_live_position fallo) -- equity anclado al ultimo valor "
+                       f"real conocido, pnl_dollar=0. REVISAR MANUALMENTE.")
+            _url_ec = f"https://api.telegram.org/bot{_PER_MODEL_TG_TOKEN}/sendMessage"
+            _data_ec = _up_ec.urlencode({'chat_id': _PER_MODEL_TG_CHAT, 'text': _msg_ec}).encode()
+            _ur_ec.urlopen(_ur_ec.Request(_url_ec, data=_data_ec), timeout=5)
+        except Exception as _et_ec:
+            print(f'[EXECUTE_CLOSE TG ERROR] {_et_ec}', flush=True)
+        return close_trade(sym, tf, fallback_price, reason, real_equity=_last_live_equity(state))
     return close_trade(sym, tf, fallback_price, reason)
 
 
@@ -4637,6 +4688,12 @@ def _compute_signals():
 
 
 
+    try:
+        _pm_state_ho = _load_per_model()
+    except Exception:
+        _pm_state_ho = {}
+
+
     # Poner modelos con trade abierto al frente del sort
 
     def _sort_key(r):
@@ -4741,6 +4798,19 @@ def _compute_signals():
 
                 pass
 
+
+
+        # Per-model paper trading (Motor 2 / multi-estrategia): has_open_trade
+        # debe mirar per_model_state.json, no el store legacy de un solo slot
+        # por sym_tf (causaba spam de "NUEVA SEÑAL" en Telegram para modelos
+        # que ya tenian posicion paper abierta, ej. NG/1d zscore_rich_short 2026-06-27)
+        _pm_key_ho = f"{r.get('sym','')}_{r.get('tf','')}_{r.get('strategy','')}"
+        _pm_open_ho = (_pm_state_ho.get(_pm_key_ho) or {}).get('open')
+        if _pm_open_ho:
+            r['has_open_trade']   = True
+            r['signal']           = True
+            r['open_trade_entry'] = _pm_open_ho.get('entry', 0)
+            r['open_trade_since'] = str(_pm_open_ho.get('opened_at', ''))[:16]
 
 
         # Paper mode: si el modelo tiene entrada valida en _paper_candidates, dar slot

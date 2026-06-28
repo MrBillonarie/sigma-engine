@@ -1418,7 +1418,7 @@
     "recommendation_at_init": "NO_ACTIVAR"
   },
   "ETH_15m_volatility_breakout": {
-    "equity": 9888.02,
+    "equity": 9746.15,
     "initial": 10000,
     "open": null,
     "history": [
@@ -1440,11 +1440,31 @@
         "pnl_dollar": -111.98,
         "equity_after": 9888.02,
         "closed_at": "2026-06-22 18:28:13"
+      },
+      {
+        "sym": "ETH",
+        "tf": "15m",
+        "strategy": "volatility_breakout",
+        "direction": "long",
+        "entry": 1604.73,
+        "sl": 1589.7846,
+        "tp": 1617.038,
+        "sl_dist_pct_at_open": 0.9313,
+        "kelly_pct": 1.17,
+        "opened_at": "2026-06-27 11:16:49",
+        "exit_price": 1588.65,
+        "reason": "SL_HIT",
+        "pnl_pct_raw": -1.142,
+        "pnl_pct": -1.4348,
+        "pnl_dollar": -141.8733,
+        "equity_after": 9746.15,
+        "closed_at": "2026-06-27 13:04:57"
       }
     ],
     "created_at": "2026-05-12 19:09:53",
     "pre_initialized": true,
-    "recommendation_at_init": "ESPERAR"
+    "recommendation_at_init": "ESPERAR",
+    "cooldown_until": 1782587097.2293212
   },
   "ETH_4h_momentum_short": {
     "equity": 10159.85,
@@ -2078,7 +2098,18 @@
   "LTC_1h_williams_r": {
     "equity": 9884.16,
     "initial": 10000,
-    "open": null,
+    "open": {
+      "sym": "LTC",
+      "tf": "1h",
+      "strategy": "williams_r",
+      "direction": "long",
+      "entry": 42.19,
+      "sl": 41.4996,
+      "tp": 43.1001,
+      "sl_dist_pct_at_open": 1.6364,
+      "kelly_pct": 0.72,
+      "opened_at": "2026-06-28 00:06:07"
+    },
     "history": [
       {
         "sym": "LTC",
@@ -2534,7 +2565,18 @@
   "NG_1d_zscore_rich_short": {
     "equity": 10000,
     "initial": 10000,
-    "open": null,
+    "open": {
+      "sym": "NG",
+      "tf": "1d",
+      "strategy": "zscore_rich_short",
+      "direction": "short",
+      "entry": 3.303,
+      "sl": 3.649,
+      "tp": 3.0867,
+      "sl_dist_pct_at_open": 10.4753,
+      "kelly_pct": 1.35,
+      "opened_at": "2026-06-27 06:44:47"
+    },
     "history": [],
     "created_at": "2026-06-11 22:13:29",
     "pre_initialized": true,
@@ -2912,5 +2954,14 @@
     "created_at": "2026-06-26 18:12:08",
     "pre_initialized": true,
     "recommendation_at_init": "NO_ACTIVAR"
+  },
+  "NG_15m_lower_high_structure_short": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-06-27 15:41:39",
+    "pre_initialized": true,
+    "recommendation_at_init": "ACTIVAR"
   }
 }

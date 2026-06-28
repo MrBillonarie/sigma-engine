@@ -1,6 +1,14 @@
 {
-  "computed_at": "2026-06-21 04:00:02",
+  "computed_at": "2026-06-28 04:00:01",
   "flags": {
+    "BTC|15m": {
+      "strategy": "dmi_bear",
+      "slippage_mult_used": 1.031,
+      "n_winners": 3,
+      "n_flipped": 0,
+      "flip_rate": 0.0,
+      "adversarial_flag": "PASS"
+    },
     "BTC|5m": {
       "strategy": "momentum_short",
       "slippage_mult_used": 1.031,
@@ -8,8 +16,16 @@
       "n_flipped": 0,
       "flip_rate": 0.0,
       "adversarial_flag": "PASS"
+    },
+    "SOL|4h": {
+      "strategy": "supply_zone_rejection",
+      "slippage_mult_used": 1.153,
+      "n_winners": 3,
+      "n_flipped": 1,
+      "flip_rate": 0.333,
+      "adversarial_flag": "CAUTION"
     }
   },
-  "skipped_low_sample": 36,
+  "skipped_low_sample": 37,
   "note": "v1: solo perturbacion de slippage (2x calibrado). Entry-delay queda para v2."
 }

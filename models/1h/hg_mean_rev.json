@@ -57,11 +57,11 @@
   },
   "mc": {
     "mc_cagr_p05": -11.4,
-    "mc_cagr_p50": 110.4,
-    "mc_cagr_p95": 302.5,
-    "mc_dd_p50": -50.3,
-    "mc_dd_p95": -32.4,
-    "mc_confidence": 91.0,
+    "mc_cagr_p50": 88.9,
+    "mc_cagr_p95": 348.5,
+    "mc_dd_p50": -49.4,
+    "mc_dd_p95": -32.2,
+    "mc_confidence": 89.7,
     "mc_sims": 1000
   },
   "m2_validation": {
@@ -69,6 +69,6 @@
     "reasons": [
       "[WARN] FEW_TRADES: 24 trades OOS (estadistica debil)"
     ],
-    "validated_at": "2026-06-26T12:00:02.148294-04:00"
+    "validated_at": "2026-06-27T12:00:02.385914-04:00"
   }
 }

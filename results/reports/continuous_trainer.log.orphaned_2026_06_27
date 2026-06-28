@@ -1,0 +1,291 @@
+[18:21:48] ============================================================
+[18:21:48] SIGMA CONTINUOUS TRAINER — INICIO
+[18:21:48] Max procesos paralelos: 3
+[18:21:48] Rotacion: 1H -> 4H -> 1H -> 15m -> 4H -> (repite)
+[18:21:48] DB actual: 12,571 backtests
+[18:21:48] ============================================================
+Traceback (most recent call last):
+  File "/opt/sigma/engine/live/continuous_trainer.py", line 158, in <module>
+    run_forever()
+  File "/opt/sigma/engine/live/continuous_trainer.py", line 135, in run_forever
+    proc, tf2, t2 = launch_optimizer(tf, trials)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/sigma/engine/live/continuous_trainer.py", line 64, in launch_optimizer
+    proc = subprocess.Popen(
+           ^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 1026, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib/python3.12/subprocess.py", line 1955, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'python'
+[18:22:35] ============================================================
+[18:22:35] SIGMA CONTINUOUS TRAINER — INICIO
+[18:22:35] Max procesos paralelos: 3
+[18:22:35] Rotacion: 1H -> 4H -> 1H -> 15m -> 4H -> (repite)
+[18:22:35] DB actual: 12,571 backtests
+[18:22:35] ============================================================
+[18:23:03] ============================================================
+[18:23:03] SIGMA CONTINUOUS TRAINER — INICIO
+[18:23:03] Max procesos paralelos: 3
+[18:23:03] Rotacion: 1H -> 4H -> 1H -> 15m -> 4H -> (repite)
+[18:23:03] DB actual: 12,571 backtests
+[18:23:03] ============================================================
+[18:23:03]   Lanzado 1H optimizer | PID 4095 | DB: 12,571
+[18:23:05]   Lanzado 4H optimizer | PID 4105 | DB: 12,571
+[18:23:07]   Lanzado 1H optimizer | PID 4115 | DB: 12,571
+[18:23:24]   [1H] Completado (exit 1) | DB: 12,571
+[18:23:24]   [4H] Completado (exit 1) | DB: 12,571
+[18:23:24]   [1H] Completado (exit 1) | DB: 12,571
+[18:23:24]   Lanzado 15M optimizer | PID 4129 | DB: 12,571
+[18:23:26]   Lanzado 4H optimizer | PID 4139 | DB: 12,571
+[18:23:28]   Lanzado 1H optimizer | PID 4149 | DB: 12,571
+[18:23:45]   [15M] Completado (exit 1) | DB: 12,571
+[18:23:45]   [4H] Completado (exit 1) | DB: 12,571
+[18:23:45]   [1H] Completado (exit 1) | DB: 12,571
+[18:23:45]   Lanzado 4H optimizer | PID 4161 | DB: 12,571
+[18:23:47]   Lanzado 1H optimizer | PID 4171 | DB: 12,571
+[18:23:49]   Lanzado 15M optimizer | PID 4182 | DB: 12,571
+[18:24:06]   [4H] Completado (exit 1) | DB: 12,571
+[18:24:06]   [1H] Completado (exit 1) | DB: 12,571
+[18:24:06]   [15M] Completado (exit 1) | DB: 12,571
+[18:24:06]   Lanzado 4H optimizer | PID 4193 | DB: 12,571
+[18:24:08]   Lanzado 1H optimizer | PID 4203 | DB: 12,571
+[18:24:10]   Lanzado 4H optimizer | PID 4213 | DB: 12,571
+[18:24:27]   [4H] Completado (exit 1) | DB: 12,571
+[18:24:27]   [1H] Completado (exit 1) | DB: 12,571
+[18:24:27]   [4H] Completado (exit 1) | DB: 12,571
+[18:24:27]   Lanzado 1H optimizer | PID 4224 | DB: 12,571
+[18:24:29]   Lanzado 15M optimizer | PID 4234 | DB: 12,571
+[18:24:31]   Lanzado 4H optimizer | PID 4244 | DB: 12,571
+[18:24:48]   [1H] Completado (exit 1) | DB: 12,571
+[18:24:48]   [15M] Completado (exit 1) | DB: 12,571
+[18:24:48]   [4H] Completado (exit 1) | DB: 12,571
+[18:24:48]   Lanzado 1H optimizer | PID 4255 | DB: 12,571
+[18:24:50]   Lanzado 4H optimizer | PID 4265 | DB: 12,571
+[18:24:52]   Lanzado 1H optimizer | PID 4277 | DB: 12,571
+[18:25:09]   [1H] Completado (exit 1) | DB: 12,571
+[18:25:09]   [4H] Completado (exit 1) | DB: 12,571
+[18:25:09]   [1H] Completado (exit 1) | DB: 12,571
+[18:25:09]   Lanzado 15M optimizer | PID 4356 | DB: 12,571
+[18:25:11]   Lanzado 4H optimizer | PID 4366 | DB: 12,571
+[18:25:13]   Lanzado 1H optimizer | PID 4376 | DB: 12,571
+[18:25:30]   [15M] Completado (exit 1) | DB: 12,571
+[18:25:30]   [4H] Completado (exit 1) | DB: 12,571
+[18:25:30]   [1H] Completado (exit 1) | DB: 12,571
+[18:25:30]   Lanzado 4H optimizer | PID 4443 | DB: 12,571
+[18:25:32]   Lanzado 1H optimizer | PID 4453 | DB: 12,571
+[18:25:34]   Lanzado 15M optimizer | PID 4463 | DB: 12,571
+[18:25:51]   [4H] Completado (exit 1) | DB: 12,571
+[18:25:51]   [1H] Completado (exit 1) | DB: 12,571
+[18:25:51]   [15M] Completado (exit 1) | DB: 12,571
+[18:25:51]   Lanzado 4H optimizer | PID 4475 | DB: 12,571
+[18:25:53]   Lanzado 1H optimizer | PID 4485 | DB: 12,571
+[18:25:55]   Lanzado 4H optimizer | PID 4495 | DB: 12,571
+[18:26:12]   [4H] Completado (exit 1) | DB: 12,571
+[18:26:12]   [1H] Completado (exit 1) | DB: 12,571
+[18:26:12]   [4H] Completado (exit 1) | DB: 12,571
+[18:26:12]   Lanzado 1H optimizer | PID 4508 | DB: 12,571
+[18:26:14]   Lanzado 15M optimizer | PID 4518 | DB: 12,571
+[18:26:16]   Lanzado 4H optimizer | PID 4528 | DB: 12,571
+[18:26:33]   [1H] Completado (exit 1) | DB: 12,571
+[18:26:33]   [15M] Completado (exit 1) | DB: 12,571
+[18:26:33]   [4H] Completado (exit 1) | DB: 12,571
+[18:26:33]   Lanzado 1H optimizer | PID 4603 | DB: 12,571
+[18:26:35]   Lanzado 4H optimizer | PID 4613 | DB: 12,571
+[18:26:37]   Lanzado 1H optimizer | PID 4623 | DB: 12,571
+[18:26:54]   [1H] Completado (exit 1) | DB: 12,571
+[18:26:54]   [4H] Completado (exit 1) | DB: 12,571
+[18:26:54]   [1H] Completado (exit 1) | DB: 12,571
+[18:26:54]   Lanzado 15M optimizer | PID 4684 | DB: 12,571
+[18:26:56]   Lanzado 4H optimizer | PID 4737 | DB: 12,571
+[18:26:58]   Lanzado 1H optimizer | PID 4748 | DB: 12,571
+[18:27:15]   [15M] Completado (exit 1) | DB: 12,571
+[18:27:15]   [4H] Completado (exit 1) | DB: 12,571
+[18:27:15]   [1H] Completado (exit 1) | DB: 12,571
+[18:27:15]   Lanzado 4H optimizer | PID 4765 | DB: 12,571
+[18:27:17]   Lanzado 1H optimizer | PID 4820 | DB: 12,571
+[18:27:19]   Lanzado 15M optimizer | PID 4831 | DB: 12,571
+[18:27:36]   [4H] Completado (exit 1) | DB: 12,571
+[18:27:36]   [1H] Completado (exit 1) | DB: 12,571
+[18:27:36]   [15M] Completado (exit 1) | DB: 12,571
+[18:27:36]   Lanzado 4H optimizer | PID 4851 | DB: 12,571
+[18:27:38]   Lanzado 1H optimizer | PID 4913 | DB: 12,571
+[18:27:40]   Lanzado 4H optimizer | PID 4925 | DB: 12,571
+[18:27:57]   [4H] Completado (exit 1) | DB: 12,571
+[18:27:57]   [1H] Completado (exit 1) | DB: 12,571
+[18:27:57]   [4H] Completado (exit 1) | DB: 12,571
+[18:27:57]   Lanzado 1H optimizer | PID 4945 | DB: 12,571
+[18:27:59]   Lanzado 15M optimizer | PID 4955 | DB: 12,571
+[18:28:01]   Lanzado 4H optimizer | PID 4965 | DB: 12,571
+[18:28:18]   [1H] Completado (exit 1) | DB: 12,571
+[18:28:18]   [15M] Completado (exit 1) | DB: 12,571
+[18:28:18]   [4H] Completado (exit 1) | DB: 12,571
+[18:28:18]   Lanzado 1H optimizer | PID 4978 | DB: 12,571
+[18:28:20]   Lanzado 4H optimizer | PID 4988 | DB: 12,571
+[18:28:22]   Lanzado 1H optimizer | PID 4998 | DB: 12,571
+[18:28:39]   [1H] Completado (exit 1) | DB: 12,571
+[18:28:39]   [4H] Completado (exit 1) | DB: 12,571
+[18:28:39]   [1H] Completado (exit 1) | DB: 12,571
+[18:28:39]   Lanzado 15M optimizer | PID 5055 | DB: 12,571
+[18:28:41]   Lanzado 4H optimizer | PID 5065 | DB: 12,571
+[18:28:43]   Lanzado 1H optimizer | PID 5075 | DB: 12,571
+[18:28:56] ============================================================
+[18:28:56] SIGMA CONTINUOUS TRAINER — INICIO
+[18:28:56] Max procesos paralelos: 3
+[18:28:56] Rotacion: 1H -> 4H -> 1H -> 15m -> 4H -> (repite)
+[18:28:56] DB actual: 12,571 backtests
+[18:28:56] ============================================================
+[18:28:56]   Lanzado 1H optimizer | PID 5154 | DB: 12,571
+[18:28:58]   Lanzado 4H optimizer | PID 5166 | DB: 12,571
+[18:29:00]   Lanzado 1H optimizer | PID 5176 | DB: 12,571
+[18:29:17]   [1H] Completado (exit 1) | DB: 12,571
+[18:29:17]   [4H] Completado (exit 1) | DB: 12,571
+[18:29:17]   [1H] Completado (exit 1) | DB: 12,571
+[18:29:17]   Lanzado 15M optimizer | PID 5189 | DB: 12,571
+[18:29:19]   Lanzado 4H optimizer | PID 5199 | DB: 12,571
+[18:29:21]   Lanzado 1H optimizer | PID 5209 | DB: 12,571
+[18:29:38]   [15M] Completado (exit 1) | DB: 12,571
+[18:29:38]   [4H] Completado (exit 1) | DB: 12,571
+[18:29:38]   [1H] Completado (exit 1) | DB: 12,571
+[18:29:38]   Lanzado 4H optimizer | PID 5220 | DB: 12,571
+[18:29:40]   Lanzado 1H optimizer | PID 5230 | DB: 12,571
+[18:29:42]   Lanzado 15M optimizer | PID 5240 | DB: 12,571
+[18:29:59]   [4H] Completado (exit 1) | DB: 12,571
+[18:29:59]   [1H] Completado (exit 1) | DB: 12,571
+[18:29:59]   [15M] Completado (exit 1) | DB: 12,571
+[18:29:59]   Lanzado 4H optimizer | PID 5253 | DB: 12,571
+[18:30:01]   Lanzado 1H optimizer | PID 5263 | DB: 12,571
+[18:30:03]   Lanzado 4H optimizer | PID 5275 | DB: 12,571
+[18:30:20]   [4H] Completado (exit 1) | DB: 12,571
+[18:30:20]   [1H] Completado (exit 1) | DB: 12,571
+[18:30:20]   [4H] Completado (exit 1) | DB: 12,571
+[18:30:20]   Lanzado 1H optimizer | PID 5286 | DB: 12,571
+[18:30:22]   Lanzado 15M optimizer | PID 5296 | DB: 12,571
+[18:30:24]   Lanzado 4H optimizer | PID 5306 | DB: 12,571
+[18:30:41]   [1H] Completado (exit 1) | DB: 12,571
+[18:30:41]   [15M] Completado (exit 1) | DB: 12,571
+[18:30:41]   [4H] Completado (exit 1) | DB: 12,571
+[18:30:42]   Lanzado 1H optimizer | PID 5317 | DB: 12,571
+[18:30:44]   Lanzado 4H optimizer | PID 5327 | DB: 12,571
+[18:30:46]   Lanzado 1H optimizer | PID 5337 | DB: 12,571
+[18:31:03]   [1H] Completado (exit 1) | DB: 12,571
+[18:31:03]   [4H] Completado (exit 1) | DB: 12,571
+[18:31:03]   [1H] Completado (exit 1) | DB: 12,571
+[18:31:03]   Lanzado 15M optimizer | PID 5348 | DB: 12,571
+[18:31:05]   Lanzado 4H optimizer | PID 5358 | DB: 12,571
+[18:31:07]   Lanzado 1H optimizer | PID 5368 | DB: 12,571
+[18:31:24]   [15M] Completado (exit 1) | DB: 12,571
+[18:31:24]   [4H] Completado (exit 1) | DB: 12,571
+[18:31:24]   [1H] Completado (exit 1) | DB: 12,571
+[18:31:24]   Lanzado 4H optimizer | PID 5381 | DB: 12,571
+[18:31:26]   Lanzado 1H optimizer | PID 5444 | DB: 12,571
+[18:31:28]   Lanzado 15M optimizer | PID 5454 | DB: 12,571
+[18:31:45]   [4H] Completado (exit 1) | DB: 12,571
+[18:31:45]   [1H] Completado (exit 1) | DB: 12,571
+[18:31:45]   [15M] Completado (exit 1) | DB: 12,571
+[18:31:45]   Lanzado 4H optimizer | PID 5513 | DB: 12,571
+[18:31:47]   Lanzado 1H optimizer | PID 5523 | DB: 12,571
+[18:31:49]   Lanzado 4H optimizer | PID 5534 | DB: 12,571
+[18:32:06]   [4H] Completado (exit 1) | DB: 12,571
+[18:32:06]   [1H] Completado (exit 1) | DB: 12,571
+[18:32:06]   [4H] Completado (exit 1) | DB: 12,571
+[18:32:06]   Lanzado 1H optimizer | PID 5546 | DB: 12,571
+[18:32:08]   Lanzado 15M optimizer | PID 5556 | DB: 12,571
+[18:32:10]   Lanzado 4H optimizer | PID 5566 | DB: 12,571
+[18:32:27]   [1H] Completado (exit 1) | DB: 12,571
+[18:32:27]   [15M] Completado (exit 1) | DB: 12,571
+[18:32:27]   [4H] Completado (exit 1) | DB: 12,571
+[18:32:27]   Lanzado 1H optimizer | PID 5577 | DB: 12,571
+[18:32:29]   Lanzado 4H optimizer | PID 5587 | DB: 12,571
+[18:32:31]   Lanzado 1H optimizer | PID 5597 | DB: 12,571
+[18:32:48]   [1H] Completado (exit 1) | DB: 12,571
+[18:32:48]   [4H] Completado (exit 1) | DB: 12,571
+[18:32:48]   [1H] Completado (exit 1) | DB: 12,571
+[18:32:48]   Lanzado 15M optimizer | PID 5608 | DB: 12,571
+[18:32:50]   Lanzado 4H optimizer | PID 5618 | DB: 12,571
+[18:32:52]   Lanzado 1H optimizer | PID 5628 | DB: 12,571
+[18:33:09]   [15M] Completado (exit 1) | DB: 12,571
+[18:33:09]   [4H] Completado (exit 1) | DB: 12,571
+[18:33:09]   [1H] Completado (exit 1) | DB: 12,571
+[18:33:09]   Lanzado 4H optimizer | PID 5714 | DB: 12,571
+[18:33:13] ============================================================
+[18:33:13] SIGMA CONTINUOUS TRAINER — INICIO
+[18:33:13] Max procesos paralelos: 3
+[18:33:13] Rotacion: 1H -> 4H -> 1H -> 15m -> 4H -> (repite)
+[18:33:13] DB actual: 12,571 backtests
+[18:33:13] ============================================================
+[18:33:13]   Lanzado 1H optimizer | PID 5733 | DB: 12,571
+[18:33:15]   Lanzado 4H optimizer | PID 5740 | DB: 12,571
+[18:33:17]   Lanzado 1H optimizer | PID 5745 | DB: 12,571
+[18:34:04]   [4H] Completado (exit 0) | DB: 12,571
+[18:34:04]   [4H] OOS: 2024-09-02 -> 2026-05-07 (612d)
+[18:34:04]   [4H] OOS: 18T | WR 55.6% | CAGR -1.1% | DD -11.5%
+[18:34:04]   [4H] Eficiencia IS->OOS: -0.16
+[18:34:04]   [4H] OOS: 21T | WR 38.1% | CAGR -13.9% | DD -31.0%
+[18:34:04]   [4H] Eficiencia IS->OOS: -1.74
+[18:34:04]   [4H] OOS: 58T | WR 55.2% | CAGR +8.3% | DD -14.8%
+[18:34:04]   [4H] Eficiencia IS->OOS: 0.29
+[18:34:04]   [4H] OOS: 17T | WR 29.4% | CAGR -7.6% | DD -13.7%
+[18:34:04]   [4H] Eficiencia IS->OOS: -1.29
+[18:34:04]   [4H] OOS: 5T | WR 60.0% | CAGR +1.0% | DD -2.9%
+[18:34:04]   [4H] Eficiencia IS->OOS: 0.19
+[18:34:04]   [4H] OOS: 40T | WR 30.0% | CAGR +11.8% | DD -43.3%
+[18:34:04]   [4H] Eficiencia IS->OOS: 0.07
+[18:34:04]   [4H] 1. TMA_BANDS       OOS: +11.8% | WR 30.0% | DD -43.3% <-- GANADOR
+[18:34:04]   [4H] 2. PULLBACK        OOS: +8.3% | WR 55.2% | DD -14.8%
+[18:34:04]   [4H] 3. MEAN_REV        OOS: +1.0% | WR 60.0% | DD -2.9%
+[18:34:04]   [4H] 4. SIGMA_ICT       OOS: -1.1% | WR 55.6% | DD -11.5%
+[18:34:04]   [4H] 5. MOMENTUM        OOS: -7.6% | WR 29.4% | DD -13.7%
+[18:34:04]   [4H] 6. BREAKOUT        OOS: -13.9% | WR 38.1% | DD -31.0%
+[18:34:04]   [4H] MEJOR ESTRATEGIA 4H: TMA_BANDS
+[18:34:04]   [4H] OOS: 40T | CAGR +11.8% | WR 30.0% | DD -43.3%
+[18:34:04]   [4H] [SAVED] /opt/sigma/models/4h/best_bull_tma_bands.json
+[18:34:04]   Lanzado 15M optimizer | PID 5753 | DB: 12,571
+[18:34:51]   [1H] Completado (exit 0) | DB: 12,571
+[18:34:51]   [1H] OOS: 2024-09-02 -> 2026-05-07 (611d)
+[18:34:51]   [1H] OOS: 79T | WR 58.2% | CAGR +4.5% | DD -14.6%
+[18:34:51]   [1H] Eficiencia IS->OOS: 0.47
+[18:34:51]   [1H] OOS: 95T | WR 55.8% | CAGR +17.5% | DD -33.8%
+[18:34:51]   [1H] Eficiencia IS->OOS: 0.81
+[18:34:51]   [1H] OOS: 218T | WR 19.7% | CAGR +24.2% | DD -53.4%
+[18:34:51]   [1H] Eficiencia IS->OOS: 0.84
+[18:34:51]   [1H] OOS: 38T | WR 42.1% | CAGR -27.2% | DD -50.2%
+[18:34:51]   [1H] Eficiencia IS->OOS: -0.75
+[18:34:51]   [1H] OOS: 17T | WR 29.4% | CAGR -13.5% | DD -24.4%
+[18:34:51]   [1H] Eficiencia IS->OOS: -1.71
+[18:34:51]   [1H] OOS: 54T | WR 22.2% | CAGR -83.6% | DD -95.7%
+[18:34:51]   [1H] Eficiencia IS->OOS: -0.65
+[18:34:51]   [1H] 1. PULLBACK        OOS: +24.2% | WR 19.7% | DD -53.4% <-- GANADOR
+[18:34:51]   [1H] 2. BREAKOUT        OOS: +17.5% | WR 55.8% | DD -33.8%
+[18:34:51]   [1H] 3. SIGMA_ICT       OOS: +4.5% | WR 58.2% | DD -14.6%
+[18:34:51]   [1H] 4. MEAN_REV        OOS: -13.5% | WR 29.4% | DD -24.4%
+[18:34:51]   [1H] 5. MOMENTUM        OOS: -27.2% | WR 42.1% | DD -50.2%
+[18:34:51]   [1H] 6. TMA_BANDS       OOS: -83.6% | WR 22.2% | DD -95.7%
+[18:34:51]   [1H] MEJOR ESTRATEGIA 1H: PULLBACK
+[18:34:51]   [1H] OOS: 218T | CAGR +24.2% | WR 19.7% | DD -53.4%
+[18:34:51]   [1H] [SAVED] /opt/sigma/models/1h/best_bull_pullback.json
+[18:34:51]   [1H] Completado (exit 0) | DB: 12,571
+[18:34:51]   [1H] OOS: 2024-09-02 -> 2026-05-07 (611d)
+[18:34:51]   [1H] OOS: 79T | WR 58.2% | CAGR +4.5% | DD -14.6%
+[18:34:51]   [1H] Eficiencia IS->OOS: 0.47
+[18:34:51]   [1H] OOS: 95T | WR 55.8% | CAGR +17.5% | DD -33.8%
+[18:34:51]   [1H] Eficiencia IS->OOS: 0.81
+[18:34:51]   [1H] OOS: 218T | WR 19.7% | CAGR +24.2% | DD -53.4%
+[18:34:51]   [1H] Eficiencia IS->OOS: 0.84
+[18:34:51]   [1H] OOS: 38T | WR 42.1% | CAGR -27.2% | DD -50.2%
+[18:34:51]   [1H] Eficiencia IS->OOS: -0.75
+[18:34:51]   [1H] OOS: 17T | WR 29.4% | CAGR -13.5% | DD -24.4%
+[18:34:51]   [1H] Eficiencia IS->OOS: -1.71
+[18:34:51]   [1H] OOS: 54T | WR 22.2% | CAGR -83.6% | DD -95.7%
+[18:34:51]   [1H] Eficiencia IS->OOS: -0.65
+[18:34:51]   [1H] 1. PULLBACK        OOS: +24.2% | WR 19.7% | DD -53.4% <-- GANADOR
+[18:34:51]   [1H] 2. BREAKOUT        OOS: +17.5% | WR 55.8% | DD -33.8%
+[18:34:51]   [1H] 3. SIGMA_ICT       OOS: +4.5% | WR 58.2% | DD -14.6%
+[18:34:51]   [1H] 4. MEAN_REV        OOS: -13.5% | WR 29.4% | DD -24.4%
+[18:34:51]   [1H] 5. MOMENTUM        OOS: -27.2% | WR 42.1% | DD -50.2%
+[18:34:51]   [1H] 6. TMA_BANDS       OOS: -83.6% | WR 22.2% | DD -95.7%
+[18:34:51]   [1H] MEJOR ESTRATEGIA 1H: PULLBACK
+[18:34:51]   [1H] OOS: 218T | CAGR +24.2% | WR 19.7% | DD -53.4%
+[18:34:51]   [1H] [SAVED] /opt/sigma/models/1h/best_bull_pullback.json
+[18:34:51]   Lanzado 4H optimizer | PID 5815 | DB: 12,571
+[18:34:53]   Lanzado 1H optimizer | PID 5820 | DB: 12,571

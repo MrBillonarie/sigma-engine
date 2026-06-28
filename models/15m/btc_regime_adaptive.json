@@ -62,7 +62,7 @@
     "mc_cagr_p50": -99.8,
     "mc_cagr_p95": -95.9,
     "mc_dd_p50": -99.8,
-    "mc_dd_p95": -97.8,
+    "mc_dd_p95": -97.9,
     "mc_confidence": 0.0,
     "mc_sims": 1000
   },
@@ -70,9 +70,9 @@
     "oos_win_rate": 55.6,
     "n_windows": 9,
     "positive_windows": 5,
-    "avg_cagr_oos": 2957.08,
-    "avg_cagr_pos": 5380.18,
+    "avg_cagr_oos": 4097.99,
+    "avg_cagr_pos": 7438.26,
     "verdict": "FAIL",
-    "date": "2026-06-21 02:00"
+    "date": "2026-06-28 02:00"
   }
 }

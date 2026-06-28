@@ -76,21 +76,21 @@
     "validated_at": "2026-06-09 06:49:31.509322"
   },
   "mc": {
-    "mc_cagr_p05": 10.3,
+    "mc_cagr_p05": -0.5,
     "mc_cagr_p50": 50.1,
-    "mc_cagr_p95": 104.3,
+    "mc_cagr_p95": 126.4,
     "mc_dd_p50": -24.7,
     "mc_dd_p95": -13.2,
-    "mc_confidence": 96.0,
+    "mc_confidence": 94.9,
     "mc_sims": 1000
   },
   "wft": {
-    "oos_win_rate": 71.4,
-    "n_windows": 7,
-    "positive_windows": 5,
-    "avg_cagr_oos": 18.86,
-    "avg_cagr_pos": 31.82,
+    "oos_win_rate": 66.7,
+    "n_windows": 6,
+    "positive_windows": 4,
+    "avg_cagr_oos": 11.22,
+    "avg_cagr_pos": 20.38,
     "verdict": "PASS",
-    "date": "2026-06-21 02:03"
+    "date": "2026-06-28 02:08"
   }
 }

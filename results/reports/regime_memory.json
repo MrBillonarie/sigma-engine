@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-06-26 06:00:01",
+  "updated_at": "2026-06-27 06:00:01",
   "n_trades_used": 34,
-  "n_models_tracked": 13,
+  "n_models_tracked": 14,
   "current_regime": "BEAR",
   "leaderboard": [
     {
@@ -144,14 +144,14 @@
     },
     "SOL_15m_regime_adaptive": {
       "BEAR": {
-        "n": 2,
+        "n": 1,
         "wr": 0.0,
-        "avg_pnl": -1.0645,
-        "last_seen": "2026-06-25 07:06:12.524812",
-        "score": -1.663
+        "avg_pnl": -0.8514,
+        "last_seen": "2026-06-15 18:31:56.476948",
+        "score": -0.661
       },
       "_best_regime": "BEAR",
-      "_best_score": -1.663
+      "_best_score": -0.661
     },
     "HG_1h_lower_lows": {
       "BEAR": {
@@ -196,6 +196,17 @@
       },
       "_best_regime": "BEAR",
       "_best_score": 0.825
+    },
+    "WTI_1d_heikin_ashi_short": {
+      "BEAR": {
+        "n": 1,
+        "wr": 100.0,
+        "avg_pnl": 0.3438,
+        "last_seen": "2026-06-26 15:56:22.579081",
+        "score": 0.355
+      },
+      "_best_regime": "BEAR",
+      "_best_score": 0.355
     }
   }
 }

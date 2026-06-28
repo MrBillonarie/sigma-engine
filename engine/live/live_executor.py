@@ -223,6 +223,21 @@ def reconcile():
             if not bnc_pos:
                 _log(f"RECONCILE: {sym}/{tf} marcado LIVE abierto pero sin posicion en Binance "
                      f"-- pudo cerrarse mientras el proceso estaba caido. Revisar manualmente.")
+                # Fix 2026-06-27: este branch solo logueaba a archivo -- el caso real
+                # (SOL/4h, ~20h sin corregir) paso desapercibido hasta una auditoria manual.
+                # Alertar por Telegram para que alguien lo vea de inmediato; NO se auto-cierra
+                # aca (requiere reconstruir el pnl real del ledger de Binance para no volver
+                # a inventar un numero -- ver project_live_pnl_fake_fix_2026_06_19).
+                try:
+                    import sys as _tsys
+                    if "/opt/sigma/engine/live" not in _tsys.path:
+                        _tsys.path.insert(0, "/opt/sigma/engine/live")
+                    import telegram_notifier as _tn
+                    _tn.send(f"⚠️ <b>REGISTRO FANTASMA</b>\n{sym}/{tf} marcado LIVE abierto en "
+                             f"trade_state.json pero SIN posicion real en Binance.\n"
+                             f"Revisar y cerrar manualmente en bookkeeping.")
+                except Exception as _rte:
+                    _log(f"RECONCILE: telegram alert failed: {_rte}")
                 continue
 
             open_orders = ex.fetch_open_orders(symbol)

@@ -79,5 +79,14 @@
     "mc_dd_p95": -15.4,
     "mc_confidence": 100.0,
     "mc_sims": 1000
+  },
+  "wft": {
+    "oos_win_rate": 50.0,
+    "n_windows": 8,
+    "positive_windows": 4,
+    "avg_cagr_oos": 49.36,
+    "avg_cagr_pos": 109.52,
+    "verdict": "FAIL",
+    "date": "2026-06-28 02:09"
   }
 }

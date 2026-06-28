@@ -23,14 +23,27 @@ import atexit
 _children_killed = False
 
 def _kill_children(signum=None, frame=None):
-    """Mata todos los asset_pipeline hijos — safe para atexit y signal handlers."""
+    """Mata SOLO los descendientes reales de este proceso — safe para atexit y signal handlers.
+    2026-06-27: antes usaba 'pkill -9 -f asset_pipeline.py', que mataba a CUALQUIER
+    asset_pipeline.py del sistema (incluyendo los lanzados por gap_auto_launcher.py /
+    adaptive_push_launcher.py via cron, que no son hijos de este proceso). Si esos
+    procesos ajenos estaban a mitad de un commit SQLite/Optuna cuando llegaba el
+    SIGKILL, quedaban con el WAL a medio aplicar -> 'database disk image is malformed'
+    (confirmado en xauusd_15m_dxy_weakness_long.db, ltc_4h_death_cross_short.db,
+    bnb_15m_elder_impulse.db, sol_1h_bollinger_squeeze_long.db, entre otros).
+    """
     global _children_killed
     if _children_killed:
         return
     _children_killed = True
     try:
-        import subprocess as _sp
-        _sp.run(['pkill', '-9', '-f', 'asset_pipeline.py'], capture_output=True, timeout=5)
+        import psutil as _psutil
+        _me = _psutil.Process(os.getpid())
+        for _child in _me.children(recursive=True):
+            try:
+                _child.kill()
+            except Exception:
+                pass
     except Exception:
         pass
 
