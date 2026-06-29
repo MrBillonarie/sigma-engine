@@ -1,5 +1,5 @@
 {
-  "computed_at": "2026-06-28T04:00:02.523780",
+  "computed_at": "2026-06-29T04:00:02.395257",
   "note": "Diagnostico de seleccion multiple (best-of-N Optuna). Capa informativa -- NO afecta el champion gate ni el live execution.",
   "summary": {
     "n_slots": 40,
@@ -23,14 +23,14 @@
     },
     "BNB|1h": {
       "status": "OK",
-      "n_trials": 2654,
-      "best_value": 0.4114,
-      "population_mean": 0.3583,
-      "population_std": 0.0374,
-      "expected_max_by_luck": 0.4901,
-      "z_above_expected_luck": -2.104,
+      "n_trials": 3106,
+      "best_value": 0.4256,
+      "population_mean": 0.3525,
+      "population_std": 0.0346,
+      "expected_max_by_luck": 0.4757,
+      "z_above_expected_luck": -1.45,
       "verdict": "SELECTION_NOISE_LIKELY",
-      "strategy": "break_of_structure"
+      "strategy": "cci_reversal_short"
     },
     "BNB|4h": {
       "status": "OK",
@@ -67,14 +67,14 @@
     },
     "BTC|4h": {
       "status": "OK",
-      "n_trials": 1388,
-      "best_value": 0.2006,
-      "population_mean": 0.1495,
-      "population_std": 0.0318,
-      "expected_max_by_luck": 0.2557,
-      "z_above_expected_luck": -1.736,
+      "n_trials": 1092,
+      "best_value": 0.2266,
+      "population_mean": 0.2096,
+      "population_std": 0.0243,
+      "expected_max_by_luck": 0.2893,
+      "z_above_expected_luck": -2.58,
       "verdict": "SELECTION_NOISE_LIKELY",
-      "strategy": "three_candles_short"
+      "strategy": "tick_follow_short"
     },
     "BTC|5m": {
       "status": "INSUFFICIENT_TRIALS",
@@ -105,12 +105,12 @@
     },
     "ETH|4h": {
       "status": "OK",
-      "n_trials": 2655,
+      "n_trials": 2820,
       "best_value": 0.4395,
-      "population_mean": 0.3409,
-      "population_std": 0.0444,
-      "expected_max_by_luck": 0.4975,
-      "z_above_expected_luck": -1.304,
+      "population_mean": 0.3407,
+      "population_std": 0.0443,
+      "expected_max_by_luck": 0.4976,
+      "z_above_expected_luck": -1.311,
       "verdict": "SELECTION_NOISE_LIKELY",
       "strategy": "tma_bands"
     },
@@ -311,12 +311,12 @@
     },
     "SOL|5m": {
       "status": "OK",
-      "n_trials": 133,
-      "best_value": 0.4015,
-      "population_mean": 0.3189,
-      "population_std": 0.0542,
-      "expected_max_by_luck": 0.4613,
-      "z_above_expected_luck": -1.104,
+      "n_trials": 276,
+      "best_value": 0.6141,
+      "population_mean": 0.3868,
+      "population_std": 0.0922,
+      "expected_max_by_luck": 0.6514,
+      "z_above_expected_luck": -0.404,
       "verdict": "SELECTION_NOISE_LIKELY",
       "strategy": "roc_negative_short"
     },

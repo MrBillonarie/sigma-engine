@@ -16,3 +16,13 @@
   [MEDIUM] Racha maxima de 5 trades perdedores consecutivos
        Accion: Activar circuit breaker despues de 4 perdidas seguidas
 [RESEARCHER] Telegram enviado
+[RESEARCHER] Analizando 45 trades...
+[RESEARCHER] Modo estadistico (sin API key o error)
+[RESEARCHER] Guardado en /opt/sigma/results/reports/research_insights.json
+  [LOW] Hora 11:00 UTC acumula perdidas promedio -2.0% (4 trades)
+       Accion: Agregar cooldown en hora 11:00-13:00 UTC
+  [LOW] Hora 16:00 UTC acumula perdidas promedio -3.2% (2 trades)
+       Accion: Agregar cooldown en hora 16:00-18:00 UTC
+  [MEDIUM] Racha maxima de 5 trades perdedores consecutivos
+       Accion: Activar circuit breaker despues de 4 perdidas seguidas
+[RESEARCHER] Telegram enviado

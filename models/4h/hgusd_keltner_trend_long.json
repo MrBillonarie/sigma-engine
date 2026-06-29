@@ -60,14 +60,14 @@
       "[WARN] FEW_TRADES: 29 trades OOS (estadistica debil)",
       "[WARN] IS_OOS_WARN: OOS/IS=0.38 — degradacion moderada"
     ],
-    "validated_at": "2026-06-27T12:00:01.916260-04:00"
+    "validated_at": "2026-06-28T12:30:01.620592-04:00"
   },
   "mc": {
     "mc_cagr_p05": -87.7,
-    "mc_cagr_p50": -72.8,
-    "mc_cagr_p95": -46.0,
+    "mc_cagr_p50": -75.7,
+    "mc_cagr_p95": -39.4,
     "mc_dd_p50": -94.6,
-    "mc_dd_p95": -78.9,
+    "mc_dd_p95": -78.4,
     "mc_confidence": 0.2,
     "mc_sims": 1000
   }

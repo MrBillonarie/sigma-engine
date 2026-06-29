@@ -1,14 +1,14 @@
 {
-  "computed_at": "2026-06-21T11:00:01.384351-04:00",
+  "computed_at": "2026-06-28T11:00:01.220799-04:00",
   "stat_analysis": {
-    "trades_analyzed": 37,
-    "winners": 21,
-    "losers": 16,
-    "win_rate": 56.8,
-    "avg_win_pct": 1.96,
-    "avg_loss_pct": -1.53,
-    "reward_risk": 1.28,
-    "total_pnl": 16.67,
+    "trades_analyzed": 45,
+    "winners": 27,
+    "losers": 18,
+    "win_rate": 60.0,
+    "avg_win_pct": 1.71,
+    "avg_loss_pct": -1.39,
+    "reward_risk": 1.23,
+    "total_pnl": 21.19,
     "insights": [
       {
         "type": "TIME_PATTERN",

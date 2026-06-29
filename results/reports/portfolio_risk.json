@@ -1,6 +1,6 @@
 {
-  "computed_at": "2026-06-28 04:05",
-  "n_trades": 45,
+  "computed_at": "2026-06-29 04:05",
+  "n_trades": 46,
   "portfolio": {
     "equity": 11518.43,
     "initial": 10000,
@@ -12,13 +12,13 @@
     "max_losing_streak": 5
   },
   "concentration": {
-    "hhi": 0.281,
-    "n_effective_assets": 3.56,
+    "hhi": 0.2713,
+    "n_effective_assets": 3.69,
     "ok": true,
     "assets": {
       "SOL": {
         "n": 18,
-        "weight_pct": 40.0,
+        "weight_pct": 39.1,
         "wr": 61.1,
         "total_pnl": 6.8,
         "avg_pnl": 0.38,
@@ -26,7 +26,7 @@
       },
       "BTC": {
         "n": 14,
-        "weight_pct": 31.1,
+        "weight_pct": 30.4,
         "wr": 64.3,
         "total_pnl": 4.93,
         "avg_pnl": 0.35,
@@ -34,7 +34,7 @@
       },
       "ETH": {
         "n": 6,
-        "weight_pct": 13.3,
+        "weight_pct": 13.0,
         "wr": 66.7,
         "total_pnl": 7.41,
         "avg_pnl": 1.23,
@@ -42,7 +42,7 @@
       },
       "HG": {
         "n": 2,
-        "weight_pct": 4.4,
+        "weight_pct": 4.3,
         "wr": 50.0,
         "total_pnl": 0.08,
         "avg_pnl": 0.04,
@@ -57,16 +57,16 @@
         "var_95": -1.1396
       },
       "LTC": {
-        "n": 2,
-        "weight_pct": 4.4,
-        "wr": 50.0,
-        "total_pnl": 2.79,
-        "avg_pnl": 1.39,
+        "n": 3,
+        "weight_pct": 6.5,
+        "wr": 33.3,
+        "total_pnl": 2.76,
+        "avg_pnl": 0.92,
         "var_95": -0.0549
       },
       "WTI": {
         "n": 2,
-        "weight_pct": 4.4,
+        "weight_pct": 4.3,
         "wr": 50.0,
         "total_pnl": 0.33,
         "avg_pnl": 0.17,
@@ -76,14 +76,14 @@
   },
   "direction_split": {
     "short": {
-      "n": 35,
-      "weight_pct": 77.8,
-      "wr": 62.9,
-      "total_pnl": 20.61
+      "n": 36,
+      "weight_pct": 78.3,
+      "wr": 61.1,
+      "total_pnl": 20.59
     },
     "long": {
       "n": 10,
-      "weight_pct": 22.2,
+      "weight_pct": 21.7,
       "wr": 50.0,
       "total_pnl": 0.58
     }
@@ -96,27 +96,34 @@
       "SOL/1h/breakdown\u2194BTC/4h/three_candles_short": 0.207,
       "SOL/1h/breakdown\u2194SOL/15m/regime_adaptive": -0.093,
       "SOL/1h/breakdown\u2194ETH/15m/volatility_breakout": 0.997,
+      "SOL/1h/breakdown\u2194LTC/4h/bearish_rsi_divergence": 0.49,
       "SOL/1h/breakdown\u2194BTC/15m/dmi_bear": 0.572,
       "BTC/1h/momentum_short\u2194SOL/4h/momentum_short": 0.427,
       "BTC/1h/momentum_short\u2194SOL/4h/supply_zone_rejection": -0.103,
       "BTC/1h/momentum_short\u2194BTC/4h/three_candles_short": 0.59,
       "BTC/1h/momentum_short\u2194SOL/15m/regime_adaptive": -0.682,
       "BTC/1h/momentum_short\u2194ETH/15m/volatility_breakout": -0.381,
+      "BTC/1h/momentum_short\u2194LTC/4h/bearish_rsi_divergence": 0.326,
       "BTC/1h/momentum_short\u2194BTC/15m/dmi_bear": -0.393,
       "SOL/4h/momentum_short\u2194SOL/4h/supply_zone_rejection": 0.203,
       "SOL/4h/momentum_short\u2194BTC/4h/three_candles_short": -0.112,
       "SOL/4h/momentum_short\u2194SOL/15m/regime_adaptive": -0.996,
       "SOL/4h/momentum_short\u2194ETH/15m/volatility_breakout": 0.231,
+      "SOL/4h/momentum_short\u2194LTC/4h/bearish_rsi_divergence": 0.946,
       "SOL/4h/momentum_short\u2194BTC/15m/dmi_bear": -0.396,
       "SOL/4h/supply_zone_rejection\u2194BTC/4h/three_candles_short": -0.823,
       "SOL/4h/supply_zone_rejection\u2194SOL/15m/regime_adaptive": -0.282,
       "SOL/4h/supply_zone_rejection\u2194ETH/15m/volatility_breakout": -0.644,
+      "SOL/4h/supply_zone_rejection\u2194LTC/4h/bearish_rsi_divergence": -0.132,
       "SOL/4h/supply_zone_rejection\u2194BTC/15m/dmi_bear": -0.771,
       "BTC/4h/three_candles_short\u2194ETH/15m/volatility_breakout": 0.172,
       "BTC/4h/three_candles_short\u2194BTC/15m/dmi_bear": 0.307,
       "SOL/15m/regime_adaptive\u2194ETH/15m/volatility_breakout": -0.168,
+      "SOL/15m/regime_adaptive\u2194LTC/4h/bearish_rsi_divergence": -0.914,
       "SOL/15m/regime_adaptive\u2194BTC/15m/dmi_bear": 0.464,
-      "ETH/15m/volatility_breakout\u2194BTC/15m/dmi_bear": 0.799
+      "ETH/15m/volatility_breakout\u2194LTC/4h/bearish_rsi_divergence": 0.555,
+      "ETH/15m/volatility_breakout\u2194BTC/15m/dmi_bear": 0.799,
+      "LTC/4h/bearish_rsi_divergence\u2194BTC/15m/dmi_bear": -0.063
     },
     "high_pairs": {
       "SOL/1h/breakdown\u2194SOL/4h/supply_zone_rejection": -0.598,
@@ -125,19 +132,22 @@
       "BTC/1h/momentum_short\u2194BTC/4h/three_candles_short": 0.59,
       "BTC/1h/momentum_short\u2194SOL/15m/regime_adaptive": -0.682,
       "SOL/4h/momentum_short\u2194SOL/15m/regime_adaptive": -0.996,
+      "SOL/4h/momentum_short\u2194LTC/4h/bearish_rsi_divergence": 0.946,
       "SOL/4h/supply_zone_rejection\u2194BTC/4h/three_candles_short": -0.823,
       "SOL/4h/supply_zone_rejection\u2194ETH/15m/volatility_breakout": -0.644,
       "SOL/4h/supply_zone_rejection\u2194BTC/15m/dmi_bear": -0.771,
+      "SOL/15m/regime_adaptive\u2194LTC/4h/bearish_rsi_divergence": -0.914,
+      "ETH/15m/volatility_breakout\u2194LTC/4h/bearish_rsi_divergence": 0.555,
       "ETH/15m/volatility_breakout\u2194BTC/15m/dmi_bear": 0.799
     },
-    "n_high": 10
+    "n_high": 13
   },
   "diversification_factors": {
     "status": "OK",
-    "n_nominal_strategies": 8,
-    "effective_independent_bets": 3.37,
-    "diversification_ratio": 0.422,
-    "interpretation": "8 estrategias nominales diversifican como ~3.4 apuestas independientes"
+    "n_nominal_strategies": 9,
+    "effective_independent_bets": 3.42,
+    "diversification_ratio": 0.38,
+    "interpretation": "9 estrategias nominales diversifican como ~3.4 apuestas independientes"
   },
   "alpha_per_strategy": {
     "SOL/1h/breakdown": {
@@ -150,15 +160,15 @@
     "BTC/1h/momentum_short": {
       "n": 5,
       "avg_pnl": -0.165,
-      "dir_avg": 0.589,
-      "alpha": -0.754,
+      "dir_avg": 0.572,
+      "alpha": -0.737,
       "positive_alpha": false
     },
     "SOL/4h/momentum_short": {
       "n": 4,
       "avg_pnl": 1.27,
-      "dir_avg": 0.589,
-      "alpha": 0.681,
+      "dir_avg": 0.572,
+      "alpha": 0.698,
       "positive_alpha": true
     },
     "SOL/4h/supply_zone_rejection": {
@@ -171,8 +181,8 @@
     "BTC/4h/three_candles_short": {
       "n": 4,
       "avg_pnl": 0.725,
-      "dir_avg": 0.589,
-      "alpha": 0.136,
+      "dir_avg": 0.572,
+      "alpha": 0.153,
       "positive_alpha": true
     },
     "SOL/15m/regime_adaptive": {
@@ -197,10 +207,10 @@
       "positive_alpha": false
     },
     "LTC/4h/bearish_rsi_divergence": {
-      "n": 2,
-      "avg_pnl": 1.393,
+      "n": 3,
+      "avg_pnl": 0.921,
       "dir_avg": 0.058,
-      "alpha": 1.335,
+      "alpha": 0.863,
       "positive_alpha": true
     },
     "BTC/15m/dmi_bear": {
@@ -213,8 +223,8 @@
     "WTI/1d/heikin_ashi_short": {
       "n": 2,
       "avg_pnl": 0.165,
-      "dir_avg": 0.589,
-      "alpha": -0.424,
+      "dir_avg": 0.572,
+      "alpha": -0.407,
       "positive_alpha": false
     }
   },

@@ -1,5 +1,5 @@
 # SIGMA — Snapshot de Arquitectura
-> Generado automaticamente: 2026-06-28 00:00:10
+> Generado automaticamente: 2026-06-29 00:00:10
 > Este archivo se regenera cada dia. No editar a mano.
 
 ## Servicios systemd (sigma-*)
@@ -18,7 +18,7 @@
 - `sigma-pipeline.service` — SIGMA Master Pipeline - 5 activos x 4 TFs continuo
 - `sigma-telegram.service` — SIGMA Telegram Notifier
 - `sigma-trainer.service` — SIGMA Trainer
-- `sigma-watchdog.service` — SIGMA Watchdog
+- `sigma-watchdog.service` — start SIGMA Watchdog
 - `sigma-web.service` — SIGMA Web Dashboard
 
 ## Timers systemd (sigma-*)

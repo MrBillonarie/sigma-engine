@@ -1365,6 +1365,38 @@
       "closed_at": "2026-06-27 15:21:35.%f",
       "equity_after": 523.81,
       "_reconciled_2026_06_27": "Registro fantasma: marcado open/LIVE pero 0 posiciones reales en Binance confirmado. Cerrado retroactivamente con PnL real reconstruido del ledger Binance (REALIZED_PNL+COMMISSION+FUNDING_FEE desde opened_at), equity_after = balance real fetch_balance() al momento de la auditoria."
+    },
+    {
+      "sym": "LTC",
+      "tf": "4h",
+      "direction": "short",
+      "entry": 42.93,
+      "sl": 42.8871,
+      "tp": 41.6209,
+      "tp2": 41.6209,
+      "sl_dist_pct_at_open": 4.4046,
+      "strategy": "bearish_rsi_divergence",
+      "grade": "A",
+      "wr": 73.3,
+      "cagr": 39.7,
+      "kelly_pct": 1.42,
+      "mode": "LIVE",
+      "opened_at": "2026-06-28 12:06:59.636279",
+      "status": "SL_HIT",
+      "live_contracts": 0.49,
+      "pnl_pct": -0.0226,
+      "be_set": true,
+      "exit_price": 42.9,
+      "pnl_pct_raw": 0.0699,
+      "pnl_dollar": -0.0007,
+      "kelly_pct_used": 1.42,
+      "reason": "SL_HIT",
+      "closed_at": "2026-06-28 20:55:46.983808",
+      "commission": 0.0,
+      "funding": 0.0,
+      "equity_after": 525.51,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 7200
     }
   ],
   "circuit_breaker": {
@@ -1558,5 +1590,5 @@
       "suspended_until": null
     }
   },
-  "live_peak_equity": 521.96
+  "live_peak_equity": 525.51
 }

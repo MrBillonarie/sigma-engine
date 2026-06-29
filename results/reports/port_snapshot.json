@@ -8,7 +8,7 @@
   "port_calmar": 2.47,
   "total_trades": 2402,
   "n_grade_a": 27,
-  "snapshot_at": "2026-06-28T08:30:01.829640Z",
+  "snapshot_at": "2026-06-29T08:30:01.477480Z",
   "trigger": "champion_watcher refresh",
   "champions": {
     "XAU|1d": "ichimoku|long",

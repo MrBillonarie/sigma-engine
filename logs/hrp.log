@@ -619,3 +619,39 @@
   SOL|15m: 7.09%
   PL|countertrend: 6.29%
   XAU|1h: 6.29%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 25 champs | min=1.5% max=8.0% avg=4.0% | hrp_live
+  HG|1h: 8.00%
+  BNB|countertrend: 7.75%
+  SOL|countertrend: 7.61%
+  SOL|15m: 7.09%
+  PL|countertrend: 6.29%
+  XAU|1h: 6.29%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 25 champs | min=1.5% max=8.0% avg=4.0% | hrp_live
+  HG|1h: 8.00%
+  BNB|countertrend: 7.75%
+  SOL|countertrend: 7.61%
+  SOL|15m: 7.09%
+  PL|countertrend: 6.29%
+  XAU|1h: 6.29%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 25 champs | min=1.5% max=8.0% avg=4.0% | hrp_live
+  HG|1h: 8.00%
+  BNB|countertrend: 7.75%
+  SOL|countertrend: 7.61%
+  SOL|15m: 7.09%
+  PL|countertrend: 6.29%
+  XAU|1h: 6.29%
+/opt/sigma/utils/hrp_portfolio.py:116: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  out={'computed_at':__import__('datetime').datetime.utcnow().isoformat(),'method':method,'n_champions':n,'kelly_min_pct':round(float(kelly.min()),2),'kelly_max_pct':round(float(kelly.max()),2),'kelly_avg_pct':round(float(kelly.mean()),2),'weights':result}
+[HRP] 25 champs | min=1.5% max=8.0% avg=4.0% | hrp_live
+  HG|1h: 8.00%
+  BNB|countertrend: 7.75%
+  SOL|countertrend: 7.61%
+  SOL|15m: 7.09%
+  PL|countertrend: 6.29%
+  XAU|1h: 6.29%

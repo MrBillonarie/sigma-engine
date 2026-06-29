@@ -1,5 +1,5 @@
 {
-  "computed_at": "2026-06-28T04:30:01.739217",
+  "computed_at": "2026-06-29T04:30:01.450858",
   "strategies": {
     "breakdown": {
       "n_trades": 6,
@@ -92,6 +92,19 @@
       "sharpe_lower_ci": null,
       "last_trade": "2026-06-17 15:31"
     },
+    "bearish_rsi_divergence": {
+      "n_trades": 3,
+      "wins": 1,
+      "losses": 2,
+      "posterior_mean_wr": 0.4,
+      "credible_lower_95": 0.008,
+      "credible_upper_95": 0.792,
+      "prob_above_55": 0.2,
+      "edge_confirmed": false,
+      "live_sharpe": null,
+      "sharpe_lower_ci": null,
+      "last_trade": "2026-06-28 20:55"
+    },
     "dmi_bear": {
       "n_trades": 5,
       "wins": 3,
@@ -106,6 +119,6 @@
       "last_trade": "2026-06-25 05:44"
     }
   },
-  "total_strategies_tracked": 8,
+  "total_strategies_tracked": 9,
   "edge_confirmed_count": 1
 }

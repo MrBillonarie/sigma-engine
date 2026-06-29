@@ -2096,20 +2096,9 @@
     "recommendation_at_init": "NO_ACTIVAR"
   },
   "LTC_1h_williams_r": {
-    "equity": 9884.16,
+    "equity": 9972.9,
     "initial": 10000,
-    "open": {
-      "sym": "LTC",
-      "tf": "1h",
-      "strategy": "williams_r",
-      "direction": "long",
-      "entry": 42.19,
-      "sl": 41.4996,
-      "tp": 43.1001,
-      "sl_dist_pct_at_open": 1.6364,
-      "kelly_pct": 0.72,
-      "opened_at": "2026-06-28 00:06:07"
-    },
+    "open": null,
     "history": [
       {
         "sym": "LTC",
@@ -2129,11 +2118,31 @@
         "pnl_dollar": -115.84,
         "equity_after": 9884.16,
         "closed_at": "2026-06-23 02:14:08"
+      },
+      {
+        "sym": "LTC",
+        "tf": "1h",
+        "strategy": "williams_r",
+        "direction": "long",
+        "entry": 42.19,
+        "sl": 41.4996,
+        "tp": 43.1001,
+        "sl_dist_pct_at_open": 1.6364,
+        "kelly_pct": 0.72,
+        "opened_at": "2026-06-28 00:06:07",
+        "exit_price": 43.11,
+        "reason": "TP_HIT",
+        "pnl_pct_raw": 2.0406,
+        "pnl_pct": 0.8978,
+        "pnl_dollar": 88.74,
+        "equity_after": 9972.9,
+        "closed_at": "2026-06-28 05:46:24"
       }
     ],
     "created_at": "2026-05-15 09:29:21",
     "pre_initialized": true,
-    "recommendation_at_init": "ESPERAR"
+    "recommendation_at_init": "ESPERAR",
+    "cooldown_until": 1782641784.7425213
   },
   "SOL_5m_supertrend_short": {
     "equity": 10000,
