@@ -1,5 +1,5 @@
 {
-  "computed_at": "2026-06-29 04:05",
+  "computed_at": "2026-06-30 04:05",
   "n_trades": 46,
   "portfolio": {
     "equity": 11518.43,
@@ -231,21 +231,66 @@
   "stress_test": {
     "btc_-10pct": {
       "btc_shock_pct": -10.0,
-      "portfolio_pnl_pct": 0.0,
-      "portfolio_pnl_usd": 0.0,
-      "positions": []
+      "portfolio_pnl_pct": 2.95,
+      "portfolio_pnl_usd": 339.82,
+      "positions": [
+        {
+          "sym": "SOL",
+          "tf": "4h",
+          "direction": "short",
+          "kelly_pct": 1.62,
+          "pnl_pct": 2.95
+        },
+        {
+          "sym": "WTI",
+          "tf": "1d",
+          "direction": "short",
+          "kelly_pct": 1.0,
+          "pnl_pct": 0.0
+        }
+      ]
     },
     "btc_-20pct": {
       "btc_shock_pct": -20.0,
-      "portfolio_pnl_pct": 0.0,
-      "portfolio_pnl_usd": 0.0,
-      "positions": []
+      "portfolio_pnl_pct": 5.9,
+      "portfolio_pnl_usd": 679.64,
+      "positions": [
+        {
+          "sym": "SOL",
+          "tf": "4h",
+          "direction": "short",
+          "kelly_pct": 1.62,
+          "pnl_pct": 5.9
+        },
+        {
+          "sym": "WTI",
+          "tf": "1d",
+          "direction": "short",
+          "kelly_pct": 1.0,
+          "pnl_pct": 0.0
+        }
+      ]
     },
     "btc_-30pct": {
       "btc_shock_pct": -30.0,
-      "portfolio_pnl_pct": 0.0,
-      "portfolio_pnl_usd": 0.0,
-      "positions": []
+      "portfolio_pnl_pct": 8.851,
+      "portfolio_pnl_usd": 1019.47,
+      "positions": [
+        {
+          "sym": "SOL",
+          "tf": "4h",
+          "direction": "short",
+          "kelly_pct": 1.62,
+          "pnl_pct": 8.851
+        },
+        {
+          "sym": "WTI",
+          "tf": "1d",
+          "direction": "short",
+          "kelly_pct": 1.0,
+          "pnl_pct": 0.0
+        }
+      ]
     }
   }
 }

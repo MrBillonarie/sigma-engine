@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-06-22 07:00:01",
+  "updated_at": "2026-06-29 07:00:01",
   "current_regime": "BEAR",
-  "n_models": 95,
+  "n_models": 98,
   "summary": {
-    "HEALTHY": 95,
+    "HEALTHY": 98,
     "WARNING": 0,
     "DECLINING": 0,
     "CRITICAL": 0
@@ -235,6 +235,21 @@
       "weeks_remaining": 6.0
     },
     {
+      "model": "ngusd_lower_high_structure_short",
+      "tf": "15m",
+      "age_days": 0,
+      "age_weeks": 0.0,
+      "expected_life_weeks": 6,
+      "life_pct_used": 0.0,
+      "score_initial": 0,
+      "score_current": 0,
+      "score_slope": 0.0,
+      "n_score_evals": 1,
+      "regime_mismatch": false,
+      "health": "HEALTHY",
+      "weeks_remaining": 6.0
+    },
+    {
       "model": "sol_roc_negative_short",
       "tf": "15m",
       "age_days": 0,
@@ -251,6 +266,21 @@
     },
     {
       "model": "bnb_lower_high_structure_short",
+      "tf": "15m",
+      "age_days": 0,
+      "age_weeks": 0.0,
+      "expected_life_weeks": 6,
+      "life_pct_used": 0.0,
+      "score_initial": 0,
+      "score_current": 0,
+      "score_slope": 0.0,
+      "n_score_evals": 1,
+      "regime_mismatch": false,
+      "health": "HEALTHY",
+      "weeks_remaining": 6.0
+    },
+    {
+      "model": "plusd_momentum",
       "tf": "15m",
       "age_days": 0,
       "age_weeks": 0.0,
@@ -1151,6 +1181,21 @@
     },
     {
       "model": "eth_lower_high_structure_short",
+      "tf": "4h",
+      "age_days": 0,
+      "age_weeks": 0.0,
+      "expected_life_weeks": 12,
+      "life_pct_used": 0.0,
+      "score_initial": 0,
+      "score_current": 0,
+      "score_slope": 0.0,
+      "n_score_evals": 1,
+      "regime_mismatch": false,
+      "health": "HEALTHY",
+      "weeks_remaining": 12.0
+    },
+    {
+      "model": "btc_dxy_strength_short",
       "tf": "4h",
       "age_days": 0,
       "age_weeks": 0.0,

@@ -1,5 +1,5 @@
 {
-  "computed_at": "2026-06-29T04:15:01.875816-04:00",
+  "computed_at": "2026-06-30T04:15:02.006093-04:00",
   "global_regime_m1": "BEAR",
   "correlation_global": 68.0,
   "assets": {
@@ -54,63 +54,63 @@
       "source": "global_regime"
     },
     "XAU": {
-      "momentum": 55.4,
-      "volatility": 27.3,
+      "momentum": 56.2,
+      "volatility": 72.7,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 59.4,
-      "label": "NEUTRAL_QUIET",
+      "composite": 50.6,
+      "label": "NEUTRAL_VOLATILE",
       "kelly_mult": 0.9,
       "source": "csv_based"
     },
     "XAG": {
-      "momentum": 69.2,
-      "volatility": 27.3,
+      "momentum": 58.6,
+      "volatility": 59.1,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 64.3,
-      "label": "BULL_QUIET",
-      "kelly_mult": 1.25,
+      "composite": 54.2,
+      "label": "NEUTRAL",
+      "kelly_mult": 0.9,
       "source": "csv_based"
     },
     "WTI": {
-      "momentum": 70.9,
-      "volatility": 22.7,
+      "momentum": 9.6,
+      "volatility": 0.0,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 65.8,
-      "label": "BULL_QUIET",
-      "kelly_mult": 1.25,
+      "composite": 48.9,
+      "label": "BEAR_QUIET",
+      "kelly_mult": 0.7,
       "source": "csv_based"
     },
     "HG": {
-      "momentum": 72.6,
+      "momentum": 78.6,
       "volatility": 11.4,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 68.6,
+      "composite": 70.7,
       "label": "BULL_QUIET",
       "kelly_mult": 1.25,
       "source": "csv_based"
     },
     "NG": {
-      "momentum": 7.6,
-      "volatility": 34.1,
+      "momentum": 38.0,
+      "volatility": 2.3,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 41.3,
-      "label": "BEAR",
-      "kelly_mult": 0.7,
+      "composite": 58.3,
+      "label": "NEUTRAL_QUIET",
+      "kelly_mult": 0.9,
       "source": "csv_based"
     },
     "PL": {
-      "momentum": 45.5,
-      "volatility": 47.7,
+      "momentum": 11.4,
+      "volatility": 6.8,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 51.9,
-      "label": "NEUTRAL",
-      "kelly_mult": 0.9,
+      "composite": 48.1,
+      "label": "BEAR_QUIET",
+      "kelly_mult": 0.7,
       "source": "csv_based"
     }
   }

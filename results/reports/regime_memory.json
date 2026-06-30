@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-28 06:00:01",
-  "n_trades_used": 34,
+  "updated_at": "2026-06-29 06:00:01",
+  "n_trades_used": 35,
   "n_models_tracked": 14,
   "current_regime": "BEAR",
   "leaderboard": [
@@ -177,14 +177,14 @@
     },
     "LTC_4h_bearish_rsi_divergence": {
       "BEAR": {
-        "n": 1,
-        "wr": 100.0,
-        "avg_pnl": 2.8402,
-        "last_seen": "2026-06-18 11:17:24.834095",
-        "score": 2.352
+        "n": 2,
+        "wr": 50.0,
+        "avg_pnl": 1.4088,
+        "last_seen": "2026-06-28 20:55:46.983808",
+        "score": 2.354
       },
       "_best_regime": "BEAR",
-      "_best_score": 2.352
+      "_best_score": 2.354
     },
     "BTC_15m_dmi_bear": {
       "BEAR": {

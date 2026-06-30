@@ -1,5 +1,5 @@
 {
-  "computed_at": "2026-06-29T04:00:02.395257",
+  "computed_at": "2026-06-30T04:00:03.025147",
   "note": "Diagnostico de seleccion multiple (best-of-N Optuna). Capa informativa -- NO afecta el champion gate ni el live execution.",
   "summary": {
     "n_slots": 40,

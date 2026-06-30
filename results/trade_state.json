@@ -1,5 +1,46 @@
 {
-  "open": {},
+  "open": {
+    "SOL_4h": {
+      "sym": "SOL",
+      "tf": "4h",
+      "direction": "short",
+      "entry": 73.61,
+      "sl": 79.2688,
+      "tp": 69.7196,
+      "tp2": 69.7196,
+      "sl_dist_pct_at_open": 7.6875,
+      "strategy": "supply_zone_rejection",
+      "grade": "A",
+      "wr": 70.4,
+      "cagr": 28.3,
+      "kelly_pct": 1.62,
+      "mode": "LIVE",
+      "opened_at": "2026-06-29 12:17:18.573415",
+      "status": "open",
+      "live_contracts": 0.09,
+      "pnl_pct": -0.1002
+    },
+    "WTI_1d": {
+      "sym": "WTI",
+      "tf": "1d",
+      "direction": "short",
+      "entry": 70.26,
+      "sl": 75.4723,
+      "tp": 65.3734,
+      "tp2": 65.3734,
+      "sl_dist_pct_at_open": 7.4186,
+      "strategy": "heikin_ashi_short",
+      "grade": "A",
+      "wr": 81.1,
+      "cagr": 28.1,
+      "kelly_pct": 1.0,
+      "mode": "LIVE",
+      "opened_at": "2026-06-30 04:01:23.480255",
+      "status": "open",
+      "live_contracts": 0.09,
+      "pnl_pct": -0.0691
+    }
+  },
   "history": [
     {
       "sym": "SOL",
