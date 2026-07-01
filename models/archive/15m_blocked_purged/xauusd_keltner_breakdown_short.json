@@ -1,0 +1,68 @@
+{
+  "symbol": "XAU/USD",
+  "tf": "15m",
+  "strategy": "keltner_breakdown_short",
+  "params": {
+    "sl_mult": 3.2,
+    "tp_mult": 3.5,
+    "cooldown": 6,
+    "rsi_w_thr": 47,
+    "kelt_mult": 1.5
+  },
+  "risk_pct": 3.6,
+  "metrics_is": {
+    "trades": 28,
+    "wr": 67.9,
+    "cagr": 8.4,
+    "dd": -16.9,
+    "pf": 1.02,
+    "trades_year": 227.3
+  },
+  "metrics_oos": {
+    "trades": 24,
+    "wr": 66.7,
+    "cagr": 1455200.3,
+    "dd": -15.2,
+    "pf": 2.38,
+    "trades_year": 240.0
+  },
+  "oos_days": 25,
+  "saved_at": "2026-06-30 08:28:17.725762",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 94.2,
+      "median": 258.5,
+      "ic95_lo": -33.6,
+      "ic95_hi": 900.6,
+      "ic80_lo": 34.1,
+      "ic80_hi": 642.4,
+      "passed": true
+    },
+    "walk_forward": {
+      "pct_positive": 0,
+      "passed": false,
+      "note": "sin datos"
+    },
+    "confidence": "MEDIA",
+    "passed_steps": 1,
+    "max_steps": 2,
+    "validated_at": "2026-06-30 08:28:17.750675"
+  },
+  "m2_validation": {
+    "status": "BLOCK",
+    "reasons": [
+      "CAGR_INSANE: 1455200% (max permitido 400%)",
+      "[WARN] FEW_TRADES: 24 trades OOS (estadistica debil)"
+    ],
+    "validated_at": "2026-06-30T08:30:01.358304-04:00"
+  },
+  "mc": {
+    "mc_cagr_p05": 54530.1,
+    "mc_cagr_p50": 774465.8,
+    "mc_cagr_p95": 13975731.0,
+    "mc_dd_p50": -47.4,
+    "mc_dd_p95": -38.7,
+    "mc_confidence": 100.0,
+    "mc_sims": 1000
+  }
+}

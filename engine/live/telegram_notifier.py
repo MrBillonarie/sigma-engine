@@ -301,11 +301,14 @@ def cmd_trades(chat_id, signals, trades):
             + "\n".join(_arm_lines)
         )
 
-    send(
+    _msg_trades = (
         f"{hdr_pos}\n\n{blk_open}{blk_reserved}{blk_cola}{blk_armed}\n\n"
-        f"Regimen: <b>{regime}</b> | {now.strftime('%H:%M')} (Chile)",
-        chat_id=chat_id
+        f"Regimen: <b>{regime}</b> | {now.strftime('%H:%M')} (Chile)"
     )
+    # Telegram hard-limit 4096 -- truncar si supera (fix HTTP 400 con 30+ modelos)
+    if len(_msg_trades) > 4000:
+        _msg_trades = _msg_trades[:3950] + "\n\n<i>... lista truncada</i>"
+    send(_msg_trades, chat_id=chat_id)
 
 def cmd_status(chat_id, signals, trades):
     """Estado completo del sistema."""

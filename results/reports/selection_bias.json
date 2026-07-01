@@ -1,12 +1,12 @@
 {
-  "computed_at": "2026-06-30T04:00:03.025147",
+  "computed_at": "2026-07-01T04:00:02.946505",
   "note": "Diagnostico de seleccion multiple (best-of-N Optuna). Capa informativa -- NO afecta el champion gate ni el live execution.",
   "summary": {
-    "n_slots": 40,
+    "n_slots": 41,
     "selection_noise_likely": 31,
     "weak_signal": 2,
     "moderate_signal": 2,
-    "genuine_standout": 1,
+    "genuine_standout": 2,
     "no_study_db": 2
   },
   "slots": {
@@ -116,12 +116,12 @@
     },
     "ETH|5m": {
       "status": "OK",
-      "n_trials": 279,
-      "best_value": 0.4976,
-      "population_mean": 0.3943,
-      "population_std": 0.0469,
-      "expected_max_by_luck": 0.529,
-      "z_above_expected_luck": -0.669,
+      "n_trials": 388,
+      "best_value": 0.5103,
+      "population_mean": 0.4097,
+      "population_std": 0.0525,
+      "expected_max_by_luck": 0.566,
+      "z_above_expected_luck": -1.061,
       "verdict": "SELECTION_NOISE_LIKELY",
       "strategy": "volatility_breakout"
     },
@@ -396,6 +396,17 @@
       "z_above_expected_luck": -0.206,
       "verdict": "SELECTION_NOISE_LIKELY",
       "strategy": "regime_adaptive"
+    },
+    "XAU|15m": {
+      "status": "OK",
+      "n_trials": 59,
+      "best_value": 0.5161,
+      "population_mean": 0.4018,
+      "population_std": 0.0167,
+      "expected_max_by_luck": 0.4409,
+      "z_above_expected_luck": 4.505,
+      "verdict": "GENUINE_STANDOUT",
+      "strategy": "donchian_breakdown"
     },
     "XAU|1d": {
       "status": "OK",

@@ -1803,6 +1803,9 @@ if _HAS_NUMBA:
                             km = max(0.5, min(2.0, rk*2.0+1.0))
                     er = risk_pct_f * km
                     sz = (cap * er / 100.0) / rsl
+                    # Cap apalancamiento: gap entre barras puede hacer rsl diminuto → sz irreal
+                    sz_max = cap * 5.0 / pr
+                    if sz > sz_max: sz = sz_max
                     pos = sa[i-1]; ep = pr; slv = sla[i-1]; tpv = tpa[i-1]
             eq[i] = cap
         return pnl_out[:n_t], eq
@@ -1848,6 +1851,8 @@ def backtest(df, sig, sl_s, tp_s, risk_pct, use_kelly=True):
                 kelly_mult = kelly_risk(recent_pnl, risk_pct) if use_kelly else 1.0
                 effective_risk = risk_pct * kelly_mult
                 sz=(cap*effective_risk/100)/rsl
+                # Cap apalancamiento: gap entre barras puede hacer rsl diminuto → sz irreal
+                sz = min(sz, cap * 5.0 / pr)
                 pos=int(sa[i-1]); entry_p=pr; slv=sla[i-1]; tpv=tpa[i-1]
         eq.append(cap)
     df_t=pd.DataFrame(trades)

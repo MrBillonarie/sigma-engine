@@ -1,15 +1,15 @@
 {
-  "computed_at": "2026-06-30 04:00",
+  "computed_at": "2026-07-01 04:00",
   "portfolio": {
-    "equity": 11518.43,
+    "equity": 11330.18,
     "initial": 10000,
-    "return_pct": 15.18,
-    "total_trades": 35,
+    "return_pct": 13.3,
+    "total_trades": 37,
     "total_wins": 18,
-    "total_losses": 17,
-    "portfolio_wr": 51.4,
+    "total_losses": 19,
+    "portfolio_wr": 48.6,
     "days_elapsed": 30,
-    "profit_factor": 1.844,
+    "profit_factor": 1.731,
     "max_dd_pct": -8.74
   },
   "gate_summary": {
@@ -20,6 +20,33 @@
     "beating_backtest": 0
   },
   "strategies": [
+    {
+      "key": "BTC/1h/momentum_short",
+      "sym": "BTC",
+      "tf": "1h",
+      "strat": "momentum_short",
+      "direction": "short",
+      "action": "PAPER_ONLY",
+      "grade": "?",
+      "bt_wr": 68.4,
+      "bt_cagr": 46.3,
+      "bt_trades": 38,
+      "bt_dd": -22.2,
+      "live_n": 6,
+      "live_wins": 2,
+      "live_losses": 4,
+      "live_wr": 33.3,
+      "live_pnl": -0.9,
+      "live_avg_pnl": -0.15,
+      "wr_delta": -35.1,
+      "wr_ci_lo": 11.7,
+      "wr_ci_hi": 65.3,
+      "wr_within_ci": false,
+      "beating_bt": false,
+      "progress_pct": 20.0,
+      "trades_needed": 24,
+      "days_to_gate": 120.0
+    },
     {
       "key": "SOL/1h/breakdown",
       "sym": "SOL",
@@ -46,33 +73,6 @@
       "progress_pct": 20.0,
       "trades_needed": 24,
       "days_to_gate": 120.0
-    },
-    {
-      "key": "BTC/1h/momentum_short",
-      "sym": "BTC",
-      "tf": "1h",
-      "strat": "momentum_short",
-      "direction": "short",
-      "action": "PAPER_ONLY",
-      "grade": "?",
-      "bt_wr": 68.4,
-      "bt_cagr": 46.3,
-      "bt_trades": 38,
-      "bt_dd": -22.2,
-      "live_n": 5,
-      "live_wins": 2,
-      "live_losses": 3,
-      "live_wr": 40.0,
-      "live_pnl": -0.83,
-      "live_avg_pnl": -0.17,
-      "wr_delta": -28.4,
-      "wr_ci_lo": 14.3,
-      "wr_ci_hi": 72.8,
-      "wr_within_ci": true,
-      "beating_bt": false,
-      "progress_pct": 16.7,
-      "trades_needed": 25,
-      "days_to_gate": 150.0
     },
     {
       "key": "BTC/4h/three_candles_short",
@@ -183,6 +183,33 @@
       "days_to_gate": 270.0
     },
     {
+      "key": "BTC/15m/dmi_bear",
+      "sym": "BTC",
+      "tf": "15m",
+      "strat": "dmi_bear",
+      "direction": "short",
+      "action": "PAPER_ONLY",
+      "grade": "?",
+      "bt_wr": 64.8,
+      "bt_cagr": 40.4,
+      "bt_trades": 122,
+      "bt_dd": -43.3,
+      "live_n": 2,
+      "live_wins": 1,
+      "live_losses": 1,
+      "live_wr": 50.0,
+      "live_pnl": 1.3,
+      "live_avg_pnl": 0.65,
+      "wr_delta": -14.8,
+      "wr_ci_lo": 12.1,
+      "wr_ci_hi": 87.9,
+      "wr_within_ci": true,
+      "beating_bt": null,
+      "progress_pct": 6.7,
+      "trades_needed": 28,
+      "days_to_gate": 420.0
+    },
+    {
       "key": "LTC/4h/bearish_rsi_divergence",
       "sym": "LTC",
       "tf": "4h",
@@ -208,33 +235,6 @@
       "progress_pct": 6.7,
       "trades_needed": 28,
       "days_to_gate": 420.0
-    },
-    {
-      "key": "BTC/15m/dmi_bear",
-      "sym": "BTC",
-      "tf": "15m",
-      "strat": "dmi_bear",
-      "direction": "short",
-      "action": "PAPER_ONLY",
-      "grade": "?",
-      "bt_wr": 64.8,
-      "bt_cagr": 40.4,
-      "bt_trades": 122,
-      "bt_dd": -43.3,
-      "live_n": 1,
-      "live_wins": 1,
-      "live_losses": 0,
-      "live_wr": 100.0,
-      "live_pnl": 2.86,
-      "live_avg_pnl": 2.86,
-      "wr_delta": 35.2,
-      "wr_ci_lo": 27.0,
-      "wr_ci_hi": 100,
-      "wr_within_ci": true,
-      "beating_bt": null,
-      "progress_pct": 3.3,
-      "trades_needed": 29,
-      "days_to_gate": 870.0
     },
     {
       "key": "ETH/1h/momentum_short",
@@ -2358,7 +2358,7 @@
     ],
     "checks": {
       "trades": {
-        "val": 35,
+        "val": 37,
         "req": ">= 30",
         "ok": true
       },
@@ -2368,7 +2368,7 @@
         "ok": true
       },
       "wr": {
-        "val": "51.4%",
+        "val": "48.6%",
         "req": ">= 55.0%",
         "ok": false
       },
@@ -2378,12 +2378,12 @@
         "ok": true
       },
       "pf": {
-        "val": "1.84",
+        "val": "1.73",
         "req": ">= 1.2",
         "ok": true
       },
       "equity": {
-        "val": "$11,518",
+        "val": "$11,330",
         "req": ">= $9,000",
         "ok": true
       },
@@ -2395,13 +2395,13 @@
     }
   },
   "kelly": {
-    "n": 46,
-    "wr_pct": 58.7,
+    "n": 48,
+    "wr_pct": 56.2,
     "avg_win_pct": 1.713,
-    "avg_loss_pct": 1.32,
-    "profit_factor": 1.844,
-    "kelly_full_pct": 20.36,
-    "kelly_half_pct": 10.18,
+    "avg_loss_pct": 1.272,
+    "profit_factor": 1.731,
+    "kelly_full_pct": 18.68,
+    "kelly_half_pct": 9.34,
     "recommended_pct": 5.0
   },
   "divergence_alerts": []

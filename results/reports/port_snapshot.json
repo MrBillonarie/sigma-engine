@@ -1,14 +1,14 @@
 {
-  "port_cagr": 64.0125,
-  "port_cagr_kelly_boost": 1.4253,
-  "port_cagr_with_kelly": 65.4378,
-  "port_wr": 68.3442459493145,
-  "port_dd": -25.90049854590777,
-  "port_pf": 1.7,
-  "port_calmar": 2.47,
-  "total_trades": 2402,
-  "n_grade_a": 27,
-  "snapshot_at": "2026-06-30T08:30:01.805535Z",
+  "port_cagr": 121.2194,
+  "port_cagr_kelly_boost": 3.1506,
+  "port_cagr_with_kelly": 124.37,
+  "port_wr": 68.44913722267873,
+  "port_dd": -25.681963845521775,
+  "port_pf": 1.71,
+  "port_calmar": 4.72,
+  "total_trades": 2429,
+  "n_grade_a": 28,
+  "snapshot_at": "2026-07-01T08:30:01.251619Z",
   "trigger": "champion_watcher refresh",
   "champions": {
     "XAU|1d": "ichimoku|long",
@@ -27,6 +27,7 @@
     "BNB|15m": "lower_high_structure_short|short",
     "XAG|15m": "pullback|long",
     "NG|15m": "lower_high_structure_short|short",
+    "XAU|15m": "donchian_breakdown|short",
     "PL|15m": "momentum|long",
     "BTC|4h": "tick_follow_short|short",
     "ETH|4h": "tma_bands|long",
@@ -75,7 +76,7 @@
   },
   "port_cagr_operational": 64.15,
   "port_cagr_pass_live": 76.69,
-  "port_cagr_all_inc_blocked": 64.01,
+  "port_cagr_all_inc_blocked": 121.22,
   "n_pass_live": 30,
-  "n_blocked": 5
+  "n_blocked": 6
 }

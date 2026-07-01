@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-30T04:00:01.484241",
+  "timestamp": "2026-07-01T04:00:01.515717",
   "models": {
     "1h": [
       {
@@ -486,6 +486,30 @@
       }
     ],
     "15m": [
+      {
+        "file": "xauusd_donchian_breakdown.json",
+        "strategy": "donchian_breakdown",
+        "cagr_oos": 5221.1,
+        "wr_oos": 77.8,
+        "dd_oos": -6.2,
+        "trades_oos": 27
+      },
+      {
+        "file": "xauusd_keltner_breakdown_short.json",
+        "strategy": "keltner_breakdown_short",
+        "cagr_oos": 5098.6,
+        "wr_oos": 60.9,
+        "dd_oos": -11.6,
+        "trades_oos": 23
+      },
+      {
+        "file": "xauusd_atr_channel_short.json",
+        "strategy": "atr_channel_short",
+        "cagr_oos": 974.5,
+        "wr_oos": 69.6,
+        "dd_oos": -12.0,
+        "trades_oos": 23
+      },
       {
         "file": "eth_lower_high_structure_short.json",
         "strategy": "lower_high_structure_short",

@@ -1,0 +1,67 @@
+{
+  "symbol": "XAU/USD",
+  "tf": "15m",
+  "strategy": "donchian_breakdown",
+  "params": {
+    "sl_mult": 3.4000000000000004,
+    "tp_mult": 2.1,
+    "cooldown": 11,
+    "rsi_w_thr": 45
+  },
+  "risk_pct": 4.0,
+  "metrics_is": {
+    "trades": 32,
+    "wr": 68.8,
+    "cagr": -28.9,
+    "dd": -16.7,
+    "pf": 0.84,
+    "trades_year": 259.7
+  },
+  "metrics_oos": {
+    "trades": 27,
+    "wr": 77.8,
+    "cagr": 5221.1,
+    "dd": -6.2,
+    "pf": 2.68,
+    "trades_year": 270.0
+  },
+  "oos_days": 26,
+  "saved_at": "2026-06-30 23:11:15.232474",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 98.2,
+      "median": 76.7,
+      "ic95_lo": 6.7,
+      "ic95_hi": 155.5,
+      "ic80_lo": 29.6,
+      "ic80_hi": 132.0,
+      "passed": true
+    },
+    "walk_forward": {
+      "pct_positive": 0,
+      "passed": false,
+      "note": "sin datos"
+    },
+    "confidence": "MEDIA",
+    "passed_steps": 1,
+    "max_steps": 2,
+    "validated_at": "2026-06-30 23:11:15.253162"
+  },
+  "mc": {
+    "mc_cagr_p05": 23062.6,
+    "mc_cagr_p50": 352249.6,
+    "mc_cagr_p95": 4272032.8,
+    "mc_dd_p50": -47.8,
+    "mc_dd_p95": -35.5,
+    "mc_confidence": 100.0,
+    "mc_sims": 1000
+  },
+  "m2_validation": {
+    "status": "BLOCK",
+    "reasons": [
+      "CAGR_INSANE: 5221% (max permitido 400%)",
+      "[WARN] FEW_TRADES: 27 trades OOS (estadistica debil)"
+    ],
+    "validated_at": "2026-06-30T23:30:01.610723-04:00"
+  }
+}

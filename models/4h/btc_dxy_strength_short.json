@@ -26,15 +26,15 @@
     "trades_year": 8.5
   },
   "oos_days": 647,
-  "saved_at": "2026-06-30 00:48:31.310229",
+  "saved_at": "2026-07-01 03:03:25.595899",
   "validation": {
     "monte_carlo": {
-      "p_pos": 95.2,
-      "median": 111.1,
-      "ic95_lo": -13.9,
-      "ic95_hi": 271.1,
-      "ic80_lo": 21.6,
-      "ic80_hi": 213.2,
+      "p_pos": 94.3,
+      "median": 110.0,
+      "ic95_lo": -21.1,
+      "ic95_hi": 271.6,
+      "ic80_lo": 19.9,
+      "ic80_hi": 219.3,
       "passed": true
     },
     "walk_forward": {
@@ -69,15 +69,6 @@
     "confidence": "MEDIA",
     "passed_steps": 2,
     "max_steps": 3,
-    "validated_at": "2026-06-30 00:49:22.197634"
-  },
-  "mc": {
-    "mc_cagr_p05": -1.1,
-    "mc_cagr_p50": 90.0,
-    "mc_cagr_p95": 163.3,
-    "mc_dd_p50": -29.4,
-    "mc_dd_p95": -16.0,
-    "mc_confidence": 93.3,
-    "mc_sims": 1000
+    "validated_at": "2026-07-01 03:04:18.895119"
   }
 }
