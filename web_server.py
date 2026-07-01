@@ -1185,7 +1185,7 @@ def get_risk_status():
 
     NOTE: el campo retornado "max_slots" es ADVISORY — el opener
 
-    (_proactive_trade_opener / _compute_signals) usa MAX_SLOTS=3 hardcoded.
+    (_proactive_trade_opener / _compute_signals) usa MAX_SLOTS=4 hardcoded.
 
     Este campo refleja recomendacion conservadora basada en regimen + RSI_W,
 
@@ -4650,13 +4650,13 @@ def _compute_signals():
 
     # Capacidad: 3 slots simultaneos (independiente de regimen)
 
-    # Bonus slot reservado historicamente para 3+ A+/A; actualmente MAX_SLOTS=3 fijo.
+    # Bonus slot reservado historicamente para 3+ A+/A; actualmente MAX_SLOTS=4 fijo.
 
     _ap_count = sum(1 for r in results if r.get('grade') in ('A+','A') and r.get('recommendation')=='ACTIVAR')
 
-    MAX_SLOTS = 3  # 3 slots en todos los regimenes
+    MAX_SLOTS = 4  # 4 slots en todos los regimenes
 
-    if _ap_count >= 3 and MAX_SLOTS < 3: MAX_SLOTS = 3  # bonus slot para A+/A
+    # (bonus slot eliminado — MAX_SLOTS fijo en 4)
 
 
 
@@ -5326,13 +5326,13 @@ def _compute_signals():
 
     for _r in sorted(results, key=lambda x: x.get('slot',0), reverse=True):
 
-        if _r.get('slot',0) not in (1,2,3): continue
+        if _r.get("slot",0) not in (1,2,3,4): continue
 
         _k = _r['sym']+'_'+_r['tf']
 
         if _k not in _paper_candidates or _k in _state['open']: continue
 
-        _max_open = 3 if LIVE_EXECUTION else 5  # live=3 conservador / paper=5 para acelerar validacion
+        _max_open = 4 if LIVE_EXECUTION else 5  # live=4 (ampliado 2026-07-01) / paper=5 para acelerar validacion
         if _open_n >= _max_open: break
 
         _c = _paper_candidates[_k]
@@ -5894,7 +5894,7 @@ def _compute_signals():
 
                 _slot_count_now += 1
 
-        _MAX_SLOTS = 3
+        _MAX_SLOTS = 4
 
         # Buscar promoted que quieren slot
 
@@ -6024,9 +6024,9 @@ def _read_auth_config():
 
     """Lee password, cookie secret y URL_TOKEN del archivo (re-lee en cada request — permite rotar sin restart)."""
 
-    pwd, secret, url_token = '0808', 'fallback-secret-change-me', ''
-
     try:
+
+        pwd, secret, url_token = '', '', ''
 
         for line in _AUTH_FILE.read_text(encoding='utf-8').splitlines():
 
@@ -6042,11 +6042,15 @@ def _read_auth_config():
 
                 url_token = line.split('=',1)[1].strip()
 
-    except Exception:
+        if not pwd or not secret:
 
-        pass
+            raise ValueError('Auth config incompleto: falta PASSWORD o COOKIE_SECRET')
 
-    return pwd, secret, url_token
+        return pwd, secret, url_token
+
+    except Exception as e:
+
+        raise RuntimeError(f'[AUTH] Archivo de config ilegible — dashboard bloqueado: {e}') from e
 
 
 
@@ -9686,7 +9690,7 @@ def _proactive_trade_opener():
 
                         if m.get('grade') in ('A+','A') and m.get('recommendation')=='ACTIVAR']
 
-            max_slots = 3 if regime == 'BEAR' else 3  # subido 2026-05-12 (matches MAX_OPEN_SLOTS)
+            max_slots = 4  # subido 2026-05-12 (matches MAX_OPEN_SLOTS)
 
             if len(_ap_sigs) >= 3 and max_slots < 3:
 
@@ -9715,6 +9719,72 @@ def _proactive_trade_opener():
                     open_keys.add(f"{t['sym']}_{t['tf']}")
 
 
+
+            # ── COLA DE SEÑALES: auto-ejecutar señales en espera ────────────────────────
+            try:
+                import datetime as _dtq3, os as _osq3
+                _QFILE3 = '/opt/sigma/results/signal_queue.json'
+                if _osq3.path.exists(_QFILE3):
+                    _q3 = _jw2.load(open(_QFILE3))
+                    _q3_keep = []
+                    _now3 = _dtq3.datetime.utcnow()
+                    for _sq in _q3:
+                        try:
+                            _exp3 = _dtq3.datetime.fromisoformat(_sq.get('expires_at',''))
+                            if _now3 > _exp3:
+                                continue
+                        except Exception:
+                            continue
+                        _qkey3 = _sq['sym'] + '_' + _sq['tf']
+                        if _qkey3 in open_keys or is_blocked(_sq['sym'], _sq['tf']):
+                            _q3_keep.append(_sq)
+                            continue
+                        if open_count >= max_slots:
+                            _q3_keep.append(_sq)
+                            continue
+                        try:
+                            _bsym3q = {'HG':'COPPER','NG':'NATGAS','WTI':'CL','PL':'XPT'}.get(_sq['sym'], _sq['sym'])
+                            _url3q  = 'https://fapi.binance.com/fapi/v1/ticker/price?symbol=' + _bsym3q + 'USDT'
+                            _lp3q   = float(_jw2.loads(_ur2.urlopen(_url3q, timeout=5).read())['price'])
+                        except Exception:
+                            _q3_keep.append(_sq)
+                            continue
+                        _bar3q = _sq.get('price', _lp3q)
+                        _sl3q  = _sq.get('sl', 0); _tp3q = _sq.get('tp', 0)
+                        _dir3q = _sq.get('direction', 'long')
+                        if not _sl3q or not _tp3q:
+                            continue
+                        _sl_d3 = abs(_sl3q - _bar3q); _tp_d3 = abs(_tp3q - _bar3q)
+                        _sh3q  = _dir3q == 'short'
+                        _nsl3  = round(_lp3q + _sl_d3 if _sh3q else _lp3q - _sl_d3, 4)
+                        _ntp3  = round(_lp3q - _tp_d3 if _sh3q else _lp3q + _tp_d3, 4)
+                        _execute_trade(_sq['sym'], _sq['tf'], _dir3q, _lp3q, _nsl3, _ntp3,
+                                       strategy=_sq.get('strategy','?'),
+                                       grade=_sq.get('grade','?'), wr=_sq.get('wr',0),
+                                       cagr=_sq.get('cagr',0),
+                                       kelly_pct=float(_sq.get('kelly_pct') or 3.3))
+                        open_keys.add(_qkey3)
+                        open_count += 1
+                        print('[QUEUE_EXEC] ' + _sq['sym'] + '/' + _sq['tf'] + ' ' + _dir3q.upper() + ' @ ' + str(_lp3q), flush=True)
+                        try:
+                            import urllib.parse as _ulp3
+                            _arr3 = '▲ LONG' if _dir3q != 'short' else '▼ SHORT'
+                            _tl = [
+                                '✅ <b>SEÑAL DE COLA → ACTIVADA</b>' + chr(10) + chr(10),
+                                _arr3 + ' <b>' + _sq['sym'] + ' ' + _sq['tf'].upper() + '</b>' + chr(10) + chr(10),
+                                'Estrategia: <code>' + _sq.get('strategy','?') + '</code>' + chr(10),
+                                'Grade: <b>' + _sq.get('grade','?') + '</b>  WR: <code>' + str(int(_sq.get('wr',0))) + '%</code>' + chr(10) + chr(10),
+                                'Entrada: <code>' + str(round(_lp3q,4)) + '</code>  SL: <code>' + str(_nsl3) + '</code>  TP: <code>' + str(_ntp3) + '</code>' + chr(10) + chr(10),
+                                '⏰ En cola desde ' + _sq.get('queued_at','?')[:16],
+                            ]
+                            _msg3 = ''.join(_tl)
+                            _dat3 = _ulp3.urlencode({'chat_id': _PER_MODEL_TG_CHAT, 'text': _msg3, 'parse_mode': 'HTML'}).encode()
+                            _ur2.urlopen('https://api.telegram.org/bot' + _PER_MODEL_TG_TOKEN + '/sendMessage', data=_dat3, timeout=5)
+                        except Exception: pass
+                    with open(_QFILE3, 'w') as _fq3w:
+                        _jw2.dump(_q3_keep, _fq3w)
+            except Exception as _eq3:
+                print('[QUEUE ERROR] ' + str(_eq3), flush=True)
 
             # ── PER-MODEL paper trading: abre TODO lo que tenga signal=True ─────
 
