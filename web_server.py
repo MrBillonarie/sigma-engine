@@ -5994,17 +5994,21 @@ def _serve_file(handler, path, filename):
 
 
 
-def _send_json(handler, data):
+def _send_json(handler, data, status=200):
 
     body = json.dumps(data, default=str).encode()
 
-    handler.send_response(200)
+    handler.send_response(status)
 
     handler.send_header('Content-Type', 'application/json')
 
     handler.send_header('Content-Length', len(body))
 
     handler.send_header('Access-Control-Allow-Origin', 'https://squantdesk.com')
+
+    handler.send_header('X-Content-Type-Options', 'nosniff')
+
+    handler.send_header('X-Frame-Options', 'DENY')
 
     handler.end_headers()
 
@@ -8950,7 +8954,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
                     'error': str(_ve), 'type': type(_ve).__name__,
 
-                    'trace': _vtb.format_exc(),
+                    # trace omitted for security
 
                 }).encode('utf-8'))
 
