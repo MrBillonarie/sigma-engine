@@ -41,11 +41,17 @@ MAX_LEVERAGE        = 5      # maximo 5x
 MAX_OPEN_SLOTS      = 4      # maximo 4 posiciones simultaneas
 MIN_GATE_SCORE      = 85     # gate minimo para operar live
 MIN_NOTIONAL_USD    = 5.5    # piso de Binance es 5.0 USDT -- margen por slippage de fetch_ticker a fill
+MAX_FORCED_KELLY_MULT = 2.0  # politica 2026-07-02: si el piso de notional de Binance
+                             # exige mas de 2x el Kelly que decidio el motor de riesgo,
+                             # el trade NO va a real (va a paper). Sin esto, las senales
+                             # de MENOR conviccion (Kelly bajo) eran las MAS apalancadas
+                             # (LTC 2026-07-01: kelly 1.0% forzado a 3.28%)
 
 CHILE        = timezone(timedelta(hours=-4))
 BASE         = Path('/opt/sigma')
 SECRETS_PATH = BASE / 'engine' / 'config' / 'secrets.json'
 LOG_PATH     = BASE / 'results' / 'reports' / 'executor.log'
+EXEC_QUALITY_PATH = BASE / 'results' / 'reports' / 'execution_quality.jsonl'
 
 _exchange = None
 
@@ -358,12 +364,19 @@ def _api_close_trade(sym, tf, exit_price, reason, contracts=None, real_equity=No
 
 
 # -- Entry --------------------------------------------------------------------
+# Activos SIN perpetuo en Binance Futures (verificado 2026-07-02 via exchangeInfo).
+# AAPL/NVDA/TSLA/JPM SI existen como perps USDT; XOM no.
+_NO_BINANCE_MARKET = {'XOM'}
+
 def execute_entry(sym, tf, direction, price, sl, tp,
                   strategy='', grade='B', wr=50.0, cagr=0.0,
                   kelly_pct=3.3, paper=True, ai_reason='', **kwargs):
     """
     Abre una posicion. Interfaz unica para paper y live.
     """
+    if str(sym).split('/')[0].upper() in _NO_BINANCE_MARKET:
+        _log(f'{sym} sin perpetuo en Binance — fallback paper')
+        return False
     mode = "PAPER" if (not LIVE_MODE or paper) else ("DRY_RUN" if DRY_RUN else "LIVE")
     _log(f"[{mode}] ENTRY {direction.upper()} {sym} {tf} @ {price:.4f} "
          f"SL:{sl:.4f} TP:{tp:.4f} Kelly:{kelly_pct}% Grade:{grade} {ai_reason}")
@@ -378,6 +391,37 @@ def execute_entry(sym, tf, direction, price, sl, tp,
     if not ok:
         _log(f"BLOCKED — {reason}")
         return False
+
+    # Restriccion de cambio de regimen (PROTOCOLO_PRECOMPROMISO §1, 2026-07-02):
+    # precommitment_guard.py (cron 6h) activa esto cuando el regimen global gira.
+    # El guard decide, aca se APLICA -- documento hecho codigo. Fail-safe: si el
+    # archivo no existe o es ilegible, no hay restriccion (comportamiento normal).
+    try:
+        _pc = json.loads((BASE / 'results' / 'reports' /
+                          'precommitment_state.json').read_text())
+        _restr = _pc.get('restriction') or {}
+        if _restr.get('active'):
+            _km = float(_restr.get('kelly_mult', 1.0))
+            if _km < 1.0:
+                _log(f"PRECOMMIT: regimen nuevo sin evidencia live -- Kelly "
+                     f"{kelly_pct}% x{_km} = {kelly_pct * _km:.2f}%")
+                kelly_pct = kelly_pct * _km
+            _max_slots = int(_restr.get('max_live_slots', MAX_OPEN_SLOTS))
+            if _max_slots < MAX_OPEN_SLOTS:
+                try:
+                    _ts = json.loads((BASE / 'results' / 'trade_state.json').read_text())
+                    _n_live = sum(1 for t in _ts.get('open', {}).values()
+                                  if t.get('status') == 'open' and t.get('mode') == 'LIVE')
+                except Exception:
+                    _n_live = MAX_OPEN_SLOTS  # ilegible -> asumir lleno (fail-safe)
+                if _n_live >= _max_slots:
+                    _log(f"PRECOMMIT: {_n_live} slots LIVE abiertos >= tope {_max_slots} "
+                         f"por restriccion de regimen -- trade va a paper")
+                    return False
+    except FileNotFoundError:
+        pass
+    except Exception as _pce:
+        _log(f"PRECOMMIT: estado ilegible ({_pce}) -- sin restriccion")
 
     ex = _get_exchange()
     if not ex:
@@ -405,6 +449,18 @@ def execute_entry(sym, tf, direction, price, sl, tp,
         target_usd    = max(size_usd, min_notional * 1.05)
         max_size_usd  = equity * MAX_KELLY_PCT / 100
         hard_cap_usd  = equity * MAX_KELLY_HARD_CAP / 100
+        # Politica anti-inversion de riesgo (2026-07-02): el piso de notional no
+        # puede multiplicar el riesgo decidido por mas de MAX_FORCED_KELLY_MULT.
+        # Mejor un trade menos en real que un riesgo 3x el que decidio la cadena
+        # de multiplicadores de RISK_POLICY. El trade cae a paper y cuenta igual
+        # para la validacion estadistica.
+        if size_usd > 0 and target_usd / size_usd > MAX_FORCED_KELLY_MULT:
+            _log(f"POLITICA NOTIONAL: Kelly {kelly_pct}% -> ${size_usd:.2f}, pero el "
+                 f"minimo de Binance para {symbol} (${min_notional}) exige "
+                 f"{target_usd / size_usd:.1f}x el riesgo decidido "
+                 f"(tope {MAX_FORCED_KELLY_MULT}x). Trade rechazado en LIVE, va a paper. "
+                 f"Se resuelve solo cuando el equity crezca.")
+            return False
         if target_usd > max_size_usd:
             # FIX M6: el minimo de notional manda sobre el tope normal de Kelly --
             # se usa el minimo INDISPENSABLE para que el exchange acepte la orden,
@@ -438,6 +494,29 @@ def execute_entry(sym, tf, direction, price, sl, tp,
         _log(f"Error calculando size: {e}"); return False
 
     side    = 'buy' if direction == 'long' else 'sell'
+
+    def _exec_quality(signal_price, fill_price):
+        """Ledger de calidad de ejecucion (JSONL append-only, 2026-07-02).
+        Mide el slippage REAL senal->fill, para comparar semanalmente contra el
+        1bp/lado asumido en backtest/paper. Si el real supera sostenidamente al
+        asumido, el backtest sobreestima el edge -- y hay que saberlo ANTES de
+        que lo revele el PF live. Best-effort: jamas aborta un trade por esto."""
+        try:
+            if not signal_price or not fill_price:
+                return
+            raw_bps = (fill_price - signal_price) / signal_price * 10000
+            # adverso-positivo: comprar mas caro / vender mas barato = positivo
+            adverse_bps = raw_bps if direction == 'long' else -raw_bps
+            rec = {'ts': datetime.now(CHILE).strftime('%Y-%m-%d %H:%M:%S'),
+                   'sym': sym, 'tf': tf, 'direction': direction,
+                   'signal_price': signal_price, 'fill_price': fill_price,
+                   'adverse_bps': round(adverse_bps, 2), 'contracts': contracts,
+                   'notional_usd': round(fill_price * contracts, 2)}
+            with open(EXEC_QUALITY_PATH, 'a', encoding='utf-8') as f:
+                f.write(json.dumps(rec) + '\n')
+        except Exception as e:
+            _log(f"exec_quality ledger error (no fatal): {e}")
+
     # FIX M4: newClientOrderId para idempotencia
     trade_ts  = int(time.time())
     entry_cid = f"sigma_{sym}_{tf}_{trade_ts}_entry"
@@ -466,6 +545,7 @@ def execute_entry(sym, tf, direction, price, sl, tp,
         fill  = order.get('average') or cur_price
         oid   = order.get('id', '?')
         _log(f"ENTRY OK id={oid} fill={fill:.4f} contracts={contracts}")
+        _exec_quality(price, fill)
         entry_filled = True
     except Exception as e:
         _log(f"ERROR entry order: {e}")

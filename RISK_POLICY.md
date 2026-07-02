@@ -96,7 +96,7 @@ Al activarse, bloquea nuevas entradas hasta reset manual o automático (ver `sta
 
 ## 7. Slots simultáneos y notional mínimo por activo
 
-`MAX_OPEN_SLOTS = 3` (`engine/live/live_executor.py:34`) es el tope duro de posiciones reales simultáneas — independiente del capital. El gate de correlación (`utils/quant.py::position_correlation_gate`, §2) agrega un tope de 2 por cluster en la misma dirección, pero el de 3 es el que manda.
+`MAX_OPEN_SLOTS = 4` (`engine/live/live_executor.py`; era 3, subido a 4 antes de 2026-07-02 — doc corregido 2026-07-02) es el tope duro de posiciones reales simultáneas — independiente del capital. El gate de correlación (`utils/quant.py::position_correlation_gate`, §2) agrega un tope de 2 por cluster en la misma dirección, pero el de 4 es el que manda.
 
 **El límite real con capital chico no es el "3" — es el notional mínimo de Binance, que varía por activo** (verificado 2026-06-18 vía `ex.market(sym)['limits']`):
 
@@ -109,6 +109,8 @@ Al activarse, bloquea nuevas entradas hasta reset manual o automático (ver `sta
 Si una señal de un activo con notional mínimo alto sale ACTIVAR pero su Kelly calculado no alcanza, el intento de orden real falla por error de Binance (`-4164`) y cae automáticamente a paper (fallback agregado 2026-06-17) — no cuenta como uno de los 3 slots reales, ni se pierde la señal.
 
 **Para que BTC pueda operar real**, el capital necesita crecer a `equity ≥ $50 / (MAX_KELLY_PCT/100) ≈ $833` (con Kelly al tope de 6%), o subir el tope de Kelly (con más riesgo). Recalcular esta tabla cada vez que el capital cambie significativamente — los umbrales son función directa del equity real en Binance.
+
+**Política anti-inversión de riesgo (2026-07-02):** si el piso de notional de Binance exige más de 2× el Kelly que decidió la cadena de multiplicadores (`MAX_FORCED_KELLY_MULT=2.0` en `live_executor.py`), el trade NO va a real — cae a paper. Racional: las señales de Kelly bajo son las de menor convicción, y el piso las convertía en las más apalancadas (selección adversa; caso LTC 2026-07-01: Kelly 1.0% forzado a 3.28%). Además, desde 2026-07-02 el `precommitment_guard.py` (cron 6h) aplica automáticamente Kelly ×0.5 + máx 2 slots LIVE tras un cambio de régimen global — ver PROTOCOLO_PRECOMPROMISO.md.
 
 ## Pendientes conocidos (no bloqueantes)
 - `utils/quant.py::decay_signal` está implementado pero no se usa en producción — `engine/live/decay_monitor.py` tiene su propia lógica separada (pandas/ccxt) para lo mismo. No es un bug, es redundancia menor.
