@@ -24,8 +24,10 @@ ASSETS    = ['BTC','ETH','LTC','SOL','BNB','XAU','XAG']
 ASSETS_M1 = ['BTC','ETH','LTC','SOL','BNB']          # Motor 1: Crypto
 ASSETS_M2 = ['XAU','XAG','WTI','HG','NG','PL']         # Motor 2: 6 Commodities
 TIMEFRAMES_M2 = ['1d','4h','1h','15m']               # Motor 2: 1d/4h/1h/15m
-ASSET_EMOJI = {'BTC':'&#8383;','ETH':'&#926;','LTC':'&#321;','SOL':'&#9678;','BNB':'&#11042;','XAU':'Au','XAG':'Ag','WTI':'&#9651;','HG':'Cu','NG':'&#9650;','PL':'Pt'}
-ASSET_COLOR = {'BTC':'#f7931a','ETH':'#627eea','LTC':'#345d9d','SOL':'#9945ff','BNB':'#f3ba2f','XAU':'#FFD700','XAG':'#C0C0C0','WTI':'#4a90d9','HG':'#B87333','NG':'#e67e22','PL':'#7ec8e3'}
+ASSETS_M3 = ['AAPL','NVDA','TSLA','JPM','XOM']       # Motor 3: S&P 500 Stocks
+TIMEFRAMES_M3 = ['1d','4h','1h','15m']               # Motor 3: 1d/4h/1h/15m
+ASSET_EMOJI = {'BTC':'&#8383;','ETH':'&#926;','LTC':'&#321;','SOL':'&#9678;','BNB':'&#11042;','XAU':'Au','XAG':'Ag','WTI':'&#9651;','HG':'Cu','NG':'&#9650;','PL':'Pt','AAPL':'&#63743;','NVDA':'NV','TSLA':'&#9889;','JPM':'JP','XOM':'&#128293;'}
+ASSET_COLOR = {'BTC':'#f7931a','ETH':'#627eea','LTC':'#345d9d','SOL':'#9945ff','BNB':'#f3ba2f','XAU':'#FFD700','XAG':'#C0C0C0','WTI':'#4a90d9','HG':'#B87333','NG':'#e67e22','PL':'#7ec8e3','AAPL':'#3fb950','NVDA':'#76b900','TSLA':'#cc0000','JPM':'#117cbf','XOM':'#e8a100'}
 TIMEFRAMES  = ['4h','1h','15m','5m']
 TF_LABEL    = {'1d':'1D','4h':'4H','1h':'1H','15m':'15m','5m':'5m'}
 TF_COLORS_H = {'1d':'#e0bb3a','4h':'#2ecc71','1h':'#c9a227','15m':'#f1c40f','5m':'#e67e22'}
@@ -93,6 +95,13 @@ def _write_snapshot(path, cagr, wr, dd, pf, calmar, trades, n_grade_a, champions
         _m2_sym = _m2_slot.split('|')[0]
         if _m2_sym in _M2_ASSETS and _m2_slot not in champions:
             champions[_m2_slot] = _m2_val
+
+    # Merge M3 champions (AAPL/NVDA/TSLA/JPM/XOM) del snapshot anterior
+    _M3_ASSETS = {'AAPL', 'NVDA', 'TSLA', 'JPM', 'XOM'}
+    for _m3_slot, _m3_val in _prev_snap.get('champions', {}).items():
+        _m3_sym = _m3_slot.split('|')[0]
+        if _m3_sym in _M3_ASSETS and _m3_slot not in champions:
+            champions[_m3_slot] = _m3_val
 
     # Preservar métricas M1+M2 calculadas por champion_watcher si son mas
     # completas que el calculo M1-only de este modulo (mismo criterio que antes).
@@ -294,6 +303,9 @@ def load_model(asset, tf, direction='long'):
         _COM_PFX_S = {'XAU':'xauusd','XAG':'xagusd','WTI':'wtiusd','HG':'hgusd','NG':'ngusd','PL':'plusd'}
         if asset in _COM_PFX_S:
             candidates += [f"{_COM_PFX_S[asset]}_{s}.json" for s in _SIGMA_SHORTS]
+        _STK_PFX_S = {'AAPL':'aaplusd','NVDA':'nvdausd','TSLA':'tslausd','JPM':'jpmusd','XOM':'xomusd'}
+        if asset in _STK_PFX_S:
+            candidates += [f"{_STK_PFX_S[asset]}_{s}.json" for s in _SIGMA_SHORTS]
     else:
         long_strats = [
             # STRATEGIES — originales core
@@ -328,6 +340,9 @@ def load_model(asset, tf, direction='long'):
         if asset in _COMMODITY_PREFIXES:
             _pfx = _COMMODITY_PREFIXES[asset]
             candidates += [f'{_pfx}_{s}.json' for s in long_strats]
+        _STOCK_PREFIXES = {'AAPL':'aaplusd','NVDA':'nvdausd','TSLA':'tslausd','JPM':'jpmusd','XOM':'xomusd'}
+        if asset in _STOCK_PREFIXES:
+            candidates += [f"{_STOCK_PREFIXES[asset]}_{s}.json" for s in long_strats]
 
     best_dict = None
     best_cagr = 0.0  # solo guardamos modelos con CAGR > 0
@@ -459,36 +474,45 @@ def load_cross_asset():
 
 
 def get_db_stats():
+    import glob as _g, datetime as _d, re as _re_dbs
     db = OUTPUT_DIR / 'models' / 'sigma.db'
-    if not db.exists():
-        return {'total': 0, 'by_tf': {}, 'top3': []}
+    # Tasa reciente desde sigma.db (solo rate_hr)
+    rate = 0; top3 = []
     try:
-        conn = sqlite3.connect(str(db))
-        total  = conn.execute('SELECT COUNT(*) FROM runs').fetchone()[0]
-        by_tf  = {r[0]: r[1] for r in conn.execute('SELECT tf,COUNT(*) FROM runs GROUP BY tf')}
-        top3   = [{'tf':r[0],'mode':r[1],'cagr':r[2],'wr':r[3],'score':r[4]}
-                  for r in conn.execute(
+        conn = sqlite3.connect(str(db), timeout=3)
+        rate = conn.execute("SELECT COUNT(*) FROM runs WHERE ts > datetime('now','-1 hours')").fetchone()[0]
+        top3 = [{'tf':r[0],'mode':r[1],'cagr':r[2],'wr':r[3],'score':r[4]}
+                for r in conn.execute(
                     'SELECT tf,mode,cagr,winrate,score FROM runs '
                     'WHERE cagr>10 AND winrate>55 ORDER BY score DESC LIMIT 3')]
-        rate   = conn.execute(
-                    "SELECT COUNT(*) FROM runs WHERE ts > datetime('now','-1 hours')"
-                 ).fetchone()[0]
         conn.close()
-        # Optuna per-study: throughput real
-        import glob as _g, datetime as _d
-        optuna_rate = 0
-        try:
-            _cut = (_d.datetime.now() - _d.timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
-            for _db in _g.glob(str(OUTPUT_DIR / 'models' / 'optuna_per_study' / '*.db')):
-                try:
-                    _cx = sqlite3.connect(_db, timeout=1)
-                    optuna_rate += _cx.execute("SELECT count(*) FROM trials WHERE state='COMPLETE' AND datetime_complete >= ?", (_cut,)).fetchone()[0]
-                    _cx.close()
-                except: pass
-        except: pass
-        return {'total': total, 'by_tf': by_tf, 'top3': top3, 'rate_hr': rate, 'optuna_rate_hr': optuna_rate}
-    except:
-        return {'total': 0, 'by_tf': {}, 'top3': []}
+    except: pass
+    # Optuna per-study: throughput real (rate horaria)
+    optuna_rate = 0
+    try:
+        _cut = (_d.datetime.now() - _d.timedelta(hours=1)).strftime('%Y-%m-%d %H:%M:%S')
+        for _db in _g.glob(str(OUTPUT_DIR / 'models' / 'optuna_per_study' / '*.db')):
+            try:
+                _cx = sqlite3.connect(_db, timeout=0.5)
+                optuna_rate += _cx.execute("SELECT count(*) FROM trials WHERE state='COMPLETE' AND datetime_complete >= ?", (_cut,)).fetchone()[0]
+                _cx.close()
+            except: pass
+    except: pass
+    # Total y by_tf SIEMPRE desde optuna_per_study (fuente de verdad post-migración)
+    total = 0; by_tf = {}
+    try:
+        _tf_p = _re_dbs.compile(r'[a-z]+_([0-9]+[mhd])_')
+        for _db in _g.glob(str(OUTPUT_DIR / 'models' / 'optuna_per_study' / '*.db')):
+            try:
+                _cx = sqlite3.connect(_db, timeout=0.2)
+                _n = _cx.execute("SELECT count(*) FROM trials WHERE state='COMPLETE'").fetchone()[0]
+                _cx.close()
+                _m = _tf_p.search(_db)
+                if _m: by_tf[_m.group(1)] = by_tf.get(_m.group(1), 0) + _n
+                total += _n
+            except: pass
+    except: pass
+    return {'total': total, 'by_tf': by_tf, 'top3': top3, 'rate_hr': rate, 'optuna_rate_hr': optuna_rate}
 
 
 # ── COLOR HELPERS ─────────────────────────────────────────────────────────────
@@ -1571,6 +1595,153 @@ def generate_html():
         f'</td>{_m2_sum_cells}</tr>'
     )
 
+    # ── Motor 3 matrix (stocks: AAPL/NVDA/TSLA/JPM/XOM x 1d/4h/1h/15m) ──────────
+    m3_tf_models = {tf: [] for tf in TIMEFRAMES_M3}
+    matrix_rows_m3 = ''
+    m3_filled = 0
+    m3_total = len(ASSETS_M3) * len(TIMEFRAMES_M3)
+    for _m3a in ASSETS_M3:
+        _color = ASSET_COLOR[_m3a]
+        _emoji = ASSET_EMOJI[_m3a]
+        _cells = ''.join(cell_html(_m3a, tf) for tf in TIMEFRAMES_M3)
+        matrix_rows_m3 += (
+            f'<tr><td class="asset-col">'
+            f'<div class="asset-box" style="--asset-color:{_color}">'
+            f'<span class="asset-emoji" style="color:{_color}">{_emoji}</span>'
+            f'<span class="asset-name">{_m3a}</span>'
+            f'</div></td>{_cells}</tr>'
+        )
+        for _tf3 in TIMEFRAMES_M3:
+            _m3l = load_model(_m3a, _tf3, direction='long')
+            _m3s = load_model(_m3a, _tf3, direction='short')
+            _m3b = None
+            if _m3l and _m3s:
+                _m3b = _m3l if ((_m3l.get('score') or -9999) >= (_m3s.get('score') or -9999)) else _m3s
+            elif _m3l: _m3b = _m3l
+            elif _m3s: _m3b = _m3s
+            if _m3b:
+                m3_filled += 1
+                m3_tf_models[_tf3].append((
+                    float(_m3b.get('cagr', 0) or 0),
+                    float(_m3b.get('wr', 0) or 0),
+                    int(_m3b.get('trades', 0) or 0),
+                    float(_m3b.get('score', -9999) or -9999),
+                    float(_m3b.get('dd', 0) or 0),
+                    float(_m3b.get('pf', 0) or 0),
+                    float(_m3b.get('rr', 0) or 0),
+                ))
+
+    # Ponderado row M3
+    _m3_sum_cells = ''
+    _m3_all_c, _m3_all_wr, _m3_all_dd, _m3_all_t = [], [], [], 0
+    for _tf3 in TIMEFRAMES_M3:
+        _ms3 = m3_tf_models[_tf3]
+        if _ms3:
+            _c3 = [x[0] for x in _ms3]; _w3 = [x[1] for x in _ms3]
+            _t3 = [x[2] for x in _ms3]; _d3 = [x[4] for x in _ms3]
+            _tot3 = sum(_t3)
+            _wwr3 = sum(_w3[i]*_t3[i] for i in range(len(_ms3))) / max(_tot3, 1)
+            _avg3 = sum(_c3) / len(_c3)
+            _m3_all_c.extend(_c3); _m3_all_wr.extend(_w3)
+            _m3_all_dd.extend(_d3); _m3_all_t += _tot3
+            _m3_sum_cells += (
+                f'<td style="text-align:center;border-top:2px solid #3fb95033;padding:7px 4px">'
+                f'<div style="color:{c_cagr(_avg3)};font-family:\'IBM Plex Mono\',monospace;font-size:12px;font-weight:700">{_avg3:+.1f}%</div>'
+                f'<div style="font-size:10px;color:{c_wr(_wwr3)}">WR {_wwr3:.0f}%</div>'
+                f'<div style="font-size:10px;color:#7a8db5">{_tot3}T</div>'
+                f'</td>'
+            )
+        else:
+            _m3_sum_cells += '<td style="border-top:2px solid #3fb95033;text-align:center;color:#242f55">--</td>'
+    matrix_rows_m3 += (
+        f'<tr style="background:#07091c">'
+        f'<td style="border-top:2px solid #3fb95033;padding:7px 8px">'
+        f'<span style="font-size:10px;font-weight:700;color:#3fb950;text-transform:uppercase;letter-spacing:.05em">Ponderado</span>'
+        f'</td>{_m3_sum_cells}</tr>'
+    )
+
+    # Portfolio stats M3
+    _m3_all_ms = []
+    for _tf3x in TIMEFRAMES_M3:
+        _m3_all_ms.extend(m3_tf_models[_tf3x])
+
+    def _m3_calc_port(ms):
+        if not ms:
+            return dict(cagr=0, wr=0, dd=0, dd_worst=0, pf=0, rr=0, ev_r=0, calmar=0, std=0, n=0)
+        n = len(ms)
+        weights = [max(m[2] if len(m) > 2 else 1, 1) for m in ms]
+        total_w = sum(weights)
+        cagr = sum(m[0] * w for m, w in zip(ms, weights)) / total_w if total_w > 0 else 0
+        wr   = sum(m[1] * w for m, w in zip(ms, weights)) / total_w if total_w > 0 else 0
+        dd_v = [m[4] for m in ms if len(m) > 4]
+        dd_w = [max(m[2] if len(m) > 2 else 1, 1) for m in ms if len(m) > 4]
+        dd_avg   = sum(d * w for d, w in zip(dd_v, dd_w)) / sum(dd_w) if dd_w else 0
+        dd_worst = min(dd_v) if dd_v else 0
+        pf_v = [m[5] for m in ms if len(m) > 5 and m[5] > 0]
+        pf   = sum(pf_v) / max(len(pf_v), 1)
+        rr_v = [m[6] for m in ms if len(m) > 6 and m[6] > 0]
+        rr   = sum(rr_v) / len(rr_v) if rr_v else 0
+        wr_d = wr / 100 if wr else 0
+        ev_r = wr_d * rr - (1 - wr_d) if rr > 0 else 0
+        std  = (sum((m[0] - cagr) ** 2 for m in ms) / n) ** 0.5 if n > 1 else 0
+        calmar = round(cagr / abs(dd_worst), 2) if dd_worst < 0 else 0
+        return dict(cagr=cagr, wr=wr, dd=dd_avg, dd_worst=dd_worst, pf=pf, rr=rr, ev_r=ev_r, calmar=calmar, std=std, n=n)
+
+    _m3op       = _m3_calc_port([m for m in _m3_all_ms if m[0] >= 12.0])
+    _m3_ns      = len(_m3_all_c)
+    _m3_nt      = len(ASSETS_M3) * len(TIMEFRAMES_M3)
+    _m3pc       = round(_m3op['cagr'], 1)
+    _m3wr       = round(_m3op['wr'], 1)
+    _m3dd       = round(_m3op['dd'], 1)
+    _m3dd_worst = round(_m3op['dd_worst'], 1)
+    _m3pf       = round(_m3op['pf'], 2)
+    _m3calmar   = round(_m3op['calmar'], 2)
+    _m3rr       = round(_m3op['rr'], 2)
+    _m3ev_r     = round(_m3op['ev_r'], 2)
+    _m3cagr_std = round(_m3op['std'], 1)
+    _m3_grade_a = sum(1 for m in _m3_all_ms if len(m) > 3 and m[3] >= 0.55)
+    _m3_all_t   = sum(m[2] for m in _m3_all_ms)
+    _m3_ncols   = 1 + len(TIMEFRAMES_M3)
+    _m3_slots_col = '#2ecc71' if _m3_ns == _m3_nt else '#f1c40f' if _m3_ns > 0 else '#555'
+
+    if _m3_all_ms:
+        matrix_rows_m3 += (
+            f'<tr style="background:#060d20">'
+            f'<td colspan="{_m3_ncols}" style="padding:8px 10px;border-top:1px solid #1a3320">'
+            f'<span style="font-size:11px;color:#7a8db5">Portafolio operable (CAGR &ge; 12%): &nbsp;</span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:{c_cagr(_m3pc)};font-weight:700;font-size:14px">{_m3pc:+.1f}%</span>'
+            f' <span style="font-family:\'IBM Plex Mono\',monospace;color:#7a8db5;font-size:11px">&plusmn;{_m3cagr_std:.1f}%</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; WR: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:{c_wr(_m3wr)};font-weight:700;font-size:13px">{_m3wr:.1f}%</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; DD avg: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:{"#f85149" if _m3dd<-20 else "#ff9800" if _m3dd<-10 else "#dde3f5"};font-weight:700;font-size:13px">{_m3dd:.1f}%</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; DD peor: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:{"#f85149" if _m3dd_worst<-20 else "#ff9800" if _m3dd_worst<-10 else "#dde3f5"};font-weight:700;font-size:13px">{_m3dd_worst:.1f}%</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; PF: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:{"#00e676" if _m3pf>=2 else "#69f0ae" if _m3pf>=1.5 else "#ff9800"};font-weight:700;font-size:13px">{_m3pf:.2f}</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; Calmar: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:{"#00e676" if _m3calmar>=2 else "#69f0ae" if _m3calmar>=1 else "#ff9800"};font-weight:700;font-size:13px">{_m3calmar:.2f}</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; RR: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:{"#00e676" if _m3rr>=1.5 else "#69f0ae" if _m3rr>=1 else "#ff9800"};font-weight:700;font-size:13px">{_m3rr:.2f}</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; EV: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:{"#00e676" if _m3ev_r>=0.3 else "#69f0ae" if _m3ev_r>=0.1 else "#ff9800" if _m3ev_r>=0 else "#f85149"};font-weight:700;font-size:13px">{_m3ev_r:+.2f}R</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; Trades OOS: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:#dde3f5;font-size:12px">{_m3_all_t}</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; Activos: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:#3fb950;font-size:12px">{_m3_ns}/{_m3_nt}</span>'
+            f'<span style="font-size:11px;color:#7a8db5"> &nbsp;|&nbsp; Grado A+/A: </span>'
+            f'<span style="font-family:\'IBM Plex Mono\',monospace;color:#69f0ae;font-size:13px;font-weight:700">{_m3_grade_a}</span>'
+            f'</td></tr>'
+        )
+        matrix_rows_m3 += (
+            f'<tr style="background:#060d20">'
+            f'<td colspan="{_m3_ncols}" style="padding:4px 10px 8px;font-size:10px;color:#4e5f90;border-top:1px dashed #1a3320;font-family:\'IBM Plex Mono\',monospace">'
+            f'Stocks S&amp;P500 &middot; Datos v&iacute;a yfinance (15m/1h/4h/1d)'
+            f' &nbsp;&middot;&nbsp; <span style="color:#555">Slots activos: <span style="color:{_m3_slots_col};font-weight:700">{_m3_ns}/{_m3_nt}</span> &bull; {_m3_all_t}T OOS</span>'
+            f'</td></tr>'
+        )
+
+
     # ── Motor 2 comprehensive portfolio stats ───────────────────────────────────
     _m2_all_ms = []
     for _tf2x in TIMEFRAMES_M2:
@@ -2593,16 +2764,30 @@ table.t tr:hover td{{background:rgba(201,162,39,.025)}}
   </div>
 
 
-<!-- MOTORES 3-7: en construccion, solo informativo -->
+  <!-- Motor 3: Stocks -->
+  <div class="card" id="matrix-section-m3" style="border:1px solid #3fb95044;background:linear-gradient(180deg,rgba(63,185,80,.05),#0d1428)">
+    <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
+      <span><span style="color:#3fb950;font-weight:700">Motor 3</span> <span style="color:#7a8db5;font-weight:400">&mdash; S&amp;P 500 Stocks</span></span>
+      <span style="font-weight:400;color:#555;font-size:10px">
+        <span style="color:#2ecc71">&#9632;</span> Listo &nbsp;<span style="color:#c9a227">&#9632;</span> Optim. &nbsp;<span style="color:#242f55">&#9632;</span> Pendiente
+        &nbsp;&nbsp;<span style="color:#3fb950;font-weight:700">{m3_filled}/{m3_total}</span>
+      </span>
+    </div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead><tr>
+          <th class="th-asset">Activo</th>
+          <th>1D</th><th>4H</th><th>1H</th><th>15m</th>
+        </tr></thead>
+        <tbody>{matrix_rows_m3}</tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MOTORES 4-7: en construccion, solo informativo -->
 <div class="card">
   <div class="card-title">Roadmap &mdash; Pr&oacute;ximos Motores</div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:12px">
-    <div style="background:rgba(201,162,39,.035);border:1px solid rgba(201,162,39,.16);border-radius:3px;padding:14px 15px">
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--gold);margin-bottom:9px">M3 &middot; STOCKS US</div>
-      <div class="pills" style="margin-bottom:9px"><span class="pill" style="font-size:10px;padding:3px 9px">SPY</span><span class="pill" style="font-size:10px;padding:3px 9px">QQQ</span><span class="pill" style="font-size:10px;padding:3px 9px">IWM</span></div>
-      <div style="font-size:10px;color:var(--ts);line-height:1.45;margin-bottom:10px">S&amp;P 500 / Nasdaq 100 / Russell 2000 &mdash; ETFs, sin acciones individuales &middot; Broker IBKR</div>
-      <span class="badge" style="background:rgba(201,162,39,.08);color:var(--gold);border:1px solid rgba(201,162,39,.28)">PR&Oacute;XIMAMENTE</span>
-    </div>
     <div style="background:rgba(201,162,39,.035);border:1px solid rgba(201,162,39,.16);border-radius:3px;padding:14px 15px">
       <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--gold);margin-bottom:9px">M4 &middot; BONOS &amp; MACRO</div>
       <div class="pills" style="margin-bottom:9px"><span class="pill" style="font-size:10px;padding:3px 9px">TLT</span><span class="pill" style="font-size:10px;padding:3px 9px">HYG</span><span class="pill" style="font-size:10px;padding:3px 9px">TBT</span><span class="pill" style="font-size:10px;padding:3px 9px">ZN</span><span class="pill" style="font-size:10px;padding:3px 9px">ZB</span></div>
@@ -2627,6 +2812,7 @@ table.t tr:hover td{{background:rgba(201,162,39,.025)}}
       <div style="font-size:10px;color:var(--ts);line-height:1.45;margin-bottom:10px">Acciones v&iacute;a ETFs de pa&iacute;s &mdash; roadmap a futuro, sin fecha</div>
       <span class="badge" style="background:rgba(201,162,39,.08);color:var(--gold);border:1px solid rgba(201,162,39,.28)">PR&Oacute;XIMAMENTE</span>
     </div>
+
   </div>
 </div>
 

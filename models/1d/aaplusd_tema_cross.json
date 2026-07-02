@@ -1,0 +1,53 @@
+{
+  "symbol": "AAPL/USD",
+  "tf": "1d",
+  "strategy": "tema_cross",
+  "params": {
+    "sl_mult": 3.4000000000000004,
+    "tp_mult": 1.8,
+    "cooldown": 3,
+    "rsi_w_thr": 45,
+    "tema_period": 14
+  },
+  "risk_pct": 4.9,
+  "metrics_is": {
+    "trades": 308,
+    "wr": 72.4,
+    "cagr": 5.0,
+    "dd": -34.8,
+    "pf": 1.31,
+    "trades_year": 8.5
+  },
+  "metrics_oos": {
+    "trades": 110,
+    "wr": 71.8,
+    "cagr": 7.2,
+    "dd": -26.3,
+    "pf": 1.33,
+    "trades_year": 12.0
+  },
+  "oos_days": 3337,
+  "saved_at": "2026-07-02 03:39:54.558629",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 87.7,
+      "median": 38.4,
+      "ic95_lo": -33.6,
+      "ic95_hi": 86.9,
+      "ic80_lo": -5.1,
+      "ic80_hi": 71.2,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 27,
+      "positive": 18,
+      "pct_positive": 66.7,
+      "avg_cagr": 9.0,
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "passed_steps": 2,
+    "max_steps": 2,
+    "validated_at": "2026-07-02 03:39:54.695450"
+  }
+}

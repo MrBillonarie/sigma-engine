@@ -50,17 +50,17 @@
     "validated_at": "2026-06-27 15:41:30.725893"
   },
   "mc": {
-    "mc_cagr_p05": 215.6,
+    "mc_cagr_p05": 149.4,
     "mc_cagr_p50": 1194.9,
     "mc_cagr_p95": 5212.9,
     "mc_dd_p50": -39.5,
     "mc_dd_p95": -23.4,
-    "mc_confidence": 99.7,
+    "mc_confidence": 99.3,
     "mc_sims": 1000
   },
   "m2_validation": {
     "status": "PASS",
     "reasons": [],
-    "validated_at": "2026-06-30T17:00:01.535657-04:00"
+    "validated_at": "2026-07-01T17:00:02.283739-04:00"
   }
 }

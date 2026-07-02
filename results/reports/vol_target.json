@@ -1,10 +1,10 @@
 {
-  "computed_at": "2026-07-01T04:30:01.215427-04:00",
-  "vol_mult": 0.573,
-  "realized_vol_annual": 20.95,
+  "computed_at": "2026-07-02T10:30:01.321881-04:00",
+  "vol_mult": 0.536,
+  "realized_vol_annual": 22.38,
   "vol_target_annual": 12.0,
-  "trades_per_year_est": 345.0,
-  "std_per_trade": 1.128,
+  "trades_per_year_est": 352.2,
+  "std_per_trade": 1.193,
   "window": 20,
-  "note": "vol=20.9% anual -> x0.573 (target=12.0%)"
+  "note": "vol=22.4% anual -> x0.536 (target=12.0%)"
 }

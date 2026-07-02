@@ -38,11 +38,6 @@ def log(msg):
     _cl = datetime.now(tz=timezone(timedelta(hours=-4)))
     line = '[' + _cl.strftime('%H:%M:%S') + ' CLT] ' + msg
     print(line, flush=True)
-    try:
-        with open(LOG_PATH, 'a') as f:
-            f.write(line + '\n')
-    except:
-        pass
 
 
 
@@ -479,7 +474,7 @@ def pick_focus_and_asset(regime, degraded):
 
 log('=' * 55)
 log('SIGMA VPS TRAINER v3 - REGIME-AWARE')
-log('CPUs: 4 AMD | MAX_PAR: ' + str(MAX_PAR) + ' | DB: ' + str(db_count()))
+log('CPUs: 20 EX63-1 | MAX_PAR: ' + str(MAX_PAR) + ' | DB: ' + str(db_count()))
 log('=' * 55)
 
 active = []
@@ -499,21 +494,25 @@ while True:
             # MC en modelos sin validar (cada 3 runs)
             if runs % 3 == 0:
                 try:
-                    subprocess.Popen(
+                    _p_mc = subprocess.Popen(
                         [PYTHON, str(OUTPUT_DIR / 'engine/live/validate_models.py'),
                          '--runs', '1000'],
                         env=dict(os.environ), cwd=str(OUTPUT_DIR)
                     )
+                    import threading as _th
+                    _th.Thread(target=_p_mc.wait, daemon=True).start()
                     log('  [MC] Actualizando Monte Carlo...')
                 except:
                     pass
             # Regenerar Pine params cada 5 runs
             if runs % 60 == 0:
                 try:
-                    subprocess.Popen(
+                    _p_pine = subprocess.Popen(
                         [PYTHON, str(OUTPUT_DIR / 'engine/live/generate_pine_params.py')],
                         env=dict(os.environ), cwd=str(OUTPUT_DIR)
                     )
+                    import threading as _th
+                    _th.Thread(target=_p_pine.wait, daemon=True).start()
                     log('  [PINE] Regenerando parámetros...')
                 except:
                     pass
@@ -558,10 +557,20 @@ while True:
 
         p, label = launch(tf_choice, trials_choice, force_asset=force_asset, focus=focus)
         if p is None:
-            log(f'  [SKIP] {label}')
+            # Backoff largo si el cap global esta lleno: reintentar cada 1.5s
+            # solo quema CPU (ps -eo en parallel_guard) y spamea el log.
+            if 'global_cap' in str(label):
+                if not globals().get('_skip_logged'):
+                    log(f'  [SKIP] {label} — backoff 60s (se loguea 1 vez por racha)')
+                    globals()['_skip_logged'] = True
+                time.sleep(60)
+            else:
+                log(f'  [SKIP] {label}')
+                time.sleep(1.5)
         else:
+            globals()['_skip_logged'] = False
             active.append((p, label))
-        time.sleep(1.5)
+            time.sleep(1.5)
 
     now = time.time()
     if now - last_status > 1800:

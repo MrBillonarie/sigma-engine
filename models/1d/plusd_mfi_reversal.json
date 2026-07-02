@@ -1,0 +1,63 @@
+{
+  "symbol": "PL/USD",
+  "tf": "1d",
+  "strategy": "mfi_reversal",
+  "params": {
+    "sl_mult": 2.7,
+    "tp_mult": 1.6,
+    "cooldown": 10,
+    "rsi_w_thr": 49,
+    "mfi_period": 21,
+    "mfi_thr": 34
+  },
+  "risk_pct": 4.7,
+  "metrics_is": {
+    "trades": 71,
+    "wr": 83.1,
+    "cagr": 5.7,
+    "dd": -18.5,
+    "pf": 2.05,
+    "trades_year": 3.0
+  },
+  "metrics_oos": {
+    "trades": 19,
+    "wr": 78.9,
+    "cagr": 11.6,
+    "dd": -9.8,
+    "pf": 4.14,
+    "trades_year": 3.7
+  },
+  "oos_days": 1888,
+  "saved_at": "2026-07-02 01:51:08.423657",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 99.8,
+      "median": 212.8,
+      "ic95_lo": 44.3,
+      "ic95_hi": 425.0,
+      "ic80_lo": 96.9,
+      "ic80_hi": 348.0,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 18,
+      "positive": 14,
+      "pct_positive": 77.8,
+      "avg_cagr": 5.9,
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "passed_steps": 2,
+    "max_steps": 2,
+    "validated_at": "2026-07-02 01:51:08.595511"
+  },
+  "mc": {
+    "mc_cagr_p05": -5.7,
+    "mc_cagr_p50": 16.1,
+    "mc_cagr_p95": 28.9,
+    "mc_dd_p50": -12.7,
+    "mc_dd_p95": 0.0,
+    "mc_confidence": 83.2,
+    "mc_sims": 1000
+  }
+}

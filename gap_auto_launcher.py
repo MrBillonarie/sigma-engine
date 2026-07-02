@@ -35,7 +35,7 @@ def log(msg):
 
 # Config
 MIN_RAM_FREE_MB = 4000  # 4GB avail minimo
-TRIALS_BY_TF = {'5m': 80, '15m': 120, '1h': 150, '4h': 150}  # per-TF: 5m menor (noisier pero rapido), 1h/4h mayor calidad
+TRIALS_BY_TF = {'5m': 120, '15m': 200, '1h': 300, '4h': 300}  # per-TF: 5m menor (noisier pero rapido), 1h/4h mayor calidad
 TRIALS_PER_SLOT = 150  # fallback
 CSV_PATHS = {
     'XAU': '/opt/sigma/models/data_XAU_{tf}_max.csv',

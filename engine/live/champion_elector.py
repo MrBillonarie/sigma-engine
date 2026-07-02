@@ -42,6 +42,9 @@ TG_CHAT  = "-1003787411069"
 
 UNIVERSE_SYMS = ['BTC','ETH','SOL','LTC','BNB']
 UNIVERSE_TFS  = ['15m','1h','4h']
+UNIVERSE_M3_SYMS = ['AAPL','NVDA','TSLA','JPM','XOM']   # Motor 3: S&P 500
+UNIVERSE_M3_TFS  = ['15m','1h','4h','1d']               # Motor 3: incluye 1d
+STOCK_PREFIX = {'AAPL':'aaplusd','NVDA':'nvdausd','TSLA':'tslausd','JPM':'jpmusd','XOM':'xomusd'}
 
 # Filtros para considerar un candidato
 MIN_TRADES   = 30
@@ -157,6 +160,60 @@ def candidates_from_db():
             except Exception as e:
                 log(f"[QUERY ERR] {sym} {tf}: {e}")
     conn.close()
+
+    # ── Motor 3: busca candidatos en per_study DBs (AAPL/NVDA/TSLA/JPM/XOM) ────
+    import sqlite3 as _sq3
+    _PER_STUDY = Path('/opt/sigma/models/optuna_per_study')
+    for _m3sym in UNIVERSE_M3_SYMS:
+        _pfx = STOCK_PREFIX[_m3sym]
+        for _tf3 in UNIVERSE_M3_TFS:
+            _seen_dir = {}
+            _db_glob = list(_PER_STUDY.glob(f'{_pfx}_{_tf3}_*.db'))
+            for _db in _db_glob:
+                try:
+                    _c3 = _sq3.connect(f'file:{_db}?mode=ro', uri=True, timeout=10)
+                    _c3.execute('PRAGMA busy_timeout=5000')
+                    # Get best trial by value (score)
+                    # M3 per-study DBs guardan score en trial_values (no en
+                    # trial_user_attributes, que está vacío). Fix 2026-07-02.
+                    _rows3 = _c3.execute(
+                        "SELECT t.trial_id, tv.value "
+                        "FROM trials t JOIN trial_values tv ON t.trial_id=tv.trial_id "
+                        "WHERE t.state='COMPLETE' AND tv.value > -999 "
+                        "ORDER BY tv.value DESC LIMIT 1"
+                    ).fetchall()
+                    if not _rows3:
+                        _c3.close(); continue
+                    _tid, _score = _rows3[0]
+                    if _score < MIN_SCORE:
+                        _c3.close(); continue
+                    # Extract strategy from DB filename: pfx_tf_STRATEGY.db
+                    _strat = _db.stem[len(f'{_pfx}_{_tf3}_'):]
+                    # Leer métricas desde el JSON del champion en disco (user_attrs vacíos en M3)
+                    _json_path = BASE / 'models' / _tf3 / f'{_pfx}_{_strat}.json'
+                    if not _json_path.exists():
+                        _c3.close(); continue
+                    _jd = json.loads(_json_path.read_text())
+                    _moos = _jd.get('metrics_oos') or {}
+                    _cagr   = float(_moos.get('cagr', 0) or 0)
+                    _dd     = float(_moos.get('dd', 0) or 0)
+                    _trades = int(_moos.get('trades', 0) or 0)
+                    _pf     = float(_moos.get('pf', 0) or 0)
+                    if _cagr < MIN_CAGR or _trades < MIN_TRADES or _dd < MAX_DD:
+                        _c3.close(); continue
+                    _dir   = infer_direction(_strat)
+                    if _dir not in _seen_dir:
+                        _seen_dir[_dir] = {
+                            'mode': _strat, 'params': {}, 'score': _score,
+                            'cagr': _cagr, 'dd': _dd, 'trades': _trades, 'pf': _pf, 'ts': ''
+                        }
+                    _c3.close()
+                except Exception as _e3:
+                    try: _c3.close()
+                    except: pass
+            for _dir3, _cand3 in _seen_dir.items():
+                candidates[(_m3sym, _tf3, _dir3)] = _cand3
+
     return candidates
 
 
@@ -242,6 +299,11 @@ def main():
             for direction in ['long','short']:
                 if (sym, tf, direction) not in coverage_full:
                     gaps.append((sym, tf, direction))
+    for sym in UNIVERSE_M3_SYMS:
+        for tf in UNIVERSE_M3_TFS:
+            for direction in ['long','short']:
+                if (sym, tf, direction) not in coverage_full:
+                    gaps.append((sym, tf, direction))
     print(f"  Combos totales del universo: {len(UNIVERSE_SYMS)*len(UNIVERSE_TFS)*2}")
     print(f"  Cubiertos (en prod o DB): {len(coverage_full)}")
     print(f"  GAPS (sin candidato ni champion): {len(gaps)}")
@@ -261,8 +323,9 @@ def main():
                 shutil.move(old_path, retired)
                 log(f"  RETIRED: {old_path} → {retired}")
             # Escribir nuevo
+            _sym_sfx = '/USD' if sym in UNIVERSE_M3_SYMS else '/USDT'
             new_data = {
-                'symbol': f'{sym}/USDT', 'tf': tf, 'strategy': cand['mode'],
+                'symbol': f'{sym}{_sym_sfx}', 'tf': tf, 'strategy': cand['mode'],
                 'direction': dirn,
                 'params': cand['params'],
                 'risk_pct': 5.0,

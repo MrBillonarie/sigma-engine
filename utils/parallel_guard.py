@@ -11,7 +11,7 @@ debe matchear tambien o queda invisible para el resto de los launchers.
 """
 import subprocess
 
-GLOBAL_TRAINING_CAP = 5  # bajado de 7 a 5 el 2026-06-27: mega auditoria reprodujo
+GLOBAL_TRAINING_CAP = 17  # subido de 5 a 14 el 2026-07-01: migración a EX63-1 20 cores físicos.
 # el incidente de overload SIN tocar este cap -- 7 procesos dieron load 12.08 (peor
 # que el 11.32 que gatillo el revert del 06-25), throughput cayo 57% (38K/hr vs 89K
 # esperado). El mismo conteo de procesos que daba load 7-8 el 06-25 ahora da load 12,

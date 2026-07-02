@@ -1,0 +1,68 @@
+{
+  "symbol": "JPM/USD",
+  "tf": "1h",
+  "strategy": "tma_bands",
+  "params": {
+    "sl_mult": 2.5,
+    "tp_mult": 3.7,
+    "cooldown": 12,
+    "rsi_w_thr": 44,
+    "tma_period": 13,
+    "atr_mult": 1.1
+  },
+  "risk_pct": 4.6,
+  "metrics_is": {
+    "trades": 48,
+    "wr": 64.6,
+    "cagr": 83.3,
+    "dd": -23.6,
+    "pf": 1.96,
+    "trades_year": 25.4
+  },
+  "metrics_oos": {
+    "trades": 22,
+    "wr": 54.5,
+    "cagr": 27.7,
+    "dd": -15.0,
+    "pf": 1.46,
+    "trades_year": 21.7
+  },
+  "oos_days": 371,
+  "saved_at": "2026-07-02 01:38:23.298369",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 81.3,
+      "median": 65.3,
+      "ic95_lo": -57.1,
+      "ic95_hi": 273.1,
+      "ic80_lo": -22.4,
+      "ic80_hi": 188.3,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 17,
+      "positive": 11,
+      "pct_positive": 64.7,
+      "avg_cagr": 94.9,
+      "passed": true
+    },
+    "cross_asset": {
+      "positive": 0,
+      "passed": false,
+      "note": "sin datos"
+    },
+    "confidence": "MEDIA",
+    "passed_steps": 2,
+    "max_steps": 3,
+    "validated_at": "2026-07-02 01:38:23.419010"
+  },
+  "mc": {
+    "mc_cagr_p05": -10.6,
+    "mc_cagr_p50": 79.6,
+    "mc_cagr_p95": 261.2,
+    "mc_dd_p50": -43.8,
+    "mc_dd_p95": -28.2,
+    "mc_confidence": 92.9,
+    "mc_sims": 1000
+  }
+}

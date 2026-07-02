@@ -115,7 +115,7 @@ def check_coverage():
     except Exception:
         SHORT_STRATEGIES = frozenset()
     SYMS = ["BTC", "ETH", "SOL", "BNB", "LTC", "XAU"]
-    TFS = ["15m", "1h", "4h"]
+    TFS = ["15m", "1h", "4h", "1d"]
     DIRS = ["long", "short"]
     cov = {}
     for tf in TFS:
@@ -214,7 +214,7 @@ def render_text(result):
         out.append("  gate trades         [" + gate_t + "] " + str(pt["trades_closed"]) + "/30")
         out.append("  gate dias           [" + gate_d + "] " + str(pt["days_running"]) + "/21")
 
-    out.append(color(NL + "[COBERTURA M1:5x4x2 + M2:2x2x2]", "y"))
+    out.append(color(NL + "[COBERTURA M1:5x4x2 + M2:6x3x2 + M3:5x4x2]", "y"))
     cov = result["coverage"]
     cov_pct = cov["covered"] / cov["total"] * 100
     cov_c = "g" if cov_pct >= 90 else "y" if cov_pct >= 70 else "r"
@@ -328,7 +328,7 @@ def render_overnight(result):
     cov = result["coverage"]
     cov_pct = cov["covered"] / cov["total"] * 100
     cov_c = "g" if cov_pct >= 90 else "y" if cov_pct >= 70 else "r"
-    out.append(color(NL + "[COBERTURA M1:5x4x2 + M2:2x2x2]", "y"))
+    out.append(color(NL + "[COBERTURA M1:5x4x2 + M2:6x3x2 + M3:5x4x2]", "y"))
     out.append("  " + color((str(cov["covered"]) + "/" + str(cov["total"]) + " slots (" + ("%.0f" % cov_pct) + "%)"), cov_c))
     if cov["gaps"]:
         for g in cov["gaps"][:6]:

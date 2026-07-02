@@ -231,6 +231,41 @@ def pipeline_stats_del_dia(start_cl, end_cl):
     return counts
 
 
+def _build_m3_section_ev():
+    """Motor 3 S&P500 summary for evening news."""
+    import json
+    from pathlib import Path
+    M3_SYMS = ['AAPL','NVDA','TSLA','JPM','XOM']
+    M3_NAME = {'AAPL':'Apple','NVDA':'Nvidia','TSLA':'Tesla','JPM':'JPMorgan','XOM':'ExxonMobil'}
+    MODELS_DIR = Path('/opt/sigma/models')
+    PFXMAP = {'AAPL':'aaplusd','NVDA':'nvdausd','TSLA':'tslausd','JPM':'jpmusd','XOM':'xomusd'}
+    champions = []
+    for sym in M3_SYMS:
+        pfx = PFXMAP[sym]
+        best = None; best_cagr = -9999.0
+        for tf in ['1d','4h','1h','15m']:
+            tf_dir = MODELS_DIR / tf
+            if not tf_dir.exists(): continue
+            for p in tf_dir.glob(f'{pfx}_*.json'):
+                try:
+                    d = json.loads(p.read_text())
+                    oos = d.get('metrics_oos') or {}
+                    cagr = float(oos.get('cagr', 0) or 0)
+                    if cagr > best_cagr:
+                        best_cagr = cagr
+                        strat = d.get('strategy') or p.stem[len(pfx)+1:]
+                        best = {'sym':sym,'tf':tf,'cagr':cagr,'strategy':strat}
+                except: pass
+        if best and best['cagr'] > 0:
+            champions.append(best)
+    if not champions: return []
+    lines = ["📈 <b>Motor 3 — Stocks S&amp;P 500</b>"]
+    for ch in sorted(champions, key=lambda x: -x['cagr'])[:3]:
+        label = M3_NAME.get(ch['sym'],ch['sym'])
+        lines.append(f"  {label} {ch['tf'].upper()}: <b>{ch['cagr']:+.1f}%</b> [{ch['strategy']}]")
+    lines.append(f"  {len(champions)}/5 tickers activos")
+    return lines
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
@@ -333,7 +368,17 @@ def main():
     n_bull = sum(1 for v in regime.values() if isinstance(v, dict) and v.get("regime") == "BULL")
     partes.append(f"Regimen actual: {n_bear} BEAR - {n_range} RANGE - {n_bull} BULL")
     partes.append("")
-    partes.append("- SIGMA 24/7")
+
+    # --- Motor 3 S&P 500 ---
+    try:
+        m3_ev = _build_m3_section_ev()
+    except Exception:
+        m3_ev = []
+    if m3_ev:
+        for _l3 in m3_ev: partes.append(_l3)
+        partes.append("")
+
+        partes.append("- SIGMA 24/7")
 
     msg = "\n".join(partes)
 

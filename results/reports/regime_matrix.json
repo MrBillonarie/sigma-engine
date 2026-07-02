@@ -1,14 +1,14 @@
 {
-  "computed_at": "2026-07-01T04:15:01.478610-04:00",
+  "computed_at": "2026-07-02T10:45:01.724248-04:00",
   "global_regime_m1": "BEAR",
-  "correlation_global": 69.6,
+  "correlation_global": 70.3,
   "assets": {
     "BTC": {
       "momentum": 15.0,
       "volatility": 45.0,
-      "correlation": 69.6,
+      "correlation": 70.3,
       "macro": 50.0,
-      "composite": 35.8,
+      "composite": 35.7,
       "label": "BEAR",
       "kelly_mult": 0.7,
       "source": "global_regime"
@@ -16,9 +16,9 @@
     "ETH": {
       "momentum": 20.0,
       "volatility": 45.0,
-      "correlation": 69.6,
+      "correlation": 70.3,
       "macro": 50.0,
-      "composite": 37.6,
+      "composite": 37.5,
       "label": "BEAR",
       "kelly_mult": 0.7,
       "source": "global_regime"
@@ -26,9 +26,9 @@
     "SOL": {
       "momentum": 10.0,
       "volatility": 45.0,
-      "correlation": 69.6,
+      "correlation": 70.3,
       "macro": 50.0,
-      "composite": 34.1,
+      "composite": 34.0,
       "label": "BEAR",
       "kelly_mult": 0.7,
       "source": "global_regime"
@@ -36,9 +36,9 @@
     "BNB": {
       "momentum": 16.7,
       "volatility": 45.0,
-      "correlation": 69.6,
+      "correlation": 70.3,
       "macro": 50.0,
-      "composite": 36.4,
+      "composite": 36.3,
       "label": "BEAR",
       "kelly_mult": 0.7,
       "source": "global_regime"
@@ -46,71 +46,71 @@
     "LTC": {
       "momentum": 23.3,
       "volatility": 45.0,
-      "correlation": 69.6,
+      "correlation": 70.3,
       "macro": 50.0,
-      "composite": 38.7,
+      "composite": 38.6,
       "label": "BEAR",
       "kelly_mult": 0.7,
       "source": "global_regime"
     },
     "XAU": {
-      "momentum": 7.5,
-      "volatility": 6.8,
+      "momentum": 95.5,
+      "volatility": 52.3,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 46.8,
-      "label": "BEAR_QUIET",
-      "kelly_mult": 0.7,
+      "composite": 68.5,
+      "label": "BULL",
+      "kelly_mult": 1.05,
       "source": "csv_based"
     },
     "XAG": {
-      "momentum": 4.7,
-      "volatility": 11.4,
+      "momentum": 94.1,
+      "volatility": 50.0,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 44.9,
-      "label": "BEAR_QUIET",
-      "kelly_mult": 0.7,
+      "composite": 68.4,
+      "label": "BULL",
+      "kelly_mult": 1.25,
       "source": "csv_based"
     },
     "WTI": {
-      "momentum": 10.5,
-      "volatility": 0.0,
-      "correlation": 30.0,
-      "macro": 50.0,
-      "composite": 49.2,
-      "label": "BEAR_QUIET",
-      "kelly_mult": 0.7,
-      "source": "csv_based"
-    },
-    "HG": {
-      "momentum": 3.8,
-      "volatility": 6.8,
-      "correlation": 30.0,
-      "macro": 50.0,
-      "composite": 45.5,
-      "label": "BEAR_QUIET",
-      "kelly_mult": 0.7,
-      "source": "csv_based"
-    },
-    "NG": {
-      "momentum": 4.6,
+      "momentum": 35.9,
       "volatility": 15.9,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 43.9,
+      "composite": 54.9,
+      "label": "NEUTRAL_QUIET",
+      "kelly_mult": 0.9,
+      "source": "csv_based"
+    },
+    "HG": {
+      "momentum": 91.7,
+      "volatility": 54.5,
+      "correlation": 30.0,
+      "macro": 50.0,
+      "composite": 66.7,
+      "label": "BULL",
+      "kelly_mult": 1.05,
+      "source": "csv_based"
+    },
+    "NG": {
+      "momentum": 10.6,
+      "volatility": 18.2,
+      "correlation": 30.0,
+      "macro": 50.0,
+      "composite": 45.6,
       "label": "BEAR_QUIET",
       "kelly_mult": 0.7,
       "source": "csv_based"
     },
     "PL": {
-      "momentum": 6.7,
-      "volatility": 0.0,
+      "momentum": 94.6,
+      "volatility": 63.6,
       "correlation": 30.0,
       "macro": 50.0,
-      "composite": 47.8,
-      "label": "BEAR_QUIET",
-      "kelly_mult": 0.7,
+      "composite": 65.9,
+      "label": "BULL",
+      "kelly_mult": 1.05,
       "source": "csv_based"
     }
   }

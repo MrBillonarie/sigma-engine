@@ -48,10 +48,10 @@
     "validated_at": "2026-06-30 23:11:15.253162"
   },
   "mc": {
-    "mc_cagr_p05": 23062.6,
+    "mc_cagr_p05": 28960.5,
     "mc_cagr_p50": 352249.6,
     "mc_cagr_p95": 4272032.8,
-    "mc_dd_p50": -47.8,
+    "mc_dd_p50": -48.1,
     "mc_dd_p95": -35.5,
     "mc_confidence": 100.0,
     "mc_sims": 1000
@@ -62,6 +62,6 @@
       "CAGR_INSANE: 5221% (max permitido 400%)",
       "[WARN] FEW_TRADES: 27 trades OOS (estadistica debil)"
     ],
-    "validated_at": "2026-06-30T23:30:01.610723-04:00"
+    "validated_at": "2026-07-01T23:30:01.799613-04:00"
   }
 }

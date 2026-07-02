@@ -35,11 +35,11 @@
   "saved_at": "2026-05-10 09:58:25.399153",
   "mc": {
     "mc_cagr_p05": -5.4,
-    "mc_cagr_p50": 46.1,
+    "mc_cagr_p50": 62.9,
     "mc_cagr_p95": 180.7,
     "mc_dd_p50": -32.9,
     "mc_dd_p95": -18.1,
-    "mc_confidence": 90.8,
+    "mc_confidence": 91.9,
     "mc_sims": 1000
   },
   "wft": {

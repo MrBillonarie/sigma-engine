@@ -60,15 +60,15 @@
       "IS_OOS_GAP: OOS/IS=0.33 (minimo 0.35)",
       "[WARN] FEW_TRADES: 16 trades OOS (estadistica debil)"
     ],
-    "validated_at": "2026-06-30T13:00:01.845223-04:00"
+    "validated_at": "2026-07-01T13:30:02.002942-04:00"
   },
   "mc": {
     "mc_cagr_p05": 27.8,
     "mc_cagr_p50": 146.7,
-    "mc_cagr_p95": 376.1,
+    "mc_cagr_p95": 317.4,
     "mc_dd_p50": -32.6,
     "mc_dd_p95": -17.9,
-    "mc_confidence": 98.0,
+    "mc_confidence": 97.7,
     "mc_sims": 1000
   }
 }

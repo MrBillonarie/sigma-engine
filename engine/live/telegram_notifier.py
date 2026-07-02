@@ -150,57 +150,20 @@ def cmd_trades(chat_id, signals, trades):
     hdr_pos = f"📊 <b>POSICIONES ABIERTAS ({n_open}/{MAX_SLOTS} slots)</b>"
     blk_open = "\n\n".join(lines_open) if lines_open else "Sin posiciones abiertas."
 
-    # open_keys (necesario tanto para SLOTS RESERVADOS como EN COLA)
+    # Cola: alineada con el panel del dashboard (ESTADO=COLA cuando recommendation=ACTIVAR sin slot)
+    # Excluye lo ya abierto y los slots actuales
     open_keys = set()
     for _t in open_t.values():
         _d = (_t.get("direction", "long") or "long").lower()
         open_keys.add(f"{_t.get('sym','')}_{(_t.get('tf','') or '').lower()}_{_d}")
 
-    # 2026-05-20: SLOTS RESERVADOS — modelos con slot>=1 pero sin trade abierto (esperando setup tecnico)
-    lines_reserved = []
-    for m in models:
-        slot_val = m.get("slot", 0)
-        if slot_val < 1:
-            continue  # no esta reservado
-        # Skip si ya tiene trade abierto (esta en POSICIONES, no reservado)
-        _d_r = "short" if m.get("type") == "short" else "long"
-        _k_r = f"{m.get('sym','')}_{(m.get('tf','') or '').lower()}_{_d_r}"
-        if _k_r in open_keys:
-            continue
-        isL_r = m.get("type") != "short"
-        arrow_r = "🟢 LONG" if isL_r else "🔴 SHORT"
-        cagr_r = m.get("cagr", 0) or 0
-        wr_r = m.get("wr", 0) or 0
-        strat_r = m.get("strategy", "?")
-        grade_r = m.get("grade", "?")
-        firing_r = bool(m.get("signal"))
-        state_r = "FIRMANDO 🔥" if firing_r else "RESERVADO ⏸"
-        lines_reserved.append(
-            f"🎯 {arrow_r}  <b>{m.get('sym')} {m.get('tf','').upper()}</b>  <i>· {state_r}</i> · SLOT {slot_val}\n"
-            f"  Estrategia: <code>{strat_r}</code>  CAGR backtest: <code>{cagr_r:+.1f}%</code>\n"
-            f"  Grade {grade_r} | WR {wr_r:.0f}% · <i>esperando setup tecnico para abrir trade</i>"
-        )
-
-    if lines_reserved:
-        _slots_lib = max(0, MAX_SLOTS - n_open)
-        blk_reserved = (
-            f"\n\n🎯 <b>SLOTS RESERVADOS</b> ({len(lines_reserved)} con slot asignado, esperando setup)\n\n"
-            + "\n\n".join(lines_reserved)
-        )
-    else:
-        blk_reserved = ""
-
-    # Cola: alineada con el panel del dashboard (ESTADO=COLA cuando recommendation=ACTIVAR sin slot)
-    # Excluye lo ya abierto y los slots actuales (open_keys ya definido arriba)
-
     # Deduplicar por sym+tf — mismo criterio que el dashboard (un row por par+TF)
     by_pair_tf = {}
     for m in models:
-        if m.get("slot", 0) >= 1:
-            continue  # ya esta en posicion abierta (slot 1/2/3 = POSICION)
-        # slot=-1 (CONDICIONAL) y slot=0 (ACTIVAR sin slot asignado) ambos validos para cola
+        if m.get("slot", 0) != 0:
+            continue  # ya esta en un slot (esos son POSICIONES, no cola)
         is_firing = bool(m.get("signal"))
-        is_queued = m.get("recommendation") in ("ACTIVAR", "CONDICIONAL")
+        is_queued = m.get("recommendation") == "ACTIVAR"
         if not (is_firing or is_queued):
             continue
         if m.get("grade", "D") not in ("A+", "A", "B"):
@@ -226,13 +189,7 @@ def cmd_trades(chat_id, signals, trades):
         arrow  = "🟢 LONG" if isL else "🔴 SHORT"
         firing = bool(m.get("signal"))
         badge  = "⚡" if firing else "⏳"
-        _is_paper = m.get("recommendation") == "CONDICIONAL"
-        if firing:
-            state = "FIRMANDO"
-        elif _is_paper:
-            state = "PAPER (CONDICIONAL)"
-        else:
-            state = "EN ESPERA"
+        state  = "FIRMANDO" if firing else "EN ESPERA"
         sl     = m.get("sl", 0); tp = m.get("tp", 0); pr = m.get("price", 0)
         rr     = round(abs(tp - pr) / max(abs(pr - sl), 1e-6), 2) if sl and tp else 0
         ev     = m.get("ev")
@@ -258,12 +215,9 @@ def cmd_trades(chat_id, signals, trades):
     if lines_cola:
         _n_l = sum(1 for m in cola if (m.get("type") or "long") != "short")
         _n_s = len(cola) - _n_l
-        _n_activar = sum(1 for m in cola if m.get("recommendation") == "ACTIVAR")
-        _n_cond = sum(1 for m in cola if m.get("recommendation") == "CONDICIONAL")
         _slots_libres = max(0, MAX_SLOTS - n_open)
         blk_cola = (
-            f"\n\n📬 <b>EN COLA</b> ({_n_l}L / {_n_s}S — slots libres: {_slots_libres})\n"
-            f"  <i>ACTIVAR (live-ready): {_n_activar} | CONDICIONAL (paper-only): {_n_cond}</i>\n\n"
+            f"\n\n📬 <b>EN COLA</b> ({_n_l}L / {_n_s}S — slots libres: {_slots_libres}) — se activarian si se libera un slot\n\n"
             + "\n\n".join(lines_cola)
         )
     else:
@@ -301,14 +255,11 @@ def cmd_trades(chat_id, signals, trades):
             + "\n".join(_arm_lines)
         )
 
-    _msg_trades = (
-        f"{hdr_pos}\n\n{blk_open}{blk_reserved}{blk_cola}{blk_armed}\n\n"
-        f"Regimen: <b>{regime}</b> | {now.strftime('%H:%M')} (Chile)"
+    send(
+        f"{hdr_pos}\n\n{blk_open}{blk_cola}{blk_armed}\n\n"
+        f"Regimen: <b>{regime}</b> | {now.strftime('%H:%M')} (Chile)",
+        chat_id=chat_id
     )
-    # Telegram hard-limit 4096 -- truncar si supera (fix HTTP 400 con 30+ modelos)
-    if len(_msg_trades) > 4000:
-        _msg_trades = _msg_trades[:3950] + "\n\n<i>... lista truncada</i>"
-    send(_msg_trades, chat_id=chat_id)
 
 def cmd_status(chat_id, signals, trades):
     """Estado completo del sistema."""
@@ -434,8 +385,7 @@ def cmd_semana(chat_id, trades):
     hist     = (trades or {}).get("history", [])
     port     = (trades or {}).get("portfolio", {})
     week_ago = (now - timedelta(days=7)).strftime("%Y-%m-%d")
-    semana   = [t for t in hist if str(t.get("closed_at","")) >= week_ago
-               and not t.get("excluded_from_stats")]
+    semana   = [t for t in hist if str(t.get("closed_at","")) >= week_ago]
 
     if not semana:
         send("Sin trades en los ultimos 7 dias.", chat_id=chat_id)
@@ -450,9 +400,8 @@ def cmd_semana(chat_id, trades):
         icon = "🟢" if pnl >= 0 else "🔴"
         blen = min(int(abs(pnl) * 2), 10)
         dia  = str(t.get("closed_at",""))[:10][5:]
-        dirt = "L" if t.get("direction", "long") == "long" else "S"
         lines.append(
-            f"  {icon} {t.get('sym'):<4} {t.get('tf','').upper():<4} {dirt} "
+            f"  {icon} {t.get('sym'):<4} {t.get('tf','').upper():<4} "
             f"{'█'*blen:<10} <code>{pnl:+.2f}%</code>  {dia}"
         )
 
@@ -540,11 +489,6 @@ def cmd_modelo(chat_id, args, signals):
         msg += f"Kelly: <code>{m.get('eff_risk_pct','?')}%</code>  Regime: <b>{regime}</b>"
     else:
         msg += f"Regime actual: <b>{regime}</b>"
-        msg += (
-            "\n\n<i>¿Viste esta señal anunciada pero no se abrió trade real? "
-            "El bot solo ejecuta con la estrategia campeona vigente de cada slot — "
-            "otras señales se informan pero no operan. La razón de arriba explica el motivo exacto.</i>"
-        )
     send(msg, chat_id=chat_id)
 
 PAUSA_FLAG = "/opt/sigma/results/pausa.flag"
@@ -828,154 +772,6 @@ def cmd_nuevas(chat_id):
 
 
 
-# ── AUM total (capital propio + seguidores de Copy Trading) ──────────────
-# Binance no expone el AUM de seguidores por API (probado 2026-06-19: el
-# endpoint publico esta detras de AWS WAF challenge, y el SAPI de copy
-# trading autenticado no trae ese dato) -- se actualiza a mano via /aum N
-# leyendo https://www.binance.com/.../copy-trading/lead-details/<id>
-_AUM_FILE = '/opt/sigma/results/reports/aum.json'
-
-def _aum_own_balance():
-    """Balance real de Binance, consultado en vivo -- no usar
-    _fire_current_equity() aca: su fallback (equity_after del ultimo trade
-    LIVE en history) quedo corrupto con un valor de paper equity para el
-    primer trade LIVE (LTC, 2026-06-17), asi que no es confiable para AUM."""
-    try:
-        import sys as _sys
-        if '/opt/sigma' not in _sys.path:
-            _sys.path.insert(0, '/opt/sigma')
-        from engine.live.live_executor import _get_exchange
-        ex = _get_exchange()
-        bal = ex.fetch_balance()
-        return float(bal.get('USDT', {}).get('total', 0))
-    except Exception as e:
-        print(f"[AUM] No se pudo leer balance real: {e}", flush=True)
-        return None
-
-def _aum_load():
-    import json as _j, os as _os
-    if not _os.path.exists(_AUM_FILE):
-        return {"aum_total": None, "updated_at": None}
-    try:
-        with open(_AUM_FILE) as f:
-            return _j.load(f)
-    except Exception:
-        return {"aum_total": None, "updated_at": None}
-
-def _aum_save(value):
-    import json as _j, os as _os, datetime as _dt
-    _os.makedirs(_os.path.dirname(_AUM_FILE), exist_ok=True)
-    data = {"aum_total": value, "updated_at": _dt.datetime.now().strftime('%Y-%m-%d %H:%M')}
-    with open(_AUM_FILE, 'w') as f:
-        _j.dump(data, f, indent=2)
-    return data
-
-def cmd_aum(chat_id, args):
-    """/aum -> muestra AUM total guardado. /aum N -> actualiza el AUM total."""
-    args = (args or "").strip()
-    if args:
-        try:
-            value = float(args.replace(',', '').replace('$', ''))
-        except ValueError:
-            send(f"No pude leer ese numero: <code>{args}</code>\nUso: <code>/aum 1337.95</code>", chat_id=chat_id)
-            return
-        data = _aum_save(value)
-        own = _aum_own_balance()
-        own_txt = f"${own:,.2f}" if own is not None else "— (no se pudo leer Binance)"
-        followers_txt = f"${max(0.0, value - own):,.2f}" if own is not None else "—"
-        send(
-            f"✅ <b>AUM actualizado</b>\n"
-            f"Total gestionado: <b>${value:,.2f}</b>\n"
-            f"Capital propio (Binance): {own_txt}\n"
-            f"Capital de seguidores (estimado): {followers_txt}\n\n"
-            f"Fuente: pagina publica de Copy Trading (manual, Binance no la expone por API).",
-            chat_id=chat_id
-        )
-        return
-
-    data = _aum_load()
-    aum_total = data.get('aum_total')
-    if aum_total is None:
-        send(
-            "Todavia no hay AUM guardado.\n"
-            "Usa <code>/aum 1337.95</code> con el numero que ves en tu pagina de Copy Trading.",
-            chat_id=chat_id
-        )
-        return
-    own = _aum_own_balance()
-    own_txt = f"${own:,.2f}" if own is not None else "— (no se pudo leer Binance)"
-    followers_txt = f"${max(0.0, aum_total - own):,.2f}" if own is not None else "—"
-    send(
-        f"💰 <b>AUM TOTAL GESTIONADO</b>\n\n"
-        f"Total: <b>${aum_total:,.2f}</b>\n"
-        f"Capital propio (Binance): {own_txt}\n"
-        f"Capital de seguidores (estimado): {followers_txt}\n\n"
-        f"Ultima actualizacion: {data.get('updated_at','?')}\n"
-        f"Actualizar: <code>/aum 1337.95</code>",
-        chat_id=chat_id
-    )
-
-
-# ── Copy traders activos (conteo de seguidores, Binance no lo expone) ────
-# Mismo motivo que AUM: el numero de personas copiando el Lead Trader solo
-# se ve en https://www.binance.com/.../copy-trading/lead-details/<id>,
-# no hay endpoint publico ni autenticado que lo entregue.
-_COPYTRADERS_FILE = '/opt/sigma/results/reports/copytraders.json'
-
-def _copytraders_load():
-    import json as _j, os as _os
-    if not _os.path.exists(_COPYTRADERS_FILE):
-        return {"copytraders_total": None, "updated_at": None}
-    try:
-        with open(_COPYTRADERS_FILE) as f:
-            return _j.load(f)
-    except Exception:
-        return {"copytraders_total": None, "updated_at": None}
-
-def _copytraders_save(value):
-    import json as _j, os as _os, datetime as _dt
-    _os.makedirs(_os.path.dirname(_COPYTRADERS_FILE), exist_ok=True)
-    data = {"copytraders_total": value, "updated_at": _dt.datetime.now().strftime('%Y-%m-%d %H:%M')}
-    with open(_COPYTRADERS_FILE, 'w') as f:
-        _j.dump(data, f, indent=2)
-    return data
-
-def cmd_copytraders(chat_id, args):
-    """/copytraders -> muestra el conteo guardado. /copytraders N -> lo actualiza."""
-    args = (args or "").strip()
-    if args:
-        try:
-            value = int(args.replace(',', ''))
-        except ValueError:
-            send(f"No pude leer ese numero: <code>{args}</code>\nUso: <code>/copytraders 11</code>", chat_id=chat_id)
-            return
-        data = _copytraders_save(value)
-        send(
-            f"✅ <b>Copy traders actualizado</b>\n"
-            f"Total: <b>{value}</b> siguiendo el Lead Trader.\n\n"
-            f"Fuente: pagina publica de Copy Trading (manual, Binance no la expone por API).",
-            chat_id=chat_id
-        )
-        return
-
-    data = _copytraders_load()
-    total = data.get('copytraders_total')
-    if total is None:
-        send(
-            "Todavia no hay copy traders guardados.\n"
-            "Usa <code>/copytraders 11</code> con el numero que ves en tu pagina de Copy Trading.",
-            chat_id=chat_id
-        )
-        return
-    send(
-        f"👥 <b>COPY TRADERS ACTIVOS</b>\n\n"
-        f"Total: <b>{total}</b>\n"
-        f"Ultima actualizacion: {data.get('updated_at','?')}\n"
-        f"Actualizar: <code>/copytraders 11</code>",
-        chat_id=chat_id
-    )
-
-
 # ── FIRE Tracker (Financial Independence Retire Early) ───────────────────
 _FIRE_CONFIG_PATH = '/opt/sigma/results/fire_config.json'
 
@@ -997,21 +793,16 @@ def _fire_save_config(cfg):
         _j.dump(cfg, f, indent=2)
 
 def _fire_current_equity():
-    """Equity actual: balance real de Binance si ya hay trades LIVE,
-    si no, simulacion de paper trading (compounding de pnl_pct desde starting_equity)."""
+    """Lee equity actual del paper trader principal."""
     import json as _j
     try:
         with open('/opt/sigma/results/trade_state.json') as f:
             state = _j.load(f)
+        # Calcular equity desde history (suma de pnl_pct sobre starting)
         cfg = _fire_load_config()
-        history = state.get('history', [])
-        # 2026-06-19: una vez que hay capital real en juego, el balance real de
-        # Binance es la verdad -- no la formula de paper (que asumia $10k ficticios
-        # y nunca se conecto a la cuenta real cuando se activo LIVE el 06-17).
-        live_with_equity = [t for t in history if t.get('mode') == 'LIVE' and t.get('equity_after')]
-        if live_with_equity:
-            return float(live_with_equity[-1]['equity_after'])
         start = cfg.get('starting_equity', 10000)
+        history = state.get('history', [])
+        # Compounding: cada trade pnl_pct% acumulado
         eq = start
         for t in history:
             pnl = t.get('pnl_pct', 0) / 100
@@ -1028,7 +819,6 @@ def cmd_fire(chat_id):
     """Muestra estado FIRE: progreso al target, CAGR, ETA, milestones."""
     from datetime import datetime as _dt
     import math as _math
-    import json as _j
     cfg = _fire_load_config()
     start_eq = cfg.get('starting_equity', 10000)
     target_eq = cfg.get('target_equity', 100000)
@@ -1075,24 +865,6 @@ def cmd_fire(chat_id):
     else:
         eta_str = "indefinido (CAGR ≤ 0)"
 
-    # CAGR proyectado por el motor: mismo "CAGR efectivo" honesto que muestra /portfolio
-    # (real operativo ponderado por trades + Kelly boost), leído de port_snapshot.json.
-    motor_cagr = None
-    try:
-        with open('/opt/sigma/results/reports/port_snapshot.json') as f:
-            _snap = _j.load(f)
-        motor_cagr = _snap.get('port_cagr_with_kelly', _snap.get('port_cagr'))
-    except Exception:
-        pass
-
-    # ETA proyectado según el motor (en vez del realizado, que es ruidoso con pocos días)
-    if motor_cagr and motor_cagr > 0 and current_eq > 0 and current_eq < target_eq:
-        years_to_target_m = _math.log(target_eq / current_eq) / _math.log(1 + motor_cagr/100)
-        eta_days_m = int(years_to_target_m * 365.25)
-        eta_motor_str = f"{eta_days_m} días" if eta_days_m < 365 else f"{years_to_target_m:.1f} años"
-    else:
-        eta_motor_str = "indefinido"
-
     # Milestone más cercano superior
     milestones = cfg.get('milestones', [25, 50, 75, 100])
     next_ms = next((m for m in sorted(milestones) if m > progress_pct), None)
@@ -1113,14 +885,10 @@ def cmd_fire(chat_id):
         f"<b>📊 CAGR</b>",
         f"   Realizado: <code>{cagr_realized:+.1f}%</code>",
     ]
-    if motor_cagr is not None:
-        lines.append(f"   Proyectado (motor): <code>{motor_cagr:+.1f}%</code>")
     if cagr_needed is not None:
         lines.append(f"   Necesario para deadline: <code>{cagr_needed:.1f}%</code>")
         lines.append(f"   Deadline: <i>{deadline_str}</i>")
-    lines.append(f"\n<b>⏱ ETA al ritmo actual (realizado):</b> {eta_str}")
-    if motor_cagr is not None:
-        lines.append(f"<b>⏱ ETA proyectado (motor):</b> {eta_motor_str}")
+    lines.append(f"\n<b>⏱ ETA al target al ritmo actual:</b> {eta_str}")
     lines.append(f"\n<b>🎯 Próximo milestone:</b> {ms_str}")
 
     if not deadline_days:
@@ -1163,156 +931,6 @@ def cmd_fire_set(chat_id, args):
         )
     except (ValueError, IndexError) as e:
         send(f"Error parsing: {e}\nUso: <code>/fire set 100000 [365]</code>", chat_id=chat_id)
-
-
-# --- RETO tracker (2026-06-19): desafio interno de traders, $1000 de profit ---
-# antes del 28-08-2026, "gana el mas cerca" si nadie llega. Suma profit propio
-# real (Binance income API) + comision de seguidores (manual, Binance no la
-# expone por API -- el usuario la actualiza con /reto comision <monto>).
-_RETO_CONFIG_PATH = '/opt/sigma/results/reto_config.json'
-_RETO_SECRETS_PATH = '/opt/sigma/engine/config/secrets.json'
-
-
-def _reto_load_config():
-    import json as _j, os as _os
-    if not _os.path.exists(_RETO_CONFIG_PATH):
-        return {
-            "target_profit": 1000.0,
-            "deadline_date": "2026-08-28",
-            "baseline_date": "2026-06-17",
-            "manual_commission_usd": 0.0,
-            "manual_commission_updated_at": None,
-        }
-    try:
-        with open(_RETO_CONFIG_PATH) as f:
-            return _j.load(f)
-    except Exception:
-        return {}
-
-
-def _reto_save_config(cfg):
-    import json as _j, os as _os
-    _os.makedirs(_os.path.dirname(_RETO_CONFIG_PATH), exist_ok=True)
-    with open(_RETO_CONFIG_PATH, 'w') as f:
-        _j.dump(cfg, f, indent=2)
-
-
-def _reto_lead_profit(baseline_date):
-    """Profit propio real desde baseline_date: REALIZED_PNL + FUNDING_FEE - |COMMISSION| via Binance income API."""
-    try:
-        import ccxt, json as _j, time as _t
-        from datetime import datetime as _dt
-        secrets = _j.loads(open(_RETO_SECRETS_PATH).read()) if __import__('os').path.exists(_RETO_SECRETS_PATH) else {}
-        ex = ccxt.binance({
-            'apiKey': secrets.get('BINANCE_API_KEY', ''),
-            'secret': secrets.get('BINANCE_API_SECRET', ''),
-            'options': {'defaultType': 'future'},
-            'timeout': 15000,
-        })
-        since_ms = int(_dt.fromisoformat(baseline_date).timestamp() * 1000)
-        total = 0.0
-        for itype in ('REALIZED_PNL', 'FUNDING_FEE', 'COMMISSION'):
-            rows = ex.fapiPrivateGetIncome({'incomeType': itype, 'startTime': since_ms, 'limit': 1000})
-            total += sum(float(r.get('income', 0)) for r in rows)
-        return round(total, 2)
-    except Exception:
-        return None
-
-
-def _reto_build_message(header="🏁 <b>RETO — $1000 antes del 28-08-2026</b>\n"):
-    """Construye el mensaje de estado del RETO. Retorna None si no se pudo leer Binance."""
-    from datetime import datetime as _dt
-    cfg = _reto_load_config()
-    target = cfg.get('target_profit', 1000.0)
-    deadline = cfg.get('deadline_date', '2026-08-28')
-    baseline = cfg.get('baseline_date', '2026-06-17')
-    commission = cfg.get('manual_commission_usd', 0.0)
-    commission_at = cfg.get('manual_commission_updated_at')
-
-    lead_profit = _reto_lead_profit(baseline)
-    if lead_profit is None:
-        return None
-
-    total_progress = lead_profit + commission
-    pct = max(0, min(100, total_progress / target * 100)) if target > 0 else 0
-    bar = _fire_progress_bar(pct, 20)
-
-    try:
-        days_left = (_dt.fromisoformat(deadline) - _dt.now()).days
-        deadline_str = f"{days_left} días restantes" if days_left > 0 else "deadline pasado"
-    except Exception:
-        days_left = None
-        deadline_str = "?"
-
-    try:
-        days_elapsed = max((_dt.now() - _dt.fromisoformat(baseline)).days, 1)
-    except Exception:
-        days_elapsed = 1
-    pace_usd_day = total_progress / days_elapsed
-    if pace_usd_day > 0 and days_left and days_left > 0:
-        projected_at_deadline = total_progress + pace_usd_day * days_left
-    else:
-        projected_at_deadline = total_progress
-
-    lines = [
-        header,
-        f"<code>{bar}</code> <b>{pct:.1f}%</b>\n",
-        f"Profit propio (real, Binance):  <b>${lead_profit:+,.2f}</b>",
-        f"Comisión seguidores (manual):   <b>${commission:+,.2f}</b>",
-        f"<b>Total acumulado:               ${total_progress:+,.2f}</b> / ${target:,.0f}\n",
-        f"Ritmo actual: <code>${pace_usd_day:+.2f}/día</code>",
-        f"Proyección al 28-08 a este ritmo: <b>${projected_at_deadline:+,.2f}</b>",
-        f"\n<i>{deadline_str}</i>",
-    ]
-    if commission_at:
-        lines.append(f"<i>Comisión actualizada manualmente: {commission_at}</i>")
-    else:
-        lines.append(
-            "\n<i>💡 La comisión de seguidores no la expone Binance por API — "
-            "actualízala con <code>/reto comision 5.20</code> cuando la revises en la app.</i>"
-        )
-    lines.append(
-        "\n<i>No es todo-o-nada: si nadie llega a $1000, gana el que esté más cerca. "
-        "Lo que importa es la distancia recorrida, no el número exacto.</i>"
-    )
-    return "\n".join(lines)
-
-
-def cmd_reto(chat_id):
-    """Muestra estado del RETO: profit propio + comision seguidores vs meta $1000, deadline 28-08."""
-    msg = _reto_build_message()
-    if msg is None:
-        send("⚠️ No se pudo leer el profit real de Binance ahora. Probá de nuevo en un momento.", chat_id=chat_id)
-        return
-    send(msg, chat_id=chat_id)
-
-
-def weekly_reto_digest():
-    """Cron semanal (lunes 09:00 Chile): manda el estado del RETO sin que nadie tenga que pedirlo."""
-    msg = _reto_build_message(header="🏁 <b>RETO semanal — $1000 antes del 28-08-2026</b>\n")
-    if msg is None:
-        print("[RETO_DIGEST] No se pudo leer Binance, se omite esta semana", flush=True)
-        return
-    send(msg, silent=True)
-
-
-def cmd_reto_comision(chat_id, args):
-    """Actualiza manualmente la comisión de seguidores: /reto comision <monto>."""
-    from datetime import datetime as _dt
-    cfg = _reto_load_config()
-    try:
-        monto = float((args or "").strip().replace(',', '.').replace('$', ''))
-    except ValueError:
-        send("Uso: <code>/reto comision 5.20</code>", chat_id=chat_id)
-        return
-    cfg['manual_commission_usd'] = monto
-    cfg['manual_commission_updated_at'] = _dt.now().strftime('%Y-%m-%d %H:%M')
-    _reto_save_config(cfg)
-    send(
-        f"✅ Comisión de seguidores actualizada: <b>${monto:+,.2f}</b>\n"
-        f"Usá <code>/reto</code> para ver el progreso total.",
-        chat_id=chat_id
-    )
 
 
 def fire_check_milestone():
@@ -1441,17 +1059,10 @@ def cmd_ayuda(chat_id):
         "/hoy          Trades del dia y P&L\n"
         "/semana       Performance ultimos 7 dias\n"
         "/modelos       Lista todos los modelos en produccion (26)\n"
-        "/porque SYM TF Por que no se abrio una señal (ej: /porque BTC 1H)\n"
         "/nuevas        Estado de las 23 estrategias short nuevas (14-05)\n"
         "/portfolio     3 vistas del CAGR ponderado (real/top/simple)\n"
         "/fire          Tracker FIRE: progreso al objetivo de portafolio\n"
         "/fire set N D  Configurar meta FIRE ($N en D días)\n"
-        "/aum           AUM total gestionado (propio + seguidores)\n"
-        "/aum N         Actualizar el AUM total (manual)\n"
-        "/copytraders   Copy traders activos siguiendo el Lead Trader\n"
-        "/copytraders N Actualizar el conteo de copy traders (manual)\n"
-        "/reto          Progreso al reto: $1000 de profit antes del 28-08\n"
-        "/reto comision N  Actualizar comisión de seguidores (manual)\n"
         f"/checklist    Checklist para activar live trading\n"
         f"/salud        Health check del sistema\n"
         "/performance  Performance live vs backtest\n"
@@ -1487,18 +1098,9 @@ def handle_command(text, chat_id, signals, trades):
             cmd_fire_set(chat_id, args[3:].strip())
         else:
             cmd_fire(chat_id)
-    elif cmd_raw == "/aum":
-        cmd_aum(chat_id, args)
-    elif cmd_raw == "/copytraders":
-        cmd_copytraders(chat_id, args)
-    elif cmd_raw == "/reto":
-        if args.lower().startswith("comision"):
-            cmd_reto_comision(chat_id, args[8:].strip())
-        elif args.lower().startswith("comisión"):
-            cmd_reto_comision(chat_id, args[9:].strip())
-        else:
-            cmd_reto(chat_id)
-    elif cmd_raw in ("/modelo", "/model", "/porque", "/why"):
+    elif cmd_raw in ("/modelo", "/model"):
+        cmd_modelo(chat_id, args, signals)
+    elif cmd_raw in ("/porque", "/why"):
         cmd_modelo(chat_id, args, signals)
     elif cmd_raw in ("/checklist", "/live"):
         cmd_checklist(chat_id)
@@ -1707,15 +1309,9 @@ def _signal_explainer(m, regime, hist_trades, now_str):
         live_wr=round(wins_past/n_past*100,0) if n_past>0 else None
 
         lines=[]
-        aligned = (regime=="BEAR" and not isL) or (regime=="BULL" and isL)
-        if regime=="BEAR":
-            regime_ctx = f"Mercado bajista — {'favorece SHORT.' if not isL else 'senal contratendencia (LONG en BEAR).'}"
-        elif regime=="BULL":
-            regime_ctx = f"Mercado alcista — {'favorece LONG.' if isL else 'senal contratendencia (SHORT en BULL).'}"
-        elif regime=="RANGE":
-            regime_ctx = "Mercado lateral — ser selectivo."
-        else:
-            regime_ctx = ""
+        regime_ctx={"BEAR":f"Mercado bajista — favorece {dir_txt}.",
+                    "BULL":f"Mercado alcista — favorece {dir_txt}.",
+                    "RANGE":"Mercado lateral — ser selectivo."}.get(regime,"")
         if regime_ctx: lines.append(f"Contexto: {regime_ctx}")
 
         if grade in ("A+","A") and wr>=65:
@@ -1900,8 +1496,6 @@ def _rich_trade_card(t, port):
             icon = '🔴'; title = 'STOP LOSS'
         elif reason == 'MANUAL':
             icon = '🔵'; title = 'CIERRE MANUAL'
-        elif reason == 'TRAIL_HIT':
-            icon = '✅'; title = 'TRAILING STOP PROFIT'
         else:
             icon = '⬜'; title = reason or 'CERRADO'
 
@@ -1991,32 +1585,6 @@ def _paper_gate_label(sym, tf, strategy):
     return ''
 
 
-def _robustness_gate_label(sym, tf, strategy):
-    """Si el robustness gate va a forzar esta señal a PAPER pese al grade, avisar por qué.
-    La señal en si sigue siendo veridica (slot/grade ya la validaron) -- este es un check
-    aparte de walk-forward/consistencia que protege capital real, no cuestiona la señal."""
-    try:
-        import json as _jj, os as _oj
-        from utils.robustness import robustness_score as _rs
-        base = f'/opt/sigma/models/{tf}/{sym.lower()}_{strategy}.json'
-        if not _oj.path.exists(base):
-            base = f'/opt/sigma/models/{tf}/{sym.lower()}usd_{strategy}.json'
-        if not _oj.path.exists(base):
-            return ''
-        r = _rs(_jj.loads(open(base).read()))
-        if r.get('action') != 'PASS_LIVE':
-            gates = ', '.join(r.get('gates_failed', [])) or r.get('action', '')
-            return (
-                '\n\n🧪 <b>Quedará en PAPER, no LIVE</b> — la señal es válida, '
-                'pero el modelo no pasa el robustness gate ahora mismo '
-                f'(<code>{gates}</code>). El sistema no arriesga capital real '
-                'hasta que el modelo vuelva a pasar.'
-            )
-    except Exception:
-        pass
-    return ''
-
-
 def _paper_gate_update(sym, tf, strategy, won):
     """Actualiza paper gate tras un trade. Envia resultado cuando completa."""
     try:
@@ -2098,6 +1666,7 @@ def main():
             print(f"[INIT] seen_signals cargado de disco: {len(seen_signals)}", flush=True)
     except Exception as _ess:
         print(f"[INIT] err seen_signals: {_ess}", flush=True)
+    last_trade_notify = 0
     prev_regime       = None
     cb_notified       = False
     prev_readiness    = 0
@@ -2187,7 +1756,6 @@ def main():
                 ens   = m.get("ensemble_count",1)
                 ens_s    = f"\nEnsemble: {ens} modelos votaron esta señal" if ens > 1 else ""
                 paper_lbl = _paper_gate_label(m.get("sym",""), m.get("tf",""), m.get("strategy",""))
-                robust_lbl = _robustness_gate_label(m.get("sym",""), m.get("tf",""), m.get("strategy",""))
                 htf   = "\n⚠️ HTF no confirma — señal de menor confianza" if m.get("htf_penalty") else ""
                 dd_k  = m.get("dd_kelly_mult",1)
                 dd_s  = f"\n📉 Kelly reducido x{dd_k:.2f} por drawdown" if dd_k < 1 else ""
@@ -2202,7 +1770,6 @@ def main():
                     f"Kelly: <code>{m.get('eff_risk_pct','?')}%</code> del capital{ev_s}{ens_s}{htf}{dd_s}\n\n"
                     f"Regimen: <b>{regime}</b> | {now.strftime('%H:%M')} (Chile)"
                     f"{paper_lbl}"
-                    f"{robust_lbl}"
                 )
                 # Signal Explainer — contexto inteligente
                 try:
@@ -2257,11 +1824,9 @@ def main():
                     with open(_SEEN_FILE, 'w') as _fsv:
                         _j_sv.dump(list(seen_trades), _fsv)
                 except Exception: pass
-            # Notificar TODOS los cierres nuevos, en orden cronologico (hist viene
-            # mas-nuevo-primero) -- antes habia un throttle de 1h que dejaba
-            # cierres marcados como 'vistos' sin avisar nunca por Telegram
-            # (el usuario tenia TP en Binance y no le llegaba el aviso).
-            for t in reversed(nuevos):
+            if nuevos and (now_ts - last_trade_notify) >= 3600:
+                last_trade_notify = now_ts
+                t      = nuevos[0]  # mas reciente con hist[:5]
                 pnl    = t.get("pnl_pct",0)
                 reason = t.get("reason","")
                 eq     = t.get("equity_after") or port.get("equity",0)
@@ -2270,22 +1835,23 @@ def main():
                 try:
                     _card = _rich_trade_card(t, port)
                     if _card:
-                        send(_card, silent=(reason not in ("TP_HIT", "TRAIL_HIT")))
+                        send(_card, silent=(reason != "TP_HIT"))
                 except Exception:
+                    pass
+                if False:  # desactivado: sustituido por _rich_trade_card
                     pass
                 # Trade Journal — analisis narrativo del trade
                 try:
-                    import subprocess as _sp, json as _jj, threading as _th
+                    import subprocess as _sp, json as _jj
                     _td = {**t, "equity_after": eq, "kelly_pct": kelly}
-                    _jproc = _sp.Popen(
+                    _p_tj = _sp.Popen(
                         ["/opt/sigma_env/bin/python3",
                          "/opt/sigma/engine/live/trade_journal.py",
                          _jj.dumps(_td)],
                         stdout=_sp.DEVNULL, stderr=_sp.DEVNULL
                     )
-                    # reaper en hilo aparte -- sin esto el proceso queda zombie
-                    # al terminar (encontrado en auditoria 2026-06-17)
-                    _th.Thread(target=_jproc.wait, daemon=True).start()
+                    import threading as _th
+                    _th.Thread(target=_p_tj.wait, daemon=True).start()
                 except Exception as _je:
                     print(f"[JOURNAL] {_je}", flush=True)
 
@@ -2322,4 +1888,3 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         send("🔴 <b>SIGMA Notifier detenido.</b>", silent=True)
         print("\nDetenido.")
-

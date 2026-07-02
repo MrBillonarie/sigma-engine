@@ -43,7 +43,7 @@ ASSET_TFS = {
 }
 ASSETS = list(ASSET_TFS.keys())
 TFS    = ['4h', '1h', '1d']
-MAX_PARALLEL = int(os.getenv("M2_PARALLEL", "2"))  # 2 workers M2: balance M1/M2 (load control)
+MAX_PARALLEL = int(os.getenv("M2_PARALLEL", "4"))  # 2 workers M2: balance M1/M2 (load control)
 
 SYMBOL_MAP = {
     'XAU': 'XAU/USD',

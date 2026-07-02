@@ -1,0 +1,67 @@
+{
+  "symbol": "NVDA/USD",
+  "tf": "1h",
+  "strategy": "tema_cross",
+  "params": {
+    "sl_mult": 2.9000000000000004,
+    "tp_mult": 4.0,
+    "cooldown": 14,
+    "rsi_w_thr": 50,
+    "tema_period": 20
+  },
+  "risk_pct": 4.300000000000001,
+  "metrics_is": {
+    "trades": 46,
+    "wr": 60.9,
+    "cagr": 57.4,
+    "dd": -24.4,
+    "pf": 1.73,
+    "trades_year": 24.3
+  },
+  "metrics_oos": {
+    "trades": 34,
+    "wr": 52.9,
+    "cagr": 25.4,
+    "dd": -33.2,
+    "pf": 1.23,
+    "trades_year": 33.5
+  },
+  "oos_days": 371,
+  "saved_at": "2026-07-02 02:08:36.127143",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 70.1,
+      "median": 49.6,
+      "ic95_lo": -82.6,
+      "ic95_hi": 281.3,
+      "ic80_lo": -51.7,
+      "ic80_hi": 187.1,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 19,
+      "positive": 11,
+      "pct_positive": 57.9,
+      "avg_cagr": 186.5,
+      "passed": true
+    },
+    "cross_asset": {
+      "positive": 0,
+      "passed": false,
+      "note": "sin datos"
+    },
+    "confidence": "MEDIA",
+    "passed_steps": 2,
+    "max_steps": 3,
+    "validated_at": "2026-07-02 02:08:36.247888"
+  },
+  "mc": {
+    "mc_cagr_p05": -20.5,
+    "mc_cagr_p50": 120.9,
+    "mc_cagr_p95": 513.5,
+    "mc_dd_p50": -55.0,
+    "mc_dd_p95": -32.9,
+    "mc_confidence": 90.3,
+    "mc_sims": 1000
+  }
+}

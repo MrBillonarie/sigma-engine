@@ -1,25 +1,5 @@
 {
   "open": {
-    "SOL_4h": {
-      "sym": "SOL",
-      "tf": "4h",
-      "direction": "short",
-      "entry": 73.61,
-      "sl": 79.2688,
-      "tp": 69.7196,
-      "tp2": 69.7196,
-      "sl_dist_pct_at_open": 7.6875,
-      "strategy": "supply_zone_rejection",
-      "grade": "A",
-      "wr": 70.4,
-      "cagr": 28.3,
-      "kelly_pct": 1.62,
-      "mode": "LIVE",
-      "opened_at": "2026-06-29 12:17:18.573415",
-      "status": "open",
-      "live_contracts": 0.09,
-      "pnl_pct": -0.2891
-    },
     "WTI_1d": {
       "sym": "WTI",
       "tf": "1d",
@@ -38,7 +18,30 @@
       "opened_at": "2026-06-30 04:01:23.480255",
       "status": "open",
       "live_contracts": 0.09,
-      "pnl_pct": 0.2379
+      "pnl_pct": 0.4624
+    },
+    "LTC_4h": {
+      "sym": "LTC",
+      "tf": "4h",
+      "direction": "short",
+      "entry": 42.42,
+      "sl": 44.7872,
+      "tp": 41.3058,
+      "tp2": 41.3058,
+      "sl_dist_pct_at_open": 5.5804,
+      "strategy": "bearish_rsi_divergence",
+      "grade": "A",
+      "wr": 73.3,
+      "cagr": 39.7,
+      "kelly_pct": 3.28,
+      "mode": "LIVE",
+      "opened_at": "2026-07-01 20:42:31",
+      "status": "open",
+      "live_contracts": 0.496,
+      "pnl_pct": -1.3995,
+      "binance_order_id": "43671693750",
+      "contracts": 0.496,
+      "notional": 21.0
     }
   },
   "history": [
@@ -1501,6 +1504,37 @@
       "equity_after": 11330.18,
       "regime_at_close": "BEAR",
       "cooldown_seconds": 7200
+    },
+    {
+      "sym": "SOL",
+      "tf": "4h",
+      "direction": "short",
+      "entry": 73.61,
+      "sl": 79.2688,
+      "tp": 69.7196,
+      "tp2": 69.7196,
+      "sl_dist_pct_at_open": 7.6875,
+      "strategy": "supply_zone_rejection",
+      "grade": "A",
+      "wr": 70.4,
+      "cagr": 28.3,
+      "kelly_pct": 1.62,
+      "mode": "LIVE",
+      "opened_at": "2026-06-29 12:17:18.573415",
+      "status": "SL_HIT",
+      "live_contracts": 0.09,
+      "pnl_pct": -1.6556,
+      "exit_price": 79.29,
+      "pnl_pct_raw": -7.7163,
+      "pnl_dollar": -8.7431,
+      "kelly_pct_used": 1.62,
+      "reason": "SL_HIT",
+      "closed_at": "2026-07-02 05:31:55.489241",
+      "commission": 0.0,
+      "funding": 0.0,
+      "equity_after": 666.73,
+      "regime_at_close": "BEAR",
+      "cooldown_seconds": 7200
     }
   ],
   "circuit_breaker": {
@@ -1702,5 +1736,5 @@
       "suspended_until": null
     }
   },
-  "live_peak_equity": 525.51
+  "live_peak_equity": 666.73
 }

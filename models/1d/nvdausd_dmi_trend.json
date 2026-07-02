@@ -1,0 +1,53 @@
+{
+  "symbol": "NVDA/USD",
+  "tf": "1d",
+  "strategy": "dmi_trend",
+  "params": {
+    "sl_mult": 3.0,
+    "tp_mult": 1.6,
+    "cooldown": 3,
+    "rsi_w_thr": 44,
+    "dmi_period": 10
+  },
+  "risk_pct": 5.0,
+  "metrics_is": {
+    "trades": 262,
+    "wr": 71.8,
+    "cagr": 10.7,
+    "dd": -39.8,
+    "pf": 1.66,
+    "trades_year": 11.9
+  },
+  "metrics_oos": {
+    "trades": 109,
+    "wr": 72.5,
+    "cagr": 13.1,
+    "dd": -18.9,
+    "pf": 1.36,
+    "trades_year": 19.8
+  },
+  "oos_days": 2009,
+  "saved_at": "2026-07-02 02:27:00.009630",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 87.2,
+      "median": 41.8,
+      "ic95_lo": -39.1,
+      "ic95_hi": 96.8,
+      "ic80_lo": -6.0,
+      "ic80_hi": 77.6,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 25,
+      "positive": 14,
+      "pct_positive": 56.0,
+      "avg_cagr": 13.7,
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "passed_steps": 2,
+    "max_steps": 2,
+    "validated_at": "2026-07-02 02:27:00.156644"
+  }
+}

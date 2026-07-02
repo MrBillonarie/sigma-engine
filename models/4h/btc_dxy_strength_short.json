@@ -70,5 +70,14 @@
     "passed_steps": 2,
     "max_steps": 3,
     "validated_at": "2026-07-01 03:04:18.895119"
+  },
+  "mc": {
+    "mc_cagr_p05": -1.1,
+    "mc_cagr_p50": 61.4,
+    "mc_cagr_p95": 163.3,
+    "mc_dd_p50": -29.4,
+    "mc_dd_p95": -16.0,
+    "mc_confidence": 92.4,
+    "mc_sims": 1000
   }
 }

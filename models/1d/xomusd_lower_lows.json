@@ -1,0 +1,62 @@
+{
+  "symbol": "XOM/USD",
+  "tf": "1d",
+  "strategy": "lower_lows",
+  "params": {
+    "sl_mult": 3.5,
+    "tp_mult": 1.5,
+    "cooldown": 4,
+    "rsi_w_thr": 50,
+    "ll_period": 6
+  },
+  "risk_pct": 3.5,
+  "metrics_is": {
+    "trades": 519,
+    "wr": 70.1,
+    "cagr": 2.1,
+    "dd": -36.5,
+    "pf": 1.18,
+    "trades_year": 10.1
+  },
+  "metrics_oos": {
+    "trades": 89,
+    "wr": 71.9,
+    "cagr": 1.2,
+    "dd": -20.1,
+    "pf": 1.2,
+    "trades_year": 6.9
+  },
+  "oos_days": 4716,
+  "saved_at": "2026-07-02 01:42:19.974250",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 72.5,
+      "median": 11.0,
+      "ic95_lo": -28.9,
+      "ic95_hi": 42.4,
+      "ic80_lo": -15.3,
+      "ic80_hi": 31.3,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 29,
+      "positive": 13,
+      "pct_positive": 44.8,
+      "avg_cagr": 2.6,
+      "passed": false
+    },
+    "confidence": "MEDIA",
+    "passed_steps": 1,
+    "max_steps": 2,
+    "validated_at": "2026-07-02 01:42:20.162117"
+  },
+  "mc": {
+    "mc_cagr_p05": -19.2,
+    "mc_cagr_p50": 6.2,
+    "mc_cagr_p95": 27.3,
+    "mc_dd_p50": -23.0,
+    "mc_dd_p95": -12.3,
+    "mc_confidence": 50.7,
+    "mc_sims": 1000
+  }
+}

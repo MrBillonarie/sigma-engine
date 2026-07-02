@@ -1,0 +1,62 @@
+{
+  "symbol": "AAPL/USD",
+  "tf": "1d",
+  "strategy": "lower_lows",
+  "params": {
+    "sl_mult": 1.6,
+    "tp_mult": 1.8,
+    "cooldown": 3,
+    "rsi_w_thr": 55,
+    "ll_period": 9
+  },
+  "risk_pct": 5.0,
+  "metrics_is": {
+    "trades": 447,
+    "wr": 55.0,
+    "cagr": 15.0,
+    "dd": -37.7,
+    "pf": 1.34,
+    "trades_year": 12.3
+  },
+  "metrics_oos": {
+    "trades": 142,
+    "wr": 59.2,
+    "cagr": 9.2,
+    "dd": -35.8,
+    "pf": 1.17,
+    "trades_year": 15.5
+  },
+  "oos_days": 3337,
+  "saved_at": "2026-07-02 01:50:02.080404",
+  "validation": {
+    "monte_carlo": {
+      "p_pos": 83.7,
+      "median": 43.8,
+      "ic95_lo": -48.5,
+      "ic95_hi": 108.0,
+      "ic80_lo": -12.0,
+      "ic80_hi": 86.0,
+      "passed": true
+    },
+    "walk_forward": {
+      "windows": 27,
+      "positive": 19,
+      "pct_positive": 70.4,
+      "avg_cagr": 14.5,
+      "passed": true
+    },
+    "confidence": "ALTA",
+    "passed_steps": 2,
+    "max_steps": 2,
+    "validated_at": "2026-07-02 01:50:02.217565"
+  },
+  "mc": {
+    "mc_cagr_p05": -10.0,
+    "mc_cagr_p50": 26.3,
+    "mc_cagr_p95": 93.0,
+    "mc_dd_p50": -28.2,
+    "mc_dd_p95": -15.4,
+    "mc_confidence": 84.8,
+    "mc_sims": 1000
+  }
+}

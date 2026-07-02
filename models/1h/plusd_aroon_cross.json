@@ -60,10 +60,10 @@
     "reasons": [
       "CAGR_INSANE: 847% (max permitido 400%)"
     ],
-    "validated_at": "2026-06-30T13:00:02.172397-04:00"
+    "validated_at": "2026-07-01T13:30:02.515691-04:00"
   },
   "mc": {
-    "mc_cagr_p05": 415.3,
+    "mc_cagr_p05": 310.8,
     "mc_cagr_p50": 1905.9,
     "mc_cagr_p95": 9694.3,
     "mc_dd_p50": -38.7,

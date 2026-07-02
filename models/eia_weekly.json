@@ -1,9 +1,25 @@
 {
-  "updated_at": "2026-06-25T14:30:02.191720",
+  "updated_at": "2026-07-02T14:30:01.620549",
   "crude_stocks": [
     {
+      "period": "2026-06-26",
+      "crude_mbbl": 734014.0
+    },
+    {
+      "period": "2026-06-26",
+      "crude_mbbl": 2835.0
+    },
+    {
+      "period": "2026-06-26",
+      "crude_mbbl": 408359.0
+    },
+    {
+      "period": "2026-06-26",
+      "crude_mbbl": 325655.0
+    },
+    {
       "period": "2026-06-19",
-      "crude_mbbl": 412134.0
+      "crude_mbbl": 743325.0
     },
     {
       "period": "2026-06-19",
@@ -11,27 +27,11 @@
     },
     {
       "period": "2026-06-19",
-      "crude_mbbl": 331191.0
+      "crude_mbbl": 412134.0
     },
     {
       "period": "2026-06-19",
-      "crude_mbbl": 743325.0
-    },
-    {
-      "period": "2026-06-12",
-      "crude_mbbl": 418222.0
-    },
-    {
-      "period": "2026-06-12",
-      "crude_mbbl": 3188.0
-    },
-    {
-      "period": "2026-06-12",
-      "crude_mbbl": 340251.0
-    },
-    {
-      "period": "2026-06-12",
-      "crude_mbbl": 758473.0
+      "crude_mbbl": 331191.0
     }
   ],
   "ng_storage": []

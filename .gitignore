@@ -48,3 +48,7 @@ engine/config/secrets.json
 *.db-shm
 *.db-wal
 *.db-journal
+
+# DBs cuarentenadas/corruptas — jamas al repo (6.4GB rechazado por GitHub 2026-07-02)
+*.corrupted
+*.db.corrupted

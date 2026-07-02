@@ -1,8 +1,8 @@
 // [SIGMA-HEADER-START]
 // ╔══════════════════════════════════════════════════════════╗
 // ║  SIGMA TERMINAL v13  —  Auto-generado desde VPS         ║
-// ║  Actualizado : 01/07/2026  04:30 hrs (Chile)             ║
-// ║  Modelos     : 39 activos                                ║
+// ║  Actualizado : 02/07/2026  10:30 hrs (Chile)             ║
+// ║  Modelos     : 46 activos                                ║
 // ║  Top modelos : PL 4h:ICH A+ +156%  XAU 1h:REG A+ +205%  E║
 // ╚══════════════════════════════════════════════════════════╝
 // [SIGMA-HEADER-END]
@@ -619,6 +619,8 @@ corr_eth_color = col_neutral
 // Función 1: nombre de estrategia según ticker+TF
 f_strat(_tk, _tf_m) =>
     string _r = "tma_bands"
+    if str.contains(_tk,"AAPL") and _tf_m==1440
+        _r := "tema_cross"
     if str.contains(_tk,"BNB") and _tf_m==15
         _r := "lower_high_structure_short"
     if str.contains(_tk,"BNB") and _tf_m==60
@@ -647,6 +649,8 @@ f_strat(_tk, _tf_m) =>
         _r := "lower_lows"
     if str.contains(_tk,"HG") and _tf_m==240
         _r := "vwap_overpriced_short"
+    if str.contains(_tk,"JPM") and _tf_m==60
+        _r := "tma_bands"
     if str.contains(_tk,"LTC") and _tf_m==15
         _r := "psar_flip"
     if str.contains(_tk,"LTC") and _tf_m==60
@@ -661,10 +665,14 @@ f_strat(_tk, _tf_m) =>
         _r := "tma_bands"
     if str.contains(_tk,"NG") and _tf_m==240
         _r := "tma_bands"
+    if str.contains(_tk,"NVDA") and _tf_m==1440
+        _r := "dmi_trend"
+    if str.contains(_tk,"NVDA") and _tf_m==60
+        _r := "obv_divergence"
     if str.contains(_tk,"PL") and _tf_m==15
         _r := "momentum"
     if str.contains(_tk,"PL") and _tf_m==1440
-        _r := "tma_bands"
+        _r := "mfi_reversal"
     if str.contains(_tk,"PL") and _tf_m==60
         _r := "volume_exhaustion"
     if str.contains(_tk,"PL") and _tf_m==240
@@ -677,6 +685,8 @@ f_strat(_tk, _tf_m) =>
         _r := "supply_zone_rejection"
     if str.contains(_tk,"SOL") and _tf_m==5
         _r := "roc_negative_short"
+    if str.contains(_tk,"TSLA") and _tf_m==60
+        _r := "trend_strength"
     if str.contains(_tk,"WTI") and _tf_m==1440
         _r := "heikin_ashi_short"
     if str.contains(_tk,"WTI") and _tf_m==60
@@ -690,12 +700,16 @@ f_strat(_tk, _tf_m) =>
     if str.contains(_tk,"XAG") and _tf_m==60
         _r := "lower_high_structure_short"
     if str.contains(_tk,"XAG") and _tf_m==240
-        _r := "regime_adaptive"
+        _r := "htf_divergence"
     if str.contains(_tk,"XAU") and _tf_m==1440
         _r := "ichimoku"
     if str.contains(_tk,"XAU") and _tf_m==60
         _r := "regime_adaptive"
     if str.contains(_tk,"XAU") and _tf_m==240
+        _r := "hull_cross"
+    if str.contains(_tk,"XOM") and _tf_m==1440
+        _r := "lower_lows"
+    if str.contains(_tk,"XOM") and _tf_m==240
         _r := "hull_cross"
     _r
 
@@ -719,6 +733,12 @@ f_nums(_tk, _tf_m) =>
     array.set(_p, 13, 2.0)  // tp_mult_s
     array.set(_p, 14, 55.0)  // rsi_w_bull
     array.set(_p, 15, 47.0)  // rsi_w_bear
+    // AAPL/USD 1d tema_cross CAGR:+7.2% WR:72% Grade:C
+    if str.contains(_tk,"AAPL") and _tf_m==1440
+        array.set(_p,0,3.4)
+        array.set(_p,1,1.8)
+        array.set(_p,2,3.0)
+        array.set(_p,3,45.0)
     // BNB/USDT 15m lower_high_structure_short CAGR:+31.8% WR:76% Grade:B
     if str.contains(_tk,"BNB") and _tf_m==15
         array.set(_p,0,2.2)
@@ -810,6 +830,14 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,2.4)
         array.set(_p,2,9.0)
         array.set(_p,3,62.0)
+    // JPM/USD 1h tma_bands CAGR:+27.7% WR:54% Grade:C
+    if str.contains(_tk,"JPM") and _tf_m==60
+        array.set(_p,0,2.5)
+        array.set(_p,1,3.7)
+        array.set(_p,2,12.0)
+        array.set(_p,3,44.0)
+        array.set(_p,6,13.0)
+        array.set(_p,7,1.1)
     // LTC/USDT 15m psar_flip CAGR:+15.8% WR:72% Grade:C
     if str.contains(_tk,"LTC") and _tf_m==15
         array.set(_p,0,3.2)
@@ -857,7 +885,19 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,3,50.0)
         array.set(_p,6,10.0)
         array.set(_p,7,1.0)
-    // PL/USD 15m momentum CAGR:+6.1% WR:59% Grade:C
+    // NVDA/USD 1d dmi_trend CAGR:+13.1% WR:72% Grade:C
+    if str.contains(_tk,"NVDA") and _tf_m==1440
+        array.set(_p,0,3.0)
+        array.set(_p,1,1.6)
+        array.set(_p,2,3.0)
+        array.set(_p,3,44.0)
+    // NVDA/USD 1h obv_divergence CAGR:+22.3% WR:66% Grade:C
+    if str.contains(_tk,"NVDA") and _tf_m==60
+        array.set(_p,0,3.1)
+        array.set(_p,1,2.2)
+        array.set(_p,2,14.0)
+        array.set(_p,3,45.0)
+    // PL/USD 15m momentum CAGR:+7.3% WR:60% Grade:C
     if str.contains(_tk,"PL") and _tf_m==15
         array.set(_p,0,3.3)
         array.set(_p,1,3.9)
@@ -865,14 +905,12 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,3,51.0)
         array.set(_p,5,1.6)
         array.set(_p,11,61.0)
-    // PL/USD 1d tma_bands CAGR:+5.4% WR:48% Grade:D
+    // PL/USD 1d mfi_reversal CAGR:+11.6% WR:79% Grade:C
     if str.contains(_tk,"PL") and _tf_m==1440
-        array.set(_p,0,1.5)
-        array.set(_p,1,3.1)
-        array.set(_p,2,3.0)
-        array.set(_p,3,46.0)
-        array.set(_p,6,10.0)
-        array.set(_p,7,1.3)
+        array.set(_p,0,2.7)
+        array.set(_p,1,1.6)
+        array.set(_p,2,10.0)
+        array.set(_p,3,49.0)
     // PL/USD 1h volume_exhaustion CAGR:+27.2% WR:55% Grade:C
     if str.contains(_tk,"PL") and _tf_m==60
         array.set(_p,0,1.7)
@@ -912,6 +950,12 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,4.0)
         array.set(_p,2,3.0)
         array.set(_p,3,62.0)
+    // TSLA/USD 1h trend_strength CAGR:+37.8% WR:50% Grade:B
+    if str.contains(_tk,"TSLA") and _tf_m==60
+        array.set(_p,0,1.5)
+        array.set(_p,1,3.2)
+        array.set(_p,2,10.0)
+        array.set(_p,3,44.0)
     // WTI/USD 1d heikin_ashi_short CAGR:+28.1% WR:81% Grade:B
     if str.contains(_tk,"WTI") and _tf_m==1440
         array.set(_p,0,1.6)
@@ -950,16 +994,13 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,1.8)
         array.set(_p,2,4.0)
         array.set(_p,3,61.0)
-    // XAG/USD 4h regime_adaptive CAGR:+6.2% WR:49% Grade:D
+    // XAG/USD 4h htf_divergence CAGR:+11.6% WR:77% Grade:B
     if str.contains(_tk,"XAG") and _tf_m==240
-        array.set(_p,0,2.6)
-        array.set(_p,1,2.2)
-        array.set(_p,2,8.0)
-        array.set(_p,3,47.0)
-        array.set(_p,4,51.0)
-        array.set(_p,5,1.2)
-        array.set(_p,14,60.0)
-        array.set(_p,15,42.0)
+        array.set(_p,0,3.4)
+        array.set(_p,1,1.7)
+        array.set(_p,2,11.0)
+        array.set(_p,3,45.0)
+        array.set(_p,11,46.0)
     // XAU/USD 1d ichimoku CAGR:+47.6% WR:78% Grade:A
     if str.contains(_tk,"XAU") and _tf_m==1440
         array.set(_p,0,2.6)
@@ -982,11 +1023,25 @@ f_nums(_tk, _tf_m) =>
         array.set(_p,1,3.5)
         array.set(_p,2,9.0)
         array.set(_p,3,44.0)
+    // XOM/USD 1d lower_lows CAGR:+1.2% WR:72% Grade:D
+    if str.contains(_tk,"XOM") and _tf_m==1440
+        array.set(_p,0,3.5)
+        array.set(_p,1,1.5)
+        array.set(_p,2,4.0)
+        array.set(_p,3,50.0)
+    // XOM/USD 4h hull_cross CAGR:+14.6% WR:82% Grade:B
+    if str.contains(_tk,"XOM") and _tf_m==240
+        array.set(_p,0,3.3)
+        array.set(_p,1,1.9)
+        array.set(_p,2,9.0)
+        array.set(_p,3,56.0)
     _p
 
 // Función 3: metadata del modelo (Grade|dias|WR%|WFT)
 f_meta(_tk, _tf_m) =>
     string _r = "B|0|50|--"
+    if str.contains(_tk,"AAPL") and _tf_m==1440
+        _r := "C|0|72|--"
     if str.contains(_tk,"BNB") and _tf_m==15
         _r := "B|0|76|OK"
     if str.contains(_tk,"BNB") and _tf_m==60
@@ -1015,6 +1070,8 @@ f_meta(_tk, _tf_m) =>
         _r := "A|0|58|--"
     if str.contains(_tk,"HG") and _tf_m==240
         _r := "A+|0|36|--"
+    if str.contains(_tk,"JPM") and _tf_m==60
+        _r := "C|0|54|--"
     if str.contains(_tk,"LTC") and _tf_m==15
         _r := "C|0|72|FAIL"
     if str.contains(_tk,"LTC") and _tf_m==60
@@ -1029,10 +1086,14 @@ f_meta(_tk, _tf_m) =>
         _r := "B|0|74|--"
     if str.contains(_tk,"NG") and _tf_m==240
         _r := "B|0|44|--"
+    if str.contains(_tk,"NVDA") and _tf_m==1440
+        _r := "C|0|72|--"
+    if str.contains(_tk,"NVDA") and _tf_m==60
+        _r := "C|0|66|--"
     if str.contains(_tk,"PL") and _tf_m==15
-        _r := "C|0|59|--"
+        _r := "C|0|60|--"
     if str.contains(_tk,"PL") and _tf_m==1440
-        _r := "D|0|48|--"
+        _r := "C|0|79|--"
     if str.contains(_tk,"PL") and _tf_m==60
         _r := "C|0|55|--"
     if str.contains(_tk,"PL") and _tf_m==240
@@ -1045,6 +1106,8 @@ f_meta(_tk, _tf_m) =>
         _r := "A|0|70|OK"
     if str.contains(_tk,"SOL") and _tf_m==5
         _r := "C|0|46|FAIL"
+    if str.contains(_tk,"TSLA") and _tf_m==60
+        _r := "B|0|50|--"
     if str.contains(_tk,"WTI") and _tf_m==1440
         _r := "B|0|81|--"
     if str.contains(_tk,"WTI") and _tf_m==60
@@ -1058,13 +1121,17 @@ f_meta(_tk, _tf_m) =>
     if str.contains(_tk,"XAG") and _tf_m==60
         _r := "B|0|89|--"
     if str.contains(_tk,"XAG") and _tf_m==240
-        _r := "D|0|49|--"
+        _r := "B|0|77|--"
     if str.contains(_tk,"XAU") and _tf_m==1440
         _r := "A|0|78|--"
     if str.contains(_tk,"XAU") and _tf_m==60
         _r := "A+|0|70|--"
     if str.contains(_tk,"XAU") and _tf_m==240
         _r := "B|0|68|--"
+    if str.contains(_tk,"XOM") and _tf_m==1440
+        _r := "D|0|72|--"
+    if str.contains(_tk,"XOM") and _tf_m==240
+        _r := "B|0|82|--"
     _r
 
 // Cargar parámetros automáticamente según ticker y TF del chart actual
@@ -1115,10 +1182,11 @@ m_ema_pd = m_ema_type == 50 ? _ema50 : m_ema_type == 34 ? _ema34 : _ema21
 // ── TMA Bands — pre-calculada para cada período posible
 // [SIGMA-GEN-INDICATORS-START]
 _tl10 = ta.sma(ta.sma(close, 10), 10)
+_tl13 = ta.sma(ta.sma(close, 13), 13)
 _tl14 = ta.sma(ta.sma(close, 14), 14)
 _tl17 = ta.sma(ta.sma(close, 17), 17)
 _tl18 = ta.sma(ta.sma(close, 18), 18)
-m_tma_line  = m_tma_per==10?_tl10 : m_tma_per==14?_tl14 : m_tma_per==17?_tl17 : m_tma_per==18?_tl18 : _tl17
+m_tma_line  = m_tma_per==10?_tl10 : m_tma_per==13?_tl13 : m_tma_per==14?_tl14 : m_tma_per==17?_tl17 : m_tma_per==18?_tl18 : _tl14
 m_tma_lower = m_tma_line - atr * m_atr_mult
 m_tma_upper = m_tma_line + atr * m_atr_mult
 
@@ -1128,16 +1196,14 @@ _hi23 = ta.highest(high, 23)
 _hi29 = ta.highest(high, 29)
 _hi30 = ta.highest(high, 30)
 _hi48 = ta.highest(high, 48)
-_hi51 = ta.highest(high, 51)
 _lo17 = ta.lowest(low,   17)
 _lo21 = ta.lowest(low,   21)
 _lo23 = ta.lowest(low,   23)
 _lo29 = ta.lowest(low,   29)
 _lo30 = ta.lowest(low,   30)
 _lo48 = ta.lowest(low,   48)
-_lo51 = ta.lowest(low,   51)
-_m_hi = m_lookback==17?_hi17 : m_lookback==21?_hi21 : m_lookback==23?_hi23 : m_lookback==29?_hi29 : m_lookback==30?_hi30 : m_lookback==48?_hi48 : m_lookback==51?_hi51 : _hi30
-_m_lo = m_lookback==17?_lo17 : m_lookback==21?_lo21 : m_lookback==23?_lo23 : m_lookback==29?_lo29 : m_lookback==30?_lo30 : m_lookback==48?_lo48 : m_lookback==51?_lo51 : _lo30
+_m_hi = m_lookback==17?_hi17 : m_lookback==21?_hi21 : m_lookback==23?_hi23 : m_lookback==29?_hi29 : m_lookback==30?_hi30 : m_lookback==48?_hi48 : _hi30
+_m_lo = m_lookback==17?_lo17 : m_lookback==21?_lo21 : m_lookback==23?_lo23 : m_lookback==29?_lo29 : m_lookback==30?_lo30 : m_lookback==48?_lo48 : _lo30
 // [SIGMA-GEN-INDICATORS-END]
 
 // ── Señales por estrategia (una línea cada una — Pine v6) ────────────────────

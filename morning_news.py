@@ -359,6 +359,49 @@ def _build_m2_section(models):
     return lines
 
 
+
+def _build_m3_section():
+    """Seccion Motor 3 — top S&P 500 stocks champions para morning news."""
+    M3_SYMS = ['AAPL', 'NVDA', 'TSLA', 'JPM', 'XOM']
+    M3_NAME = {'AAPL': 'Apple', 'NVDA': 'Nvidia', 'TSLA': 'Tesla', 'JPM': 'JPMorgan', 'XOM': 'ExxonMobil'}
+    M3_TFS  = ['1d', '4h', '1h', '15m']
+    MODELS_DIR = Path('/opt/sigma/models')
+    PFXMAP = {'AAPL':'aaplusd','NVDA':'nvdausd','TSLA':'tslausd','JPM':'jpmusd','XOM':'xomusd'}
+
+    champions = []
+    for sym in M3_SYMS:
+        pfx = PFXMAP[sym]
+        best = None
+        best_cagr = -9999.0
+        for tf in M3_TFS:
+            tf_dir = MODELS_DIR / tf
+            if not tf_dir.exists(): continue
+            for p in tf_dir.glob(f'{pfx}_*.json'):
+                try:
+                    d = json.loads(p.read_text())
+                    oos = d.get('metrics_oos') or {}
+                    cagr = float(oos.get('cagr', 0) or 0)
+                    wr   = float(oos.get('wr', 0) or 0)
+                    if cagr > best_cagr:
+                        best_cagr = cagr
+                        strat = d.get('strategy') or p.stem[len(pfx)+1:]
+                        best = {'sym': sym, 'tf': tf, 'cagr': cagr, 'wr': wr, 'strategy': strat}
+                except Exception:
+                    continue
+        if best and best['cagr'] > 0:
+            champions.append(best)
+
+    if not champions:
+        return []
+
+    lines = ["📈 <b>Motor 3 — S&amp;P 500 Stocks</b>"]
+    for ch in sorted(champions, key=lambda x: -x['cagr'])[:4]:
+        label = M3_NAME.get(ch['sym'], ch['sym'])
+        lines.append(f"  {label} ({ch['sym']}) {ch['tf'].upper()}: <b>{ch['cagr']:+.1f}%</b> WR {ch['wr']:.0f}% [{ch['strategy']}]")
+    n_slots = len(champions)
+    lines.append(f"  {n_slots}/5 tickers con champion | datos yfinance")
+    return lines
+
 def _build_dca_health_section():
     """Seccion diaria: paper trading vs BTC DCA + cold storage progress."""
     try:
@@ -483,6 +526,16 @@ def main():
         m2_lines = []
     if m2_lines:
         for _l in m2_lines:
+            partes.append(_l)
+        partes.append("")
+
+    # --- Motor 3 S&P 500 stocks ---
+    try:
+        m3_lines = _build_m3_section()
+    except Exception:
+        m3_lines = []
+    if m3_lines:
+        for _l in m3_lines:
             partes.append(_l)
         partes.append("")
 

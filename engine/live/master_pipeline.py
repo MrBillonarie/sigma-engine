@@ -9,7 +9,7 @@ Logica de prioridad:
   3. Slots con CAGR OOS < 10% → intentar mejorar
   4. El resto → ciclo normal
 
-Sistema completo: 5 activos x 4 TFs = 20 slots
+Sistema completo: 5 activos x 4 TFs (1h/4h/15m/1d) = 20 slots
   Cada slot prueba: breakout, pullback, tma_bands, momentum, mean_rev
   Si mejora → sobreescribe el modelo guardado
   Si no mejora → sigue al siguiente slot
@@ -73,19 +73,19 @@ SYMBOLS = {
     # 'XAU': 'XAU/USD',  # Motor 2 (commodities)
 }
 # Prioridad de TF: 1H y 4H primero (probados y valiosos), luego 15m, 5m y 1m al final
-TIMEFRAMES = ['1h', '4h', '15m']  # 5m/1m deshabilitados 2026-05-11: sin edge consistente
+TIMEFRAMES = ['1h', '4h', '15m', '1d']  # 5m/1m deshabilitados 2026-05-11; 1d agregado 2026-07-02
 
 # Trials reducidos — Optuna TPE encuentra soluciones buenas antes de trial 120
 
 # Activos que usan CSV pre-descargado en lugar de Binance (ej: XAU)
 CSV_PATHS = {}  # Motor 2 handles commodities CSVs_max.csv',
 
-TRIALS_BY_TF = {'4h': 250, '1h': 300, '15m': 300, '5m': 150, '1m': 35}  # 2026-06-07: upgrade 8 cores, maximizar calidad
+TRIALS_BY_TF = {'4h': 500, '1h': 500, '15m': 350, '1d': 500, '5m': 200, '1m': 60}  # 2026-07-01: EX63-1 20 cores, máxima calidad
 # 5m y 1m tienen 600K+ candles — cada trial es 10x mas lento que 1H
 # Con 60 trials Optuna TPE igual encuentra buenas soluciones
 
 # 4 slots paralelos — sigma-trainer pausado, tenemos 3.5+ cores libres
-MAX_PARALLEL = 2   # 2026-06-25: probado subir a 5 -- el cap global SI limita el NUMERO de procesos (max 7), pero no el CPU agregado: con 8 procesos activos el load subio 7.6->11.3 en 2 min (mismo patron del incidente 06-19). Revertido. El cuello de botella real es CPU por trial, no coordinacion de launchers -- no subir sin antes perfilar cuanto CPU usa cada trial tipo (XAU/XAG con macro fetch son mas pesados que crypto puro).
+MAX_PARALLEL = 8   # revertido a config estable (10 causó overload)
 MIN_RAM_GB  = 2.0   # No lanzar si RAM libre < 2.0GB
 
 running_procs = {}
@@ -239,6 +239,10 @@ def is_running(asset, tf):
         proc = running_procs[key]
         if proc.poll() is None:
             return True
+        try:
+            proc.wait(timeout=5)
+        except Exception:
+            pass
         del running_procs[key]
     # Check ps aux for external processes (gap_auto_launcher may have launched it)
     import subprocess as _sp
@@ -312,7 +316,7 @@ def launch_slot(asset, tf):
 def run():
     log('=' * 60)
     log('SIGMA MASTER PIPELINE — Iniciando')
-    log(f'  {len(ASSETS)} activos x 4 TFs = {len(ASSETS)*4} slots | {MAX_PARALLEL} paralelos max')
+    log(f'  {len(ASSETS)} activos x {len(TIMEFRAMES)} TFs = {len(ASSETS)*len(TIMEFRAMES)} slots | {MAX_PARALLEL} paralelos max')
     log('=' * 60)
 
     cycle = 0
@@ -367,6 +371,11 @@ def run():
         log('Esperando que terminen los slots activos...')
         while any(p.poll() is None for p in running_procs.values()):
             time.sleep(30)
+        for _p in running_procs.values():
+            try:
+                _p.wait(timeout=5)
+            except Exception:
+                pass
         running_procs.clear()
 
         # Summary after full cycle
@@ -394,8 +403,11 @@ def run():
 def handle_signal(sig, frame):
     log('Signal recibido, cerrando procesos hijos...')
     for proc in running_procs.values():
-        try: proc.terminate()
-        except: pass
+        try:
+            proc.terminate()
+            proc.wait(timeout=10)
+        except Exception:
+            pass
     sys.exit(0)
 
 

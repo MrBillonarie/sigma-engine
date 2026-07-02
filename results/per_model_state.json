@@ -362,7 +362,7 @@
     "recommendation_at_init": "ESPERAR"
   },
   "SOL_15m_regime_adaptive": {
-    "equity": 9045.3,
+    "equity": 9022.01,
     "initial": 10000,
     "open": null,
     "history": [
@@ -1315,12 +1315,50 @@
         "pnl_dollar": -19.7527,
         "equity_after": 9045.3,
         "closed_at": "2026-06-29 21:32:48"
+      },
+      {
+        "sym": "SOL",
+        "tf": "15m",
+        "strategy": "regime_adaptive",
+        "direction": "adaptive",
+        "entry": 77.05,
+        "sl": 76.3056,
+        "tp": 78.4147,
+        "sl_dist_pct_at_open": 0.9661,
+        "kelly_pct": 0.47,
+        "opened_at": "2026-07-01 20:34:38",
+        "exit_price": 77.0,
+        "reason": "SL_HIT",
+        "pnl_pct_raw": -0.0751,
+        "pnl_pct": -0.0365,
+        "pnl_dollar": -3.3015,
+        "equity_after": 9042.0,
+        "closed_at": "2026-07-01 20:34:53"
+      },
+      {
+        "sym": "SOL",
+        "tf": "15m",
+        "strategy": "regime_adaptive",
+        "direction": "adaptive",
+        "entry": 78.03,
+        "sl": 77.3566,
+        "tp": 79.2645,
+        "sl_dist_pct_at_open": 0.863,
+        "kelly_pct": 1.5,
+        "opened_at": "2026-07-02 01:53:44",
+        "exit_price": 78.02,
+        "reason": "SL_HIT",
+        "pnl_pct_raw": -0.1272,
+        "pnl_pct": -0.2211,
+        "pnl_dollar": -19.9919,
+        "equity_after": 9022.01,
+        "closed_at": "2026-07-02 01:54:13"
       }
     ],
     "created_at": "2026-05-12 19:09:53",
     "pre_initialized": true,
     "recommendation_at_init": "NO_ACTIVAR",
-    "cooldown_until": 1782790368.485755
+    "cooldown_until": 1782978853.3433747
   },
   "ETH_1h_momentum_short": {
     "equity": 7946.7,
@@ -1457,9 +1495,20 @@
     "recommendation_at_init": "NO_ACTIVAR"
   },
   "ETH_15m_volatility_breakout": {
-    "equity": 9793.32,
+    "equity": 9946.52,
     "initial": 10000,
-    "open": null,
+    "open": {
+      "sym": "ETH",
+      "tf": "15m",
+      "strategy": "volatility_breakout",
+      "direction": "long",
+      "entry": 1705.32,
+      "sl": 1663.2194,
+      "tp": 1739.9911,
+      "sl_dist_pct_at_open": 2.4688,
+      "kelly_pct": 1.24,
+      "opened_at": "2026-07-02 10:24:18"
+    },
     "history": [
       {
         "sym": "ETH",
@@ -1517,28 +1566,55 @@
         "pnl_dollar": 47.1714,
         "equity_after": 9793.32,
         "closed_at": "2026-07-01 00:46:12"
+      },
+      {
+        "sym": "ETH",
+        "tf": "15m",
+        "strategy": "volatility_breakout",
+        "direction": "long",
+        "entry": 1612.96,
+        "sl": 1585.7973,
+        "tp": 1635.3293,
+        "sl_dist_pct_at_open": 1.684,
+        "kelly_pct": 0.77,
+        "opened_at": "2026-07-01 10:22:32",
+        "exit_price": 1635.74,
+        "reason": "TP_HIT",
+        "pnl_pct_raw": 1.2723,
+        "pnl_pct": 0.5818,
+        "pnl_dollar": 56.9775,
+        "equity_after": 9850.3,
+        "closed_at": "2026-07-01 17:53:47"
+      },
+      {
+        "sym": "ETH",
+        "tf": "15m",
+        "strategy": "volatility_breakout",
+        "direction": "long",
+        "entry": 1683.49,
+        "sl": 1651.3427,
+        "tp": 1709.9643,
+        "sl_dist_pct_at_open": 1.9096,
+        "kelly_pct": 1.24,
+        "opened_at": "2026-07-02 09:31:39",
+        "exit_price": 1711.17,
+        "reason": "TP_HIT",
+        "pnl_pct_raw": 1.5042,
+        "pnl_pct": 0.9768,
+        "pnl_dollar": 96.2177,
+        "equity_after": 9946.52,
+        "closed_at": "2026-07-02 09:43:55"
       }
     ],
     "created_at": "2026-05-12 19:09:53",
     "pre_initialized": true,
     "recommendation_at_init": "ESPERAR",
-    "cooldown_until": 1782882972.2926843
+    "cooldown_until": 1783001635.4495661
   },
   "ETH_4h_momentum_short": {
-    "equity": 10159.85,
+    "equity": 10134.82,
     "initial": 10000,
-    "open": {
-      "sym": "ETH",
-      "tf": "4h",
-      "strategy": "momentum_short",
-      "direction": "short",
-      "entry": 1563.74,
-      "sl": 1673.233,
-      "tp": 1494.0626,
-      "sl_dist_pct_at_open": 7.002,
-      "kelly_pct": 0.24,
-      "opened_at": "2026-06-24 13:44:38"
-    },
+    "open": null,
     "history": [
       {
         "sym": "ETH",
@@ -1596,11 +1672,31 @@
         "pnl_dollar": 15.0346,
         "equity_after": 10159.85,
         "closed_at": "2026-06-24 13:44:07"
+      },
+      {
+        "sym": "ETH",
+        "tf": "4h",
+        "strategy": "momentum_short",
+        "direction": "short",
+        "entry": 1563.74,
+        "sl": 1673.233,
+        "tp": 1494.0626,
+        "sl_dist_pct_at_open": 7.002,
+        "kelly_pct": 0.24,
+        "opened_at": "2026-06-24 13:44:38",
+        "exit_price": 1673.98,
+        "reason": "SL_HIT",
+        "pnl_pct_raw": -7.1898,
+        "pnl_pct": -0.2464,
+        "pnl_dollar": -25.0339,
+        "equity_after": 10134.82,
+        "closed_at": "2026-07-02 09:19:26"
       }
     ],
     "created_at": "2026-05-12 19:09:53",
     "pre_initialized": true,
-    "recommendation_at_init": "NO_ACTIVAR"
+    "recommendation_at_init": "NO_ACTIVAR",
+    "cooldown_until": 1783005566.644785
   },
   "BNB_1h_break_of_structure": {
     "equity": 9652.07,
@@ -2319,20 +2415,9 @@
     "recommendation_at_init": "ACTIVAR"
   },
   "BTC_4h_three_candles_short": {
-    "equity": 9847.1,
+    "equity": 9784.89,
     "initial": 10000,
-    "open": {
-      "sym": "BTC",
-      "tf": "4h",
-      "strategy": "three_candles_short",
-      "direction": "short",
-      "entry": 59746.7,
-      "sl": 62149.4126,
-      "tp": 56810.0513,
-      "sl_dist_pct_at_open": 4.0215,
-      "kelly_pct": 0.61,
-      "opened_at": "2026-06-29 12:17:33"
-    },
+    "open": null,
     "history": [
       {
         "sym": "BTC",
@@ -2352,11 +2437,31 @@
         "pnl_dollar": -152.9,
         "equity_after": 9847.1,
         "closed_at": "2026-06-15 07:26:07"
+      },
+      {
+        "sym": "BTC",
+        "tf": "4h",
+        "strategy": "three_candles_short",
+        "direction": "short",
+        "entry": 59746.7,
+        "sl": 62149.4126,
+        "tp": 56810.0513,
+        "sl_dist_pct_at_open": 4.0215,
+        "kelly_pct": 0.61,
+        "opened_at": "2026-06-29 12:17:33",
+        "exit_price": 62151.8,
+        "reason": "SL_HIT",
+        "pnl_pct_raw": -4.1655,
+        "pnl_pct": -0.6318,
+        "pnl_dollar": -62.214,
+        "equity_after": 9784.89,
+        "closed_at": "2026-07-02 10:14:02"
       }
     ],
     "created_at": "2026-05-20 02:17:00",
     "pre_initialized": true,
-    "recommendation_at_init": "ACTIVAR"
+    "recommendation_at_init": "ACTIVAR",
+    "cooldown_until": 1783008842.4910195
   },
   "BTC_15m_regime_adaptive": {
     "equity": 10000,
@@ -2377,19 +2482,19 @@
     "recommendation_at_init": "CONDICIONAL"
   },
   "ETH_5m_volatility_breakout": {
-    "equity": 9885.03,
+    "equity": 9875.22,
     "initial": 10000,
     "open": {
       "sym": "ETH",
       "tf": "5m",
       "strategy": "volatility_breakout",
       "direction": "long",
-      "entry": 1583.2,
-      "sl": 1566.165,
-      "tp": 1603.9614,
-      "sl_dist_pct_at_open": 1.076,
-      "kelly_pct": 0.41,
-      "opened_at": "2026-06-30 21:41:53"
+      "entry": 1703.96,
+      "sl": 1675.0539,
+      "tp": 1739.1894,
+      "sl_dist_pct_at_open": 1.6964,
+      "kelly_pct": 0.62,
+      "opened_at": "2026-07-02 09:37:39"
     },
     "history": [
       {
@@ -2429,12 +2534,50 @@
         "pnl_dollar": -47.9166,
         "equity_after": 9885.03,
         "closed_at": "2026-06-29 09:30:47"
+      },
+      {
+        "sym": "ETH",
+        "tf": "5m",
+        "strategy": "volatility_breakout",
+        "direction": "long",
+        "entry": 1583.2,
+        "sl": 1566.165,
+        "tp": 1603.9614,
+        "sl_dist_pct_at_open": 1.076,
+        "kelly_pct": 0.41,
+        "opened_at": "2026-06-30 21:41:53",
+        "exit_price": 1565.92,
+        "reason": "SL_HIT",
+        "pnl_pct_raw": -1.2315,
+        "pnl_pct": -0.4692,
+        "pnl_dollar": -46.3806,
+        "equity_after": 9838.65,
+        "closed_at": "2026-07-01 08:40:38"
+      },
+      {
+        "sym": "ETH",
+        "tf": "5m",
+        "strategy": "volatility_breakout",
+        "direction": "long",
+        "entry": 1647.04,
+        "sl": 1633.201,
+        "tp": 1663.9063,
+        "sl_dist_pct_at_open": 0.8402,
+        "kelly_pct": 0.26,
+        "opened_at": "2026-07-02 05:41:36",
+        "exit_price": 1669.13,
+        "reason": "TP_HIT",
+        "pnl_pct_raw": 1.2012,
+        "pnl_pct": 0.3717,
+        "pnl_dollar": 36.5703,
+        "equity_after": 9875.22,
+        "closed_at": "2026-07-02 08:30:16"
       }
     ],
     "created_at": "2026-05-22 08:58:33",
     "pre_initialized": true,
     "recommendation_at_init": "CONDICIONAL",
-    "cooldown_until": 1782747047.6488483
+    "cooldown_until": 1782997216.2938704
   },
   "BTC_5m_momentum_short": {
     "equity": 10000,
@@ -2477,7 +2620,18 @@
   "LTC_4h_bearish_rsi_divergence": {
     "equity": 10037.07,
     "initial": 10000,
-    "open": null,
+    "open": {
+      "sym": "LTC",
+      "tf": "4h",
+      "strategy": "bearish_rsi_divergence",
+      "direction": "short",
+      "entry": 42.73,
+      "sl": 44.7872,
+      "tp": 41.3058,
+      "sl_dist_pct_at_open": 4.8144,
+      "kelly_pct": 0.82,
+      "opened_at": "2026-07-01 20:13:05"
+    },
     "history": [
       {
         "sym": "LTC",
@@ -3168,5 +3322,185 @@
     "created_at": "2026-06-30 23:11:29",
     "pre_initialized": true,
     "recommendation_at_init": "NO_ACTIVAR"
+  },
+  "AAPL_4h_lower_lows": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 14:24:31",
+    "pre_initialized": true,
+    "recommendation_at_init": "NO_ACTIVAR"
+  },
+  "JPM_1h_tma_bands": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 19:38:30",
+    "pre_initialized": true,
+    "recommendation_at_init": "CONDICIONAL"
+  },
+  "JPM_1h_pin_bar": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 19:40:09",
+    "pre_initialized": true,
+    "recommendation_at_init": "CONDICIONAL"
+  },
+  "XOM_4h_hull_cross": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 19:41:19",
+    "pre_initialized": true,
+    "recommendation_at_init": "CONDICIONAL"
+  },
+  "XOM_1d_lower_lows": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 19:42:32",
+    "pre_initialized": true,
+    "recommendation_at_init": "NO_ACTIVAR"
+  },
+  "AAPL_1d_regime_adaptive": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 19:46:33",
+    "pre_initialized": true,
+    "recommendation_at_init": "NO_ACTIVAR"
+  },
+  "AAPL_1d_breakout": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 19:47:16",
+    "pre_initialized": true,
+    "recommendation_at_init": "CONDICIONAL"
+  },
+  "TSLA_1h_tma_bands": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 19:47:30",
+    "pre_initialized": true,
+    "recommendation_at_init": "NO_ACTIVAR"
+  },
+  "AAPL_1d_lower_lows": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 19:50:14",
+    "pre_initialized": true,
+    "recommendation_at_init": "CONDICIONAL"
+  },
+  "PL_1d_mfi_reversal": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 19:51:22",
+    "pre_initialized": true,
+    "recommendation_at_init": "CONDICIONAL"
+  },
+  "TSLA_1h_trend_strength": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 19:52:43",
+    "pre_initialized": true,
+    "recommendation_at_init": "CONDICIONAL"
+  },
+  "AAPL_1d_dmi_trend": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 19:56:12",
+    "pre_initialized": true,
+    "recommendation_at_init": "CONDICIONAL"
+  },
+  "AAPL_1d_tema_cross": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 19:57:34",
+    "pre_initialized": true,
+    "recommendation_at_init": "NO_ACTIVAR"
+  },
+  "NVDA_1h_tema_cross": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 20:08:40",
+    "pre_initialized": true,
+    "recommendation_at_init": "CONDICIONAL"
+  },
+  "NVDA_1h_obv_divergence": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 20:11:16",
+    "pre_initialized": true,
+    "recommendation_at_init": "CONDICIONAL"
+  },
+  "NVDA_1d_regime_adaptive": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 20:19:18",
+    "pre_initialized": true,
+    "recommendation_at_init": "CONDICIONAL"
+  },
+  "NVDA_1d_lower_lows": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 20:22:31",
+    "pre_initialized": true,
+    "recommendation_at_init": "NO_ACTIVAR"
+  },
+  "NVDA_1d_dmi_trend": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 20:27:14",
+    "pre_initialized": true,
+    "recommendation_at_init": "CONDICIONAL"
+  },
+  "NG_1d_regime_adaptive": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 21:27:44",
+    "pre_initialized": true,
+    "recommendation_at_init": "NO_ACTIVAR"
+  },
+  "XAG_4h_htf_divergence": {
+    "equity": 10000,
+    "initial": 10000,
+    "open": null,
+    "history": [],
+    "created_at": "2026-07-01 22:27:08",
+    "pre_initialized": true,
+    "recommendation_at_init": "CONDICIONAL"
   }
 }

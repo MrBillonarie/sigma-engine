@@ -38,7 +38,7 @@ MAX_KELLY_HARD_CAP  = 15.0   # techo ABSOLUTO incluso forzando el minimo de noti
                               # exchange -- nunca arriesgar mas que esto en un solo trade,
                               # pase lo que pase con el minimo que exija Binance
 MAX_LEVERAGE        = 5      # maximo 5x
-MAX_OPEN_SLOTS      = 3      # maximo 3 posiciones simultaneas
+MAX_OPEN_SLOTS      = 4      # maximo 4 posiciones simultaneas
 MIN_GATE_SCORE      = 85     # gate minimo para operar live
 MIN_NOTIONAL_USD    = 5.5    # piso de Binance es 5.0 USDT -- margen por slippage de fetch_ticker a fill
 
@@ -170,12 +170,20 @@ def _emergency_close(ex, symbol, contracts, side, reason):
         _log(f"EMERGENCY CLOSE FAILED: {e} — POSICION ABIERTA SIN SL!")
 
 # -- Reconcile ------------------------------------------------------------------
-def reconcile():
+def reconcile(min_age_min=0.0):
     """Verifica que cada posicion LIVE abierta tenga su Stop Loss activo en Binance.
-    Se corre al iniciar el proceso (web_server import) para detectar el caso en que
-    un kill/crash interrumpio execute_entry() entre el fill de entrada y la
-    colocacion del SL. Fail-safe: si no se puede verificar, solo alerta -- nunca
-    cierra una posicion sin confirmar primero que de verdad le falta el SL.
+    Se corre al iniciar el proceso (web_server import) y cada 5 min via
+    reconcile_cron.py, para detectar el caso en que un kill/crash interrumpio
+    execute_entry() entre el fill de entrada y la colocacion del SL.
+    Fail-safe: si no se puede verificar, solo alerta -- nunca cierra una
+    posicion sin confirmar primero que de verdad le falta el SL.
+
+    min_age_min: periodo de gracia. El cron DEBE pasarlo > 0: corre en proceso
+    separado, y si dispara justo cuando web_server esta entre el fill de la
+    entrada y la colocacion del SL (ventana de segundos), veria una posicion
+    "sin SL" perfectamente sana y la cerraria de emergencia. Saltarse trades
+    recien abiertos elimina esa carrera. En el arranque de web_server se llama
+    sin gracia (0): ahi no hay entrada en vuelo de este proceso.
     """
     if not LIVE_MODE:
         return
@@ -199,6 +207,40 @@ def reconcile():
     if not live_open:
         _log("RECONCILE: sin posiciones LIVE abiertas, nada que verificar")
         return
+
+    if min_age_min > 0:
+        _still_ok = []
+        for k, tr in live_open:
+            raw = str(tr.get('opened_at', '') or '').strip()
+            try:
+                dt = datetime.fromisoformat(raw)
+                if dt.tzinfo is None:
+                    dt = dt.replace(tzinfo=CHILE)  # ambos writers usan reloj Chile
+                age = (datetime.now(CHILE) - dt).total_seconds() / 60.0
+            except Exception:
+                age = None
+            if age is None:
+                # opened_at ilegible: no se puede descartar que sea recien
+                # abierto -> saltar este ciclo (proteger contra el cierre
+                # indebido pesa mas que 5 min menos de vigilancia de SL)
+                _log(f"RECONCILE: {tr.get('sym')}/{tr.get('tf')} opened_at "
+                     f"ilegible ({raw!r}) -- grace fail-safe, se salta este ciclo")
+                continue
+            if -15.0 <= age < min_age_min:
+                _log(f"RECONCILE: {tr.get('sym')}/{tr.get('tf')} abierto hace "
+                     f"{age:.1f} min < {min_age_min:.0f} -- grace period, se salta")
+                continue
+            if age < -15.0:
+                # opened_at en el futuro = timestamp corrupto (visto 2026-07-02:
+                # fix manual escribio fecha del reloj CEST del server con hora
+                # Chile). Un trade DE VERDAD recien abierto nunca queda >15 min
+                # en el futuro, asi que aca gana la proteccion: se verifica igual.
+                _log(f"RECONCILE WARN: {tr.get('sym')}/{tr.get('tf')} opened_at "
+                     f"en el futuro ({raw!r}) -- timestamp corrupto, se verifica igual")
+            _still_ok.append((k, tr))
+        live_open = _still_ok
+        if not live_open:
+            return
 
     ex = _get_exchange()
     if not ex:

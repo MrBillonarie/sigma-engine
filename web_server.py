@@ -40,6 +40,20 @@ def _refresh_m2_prices():
         time.sleep(30)
 threading.Thread(target=_refresh_m2_prices, daemon=True, name='m2-prices').start()
 
+# M3 prices cache — stocks S&P 500, actualiza cada 60s (solo horario NY)
+_M3_PRICES_CACHE = {}
+_M3_MAP_GLOBAL = {'AAPL':'AAPL','NVDA':'NVDA','TSLA':'TSLA','JPM':'JPM','XOM':'XOM'}
+def _refresh_m3_prices():
+    import yfinance as _yf_m3
+    while True:
+        try:
+            tmp = {s: float(_yf_m3.Ticker(t).fast_info.last_price or 0) for s,t in _M3_MAP_GLOBAL.items()}
+            if any(v > 0 for v in tmp.values()): _M3_PRICES_CACHE.update(tmp)
+        except Exception:
+            pass
+        time.sleep(60)
+threading.Thread(target=_refresh_m3_prices, daemon=True, name='m3-prices').start()
+
 # ── Live execution switch ────────────────────────────────────────────────────
 # False = paper trading seguro (default)
 # True  = ordenes reales Binance Futures via engine/live/live_executor.py
@@ -132,6 +146,7 @@ def _read_vol_mult():
     except: return 1.0
 
 _M2_ASSETS_SET = frozenset({'XAU','XAG','WTI','HG','NG','PL'})
+_M3_ASSETS_SET = frozenset({'AAPL','NVDA','TSLA','JPM','XOM'})
 # Simbolos M2 sin perpetuo real en Binance -- usar SOLO para bloquear LIVE,
 # nunca para el gate de correlacion cross-motor (ese usa _M2_ASSETS_SET,
 # que sigue siendo "es un activo del Motor 2" independiente de si puede ir LIVE).
@@ -147,13 +162,21 @@ def _model_json_path(sym, tf, strategy):
     wtiusd_) -- por eso el gate de robustez nunca encontraba archivo para
     M2 y los 19 champions de commodities quedaban "sin dato" (fail-safe a
     PAPER) aunque sus datos de walk-forward/Monte Carlo ya existian.
-    Encontrado y corregido 2026-06-23 al habilitar M2 para LIVE."""
+    Encontrado y corregido 2026-06-23 al habilitar M2 para LIVE.
+    Para tf='countertrend' el naming es {sym}_{inner_tf}_{strategy}_{regime}.json
+    por lo que se usa glob como fallback."""
     base = f'/opt/sigma/models/{tf}/{sym.lower()}_{strategy}.json'
     if _os.path.exists(base):
         return base
     legacy = f'/opt/sigma/models/{tf}/{sym.lower()}usd_{strategy}.json'
     if _os.path.exists(legacy):
         return legacy
+    # Countertrend models: {sym}_{inner_tf}_{strategy}_{regime}.json
+    if tf == 'countertrend':
+        import glob as _glob_ct
+        ct_matches = sorted(_glob_ct.glob(f'/opt/sigma/models/countertrend/{sym.lower()}*{strategy}*.json'))
+        if ct_matches:
+            return ct_matches[0]
     return base
 
 def _check_model_cb(slot):
@@ -883,14 +906,32 @@ def _refresh_live_stats():
     import glob as _g, datetime as _d, time as _tm
     while True:
         try:
-            # sigma.db — queries simples, con índices será rápido
-            runs_total = 0; runs_rate = 0; by_tf = {}
+            # sigma.db — solo para tasa reciente (rate_hr); NOT para total
+            runs_rate = 0; by_tf = {}
             try:
                 conn = sqlite3.connect(str(DB), timeout=5)
-                runs_total = conn.execute('SELECT COUNT(*) FROM runs').fetchone()[0]
-                runs_rate  = conn.execute("SELECT COUNT(*) FROM runs WHERE ts > datetime('now','-1 hours')").fetchone()[0]
-                by_tf = {_r[0]: _r[1] for _r in conn.execute('SELECT tf,COUNT(*) FROM runs GROUP BY tf')}
+                runs_rate = conn.execute("SELECT COUNT(*) FROM runs WHERE ts > datetime('now','-1 hours')").fetchone()[0]
                 conn.close()
+            except: pass
+            # Total y by_tf SIEMPRE desde optuna_per_study (fuente de verdad post-migración)
+            runs_total = 0
+            try:
+                import re as _re_sf
+                _tf_pat = _re_sf.compile(r'[a-z]+_([0-9]+[mhd])_')
+                _by_tf_opt = {}
+                for _db in _g.glob(str(BASE / 'models' / 'optuna_per_study' / '*.db')):
+                    try:
+                        _cx = sqlite3.connect(_db, timeout=0.1)
+                        _n = _cx.execute("SELECT count(*) FROM trials WHERE state='COMPLETE'").fetchone()[0]
+                        _cx.close()
+                        _m = _tf_pat.search(_db)
+                        if _m:
+                            _tf = _m.group(1)
+                            _by_tf_opt[_tf] = _by_tf_opt.get(_tf, 0) + _n
+                        runs_total += _n
+                    except: pass
+                if runs_total > 0:
+                    by_tf = _by_tf_opt
             except: pass
             # Optuna per-study — timeout 0.05s por archivo
             optuna_rate = 0
@@ -1185,7 +1226,7 @@ def get_risk_status():
 
     NOTE: el campo retornado "max_slots" es ADVISORY — el opener
 
-    (_proactive_trade_opener / _compute_signals) usa MAX_SLOTS=3 hardcoded.
+    (_proactive_trade_opener / _compute_signals) usa MAX_SLOTS=4 hardcoded.
 
     Este campo refleja recomendacion conservadora basada en regimen + RSI_W,
 
@@ -3078,6 +3119,8 @@ def check_circuit_breaker():
 
 
 
+_PROMOTE_SLOT_LOGGED = set()  # suppress repeated log spam
+_AI_FILTER_LOGGED = set()  # suppress repeated AI FILTER block spam
 _signals_cache = {}
 _ohlcv_cache = {}  # {(symbol, tf): (ts, df)} — persists between _compute_signals calls
 
@@ -4650,13 +4693,13 @@ def _compute_signals():
 
     # Capacidad: 3 slots simultaneos (independiente de regimen)
 
-    # Bonus slot reservado historicamente para 3+ A+/A; actualmente MAX_SLOTS=3 fijo.
+    # Bonus slot reservado historicamente para 3+ A+/A; actualmente MAX_SLOTS=4 fijo.
 
     _ap_count = sum(1 for r in results if r.get('grade') in ('A+','A') and r.get('recommendation')=='ACTIVAR')
 
-    MAX_SLOTS = 3  # 3 slots en todos los regimenes
+    MAX_SLOTS = 4  # 4 slots en todos los regimenes
 
-    if _ap_count >= 3 and MAX_SLOTS < 3: MAX_SLOTS = 3  # bonus slot para A+/A
+    # (bonus slot eliminado — MAX_SLOTS fijo en 4)
 
 
 
@@ -5326,13 +5369,13 @@ def _compute_signals():
 
     for _r in sorted(results, key=lambda x: x.get('slot',0), reverse=True):
 
-        if _r.get('slot',0) not in (1,2,3): continue
+        if _r.get("slot",0) not in (1,2,3,4): continue
 
         _k = _r['sym']+'_'+_r['tf']
 
         if _k not in _paper_candidates or _k in _state['open']: continue
 
-        _max_open = 3 if LIVE_EXECUTION else 5  # live=3 conservador / paper=5 para acelerar validacion
+        _max_open = 4 if LIVE_EXECUTION else 5  # live=4 (ampliado 2026-07-01) / paper=5 para acelerar validacion
         if _open_n >= _max_open: break
 
         _c = _paper_candidates[_k]
@@ -5375,7 +5418,10 @@ def _compute_signals():
 
         if not _ai_ok:
 
-            print(f"[AI FILTER] BLOQUEADO {_c['sym']} {_c['tf']} — {_ai_reason}", flush=True)
+            _ai_key = (_c['sym'], _c['tf'], _ai_reason)
+            if _ai_key not in _AI_FILTER_LOGGED:
+                _AI_FILTER_LOGGED.add(_ai_key)
+                print(f"[AI FILTER] BLOQUEADO {_c['sym']} {_c['tf']} — {_ai_reason}", flush=True)
 
             continue
 
@@ -5894,7 +5940,7 @@ def _compute_signals():
 
                 _slot_count_now += 1
 
-        _MAX_SLOTS = 3
+        _MAX_SLOTS = 4
 
         # Buscar promoted que quieren slot
 
@@ -5922,7 +5968,10 @@ def _compute_signals():
 
             _slot_count_now += 1
 
-            print(f'[PROMOTE_SLOT] {_rm.get("sym")} {_rm.get("tf")} {_rm.get("strategy")} -> slot {_rm["slot"]}', flush=True)
+            _pkey = (_rm.get('sym'), _rm.get('tf'), _rm.get('strategy'), _rm['slot'])
+            if _pkey not in _PROMOTE_SLOT_LOGGED:
+                _PROMOTE_SLOT_LOGGED.add(_pkey)
+                print(f'[PROMOTE_SLOT] {_rm.get("sym")} {_rm.get("tf")} {_rm.get("strategy")} -> slot {_rm["slot"]}', flush=True)
 
     except Exception as _e_ps:
 
@@ -6482,7 +6531,7 @@ body{background:radial-gradient(ellipse at top,#11161f 0%,#0a0d12 60%) fixed;col
 
 
 
-  <div id="motors-matrix" style="margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+  <div id="motors-matrix" style="margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
     <div id="motor1-card" style="background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <span style="color:#58a6ff;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase">Motor 1 — Crypto</span>
@@ -6502,6 +6551,16 @@ body{background:radial-gradient(ellipse at top,#11161f 0%,#0a0d12 60%) fixed;col
         <div id="m2-bar-fill" style="height:100%;background:linear-gradient(90deg,#ffa657,#ff7b72);border-radius:2px;width:0%;transition:width .6s"></div>
       </div>
       <div id="m2-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;font-family:monospace;font-size:10px"></div>
+    </div>
+    <div id="motor3-card" style="background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="color:#3fb950;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase">Motor 3 — S&amp;P 500 Stocks</span>
+        <span id="m3-pct" style="font-family:monospace;font-size:13px;font-weight:700;color:#e6edf3">-</span>
+      </div>
+      <div id="m3-bar" style="height:4px;background:#21262d;border-radius:2px;margin-bottom:10px;overflow:hidden">
+        <div id="m3-bar-fill" style="height:100%;background:linear-gradient(90deg,#3fb950,#56d364);border-radius:2px;width:0%;transition:width .6s"></div>
+      </div>
+      <div id="m3-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;font-family:monospace;font-size:10px"></div>
     </div>
   </div>
   <script>
@@ -6536,6 +6595,7 @@ body{background:radial-gradient(ellipse at top,#11161f 0%,#0a0d12 60%) fixed;col
       }
       renderMotor('motor1','m1-grid','m1-pct','m1-bar');
       renderMotor('motor2','m2-grid','m2-pct','m2-bar');
+      renderMotor('motor3','m3-grid','m3-pct','m3-bar');
     }).catch(function(){});
   })();
   </script>
@@ -7701,13 +7761,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         elif self.path == '/api/stats':
 
-            # Auto-healing: 503 si cache stale > 120s para que el cron reinicie sigma-web
+            # Auto-healing: 503 si cache stale > 900s (M1+M2+M3 = 130+ modelos, umbral subido 300→900s el 2026-07-02)
 
             _ok_ts = _signals_cache.get('_last_compute_ok_ts', 0) if _signals_cache else 0
 
             _age = (time.time() - _ok_ts) if _ok_ts else 999999
 
-            if _ok_ts and _age > 120:
+            if _ok_ts and _age > 900:
 
                 self.send_response(503)
 
@@ -8306,6 +8366,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         elif self.path == '/api/m2_prices':
             _send_json(self, _M2_PRICES_CACHE)
 
+        elif self.path == '/api/m3_prices':
+            _send_json(self, _M3_PRICES_CACHE)
+
         elif self.path == '/api/signals':
 
             if _signals_cache:
@@ -8617,6 +8680,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
                 m1_t, m1_f, m1_active = _motor_coverage(['BTC','ETH','SOL','BNB','LTC'], ['5m','15m','1h','4h'])
                 m2_t, m2_f, m2_active = _motor_coverage(['XAU','XAG','WTI','HG','NG','PL'], ['1d','4h','1h','15m'])
+                m3_t, m3_f, m3_active = _motor_coverage(['AAPL','NVDA','TSLA','JPM','XOM'], ['1d','4h','1h','15m'])
                 _send_json(self, {
                     'motor1': {'name':'Crypto','assets':['BTC','ETH','SOL','BNB','LTC'],
                                'timeframes':['5m','15m','1h','4h'],
@@ -8628,8 +8692,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                                'total_slots':m2_t,'filled_slots':m2_f,
                                'coverage_pct':round(100*m2_f/m2_t,1) if m2_t else 0,
                                'active_slots':m2_active},
-                    'total': {'slots':m1_t+m2_t,'filled':m1_f+m2_f,
-                              'coverage_pct':round(100*(m1_f+m2_f)/(m1_t+m2_t),1) if (m1_t+m2_t) else 0},
+                    'motor3': {'name':'S&P 500 Stocks','assets':['AAPL','NVDA','TSLA','JPM','XOM'],
+                               'timeframes':['1d','4h','1h','15m'],
+                               'total_slots':m3_t,'filled_slots':m3_f,
+                               'coverage_pct':round(100*m3_f/m3_t,1) if m3_t else 0,
+                               'active_slots':m3_active},
+                    'total': {'slots':m1_t+m2_t+m3_t,'filled':m1_f+m2_f+m3_f,
+                              'coverage_pct':round(100*(m1_f+m2_f+m3_f)/(m1_t+m2_t+m3_t),1) if (m1_t+m2_t+m3_t) else 0},
                 })
             except Exception as _em:
                 print(f'[MOTORS ERROR] {_em}', flush=True)
@@ -9686,7 +9755,7 @@ def _proactive_trade_opener():
 
                         if m.get('grade') in ('A+','A') and m.get('recommendation')=='ACTIVAR']
 
-            max_slots = 3 if regime == 'BEAR' else 3  # subido 2026-05-12 (matches MAX_OPEN_SLOTS)
+            max_slots = 4  # subido 2026-05-12 (matches MAX_OPEN_SLOTS)
 
             if len(_ap_sigs) >= 3 and max_slots < 3:
 
@@ -9715,6 +9784,72 @@ def _proactive_trade_opener():
                     open_keys.add(f"{t['sym']}_{t['tf']}")
 
 
+
+            # ── COLA DE SEÑALES: auto-ejecutar señales en espera ────────────────────────
+            try:
+                import datetime as _dtq3, os as _osq3
+                _QFILE3 = '/opt/sigma/results/signal_queue.json'
+                if _osq3.path.exists(_QFILE3):
+                    _q3 = _jw2.load(open(_QFILE3))
+                    _q3_keep = []
+                    _now3 = _dtq3.datetime.utcnow()
+                    for _sq in _q3:
+                        try:
+                            _exp3 = _dtq3.datetime.fromisoformat(_sq.get('expires_at',''))
+                            if _now3 > _exp3:
+                                continue
+                        except Exception:
+                            continue
+                        _qkey3 = _sq['sym'] + '_' + _sq['tf']
+                        if _qkey3 in open_keys or is_blocked(_sq['sym'], _sq['tf']):
+                            _q3_keep.append(_sq)
+                            continue
+                        if open_count >= max_slots:
+                            _q3_keep.append(_sq)
+                            continue
+                        try:
+                            _bsym3q = {'HG':'COPPER','NG':'NATGAS','WTI':'CL','PL':'XPT'}.get(_sq['sym'], _sq['sym'])
+                            _url3q  = 'https://fapi.binance.com/fapi/v1/ticker/price?symbol=' + _bsym3q + 'USDT'
+                            _lp3q   = float(_jw2.loads(_ur2.urlopen(_url3q, timeout=5).read())['price'])
+                        except Exception:
+                            _q3_keep.append(_sq)
+                            continue
+                        _bar3q = _sq.get('price', _lp3q)
+                        _sl3q  = _sq.get('sl', 0); _tp3q = _sq.get('tp', 0)
+                        _dir3q = _sq.get('direction', 'long')
+                        if not _sl3q or not _tp3q:
+                            continue
+                        _sl_d3 = abs(_sl3q - _bar3q); _tp_d3 = abs(_tp3q - _bar3q)
+                        _sh3q  = _dir3q == 'short'
+                        _nsl3  = round(_lp3q + _sl_d3 if _sh3q else _lp3q - _sl_d3, 4)
+                        _ntp3  = round(_lp3q - _tp_d3 if _sh3q else _lp3q + _tp_d3, 4)
+                        _execute_trade(_sq['sym'], _sq['tf'], _dir3q, _lp3q, _nsl3, _ntp3,
+                                       strategy=_sq.get('strategy','?'),
+                                       grade=_sq.get('grade','?'), wr=_sq.get('wr',0),
+                                       cagr=_sq.get('cagr',0),
+                                       kelly_pct=float(_sq.get('kelly_pct') or 3.3))
+                        open_keys.add(_qkey3)
+                        open_count += 1
+                        print('[QUEUE_EXEC] ' + _sq['sym'] + '/' + _sq['tf'] + ' ' + _dir3q.upper() + ' @ ' + str(_lp3q), flush=True)
+                        try:
+                            import urllib.parse as _ulp3
+                            _arr3 = '▲ LONG' if _dir3q != 'short' else '▼ SHORT'
+                            _tl = [
+                                '✅ <b>SEÑAL DE COLA → ACTIVADA</b>' + chr(10) + chr(10),
+                                _arr3 + ' <b>' + _sq['sym'] + ' ' + _sq['tf'].upper() + '</b>' + chr(10) + chr(10),
+                                'Estrategia: <code>' + _sq.get('strategy','?') + '</code>' + chr(10),
+                                'Grade: <b>' + _sq.get('grade','?') + '</b>  WR: <code>' + str(int(_sq.get('wr',0))) + '%</code>' + chr(10) + chr(10),
+                                'Entrada: <code>' + str(round(_lp3q,4)) + '</code>  SL: <code>' + str(_nsl3) + '</code>  TP: <code>' + str(_ntp3) + '</code>' + chr(10) + chr(10),
+                                '⏰ En cola desde ' + _sq.get('queued_at','?')[:16],
+                            ]
+                            _msg3 = ''.join(_tl)
+                            _dat3 = _ulp3.urlencode({'chat_id': _PER_MODEL_TG_CHAT, 'text': _msg3, 'parse_mode': 'HTML'}).encode()
+                            _ur2.urlopen('https://api.telegram.org/bot' + _PER_MODEL_TG_TOKEN + '/sendMessage', data=_dat3, timeout=5)
+                        except Exception: pass
+                    with open(_QFILE3, 'w') as _fq3w:
+                        _jw2.dump(_q3_keep, _fq3w)
+            except Exception as _eq3:
+                print('[QUEUE ERROR] ' + str(_eq3), flush=True)
 
             # ── PER-MODEL paper trading: abre TODO lo que tenga signal=True ─────
 
@@ -10004,7 +10139,7 @@ if __name__ == "__main__":
 
     httpd = ReusableHTTPServer(('127.0.0.1', PORT), Handler)
 
-    print(f'Dashboard en http://178.104.10.97:{PORT}/dashboard.html', flush=True)
+    print(f'Dashboard en http://5.9.98.182:{PORT}/dashboard.html', flush=True)
 
     httpd.serve_forever()
 
